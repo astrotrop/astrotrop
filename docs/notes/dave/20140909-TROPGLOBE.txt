@@ -1,0 +1,167 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# ------------------------------------------------------------------
+# The TROPGLOBE network.
+
+
+    If you put the word TROPGLOBE into Google ....
+
+        https://www.google.co.uk/search?q=TROPGLOBE
+
+    Alan's presentation at a two conferences in 2012
+
+        http://www.gofc-gold.uni-jena.de/wg_biomass/
+        http://www.gofc-gold.uni-jena.de/wg_biomass/wp-content/uploads/2012/06/Grainger_Alan.pdf
+
+        http://www.nceo.ac.uk/nceo_conference_presentations_2012.php
+        http://www.nceo.ac.uk/assets/presentations/2012_conference_NOTTINGHAM/NCEOCONF2012_0920_Grainger.pdf
+
+    An article on the research council's website about our project
+        http://gtr.rcuk.ac.uk/project/51F66CD8-C87F-458C-8E0E-237E31FF2EAE
+
+
+
+# ------------------------------------------------------------------
+# The TROPGLOBE network.
+
+
+Aberystwyth University:                         Prof R Lucas (a,n) 1,2
+Bangor University:                              Dr J Healey (b,f)1,2,7,9
+Bournemouth University:                         Prof A Newton (b) 1,7,9,
+                                                Dr R Hill (a,n,b,k)1,7,9
+Centre for Ecology & Hydrology, Edinburgh:      Dr J Thompson (e)3
+Cranfield University:                           Prof S White (h) 5
+University of Aberdeen:                         Dr D Burslem (b,e) 1,3,7,9
+Imperial College, London:                       Dr R Ewers (b) 1,7,9
+James Hutton Institute, Aberdeen:               Prof R Matthews (c,e) 2,3,6,9
+Kings College, London:                          Dr M Mulligan (a,h) 5
+
+Royal Botanic Gardens, Edinburgh:               Dr T Pennington (b)1,7,9,
+                                                Dr A Ahrends (b)1,7,9
+Royal Botanic Gardens, Kew:                     Dr W Milliken (b) 1,7,9,
+                                                Dr A Paton (b) 1,7,9
+University of Bristol:                          Dr P Foster (c)2,6,,9
+University of Cambridge:                        Dr T Gardner (b) 1,7,9,
+                                                Dr N Harris (g) 4,8
+                                                Dr K Peh (b,n)1,7,9,
+                                                Dr E Tanner (e) 3
+University of Edinburgh:                        Prof J Grace (c,e) 1,3,7,9,
+
+                                                Prof P Meir (c,e)1,3,7,9
+                                                Dr G Patenaude (k),
+                                                Dr I Woodhouse (n)
+University of Exeter:                           Dr L Aragao (e) 3
+University of Lancaster:                        Dr J Barlow (b)1,7,9,
+                                                Dr N Chappel (h) 5
+University of Leeds:                            Dr T Baker (c) 2,6,,9,
+                                                Prof M Gloor (c,g) 2,4,6,,9
+                                                Dr A Grainger (b,c,k) 1,2,6,,9,
+                                                Prof O Phillips (c) 2,6,,9
+
+University of Leicester:                        Prof H Balzter (a,c) 2,6,9,
+                                                Dr S Page (c) 2,6,9
+                                                Dr K Tansey (a,n)
+University College London:                      Dr S Lewis (c) 2,6,,9
+University of Nottingham:                       Prof G Foody (a,b)1,7,9
+University of Oxford:                           Prof Y Malhi (c) 2,6,9
+University of Sheffield:                        Dr S Queenborough (e) 3,
+                                                Prof S Quegan (c, n)2,6,,9
+University of Surrey:                           Prof J Lynch (f),
+                                                Prof S Morse (f)
+
+University of York:                             Prof M Evans (g) 4,8,
+                                                Prof A Lewis (g) 4,8
+                                                Prof C Thomas (b) 1,7,9
+
+Corporate Sector
+Delta T Devices:                                Dr T Peloe (g)
+DMCI International:                             Dr D Hodgson (a),
+                                                Prof J Lynch (f)
+Skye Instruments:                               Ms B Trotter (a)
+
+Research Councils
+NERC National Centre for Earth Observation:     Dr A Shaw (k)
+NERC CEDA:                                      Dr P Kershaw (k)
+STFC Daresbury:                                 Dr M Winn (b) 1,7,9
+STFC UK Astronomy Technology Centre:            Dr J Dines (a,n)
+Stakeholders
+DEFRA:                                          Dr Katherine Bass
+Ecometrica:                                     Dr R Tipper (c,f)2,6,,9
+Forestry Commission:                            Dr J Suarez (a) 2,6,,9
+Global Canopy Programme:                        Dr A Mitchell (b)1,7,9
+International Space Innovation Centre:          Dr P Allan
+
+
+NB. Attribute specialities: a, remote sensing of forest area; b, biodiversity; c, carbon; e, ecosystem processes; f, forest management;
+g, gaseous fluxes; h, hydrology; k, knowledge exchange; n, non-optical remote sensing of forest carbon. Remote sensing specialists
+could participate in many of these groups and so membership is not shown h
+
+
+
+
+
+TROPGLOBE Members' Connections With Other Networks
+
+
+AfriTRON: Baker, Gloor, Malhi, Philips; British Ecological Society Tropical Ecology Group: Queenborough;
+Center for Tropical Forest Science: Thompson; GEM: Malhi; Group on Earth Observations FCT/GFOI:
+Quegan; International LTER and Luqillo LTER (Puerto Rico): Thompson; IUCN Species Survival Commission:
+Newton; NERC SAFE Project: Ewers; RAINFOR: Baker, Gloor, Malhi, Philips; TRY (Global Plant Traits
+Network): Grace, Meir; UK Global Forest Monitoring Consortium: Grainger, Hodgson, Lucas, Lynch, Patenaude,
+Shaw, Tansey, Tripper, Woodhouse; World Forest Observatory: Grainger.
+ 
+# ------------------------------------------------------------------
+# Key players.
+
+
+    Dr Mark Mulligan (Kings)
+    https://www.kcl.ac.uk/sspp/departments/geography/people/academic/mulligan/index.aspx
+
+    Dr Mark Mulligan (blog)
+    http://blog.policysupport.org/
+
+    Terra-i
+    http://www.terra-i.org/terra-i.html
+    http://www.terra-i.org/terra-i/data/data-faq.html
+
+    Data is available in gzip compressed ESRI ARCASCII grids
+    https://en.wikipedia.org/wiki/Esri_grid
+    http://docs.codehaus.org/display/GEOTOOLS/ArcInfo+ASCII+Grid+format#ASCIIGrid
+
+
+
+Uses data from (amnogst others)
+
+    MODIS (Moderate Resolution Imaging Spectroradiometer)
+    http://modis.gsfc.nasa.gov/
+
+    Data products
+    http://modis.gsfc.nasa.gov/data/
+    http://modis.gsfc.nasa.gov/data/dataprod/index.php
+
+    MOD 24 - Organic Matter Concentration
+    http://modis.gsfc.nasa.gov/data/dataprod/dataproducts.php?MOD_NUMBER=24
+
+    http://ladsweb.nascom.nasa.gov/data/search.html
+
+    

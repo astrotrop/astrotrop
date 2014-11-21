@@ -1,0 +1,296 @@
+%%This is a very basic article template.
+%%There is just one section and two subsections.
+\documentclass{article}
+
+\usepackage{endnotes}
+	
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+ 
+\setlength{\parindent}{4em}
+\setlength{\parskip}{1em}
+
+\begin{document}
+
+\section{Introduction}
+
+Some text ..
+
+\section{The IVOA}
+
+The International Virtual Observatory Alliance (IVOA) was formed in June 2002
+with a mission to "facilitate the international coordination and collaboration
+necessary for the development and deployment of the tools, systems and
+organizational structures necessary to enable the international utilization of
+astronomical archives as an integrated and interoperating virtual observatory."
+
+The work of the IVOA focuses on the development of standards, providing a forum
+for members to debate and agrees the technical standards that are needed to make
+the VO possible.
+
+\section{The VO}
+
+The Virtual Observatory (VO) is the realization of the IVOA vision of an
+\textit{``an integrated and interoperating virtual observatory''}.
+
+The operational VO itself is comprised of a distributed metadata registry, along
+with data discovery and data access services deployed at each participating
+institutes, which together enable the system to present a uniform mechanism for
+discovering and accessing data published in the virtual observatory,
+irrespective of where it is physically located.
+
+\subsection{The registry}
+
+The VO Registry provides the first layer of data discovery available in the
+virtual observatory. The individual registry services deployed at participating
+institutes work together to provide a shared repository for describing datasets,
+data access services and data processing services in a standard way.
+
+The IVOA Registry Interfaces standard
+\endnote{http://www.ivoa.net/documents/RegistryInterface/}
+defines 
+\textit{``the interfaces that support interactions between applications and
+registries as well as between the registries themselves''}.
+
+The high level structure of the registry content is defined by a
+set of IVOA standards.
+\begin{itemize}
+  \item IVOA Identifiers
+  \endnote{http://www.ivoa.net/documents/latest/IDs.html}
+  \item Resource Metadata
+  \endnote{http://www.ivoa.net/Documents/latest/RM.html}
+\end{itemize}
+
+Combined with a set of lower level standards defining the detailed XML schemas
+for resource metadata.
+\begin{itemize}
+  \item VOResource
+  \endnote{http://www.ivoa.net/documents/latest/VOResource.html}
+  \item VODataService
+  \endnote{http://www.ivoa.net/documents/VODataService/} 
+  \item Simple Data Access Services
+  \endnote{http://www.ivoa.net/documents/SimpleDALRegExt/20131005/}
+\end{itemize}
+
+\subsection{Service registration}
+
+VOSI \ldots and stuff \ldots
+
+\subsection{Service metadata}
+
+registry metadata queries \ldots and stuff \ldots
+
+\subsection{Service footprint}
+
+registry footprint queries \ldots and stuff \ldots
+
+HEALPix Multi-Order Coverage Map (MOC)
+\endnote{http://www.ivoa.net/documents/MOC/}
+
+\subsection{Data access services}
+
+The VO DataAccess services can be categorised as two types of services.
+
+A set of type specific data discovery servces which are designed to provide
+simple service interfaces for discovering and acessing data of a specific type.
+
+\begin{itemize}
+  \item Simple Cone Search (SCS)
+  \endnote{http://www.ivoa.net/documents/latest/ConeSearch.html}
+  \item Simple Image Access (SIA)
+  \endnote{http://www.ivoa.net/documents/SIA/}
+  \item Simple Spectral Access (SSA)
+  \endnote{http://www.ivoa.net/documents/SSA/}
+  \item Simple Line Access (SLA)
+  \endnote{http://www.ivoa.net/documents/SLAP/}
+\end{itemize}
+
+A tabular data access services for querying tabluar data using a common query
+derrived from SQL.
+
+\begin{itemize}
+  \item Table Access Protocol (TAP)
+  \endnote{http://www.ivoa.net/Documents/TAP/}
+  \item Astronomy Data Query Language (ADQL)
+  \endnote{http://www.ivoa.net/Documents/latest/ADQL.html}
+\end{itemize}
+
+\subsubsection{Simple Image Access}
+
+The Simple Image Access (SIA) protocol provides 
+\begin{quote}
+parameter based discovery of images and datacubes, querying the service(s) with
+a few well known kinds of queries that cover greater than 95\% of use, and
+getting back easily parsed summary metadata about each available data product
+\end{quote}
+
+The Simple Image Access (SIA) data discovery service provides support for
+the following use cases:
+
+\begin{itemize}
+  \item find data that includes specified coordinates (e.g. for some object) 
+  \item find data in the circle with coordinate centre and radius 
+  \item find data in a range of longitude and latitude 
+  \item find data within a specified simple  polygon (one region, no holes, less
+  than half the sphere)
+  \item find data containing a specified energy (e.g. wavelength) or in a
+  specified range of energy values
+  \item find data obtained at a specified time (e.g. including a time instant)
+  or during a specified range of times
+  \item find data obtained with specified polarization (Stokes) states 
+  \item find data within a specified range of spatial resolution 
+  \item find data within a specified range of field-of-view 
+  \item find data within a range of exposure (integration) time 
+\end{itemize}
+
+The response from a successful SIA data discovery query is a VOTable containing
+instances of the ObsCore \endnote{http://www.ivoa.net/documents/ObsCore/} data
+model.
+
+Each row in the results corresponds to a data product that matches the search
+criteria and includes details of how to access the data products or how
+to request additional matadata.
+
+\subsubsection{Simple Spectral Access}
+
+The Simple Spectral Access (SSA) protocol is similar to the Simple Image Access (SIA) protocol.
+
+The primary differences are the type of data searched for, and the set of query
+parameters.
+
+\begin{quote}
+\ldots discover and access one dimensional spectra
+\ldots based on a general data model capable of describing most tabular
+spectrophotometric data, including time series and spectral energy distributions
+(SEDs) as well as 1-D spectra
+\end{quote}
+
+\subsubsection{Simple Line Access}
+
+The Simple Line Access (SLA) protocol is similar to the Simple Image Access
+(SIA) protocol.
+
+The primary differences are the type of data searched for, and the set of query
+parameters.
+
+\begin{quote}
+\ldots retrieving spectral lines coming from various Spectral Line Data
+Collections
+\ldots either observed or theoretical and will be typically used to identify
+emission or absorption features in astronomical spectra.
+\ldots makes use of the Simple Spectral Line Data Model
+(SSLDM) \endnote{http://www.ivoa.net/documents/SSLDM/} to characterize spectral
+lines through the use of uTypes
+\endnote{http://www.ivoa.net/documents/Notes/UTypesUsage/index.html}
+\end{quote}
+  
+\subsubsection{Table Access Protocol}
+
+Table Access Protocol (TAP) is a generic protocol for accessing general table
+data, including astronomical catalogs as well as general database tables, with
+support for both synchronous and asynchronous queries.
+
+Special support is provided for spatially indexed queries using the spatial
+extensions in ADQL.
+
+A multi-position query capability permits queries against an arbitrarily large
+list of astronomical targets, providing a simple spatial cross-matching
+capability.
+
+Deploying the same standard interface and query language across multiple sites
+means that cross-matching queries are possible by orchestrating a distributed
+query across multiple TAP services.
+
+\subsection{Data discovery example}
+
+The combination of data discoverry tools provided by the registry and the
+individual data access services working together enable the kind of \textit{'whole
+sky'} data discovery queries that the virtual observatory is designed to
+provide.
+
+As an example of how this works, the following sections will describe the IVOA
+standards and services involved in processing a data discovery query for a
+particular type of data, e.g. images, covering a particular region of the sky,
+in a particular wavelength e.g. infrared, visible light, radio or xray.
+
+\subsubsection{Service discovery}
+
+The first step in processing our \textit{'whole sky'} search is to identify the
+set of services that contain the type of data we are looking for.
+
+The example search is looking for images, so the first step is to query the
+registry to find services that offer a \texttt{ivo://ivoa.net/std/SIA}
+(SIA) capability.
+
+The registry query can be refined by selecting services that contain data in the
+\texttt{optical} waveband.
+
+The MOC coverage map for each service can be used to further filter the list of
+services to identify services that contain data in a particular region of the sky.
+
+\subsubsection{Data discovery}
+
+The next stage of the process is to send a SIA query to each of the SIA services
+returned from the service discovery stage.
+
+\noindent
+SIA query can specify parameters for a particular wavelength and  a particular
+region of the sky :
+\begin{itemize}
+  \item \texttt{POS}  The positional region
+  \item \texttt{BAND} The the energy interval
+\end{itemize}
+
+The full list of SIA search parameters is given in appendix A.
+
+Each SIA query would return a VOTable each row of which is an instance of the
+ObsCore \endnote{http://www.ivoa.net/documents/ObsCore/} data model.
+
+The ObsCore data model specifies all the VOTable field names, utypes, UCDs, and
+units to use in the response.
+
+The final step is for the client software to aggregate the results from the
+individual SIA services and display them to the user.
+
+The user selects which data products they are interested in, and the client
+software uses the information from the SIA results to download the individual
+data products and launch the appropriate display tools.
+
+
+
+
+
+
+
+
+
+\appendix
+\section{SIA search parameters}
+\noindent
+The SIA search parameters include
+\begin{itemize}
+  \item \texttt{POS}  The positional region
+  \item \texttt{BAND} The the energy interval
+  \item \texttt{TIME} The the time interval
+  \item \texttt{POL}  The the polarization state
+  \item \texttt{FOV}  The the field of view
+  \item \texttt{SPATRES} The the spatial resolution
+  \item \texttt{EXPTIME} The the exposure time
+  \item \texttt{COLLECTION} The name of the data collection that contains the data
+  \item \texttt{FACILITY} The name of the facility where the data was acquired
+  \item \texttt{INSTRUMENT} The name of the instrument with which the data was acquired
+  \item \texttt{DPTYPE} The data type from the ObsCore
+  \endnote{http://www.ivoa.net/documents/ObsCore/} data model
+  \item \texttt{CALIB} The calibration level
+  \item \texttt{TARGET} The target name from the ObsCore
+  \endnote{http://www.ivoa.net/documents/ObsCore/} data model
+  \item \texttt{TIMERES} The temporal resolution
+  \item \texttt{SPECRP} The spectral resolving power
+  \item \texttt{FORMAT} The data format
+\end{itemize}
+
+
+
+\theendnotes
+
+\end{document}

@@ -1,0 +1,66 @@
+
+====== GeoServer ==
+
+GeoServer
+http://geoserver.org/
+https://en.wikipedia.org/wiki/GeoServer
+"GeoServer is an open source server for sharing geospatial data"
+
+Spatial data infrastructure
+https://en.wikipedia.org/wiki/Spatial_Data_Infrastructure
+
+====== INSPIRE ==
+
+http://inspire.jrc.ec.europa.eu/
+https://en.wikipedia.org/wiki/Infrastructure_for_Spatial_Information_in_the_European_Community
+
+International Journal of Spatial Data Infrastructures Research
+http://ijsdir.jrc.ec.europa.eu/index.php/ijsdir/index
+
+Assisted Generation and Publication of Geospatial Data and Metadata
+http://ijsdir.jrc.ec.europa.eu/index.php/ijsdir/article/view/313
+
+Shared Environmental Information Systems to Address and Sustain Environment-Related INSPIRE Challenges
+http://ijsdir.jrc.ec.europa.eu/index.php/ijsdir/article/view/355
+
+====== Natural resources Canada ==
+
+http://www.nrcan.gc.ca/earth-sciences/geomatics/10776
+
+====== Canadian Forest Genetic Resources Information System ==
+
+https://pfc.cfsnet.nfis.org/CAFGRIS/home.jsp
+
+====== Forestry commision ==
+
+Remote sensing
+http://www.forestry.gov.uk/forestry/infd-6rultz
+
+Radar and LiDAR
+http://www.forestry.gov.uk/forestry/INFD-6RUK95
+
+====== Centre for Remote Imaging, Sensing and Processing (CRISP) ==
+
+Synthetic Aperture Radar (SAR)
+http://www.crisp.nus.edu.sg/~research/tutorial/mw.htm#sar
+http://www.crisp.nus.edu.sg/~research/tutorial/sar_int.htm
+
+====== Woods Hole Research Center ==
+
+Pan-tropical Forest Cover Mapped with Cloud-Free Radar Imaging
+http://www.whrc.org/mapping/pantropical/alos.html
+
+
+====== The Spatial Blog ==
+
+GIS Tips – Don’t trust your GIS, have you heard of OSTN02? 
+https://dragons8mycat.wordpress.com/2013/05/13/gis-tips-dont-trust-your-gis-have-you-heard-of-ostn02/
+
+GIS Tips – GIS Tools of the trade
+https://dragons8mycat.wordpress.com/2013/04/05/gis-tips-gis-tools-of-the-trade/
+
+====== ArcGIS ==
+
+https://www.arcgis.com/features/
+https://developers.arcgis.com/en/
+

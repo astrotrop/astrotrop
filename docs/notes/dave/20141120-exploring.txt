@@ -1,0 +1,75 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+    #
+    # Markedly divergent estimates of Amazon forest carbon density from ground plots and satellites
+    # Edward Mitchard et al.
+    http://onlinelibrary.wiley.com/doi/10.1111/geb.12168/abstract
+
+    #
+    # Remote sensing data
+    RS1 was provided by S. Saatchi (NASA Jet Propulsion Laboratory, CA, USA)
+    in a geographic projection with a pixel size of 0.00833°
+
+        #
+        # Sassan Saatchi at the Jet Propulsion Laboratory
+        http://carbon.jpl.nasa.gov/
+
+        #
+        # Data for latin america
+        http://carbon.jpl.nasa.gov/data/data_latin_america.cfm
+
+        #
+        # Data FTP site
+        ftp://www-radar.jpl.nasa.gov/projects/carbon/datasets/
+
+    #
+    # Remote sensing data
+    RS2 was provided by A. Baccini (Woods Hole Research Center, MA, USA)
+    in a MODIS sinusoidal projection at 500 m resolution.
+
+        #
+        # A. Baccini at the Woods Hole Research Center
+        http://www.whrc.org/about/cvs/abaccini.html
+
+        #
+        # Pan-tropical Forest Carbon Mapped with Satellite and Field Observations
+        http://www.whrc.org/mapping/pantropical/modis.html
+
+        #
+        # Pantropical National Level Carbon Stock Dataset
+        http://www.whrc.org/mapping/pantropical/carbon_dataset.html
+
+        #
+        # Registration for Data Access - National Level Carbon Stock Dataset
+        http://www.whrc.org/mapping/pantropical/carbondataset_form.htm
+
+
+
+    #
+    # The Global Index of Vegetation-Plot Databases (GIVD): a new resource for vegetation science
+    http://scholar.google.co.uk/citations?view_op=view_citation&hl=en&user=sW-_n_0AAAAJ&citation_for_view=sW-_n_0AAAAJ:d1gkVwhDpl0C
+    http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01265.x/abstract
+
+

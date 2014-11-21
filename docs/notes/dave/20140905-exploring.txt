@@ -1,0 +1,202 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# ------------------------------------------------------------------
+# Forestplots Net
+# https://www.forestplots.net/
+
+    "The front end was developed using Microsoft.net framework and it interacts with a Microsoft SQL server database.
+    The underlying database is a relational database which utilizes more than 50 tables to store plot and individual tree information."
+
+    #
+    # Login page, but no self registration
+    https://www.forestplots.net/secure/Login.aspx
+
+        Contact : admin@forestplots.net
+        Contact : g.lopez-gonzalez@leeds.ac.uk
+
+    #
+    # Hosted at University of Leeds.
+    host www.forestplots.net
+        ....
+        www.forestplots.net has address 129.11.80.52
+
+    whois 129.11.80.52
+        ....
+        descr:          University of Leeds
+        descr:          Wood House Lane
+        descr:          Leeds, LS2 9JT
+
+    Managed by 
+    Dr. Gabriela Lopez-Gonzalez
+    Database Manager (Forestplots.net)
+
+# ------------------------------------------------------------------
+# RAINFOR
+# http://www.rainfor.org/
+# http://www.geog.leeds.ac.uk/projects/rainfor/pages/partners_eng.html
+
+    "RAINFOR partners share a long-term dedication to understanding
+    Amazon ecosystems from the ground up, applying standardized
+    techniques to measure, monitor, and interpret their behaviour."
+
+    #
+    # Hosted at University of Leeds.
+    host www.rainfor.org
+        ....
+        www.rainfor.org has address 129.11.80.49
+
+    whois 129.11.80.49
+        ....
+        descr:          University of Leeds
+        descr:          Wood House Lane
+        descr:          Leeds, LS2 9JT
+
+    Managed by 
+    Dr. Gabriela Lopez-Gonzalez
+    Database Manager (Forestplots.net)
+
+# ------------------------------------------------------------------
+# Leeds geography projects
+# http://www.geog.leeds.ac.uk/projects/
+
+
+# ------------------------------------------------------------------
+# Global Ecosystem Monitoring network (GEM)
+# http://gem.tropicalforests.ox.ac.uk/
+
+ 
+# ------------------------------------------------------------------
+# Andes Biodiversity and Ecosystem Research Group
+# http://www.andesconservation.org/
+
+
+    GEM - Andes to Amazon transect
+    http://gem.tropicalforests.ox.ac.uk/projects/aberg
+
+    Andes Biodiversity and Ecosystems Research Group
+    http://darwin.winston.wfu.edu/andes/
+    (link not working)
+
+    Andes Biodiversity and Ecosystem Research Group
+    http://www.andesconservation.org/
+
+    ABERG is committed to data exchange within the scientific community and promoting
+    collaboration among other tropical ecosystem scientists.
+    We are in the process of uploading a majority of its data to ATRIUM, an online data
+    sharing and managing platform designed by the Botanical Research Institute of Texas.
+    We will continually be updating ABERG’s ATRIUM presence so check back often to look
+    for more information.
+
+    http://atrium.andesamazon.org/
+
+    http://www.atrium-biodiversity.org/
+
+
+    #
+    # Professor Patrick Meir from Edinburgh is a listed as a PI for Ecosystem Ecology
+    # Kings buildings - worth a vist (not at the original conference).
+    http://www.ed.ac.uk/schools-departments/geosciences/people?cw_xml=person.html&indv=383
+    http://www.andesconservation.org/personnel/
+
+    #
+    # Metadata page describes their data.
+    # Access method seems to be email address of who to contact
+    http://www.andesconservation.org/metadata/
+
+        #
+        # Data formats
+
+            #
+            # Shapefile
+            https://en.wikipedia.org/wiki/Shapefile
+            
+            #
+            # ArcGIS (propritary)
+            https://en.wikipedia.org/wiki/ArcGIS
+            https://www.wou.edu/las/physci/taylor/es341/arc_gis_file_extensions.pdf
+            http://webhelp.esri.com/arcgisdesktop/9.2/index.cfm?TopicName=An_overview_of_data_support_in_ArcGIS
+            http://webhelp.esri.com/arcgisdesktop/9.2/index.cfm?TopicName=Data_formats_supported_in_ArcGIS
+
+# ------------------------------------------------------------------
+# Atrium Biodiversity Information System
+# http://atrium.andesamazon.org/index.php
+
+        Atrium is a technology platform for revolutionizing biodiversity information management
+        by enabling researchers and organizations to share, synthesize, manage and publish
+        biodiversity data in a collaborative, online environment.
+        Atrium provides a broad range of tools for research organizations as well as an unparalleled,
+        open-source framework based on industry standards which facilitates the development of
+        powerful applications and tools for the biodiversity community. For further information,
+        please visit the Atrium-Biodiversity.org web site.
+
+
+        #
+        # Example - Weather Station Details
+        http://atrium.andesamazon.org/meteo_station_display_info.php?id=26
+        http://atrium.andesamazon.org/meteo_station_display_graph.php?id=26
+        #
+        # Data avilable as cvs or text .. no metadata.
+        http://atrium.andesamazon.org/meteo_station_display_data.php?Time_Interval=day&Start_Date=2006-01-15&End_Date=2006-07-17&id=26
+
+        #
+        # Self registration
+        http://atrium.andesamazon.org/
+
+
+# ------------------------------------------------------------------
+# Atrium biodiversity information system
+# http://www.atrium-biodiversity.org/
+
+    Atrium is a biodiversity information system developed by the Botanical Research Institute of Texas (BRIT).
+
+
+# ------------------------------------------------------------------
+# Global Biodiversity Information Facility
+# http://www.gbif.org/
+
+
+# ------------------------------------------------------------------
+# Geo Carbon
+# http://www.geocarbon.net/index.php?option=com_content&view=featured&Itemid=101
+
+
+    "GEOCARBON is a European FP7 project with a global perspective,
+    with the ultimate aim to lay the foundations for an operational
+    Global Carbon Observing and Analysis System in support to both
+    science and policy."
+
+    Both Edinburgh and Leeds are listed as members of the consurtium.
+
+
+
+
+# ------------------------------------------------------------------
+# Reference info
+
+    #
+    # GIS file formats
+    https://en.wikipedia.org/wiki/GIS_file_formats
+
+
+
