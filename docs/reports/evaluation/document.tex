@@ -240,21 +240,54 @@ region of the sky :
   \item \texttt{POS}  The positional region
   \item \texttt{BAND} The the energy interval
 \end{itemize}
-
 The full list of SIA search parameters is given in appendix A.
 
-Each SIA query would return a VOTable each row of which is an instance of the
-ObsCore \endnote{http://www.ivoa.net/documents/ObsCore/} data model.
+Each SIA query returns a VOTable, each row of which contains metadata about an
+individual image.
 
-The ObsCore data model specifies all the VOTable field names, utypes, UCDs, and
-units to use in the response.
+The details of the VOTable field names, utypes, UCDs, and units to used in the
+response are defined in the \endnote{http://www.ivoa.net/documents/ObsCore/}
+data model.
 
 The final step is for the client software to aggregate the results from the
 individual SIA services and display them to the user.
 
 The user selects which data products they are interested in, and the client
 software uses the information from the SIA results to download the individual
-data products and launch the appropriate display tools.
+data products and display them in the appropriate display tools.
+
+
+\subsection{Carbon density comparison use case}
+
+The following use case is based on a paper by Mitchard et al., (2014)
+\endnote{doi:10.1111/geb.12168}
+\endnote{http://onlinelibrary.wiley.com/doi/10.1111/geb.12168/abstract}
+comparing remote sensing data from the
+NASA Jet Propulsion Laboratory
+(Saatchi et al 2011)
+\endnote{doi:10.1073/pnas.1019576108}
+\endnote{http://www.pnas.org/content/108/24/9899}
+and the
+Woods Hole Research Center
+(Baccini et al 2012)
+\endnote{doi:10.1038/nclimate1354}
+\endnote{http://www.nature.com/nclimate/journal/v2/n3/full/nclimate1354.html}
+with 
+ground plot data
+from
+
+RAINFOR
+\endnote{http://www.rainfor.org/}
+the Amazon Tree Diversity Network
+\endnote{http://web.science.uu.nl/Amazon/ATDN/}
+TEAM (Tropical Ecology Assessment and Monitoring)
+\endnote{http://www.teamnetwork.org/}
+and
+PPBio (Brazilian Program for Biodiversity Research)
+
+http://www.researchgate.net/publication/233379148_The_Brazilian_Program_for_Biodiversity_Research_%28PPBio%29_Information_System
+(login required)
+
 
 
 

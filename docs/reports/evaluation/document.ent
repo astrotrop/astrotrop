@@ -50,8 +50,35 @@ macro:->http://www.ivoa.net/documents/Notes/UTypesUsage/index.html
 macro:->http://www.ivoa.net/documents/ObsCore/
 \@endanenote 
 \@doanenote {18}
-macro:->http://www.ivoa.net/documents/ObsCore/
+macro:->doi:10.1111/geb.12168
 \@endanenote 
 \@doanenote {19}
+macro:->http://onlinelibrary.wiley.com/doi/10.1111/geb.12168/abstract
+\@endanenote 
+\@doanenote {20}
+macro:->doi:10.1073/pnas.1019576108
+\@endanenote 
+\@doanenote {21}
+macro:->http://www.pnas.org/content/108/24/9899
+\@endanenote 
+\@doanenote {22}
+macro:->doi:10.1038/nclimate1354
+\@endanenote 
+\@doanenote {23}
+macro:->http://www.nature.com/nclimate/journal/v2/n3/full/nclimate1354.html
+\@endanenote 
+\@doanenote {24}
+macro:->http://www.rainfor.org/
+\@endanenote 
+\@doanenote {25}
+macro:->http://web.science.uu.nl/Amazon/ATDN/
+\@endanenote 
+\@doanenote {26}
+macro:->http://www.teamnetwork.org/
+\@endanenote 
+\@doanenote {27}
+macro:->http://www.ivoa.net/documents/ObsCore/
+\@endanenote 
+\@doanenote {28}
 macro:->http://www.ivoa.net/documents/ObsCore/
 \@endanenote 
