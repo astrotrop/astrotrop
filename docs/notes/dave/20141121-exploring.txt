@@ -20,6 +20,30 @@
 #
 #
 
+
+    Google cache HTML version of
+    ftp://fapespclima.ccst.inpe.br/lba/inpe/presentations/LBA-SSC-14th-Presentations-Nov2003/Malhi-Fortaleza%20SSC%20Rainfor.pdf
+
+        Malhi et al, 2002, Journal of Vegetation Science
+        An international network to monitor the
+        structure, composition and dynamics of
+        Amazonian forests (RAINFOR)
+
+        Red Amazonica de Inventarios Forestales
+        Rede Amazonica de Inventarios Florestais
+        The Amazon Forest Inventory Network
+
+        http://www.geog.leeds.ac.uk/projects/rainfor
+
+
+    #
+    # Brazilian Progam for Biodiversity Research (PPBio) Information System
+    # GIVD Database ID: SA-BR-001
+    http://www.givd.info/db_details.html?choosen_db=196
+
+
+
+
     #
     # Translated text from Brazilian Progam for Biodiversity Research (PPBio) Information System
     # GIVD Database ID: SA-BR-001
@@ -111,4 +135,19 @@
         Authentication systems
         http://www.cilogon.org/
         http://www.incommon.org/
+
+
+    #
+    # Estimated carbon dioxide emissions from tropical deforestation improved by carbon-density maps
+    # A.Baccini et al (2012)
+    http://www.nature.com/nclimate/journal/v2/n3/full/nclimate1354.html
+
+    #
+    # Benchmark map of forest carbon stocks in tropical regions across three continents
+    # Saatchi et al (2010)
+    http://www.pnas.org/content/108/24/9899
+    http://dx.doi.org/10.1073/pnas.1019576108
+
+
+
 
