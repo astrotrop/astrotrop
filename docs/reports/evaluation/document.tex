@@ -240,7 +240,13 @@ a new dataset available for download as part of the source material for the pape
 
 
 
-\subsubsection{Distributed metadata}
+\subsection{Diverse metadata formats}
+
+Within just the datasets used by our example use case, we can see a variety of
+different database systems storing different types of metadata in a varierty of
+different structures and formats.
+
+\subsubsection{GIVD}
 
 ForestPlots.Net is itself part of a hierarchy of databases containing metadata
 about databases.
@@ -291,8 +297,62 @@ system has a lot of similarities with the distributed architectrure of data
 discovery and data access services working together to create the virtual
 observatory.
 
+\subsubsection{METACAT}
 
+From paper describing PPBio
+\endnote{http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=10.7809/b-e.00083}
 
+\begin{quote}
+To facilitate data searches, all the metadata were converted to XML, and the
+PPBio has installed a METACAT server to integrate with the Knowledge Network for
+Biocomplexity (KNB), a network which aims to assist ecological and environmental
+research.
+\end{quote}
+
+METACAT
+\endnote{http://knb.ecoinformatics.org/software/metacat}
+\endnote{https://knb.ecoinformatics.org/knb/docs/intro.html}
+
+\begin{quote}
+Metacat is a repository for data and metadata (documentation about data) that
+helps scientists find, understand and effectively use data sets they manage or
+that have been created by others. Thousands of data sets are currently
+documented in a standardized way and stored in Metacat systems, providing the
+scientific community with a broad range of science data that–because the data
+are well and consistently described–can be easily searched, compared, merged, or
+used in other ways.
+\end{quote}
+\begin{quote}
+Metacat is a Java servlet application that runs on Linux, Mac OS, and Windows
+platforms in conjunction with a database, such as PostgreSQL (or Oracle), and a
+Web server.
+\end{quote}
+\begin{quote}
+The Metacat application stores data in an XML format using Ecological Metadata
+Language (EML) or other metadata standards such as ISO 19139 or the FGDC
+Biological Data Profile.
+\end{quote}
+
+\subsubsection{DataONE}
+
+Metacat features include providing a Data Observation Network for Earth (DataONE)
+\endnote{https://www.dataone.org/}
+node service.
+ 
+\begin{quote}
+The DataONE project is a collaboration among scientists, technologists,
+librarians, and social scientists to build a robust, interoperable, and
+sustainable system for preserving and accessing Earth observational data at
+national and global scales. Supported by the U.S. National Science Foundation,
+DataONE partners focus on technological, financial, and organizational
+sustainability approaches to building a distributed network of data repositories
+that are fully interoperable, even when those repositories use divergent
+underlying software and support different data and metadata content standards.
+\end{quote}
+\begin{quote}
+DataONE defines a common web-service service programming interface that allows
+the main software components of the DataONE system to seamlessly communicate.
+\end{quote}
 
 
 
