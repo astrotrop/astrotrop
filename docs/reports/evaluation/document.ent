@@ -1,4 +1,7 @@
 \@doanenote {1}
+macro:->http://www.ivoa.net/
+\@endanenote 
+\@doanenote {2}
 macro:->The
 new
 bioinformatics:
@@ -16,102 +19,141 @@ et
 al.
 2006)
 \@endanenote 
-\@doanenote {2}
+\@doanenote {3}
 macro:->doi:10.1146/annurev.ecolsys.37.091305.110031
 \@endanenote 
-\@doanenote {3}
+\@doanenote {4}
 macro:->http://www.annualreviews.org/doi/abs/10.1146/annurev.ecolsys.37.091305.110031
 \@endanenote 
-\@doanenote {4}
-macro:->http://www.ivoa.net/documents/ObsCore/
-\@endanenote 
 \@doanenote {5}
-macro:->doi:10.1111/geb.12168
-\@endanenote 
-\@doanenote {6}
-macro:->http://onlinelibrary.wiley.com/doi/10.1111/geb.12168/abstract
-\@endanenote 
-\@doanenote {7}
-macro:->doi:10.1073/pnas.1019576108
-\@endanenote 
-\@doanenote {8}
-macro:->http://www.pnas.org/content/108/24/9899
-\@endanenote 
-\@doanenote {9}
-macro:->doi:10.1038/nclimate1354
-\@endanenote 
-\@doanenote {10}
-macro:->http://www.nature.com/nclimate/journal/v2/n3/full/nclimate1354.html
-\@endanenote 
-\@doanenote {11}
-macro:->http://www.rainfor.org/
-\@endanenote 
-\@doanenote {12}
-macro:->http://web.science.uu.nl/Amazon/ATDN/
-\@endanenote 
-\@doanenote {13}
-macro:->http://www.teamnetwork.org/
-\@endanenote 
-\@doanenote {14}
-macro:->doi:10.7809/b-e.00083
-\@endanenote 
-\@doanenote {15}
-macro:->http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=10.7809/b-e.00083
-\@endanenote 
-\@doanenote {16}
-macro:->http://www.ivoa.net/documents/RegistryInterface/
-\@endanenote 
-\@doanenote {17}
-macro:->http://www.ivoa.net/documents/latest/IDs.html
-\@endanenote 
-\@doanenote {18}
-macro:->http://www.ivoa.net/Documents/latest/RM.html
-\@endanenote 
-\@doanenote {19}
-macro:->http://www.ivoa.net/documents/latest/VOResource.html
-\@endanenote 
-\@doanenote {20}
-macro:->http://www.ivoa.net/documents/VODataService/
-\@endanenote 
-\@doanenote {21}
-macro:->http://www.ivoa.net/documents/SimpleDALRegExt/20131005/
-\@endanenote 
-\@doanenote {22}
-macro:->http://www.ivoa.net/documents/MOC/
-\@endanenote 
-\@doanenote {23}
-macro:->http://www.ivoa.net/documents/latest/ConeSearch.html
-\@endanenote 
-\@doanenote {24}
 macro:->http://www.ivoa.net/documents/SIA/
 \@endanenote 
+\@doanenote {6}
+macro:->http://www.ivoa.net/documents/MOC/
+\@endanenote 
+\@doanenote {7}
+macro:->http://www.ivoa.net/documents/ObsCore/
+\@endanenote 
+\@doanenote {8}
+macro:->doi:10.1111/geb.12168
+\@endanenote 
+\@doanenote {9}
+macro:->http://onlinelibrary.wiley.com/doi/10.1111/geb.12168/abstract
+\@endanenote 
+\@doanenote {10}
+macro:->doi:10.1073/pnas.1019576108
+\@endanenote 
+\@doanenote {11}
+macro:->http://www.pnas.org/content/108/24/9899
+\@endanenote 
+\@doanenote {12}
+macro:->doi:10.1038/nclimate1354
+\@endanenote 
+\@doanenote {13}
+macro:->http://www.nature.com/nclimate/journal/v2/n3/full/nclimate1354.html
+\@endanenote 
+\@doanenote {14}
+macro:->http://www.rainfor.org/
+\@endanenote 
+\@doanenote {15}
+macro:->http://web.science.uu.nl/Amazon/ATDN/
+\@endanenote 
+\@doanenote {16}
+macro:->http://www.teamnetwork.org/
+\@endanenote 
+\@doanenote {17}
+macro:->doi:10.7809/b-e.00083
+\@endanenote 
+\@doanenote {18}
+macro:->http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=10.7809/b-e.00083
+\@endanenote 
+\@doanenote {19}
+macro:->http://www.forestplots.net/
+\@endanenote 
+\@doanenote {20}
+macro:->http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01312.x/abstract
+\@endanenote 
+\@doanenote {21}
+macro:->doi:10.1111/j.1654-1103.2011.01312.x
+\@endanenote 
+\@doanenote {22}
+macro:->http://link.springer.com/article/10.1007/s00442-005-0100-x
+\@endanenote 
+\@doanenote {23}
+macro:->doi:10.1007/s00442-005-0100-x
+\@endanenote 
+\@doanenote {24}
+macro:->https://creativecommons.org/licenses/by/4.0/deed.en_US
+\@endanenote 
 \@doanenote {25}
-macro:->http://www.ivoa.net/documents/SSA/
+macro:->http://www.givd.info/
 \@endanenote 
 \@doanenote {26}
-macro:->http://www.ivoa.net/documents/SLAP/
+macro:->http://www.givd.info/ID/00-00-001
 \@endanenote 
 \@doanenote {27}
-macro:->http://www.ivoa.net/Documents/TAP/
+macro:->http://www.givd.info/ID/SA-BR-001
 \@endanenote 
 \@doanenote {28}
-macro:->http://www.ivoa.net/Documents/latest/ADQL.html
+macro:->http://www.givd.info/ID/00-00-002
 \@endanenote 
 \@doanenote {29}
-macro:->http://www.ivoa.net/documents/ObsCore/
+macro:->doi:10.1111/j.1654-1103.2011.01265.x
 \@endanenote 
 \@doanenote {30}
-macro:->http://www.ivoa.net/documents/SSLDM/
-\@endanenote 
-\@doanenote {31}
-macro:->http://www.ivoa.net/documents/Notes/UTypesUsage/index.html
-\@endanenote 
-\@doanenote {32}
 macro:->http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01265.x/abstract
 \@endanenote 
+\@doanenote {31}
+macro:->http://www.ivoa.net/documents/RegistryInterface/
+\@endanenote 
+\@doanenote {32}
+macro:->http://www.ivoa.net/documents/latest/IDs.html
+\@endanenote 
 \@doanenote {33}
-macro:->http://www.ivoa.net/documents/ObsCore/
+macro:->http://www.ivoa.net/Documents/latest/RM.html
 \@endanenote 
 \@doanenote {34}
+macro:->http://www.ivoa.net/documents/latest/VOResource.html
+\@endanenote 
+\@doanenote {35}
+macro:->http://www.ivoa.net/documents/VODataService/
+\@endanenote 
+\@doanenote {36}
+macro:->http://www.ivoa.net/documents/SimpleDALRegExt/20131005/
+\@endanenote 
+\@doanenote {37}
+macro:->http://www.ivoa.net/documents/MOC/
+\@endanenote 
+\@doanenote {38}
+macro:->http://www.ivoa.net/documents/latest/ConeSearch.html
+\@endanenote 
+\@doanenote {39}
+macro:->http://www.ivoa.net/documents/SIA/
+\@endanenote 
+\@doanenote {40}
+macro:->http://www.ivoa.net/documents/SSA/
+\@endanenote 
+\@doanenote {41}
+macro:->http://www.ivoa.net/documents/SLAP/
+\@endanenote 
+\@doanenote {42}
+macro:->http://www.ivoa.net/Documents/TAP/
+\@endanenote 
+\@doanenote {43}
+macro:->http://www.ivoa.net/Documents/latest/ADQL.html
+\@endanenote 
+\@doanenote {44}
+macro:->http://www.ivoa.net/documents/ObsCore/
+\@endanenote 
+\@doanenote {45}
+macro:->http://www.ivoa.net/documents/SSLDM/
+\@endanenote 
+\@doanenote {46}
+macro:->http://www.ivoa.net/documents/Notes/UTypesUsage/index.html
+\@endanenote 
+\@doanenote {47}
+macro:->http://www.ivoa.net/documents/ObsCore/
+\@endanenote 
+\@doanenote {48}
 macro:->http://www.ivoa.net/documents/ObsCore/
 \@endanenote 

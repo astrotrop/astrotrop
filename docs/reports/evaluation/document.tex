@@ -14,57 +14,62 @@
 
 \section{Introduction}
 
-Some text ..
+Some text \ldots
 
-\section{The IVOA}
+\section{The IVOA Virtual Observatory}
 
-The International Virtual Observatory Alliance (IVOA) was formed in June 2002
-with a mission to "facilitate the international coordination and collaboration
+The International Virtual Observatory Alliance (IVOA)
+\endnote{http://www.ivoa.net/}
+was formed in June 2002 with a mission to
+\begin{quote}
+"facilitate the international coordination and collaboration
 necessary for the development and deployment of the tools, systems and
 organizational structures necessary to enable the international utilization of
 astronomical archives as an integrated and interoperating virtual observatory."
+\end{quote}
 
 The work of the IVOA focuses on the development of standards, providing a forum
 for members to debate and agrees the technical standards that are needed to make
 the VO possible.
 
-\section{The Virtual Observatory}
-
 The Virtual Observatory (VO) is the realization of the IVOA vision of an
-\textit{``an integrated and interoperating virtual observatory''}.
+integrated and interoperating virtual observatory.
 
-The operational VO itself is comprised of a distributed metadata registry, along
-with data discovery and data access services deployed at each participating
-institutes, which together enable the system to present a uniform mechanism for
-discovering and accessing data, irrespective of where it is physically located.
+The operational VO itself is comprised of a global shared metadata registry,
+along with individual data discovery and data access services deployed at each
+of the participating institutes, which work together to present a uniform
+mechanism for discovering and accessing data, irrespective of where it is
+physically located.
 
-The architecture of the VO and the data discovery process that it is designed to
-support are very similar to the interconnected metadata collections approach
-described in (Jones et al. 2006).
+The VO architecture and data discovery process is very similar to the
+interconnected metadata collections approach described in a paper on 'The new
+bioinformatics: integrating ecological data from the gene to the biosphere'
+(Jones et al. 2006).
 \endnote{The new bioinformatics: integrating ecological data from the gene to the biosphere (Jones et al. 2006)}
 \endnote{doi:10.1146/annurev.ecolsys.37.091305.110031}
 \endnote{http://www.annualreviews.org/doi/abs/10.1146/annurev.ecolsys.37.091305.110031}
 
 \begin{quote}
-An alternative, more robust approach to the highly structured, vertically integrated
+"An alternative, more robust approach to the highly structured, vertically integrated
 data warehouse is a more loosely structured collection of project-specific data sets
-accompanied by structured metadata about each of the data sets.
+accompanied by structured metadata about each of the data sets."
 \end{quote}
 
 \begin{quote}
-Each of the data sets is stored in a manner that is opaque to the data system in
+"Each of the data sets is stored in a manner that is opaque to the data system in
 that the data themselves cannot be directly queried; rather, the structured
 metadata describing the data is queried in order to locate data sets of
 interest. After data sets of interest are located, more detailed information
 (such as the detailed data model that specifies, e.g., the definitions of the
 variables) can be extracted from the metadata and used to load, query, and
-manipulate individual data sets.
+manipulate individual data sets."
 \end{quote}
 
-A useful way to illustrate how the components of the VO architecture work
-together is to look at an example data discovery task such as selecting images
-covering a particular region of the sky, in a particular wavelength e.g.
-infrared, visible light, radio or xray,
+\subsection{Example use case}
+
+A useful way to illustrate how the VO data discovery process works is to look at
+an example task such as selecting images covering a particular region of the
+sky, in a particular wavelength e.g. infrared, visible light, radio or xray,
 
 \subsubsection{Service discovery}
 
@@ -72,54 +77,53 @@ The first step of the process is to identify the services that provide access to
 the type of data we are looking for by querying the VO Registry.
 
 The VO Registry is comprised of a number of small local registries, typically
-hosted at the participating institute level, working in cooperation with
-a number of higer level global registries that aggregate the data
-from the smaller registries to create a global searchable index of
-service and dataset metadata. 
+hosted at the participating institute level, working in cooperation with a set
+of higer level global registries typically hosted by a few key institutes that
+aggregate the data from the smaller registries to create a global searchable
+index of metadata about all the services and datasets in the VO.
 
-When a new service is deployed, part of the deployment process
-involves registering the service with the local registry.
-The local registry is then responsible for collecting and storing the
-metadata that describes the service capabilities and the datasets
-that the service provides access to.
+When a new service is deployed, part of the deployment process involves
+registering the service with the local registry. The local registry is then
+responsible for collecting and storing the metadata that describes both the
+service itself and the datasets that it provides access to.
 
 Once the metadata is registered in a local registry, it is automatically
 propagated up to the next level and replicated between the global registries.
 
-This means that a client can access all of the available metadata
-for all of the services and datasets in the VO by querying one of the 
-global registries.
+This means that a client can access all of the available metadata for all of the
+services and datasets in the VO by querying any of the global registries.
 
-The first step in our example is to identify services that provide access to
-the type of data we are looking for, in this case images, by querying the registry
-for services that support the Simple Image Access (SIA)
+The first step in fulfilling our example use case is to identify services that
+contain the type of data we are looking for, in this case images, by querying
+the registry for services that support the Simple Image Access (SIA)
 \endnote{http://www.ivoa.net/documents/SIA/}
 capability.
 
-In addition to the technical details of services and their capabilities
-the metadata in the registry also contains details about the content of the datasets,
-including details of the wavelength used to create the images,
-e.g. infrared, visible light, radio or xray.
+In addition to the technical details of services and their capabilities the
+regitry metadata also contains details about the content of datasets, including
+details of the wavelength(s) measured, e.g. infrared, visible, radio or xray.
 
-This allows us to refine our registry query to find services that contain
-images in a specific waveband,
-e.g. \texttt{optical} or \texttt{infrared}
+This allows us to refine our query to search for SIA services that contain
+images in a specific waveband, e.g. \texttt{optical} or \texttt{infrared}
 
-A recent addition to the IVOA specifications is the 
-HEALPix Multi-Order Coverage Map (MOC)
+The registry query would return a table of data, each row of which contains
+information about a SIA services that contains the type of data we are
+interested in - images in a particular wavelength.
+
+The VO is itself an evolving system, building on the existing work to add
+additional levels of integration as new features are added to the IVOA
+specifications.
+
+A recent addition to the IVOA is the HEALPix Multi-Order Coverage Map (MOC)
 \endnote{http://www.ivoa.net/documents/MOC/}
 which will allow registry services to perform coarse grained region matches.
 
-Once this is in place we would be able to further refine our query to
-filter for services that contained data in a particular region of the sky.
+Once this is in place we should be able to further refine our query to filter
+for SIA services that contained data in a particular region of the sky.
 
 \subsubsection{Data discovery}
 
-Having identified a list of services that contain the type of data we are
-interested in, images covering a particular region of the sky,
-in a particular wavelength.
-
-The next stage of the process is to query each of the SIA services in our list
+The next stage of the process is to query each of the SIA services in the list
 to discover details about the individual images available from that service.
 
 \noindent
@@ -129,36 +133,38 @@ region of the sky :
   \item \texttt{POS}  The positional region
   \item \texttt{BAND} The the energy interval
 \end{itemize}
-(the full list of SIA search parameters is given in appendix A)
 
-Each SIA service would return a VOTable, each row of which contains data about an
-individual image. The details of the columns in the response are defined
-in the ObsCore \endnote{http://www.ivoa.net/documents/ObsCore/} data model.
+Each SIA service would return a table of data, each row of which contains
+metadata about an individual image. The details of the fields in the
+image metadata are defined in the ObsCore
+\endnote{http://www.ivoa.net/documents/ObsCore/}
+data model.
 
-The result is we get a standard response from each service, which can be
-combined to produce a list of all the images available in the VO that match
-our search criteria.
+As every one of the SIA services returns a standard response, it makes it easy
+to combine them to produce a single list of all the images available in the VO
+that match our search criteria.
 
-The user can select which data products they are interested in, and the client
-software can use the metadata in the SIA results to access the individual data
-products and display them in the appropriate display tools.
+The user can then select which data products they are interested in, and their
+client software can use the metadata in the SIA results to access the individual
+data products and display them in the appropriate tools.
 
+\noindent
 The two key components of this process are
 \begin{itemize}
-  \item A standard interface for the global registry
-that uses a standard set of attributes to describe datasets and services
-enabling 3rd party software to query the service using a standard query syntax
-  \item A standard interface for local data access services
-that uses a standard set of attributes to describe data products within the service
-enabling 3rd party software to query the service using a standard query syntax
+  \item A standard interface for the global registry that uses a standard set of
+  attributes to describe datasets and services
+  \item A standard interface for local data access services that uses a standard
+  set of attributes to describe the available data products
 \end{itemize}
 
-This separation between the initial service discovery query
-followed by individual data discovery queries
-corresponds to the two stages described in (Jones et al. 2006)
-of first querying the metadata to establish the data location
-followed by a more detailed individual queries
-to establish what the data is and how to access it. 
+The separation between the initial service discovery query at the global
+level followed by individual data discovery queries at the local level
+are very similar to the stages described in (Jones et al. 2006) of first
+querying the metadata to establish the data location followed by a more detailed
+individual queries to establish what the data is and how to access it.
+
+\subsubsection{Standard data format}
+
 
 \subsection{Carbon density comparison}
 
@@ -233,7 +239,7 @@ manually (* unconfirmed for PPBio).
 
 The principal AGB dataset was calculated using a tropical forest model described in Chave et al. (2005),
 (Tree allometry and improved estimation of carbon stocks and balance in tropical forests)
-\endnote{http://link.springer.com/article/10.1007%2Fs00442-005-0100-x}
+\endnote{http://link.springer.com/article/10.1007/s00442-005-0100-x}
 \endnote{doi:10.1007/s00442-005-0100-x}
 
 The resulting data set was stored in 
@@ -248,7 +254,7 @@ making it available at a permanent location to be referenced and used in future
 research.
 
 ForestPlots.Net is itself part of a hierarchy of databases containing metadata
-about databases of vegetation plot observations.
+about databases.
 
 ForestPlots.Net is described in the
 Global Index of Vegetation-Plot Databases (GIVD)
@@ -273,9 +279,8 @@ from around the world.
 (Dengler et al., 2011)
 \endnote{doi:10.1111/j.1654-1103.2011.01265.x}
 \endnote{http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01265.x/abstract}
-Describes the reasons behind the database of metadata about databases, and
-suggest some 
-
+Describes the reasons for creating a metadata database about databases, and
+suggest some future applications.
 
 \begin{quote}
 Our longer-term vision is to develop GIVD in ways similar to Metacat (Jones et
@@ -283,6 +288,15 @@ al. 2006), so that, ultimately, users who query GIVD will not only receive
 information on which databases contain data suitable for the intended analyses,
 but they will also discover other data from distributed databases, with GIVD
 acting as the central node.
+\end{quote}
+
+\begin{quote}
+By coupling species
+specific trait characteristics (e.g. mean plant height, specific leaf area,
+growth form) found in trait databases, such
+as LEDA (Kleyer et al. 2008) or TRY (http://www.trydb.org),
+with plot-based distribution information on those
+species, GIVD could support further refinement of DGVMs.
 \end{quote}
 
 
@@ -298,7 +312,6 @@ acting as the central node.
 
 
 \subsection{VO services}
-
 
 \subsection{The registry}
 
@@ -328,9 +341,6 @@ standards defining the detailed XML schemas for resource metadata.
   \item Simple Data Access Services
   \endnote{http://www.ivoa.net/documents/SimpleDALRegExt/20131005/}
 \end{itemize}
-
-
-
 
 \subsection{Service registration}
 
@@ -468,10 +478,6 @@ query across multiple TAP services.
 
 
 
-
-
-
-Issues about data sharing
 
 
 
