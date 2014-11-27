@@ -77,13 +77,25 @@ macro:->http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01312.x/abst
 macro:->doi:10.1111/j.1654-1103.2011.01312.x
 \@endanenote 
 \@doanenote {22}
-macro:->http://link.springer.com/article/10.1007/s00442-005-0100-x
+macro:->Tree
+allometry
+and
+improved
+estimation
+of
+carbon
+stocks
+and
+balance
+in
+tropical
+forests
 \@endanenote 
 \@doanenote {23}
-macro:->doi:10.1007/s00442-005-0100-x
+macro:->http://link.springer.com/article/10.1007/s00442-005-0100-x
 \@endanenote 
 \@doanenote {24}
-macro:->https://creativecommons.org/licenses/by/4.0/deed.en_US
+macro:->doi:10.1007/s00442-005-0100-x
 \@endanenote 
 \@doanenote {25}
 macro:->http://www.givd.info/

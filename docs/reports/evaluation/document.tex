@@ -163,19 +163,17 @@ are very similar to the stages described in (Jones et al. 2006) of first
 querying the metadata to establish the data location followed by a more detailed
 individual queries to establish what the data is and how to access it.
 
-\subsubsection{Standard data format}
-
-
 \subsection{Carbon density comparison}
 
-We can now compare our description of how the existing IVOA Virtual Observatory
-handles the data discovery process for astronomy data with a use case
-based on a paper
-(Mitchard et al., 2014)
+We can compare the VO data discovery process for astronomy data with an example
+use case based on a recent study 'Markedly divergent estimates of Amazon forest
+carbon density from ground plots and satellites' (Mitchard et al. 2014)
 \endnote{doi:10.1111/geb.12168}
 \endnote{http://onlinelibrary.wiley.com/doi/10.1111/geb.12168/abstract}
-describing the steps involved in comparing two sets of remote sensing data from
+comparing remote sensing data from satelites with ground plot data collected in
+the field.
 
+The study compares two sets of remote sensing data, from
 the NASA Jet Propulsion Laboratory
 (Saatchi et al., 2011)
 \endnote{doi:10.1073/pnas.1019576108}
@@ -184,74 +182,61 @@ and the Woods Hole Research Center
 (Baccini et al., 2012)
 \endnote{doi:10.1038/nclimate1354}
 \endnote{http://www.nature.com/nclimate/journal/v2/n3/full/nclimate1354.html}
-
 with four sets of ground plot data from
-
-Red Amazónica de Inventarios Forestales (RAINFOR) (Malhi et al., 2002)
+Red Amazónica de Inventarios Forestales (RAINFOR) (Malhi et al. 2002)
 \endnote{http://www.rainfor.org/}
-
-the
-Amazon Tree Diversity Network (ATDN) (ter Steege et al., 2003)
-\endnote{http://web.science.uu.nl/Amazon/ATDN/} 
-
-Tropical Ecology Assessment and Monitoring (TEAM)
+the Amazon Tree Diversity Network (ATDN) (ter Steege et al., 2003)
+\endnote{http://web.science.uu.nl/Amazon/ATDN/}
+the Tropical Ecology Assessment and Monitoring (TEAM)
 \endnote{http://www.teamnetwork.org/}
-
-and the
-Brazilian Program for Biodiversity Research (PPBio)
+network and the
+Brazilian Program for Biodiversity Research
+(PPBio).
 \endnote{doi:10.7809/b-e.00083}
 \endnote{http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=10.7809/b-e.00083}
 
+\subsubsection{Satelite data}
+
+
+
+\subsubsection{Ground plot data}
 
 In order to calculate a single above ground biomass (AGB) dataset,
-the different sets of ground plot data were
-combined together in the
-ForestPlots.Net (Lopez-Gonzalez et al., 2009, 2011)
+the ground plot data were brought together in the ForestPlots.Net
+(Lopez-Gonzalez et al. 2009, 2011)
 \endnote{http://www.forestplots.net/}
 \endnote{http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01312.x/abstract}
 \endnote{doi:10.1111/j.1654-1103.2011.01312.x}
 database.
 
-ForestPlots.Net is a website and database designed 
-\begin{quote}
-\ldots as a repository for long-term intact tropical forest inventory
-plots, where trees within an area are individually identified,
-measured and tracked through time
-\end{quote}
+ForestPlots.Net is a website and database designed to provide a repository for
+long-term intact tropical forest inventory plots, where trees within an area are
+individually identified, measured and tracked through time.
 
 In addition to the raw measurements of tree diameter, the ForestPlots.Net database
 stores a comprehensive set of metadata including taxonomic information about
 the individual trees and detailed metadata about the plots.
 
-At time of writing, the ForestPlots.Net
-database contains data for 739,000 trees
-in 1400 plots, in 31 countries.
-
-Of the three sets of ground plot data, 
-the data from RAINFOR and ATDN
-were already available in the
-ForestPlots.Net
-database.
-
-The plot data from the TEAM and PPBio projects were downloaded
-and imported into the ForestPlots.Net database
-manually (* unconfirmed for PPBio).
+Of the three sets of ground plot data, the data from RAINFOR and ATDN were
+already available in the ForestPlots.Net database. The plot data from the TEAM
+and PPBio projects were manually downloaded and imported into the
+ForestPlots.Net database.
 
 The principal AGB dataset was calculated using a tropical forest model described in Chave et al. (2005),
-(Tree allometry and improved estimation of carbon stocks and balance in tropical forests)
+\endnote{Tree allometry and improved estimation of carbon stocks and balance in tropical forests}
 \endnote{http://link.springer.com/article/10.1007/s00442-005-0100-x}
 \endnote{doi:10.1007/s00442-005-0100-x}
+using one of the built-in SQL queries provided by the ForestPlots.Net database
+system.
 
-The resulting data set was stored in 
-the ForestPlots.Net database and is available for download
-under the terms of the 
-Creative Commons Attribution License
-\endnote{https://creativecommons.org/licenses/by/4.0/deed.en_US}
-as part of the source material for the paper.
+The resulting data set was itself stored in the ForestPlots.Net database as
+a new dataset available for download as part of the source material for the paper.
 
-In addition, ForestPlots.Net provides a permanent DOI reference for the data,
-making it available at a permanent location to be referenced and used in future
-research.
+ForestPlots.Net provides a permanent DOI references for all the datasets stored
+in the system, making them available at a permanent location that can be
+referenced and used in future research.
+
+\subsubsection{Data discovery}
 
 ForestPlots.Net is itself part of a hierarchy of databases containing metadata
 about databases.
