@@ -1,0 +1,48 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    From paper on GVID
+    http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01265.x/abstract
+
+    BIEN project
+
+        The BIEN project at the US National Center for
+        Ecological Analysis and Synthesis (NCEAS) represents a
+        significant step forward in that it attempts to provide
+        access in one public archive to all western hemisphere
+        plant occurrence data and includes both single observa-
+        tions and co-occurrences in plots (http://www.nceas.ucs-
+        b.edu/projects/12290)
+
+        https://www.nceas.ucsb.edu/projects/12290
+        Gabriela Lopez-Gonzalez (Leeds) attended working group conferences 2008, 2009, 2010, 2011 
+    
+    
+    VegBank
+    http://www.natureserve.org/vegbank-permanent-open-access-archive-vegetation-plot-data
+
+        VegBank is an online depository for vegetation plot data to
+        support the development of the U.S. National Vegetation Classification
+        and other classification efforts.
+        
+        Closed circle of self referential links :-(
