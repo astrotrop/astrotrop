@@ -29,7 +29,7 @@ astronomical archives as an integrated and interoperating virtual observatory."
 \end{quote}
 
 The work of the IVOA focuses on the development of standards, providing a forum
-for members to debate and agrees the technical standards that are needed to make
+for members to debate and agree the technical standards that are needed to make
 the VO possible.
 
 The Virtual Observatory (VO) is the realization of the IVOA vision of an
@@ -69,7 +69,7 @@ manipulate individual data sets."
 
 A useful way to illustrate how the VO data discovery process works is to look at
 an example task such as selecting images covering a particular region of the
-sky, in a particular wavelength e.g. infrared, visible light, radio or xray,
+sky, in a particular wavelength e.g. infrared, visible light, radio or xray.
 
 \subsubsection{Service discovery}
 
@@ -90,8 +90,9 @@ service itself and the datasets that it provides access to.
 Once the metadata is registered in a local registry, it is automatically
 propagated up to the next level and replicated between the global registries.
 
-This means that a client can access all of the available metadata for all of the
-services and datasets in the VO by querying any of the global registries.
+This means that makes it possible to access the metadata for all of the
+services and datasets published in the VO by querying any one of the global
+registries.
 
 The first step in fulfilling our example use case is to identify services that
 contain the type of data we are looking for, in this case images, by querying
@@ -100,14 +101,14 @@ the registry for services that support the Simple Image Access (SIA)
 capability.
 
 In addition to the technical details of services and their capabilities the
-regitry metadata also contains details about the content of datasets, including
+registry metadata also contains details about the content of datasets, including
 details of the wavelength(s) measured, e.g. infrared, visible, radio or xray.
 
 This allows us to refine our query to search for SIA services that contain
-images in a specific waveband, e.g. \texttt{optical} or \texttt{infrared}
+images in a specific waveband, e.g. optical, infrared or x-ray.
 
 The registry query would return a table of data, each row of which contains
-information about a SIA services that contains the type of data we are
+information about a SIA service that provides the type of data we are
 interested in - images in a particular wavelength.
 
 The VO is itself an evolving system, building on the existing work to add
@@ -131,7 +132,7 @@ A SIA query can specify parameters for a particular wavelength and a particular
 region of the sky :
 \begin{itemize}
   \item \texttt{POS}  The positional region
-  \item \texttt{BAND} The the energy interval
+  \item \texttt{BAND} The energy interval
 \end{itemize}
 
 Each SIA service would return a table of data, each row of which contains
@@ -149,7 +150,7 @@ client software can use the metadata in the SIA results to access the individual
 data products and display them in the appropriate tools.
 
 \noindent
-The two key components of this process are
+The two key components of this process are :
 \begin{itemize}
   \item A standard interface for the global registry that uses a standard set of
   attributes to describe datasets and services
@@ -159,9 +160,11 @@ The two key components of this process are
 
 The separation between the initial service discovery query at the global
 level followed by individual data discovery queries at the local level
-are very similar to the stages described in (Jones et al. 2006) of first
-querying the metadata to establish the data location followed by a more detailed
-individual queries to establish what the data is and how to access it.
+are very similar to the stages described in (Jones et al. 2006) - of first
+querying the metadata to establish the location of suitable data followed
+by individual queries to establish what the data is and how to access it.
+
+\section{Tropical forest science}
 
 \subsection{Carbon density comparison}
 
@@ -170,8 +173,8 @@ use case based on a recent study 'Markedly divergent estimates of Amazon forest
 carbon density from ground plots and satellites' (Mitchard et al. 2014)
 \endnote{doi:10.1111/geb.12168}
 \endnote{http://onlinelibrary.wiley.com/doi/10.1111/geb.12168/abstract}
-comparing remote sensing data from satelites with ground plot data collected in
-the field.
+comparing remote sensing data from satellites with ground plot data collected
+in the field.
 
 The study compares two sets of remote sensing data, from
 the NASA Jet Propulsion Laboratory
@@ -195,9 +198,7 @@ Brazilian Program for Biodiversity Research
 \endnote{doi:10.7809/b-e.00083}
 \endnote{http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=10.7809/b-e.00083}
 
-\subsubsection{Satelite data}
-
-
+\subsubsection{Satellite data}
 
 
 
@@ -235,21 +236,13 @@ system.
 The resulting data set was itself stored in the ForestPlots.Net database as
 a new dataset available for download as part of the source material for the paper.
 
-
-
-
-
-
 \subsection{Diverse metadata formats}
 
-Within just the datasets used by our example use case, we can see a variety of
+Within the set of datasets used by this use case, we can see a variety of
 different database systems storing different types of metadata in a varierty of
 different structures and formats.
 
-\subsubsection{GIVD}
-
-ForestPlots.Net is itself part of a hierarchy of databases containing metadata
-about databases.
+\subsubsection{Global Index of Vegetation-Plot Databases}
 
 The Global Index of Vegetation-Plot Databases (GIVD)
 \endnote{http://www.givd.info/}
@@ -260,16 +253,14 @@ from around the world.
 ForestPlots.Net is described in the GIVD database
 \texttt{[GIVD:00-00-001]}
 \endnote{http://www.givd.info/ID/00-00-001}
-as is the Brazilian Program for Biodiversity Research (PPBio) information system
+as is the PPBio information system
 \texttt{[GIVD:SA-BR-001]}	
 \endnote{http://www.givd.info/ID/SA-BR-001}
-and the data from the 
-Tropical Ecology Assessment and Monitoring (TEAM) network
+and the data from the TEAM network
 \texttt{[GIVD:00-00-002]}.
 \endnote{http://www.givd.info/ID/00-00-002}
 
-
-The GIVD database authors describe the project in a 2011 paper,
+Dengler et al. describe the GIVD project in a 2011 paper,
 "The Global Index of Vegetation-Plot Databases (GIVD): a new resource for vegetation science"
 (Dengler et al. 2011)
 \endnote{doi:10.1111/j.1654-1103.2011.01265.x}
@@ -292,52 +283,57 @@ et al. 2008) or TRY (http://www.trydb.org), with plot-based distribution
 information on those species, GIVD could support further refinement of DGVMs."
 \end{quote}
 
-Their idea of many different databases working together to create a larger
-system has a lot of similarities with the distributed architectrure of data
-discovery and data access services working together to create the virtual
-observatory.
+Which is similar to the distributed architectrure of data discovery and data
+access services used by the virtual observatory.
 
 \subsubsection{METACAT}
 
-From paper describing PPBio
+Different institutes have different emphasis and different
+aproaches to handling the metadata associated with 
+ 
+In a 2012 paper by Flávia Fonseca Pezzini et al. about the PPBio project 
+(Pezzini et al. 2012)
+"The Brazilian Program for Biodiversity Research (PPBio) Information System"
 \endnote{http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=10.7809/b-e.00083}
+they describe the role of the data manager and the metadata
+collection processes that are in place.
+
+They also describe the transition from data storage in flat files,
+which was sufficient for the first five years of the project,
+to a new system based on Metacat.
 
 \begin{quote}
-To facilitate data searches, all the metadata were converted to XML, and the
-PPBio has installed a METACAT server to integrate with the Knowledge Network for
-Biocomplexity (KNB), a network which aims to assist ecological and environmental
-research.
+To facilitate data searches, all the metadata were converted to XML,
+and the PPBio has installed a METACAT server to integrate with the
+Knowledge Network for Biocomplexity (KNB), a network which aims to
+assist ecological and environmental research.
 \end{quote}
 
-METACAT
+Metacat
 \endnote{http://knb.ecoinformatics.org/software/metacat}
 \endnote{https://knb.ecoinformatics.org/knb/docs/intro.html}
+is an open source data management tool that provides a repository for
+managing both data and metadata in one system.
 
 \begin{quote}
 Metacat is a repository for data and metadata (documentation about data) that
 helps scientists find, understand and effectively use data sets they manage or
-that have been created by others. Thousands of data sets are currently
-documented in a standardized way and stored in Metacat systems, providing the
-scientific community with a broad range of science data that–because the data
-are well and consistently described–can be easily searched, compared, merged, or
-used in other ways.
+that have been created by others.
 \end{quote}
-\begin{quote}
-Metacat is a Java servlet application that runs on Linux, Mac OS, and Windows
-platforms in conjunction with a database, such as PostgreSQL (or Oracle), and a
-Web server.
-\end{quote}
-\begin{quote}
-The Metacat application stores data in an XML format using Ecological Metadata
-Language (EML) or other metadata standards such as ISO 19139 or the FGDC
-Biological Data Profile.
-\end{quote}
+
+Metacat is capable of handling a variety of different metadata formats,
+including Ecological Metadata Language (EML)
+\endnote{https://knb.ecoinformatics.org/#external//emlparser/docs/index.html}
+FGDC Biological Data Profile.
+\endnote{https://www.fgdc.gov/standards/projects/FGDC-standards-projects/metadata/biometadata}
 
 \subsubsection{DataONE}
 
-Metacat features include providing a Data Observation Network for Earth (DataONE)
+The Metacat project is itself part of the Data Observation Network for Earth (DataONE)
 \endnote{https://www.dataone.org/}
-node service.
+project, a collaboration spconsored by the U.S. National Science Foundation to build
+an infrastructire from distributed webservices that provides open, persistent, robust,
+and secure access to Earth observational data.
  
 \begin{quote}
 The DataONE project is a collaboration among scientists, technologists,
@@ -349,10 +345,26 @@ sustainability approaches to building a distributed network of data repositories
 that are fully interoperable, even when those repositories use divergent
 underlying software and support different data and metadata content standards.
 \end{quote}
-\begin{quote}
-DataONE defines a common web-service service programming interface that allows
-the main software components of the DataONE system to seamlessly communicate.
-\end{quote}
+
+The DataONE arcitecture is based on a set of top level 
+\testit{Coordinating Nodes}
+and
+\testit{Member Nodes}
+located at each participating institute or organisation
+
+\testit{Coordinating Nodes}
+provide a replicated catalog of Member Node holdings, enabling
+scientists to discover data wherever they reside,
+and data repositories to make their data and services available
+to the international community.
+
+The individual \testit{Member Nodes}
+at each institute enable them to make their data available
+to the rest of the DataONE network
+via a standard webservice interface.
+
+Again, this two layers of data discovery and data access
+is similar the virtual observatory architecture.
 
 
 
@@ -361,165 +373,7 @@ the main software components of the DataONE system to seamlessly communicate.
 
 
 
-\subsection{VO services}
 
-\subsection{The registry}
-
-The VO Registry provides the first layer of data discovery available in the
-virtual observatory. The individual registry services deployed at participating
-institutes work together to provide a shared repository for describing datasets,
-data access services and data processing services in a standard way.
-
-The IVOA Registry Interfaces standard
-\endnote{http://www.ivoa.net/documents/RegistryInterface/}
-defines the web service interfaces that support interactions between
-applications and registries as well as between the registries themselves.
-
-The high level structure of the registry content is defined by a
-set of IVOA standards, including a standard format for IVOA Identifiers
-\endnote{http://www.ivoa.net/documents/latest/IDs.html}
-and the basic Resource Metadata
-\endnote{http://www.ivoa.net/Documents/latest/RM.html}
-
-The details of the registry metadata are covered by a set of technical
-standards defining the detailed XML schemas for resource metadata.
-\begin{itemize}
-  \item VOResource
-  \endnote{http://www.ivoa.net/documents/latest/VOResource.html}
-  \item VODataService
-  \endnote{http://www.ivoa.net/documents/VODataService/} 
-  \item Simple Data Access Services
-  \endnote{http://www.ivoa.net/documents/SimpleDALRegExt/20131005/}
-\end{itemize}
-
-\subsection{Service registration}
-
-VOSI \ldots and stuff \ldots
-
-\subsection{Service metadata}
-
-registry metadata queries \ldots and stuff \ldots
-
-\subsection{Service footprint}
-
-registry footprint queries \ldots and stuff \ldots
-
-HEALPix Multi-Order Coverage Map (MOC)
-\endnote{http://www.ivoa.net/documents/MOC/}
-
-\subsection{Data access services}
-
-The VO DataAccess services can be categorised as two types of services.
-
-A set of type specific data discovery servces which are designed to provide
-simple service interfaces for discovering and acessing data of a specific type.
-
-\begin{itemize}
-  \item Simple Cone Search (SCS)
-  \endnote{http://www.ivoa.net/documents/latest/ConeSearch.html}
-  \item Simple Image Access (SIA)
-  \endnote{http://www.ivoa.net/documents/SIA/}
-  \item Simple Spectral Access (SSA)
-  \endnote{http://www.ivoa.net/documents/SSA/}
-  \item Simple Line Access (SLA)
-  \endnote{http://www.ivoa.net/documents/SLAP/}
-\end{itemize}
-
-A tabular data access services for querying tabluar data using a common query
-derrived from SQL.
-
-\begin{itemize}
-  \item Table Access Protocol (TAP)
-  \endnote{http://www.ivoa.net/Documents/TAP/}
-  \item Astronomy Data Query Language (ADQL)
-  \endnote{http://www.ivoa.net/Documents/latest/ADQL.html}
-\end{itemize}
-
-\subsubsection{Simple Image Access}
-
-The Simple Image Access (SIA) protocol provides 
-\begin{quote}
-parameter based discovery of images and datacubes, querying the service(s) with
-a few well known kinds of queries that cover greater than 95\% of use, and
-getting back easily parsed summary metadata about each available data product
-\end{quote}
-
-The Simple Image Access (SIA) data discovery service provides support for
-the following use cases:
-
-\begin{itemize}
-  \item find data that includes specified coordinates (e.g. for some object) 
-  \item find data in the circle with coordinate centre and radius 
-  \item find data in a range of longitude and latitude 
-  \item find data within a specified simple  polygon (one region, no holes, less
-  than half the sphere)
-  \item find data containing a specified energy (e.g. wavelength) or in a
-  specified range of energy values
-  \item find data obtained at a specified time (e.g. including a time instant)
-  or during a specified range of times
-  \item find data obtained with specified polarization (Stokes) states 
-  \item find data within a specified range of spatial resolution 
-  \item find data within a specified range of field-of-view 
-  \item find data within a range of exposure (integration) time 
-\end{itemize}
-
-The response from a successful SIA data discovery query is a VOTable containing
-instances of the ObsCore \endnote{http://www.ivoa.net/documents/ObsCore/} data
-model.
-
-Each row in the results corresponds to a data product that matches the search
-criteria and includes details of how to access the data products or how
-to request additional matadata.
-
-\subsubsection{Simple Spectral Access}
-
-The Simple Spectral Access (SSA) protocol is similar to the Simple Image Access (SIA) protocol.
-
-The primary differences are the type of data searched for, and the set of query
-parameters.
-
-\begin{quote}
-\ldots discover and access one dimensional spectra
-\ldots based on a general data model capable of describing most tabular
-spectrophotometric data, including time series and spectral energy distributions
-(SEDs) as well as 1-D spectra
-\end{quote}
-
-\subsubsection{Simple Line Access}
-
-The Simple Line Access (SLA) protocol is similar to the Simple Image Access
-(SIA) protocol.
-
-The primary differences are the type of data searched for, and the set of query
-parameters.
-
-\begin{quote}
-\ldots retrieving spectral lines coming from various Spectral Line Data
-Collections
-\ldots either observed or theoretical and will be typically used to identify
-emission or absorption features in astronomical spectra.
-\ldots makes use of the Simple Spectral Line Data Model
-(SSLDM) \endnote{http://www.ivoa.net/documents/SSLDM/} to characterize spectral
-lines through the use of uTypes
-\endnote{http://www.ivoa.net/documents/Notes/UTypesUsage/index.html}
-\end{quote}
-  
-\subsubsection{Table Access Protocol}
-
-Table Access Protocol (TAP) is a generic protocol for accessing general table
-data, including astronomical catalogs as well as general database tables, with
-support for both synchronous and asynchronous queries.
-
-Special support is provided for spatially indexed queries using the spatial
-extensions in ADQL.
-
-A multi-position query capability permits queries against an arbitrarily large
-list of astronomical targets, providing a simple spatial cross-matching
-capability.
-
-Deploying the same standard interface and query language across multiple sites
-means that cross-matching queries are possible by orchestrating a distributed
-query across multiple TAP services.
 
  
 
@@ -537,31 +391,6 @@ query across multiple TAP services.
 
 
 
-
-\appendix
-\section{SIA search parameters}
-\noindent
-The SIA search parameters include
-\begin{itemize}
-  \item \texttt{POS}  The positional region
-  \item \texttt{BAND} The the energy interval
-  \item \texttt{TIME} The the time interval
-  \item \texttt{POL}  The the polarization state
-  \item \texttt{FOV}  The the field of view
-  \item \texttt{SPATRES} The the spatial resolution
-  \item \texttt{EXPTIME} The the exposure time
-  \item \texttt{COLLECTION} The name of the data collection that contains the data
-  \item \texttt{FACILITY} The name of the facility where the data was acquired
-  \item \texttt{INSTRUMENT} The name of the instrument with which the data was acquired
-  \item \texttt{DPTYPE} The data type from the ObsCore
-  \endnote{http://www.ivoa.net/documents/ObsCore/} data model
-  \item \texttt{CALIB} The calibration level
-  \item \texttt{TARGET} The target name from the ObsCore
-  \endnote{http://www.ivoa.net/documents/ObsCore/} data model
-  \item \texttt{TIMERES} The temporal resolution
-  \item \texttt{SPECRP} The spectral resolving power
-  \item \texttt{FORMAT} The data format
-\end{itemize}
 
 
 

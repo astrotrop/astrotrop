@@ -1,0 +1,181 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# Ed's website
+# http://carbonmaps.ourecosystem.com/interface/#areas/1311/tab-results
+
+# Paper
+# http://onlinelibrary.wiley.com/doi/10.1111/geb.12168/full
+
+#
+# http://www.cru.uea.ac.uk/cru/data/hrg/
+
+#
+# http://en.wikipedia.org/wiki/Global_Earth_Observation_System_of_Systems
+
+#
+# https://www.qgis.org/en/site/forusers/alldownloads.html#rhel-centos-scientific-linux
+
+#
+# Similar to RAINFOR (fewer larger, more detailed maps)
+# http://www.ctfs.si.edu/
+
+#
+# Common queries - (SQL behind them)
+# https://www.forestplots.net/secure/Module/QueryLibrary/PublicQueryLibrary.aspx
+
+# ------------------------------------------------------------------
+
+#
+# GTiff -- GeoTIFF File Format
+# http://www.gdal.org/frmt_gtiff.html
+
+#
+# GDAL - Geospatial Data Abstraction Library
+# http://www.gdal.org/
+
+#
+# QGIS - Geographic Information System 
+# http://www.qgis.org/en/site/
+
+
+# ------------------------------------------------------------------
+# QGIS
+#[user@desktop]
+
+    #
+    # Home page
+    http://www.qgis.org/en/site/index.html
+
+    #
+    # RedHat install
+    https://www.qgis.org/en/site/forusers/alldownloads.html#rhel-centos-scientific-linux
+
+    #
+    # RPM repo
+    http://elgis.argeo.org/
+    http://elgis.argeo.org/repos/6/elgis-release-6-6_0.noarch.rpm
+
+
+
+# ------------------------------------------------------------------
+# Install QGIS
+#[root@desktop]
+
+    #
+    # Install elgis repo
+    yum install http://elgis.argeo.org/repos/6/elgis-release-6-6_0.noarch.rpm
+
+    #
+    # Install qgis
+    yum install qgis qgis-python qgis-grass qgis-mapserver    
+
+        #
+        # Fails due to missing library.
+        # Error: Package: gdal-libs-1.9.2-4.el6.x86_64 (elgis)
+        #   Requires: libarmadillo.so.3()(64bit)
+
+    #
+    # Armadillo - C++ linear algebra library 
+    # http://arma.sourceforge.net/
+
+    #
+    # Path fix is to download the binary from a trac site
+    # http://proj.badc.rl.ac.uk/cedaservices/ticket/670
+    # http://proj.badc.rl.ac.uk/cedaservices/raw-attachment/ticket/670/armadillo-3.800.2-1.el6.x86_64.rpm
+
+    #
+    # Install Armadillo 
+    yum install http://proj.badc.rl.ac.uk/cedaservices/raw-attachment/ticket/670/armadillo-3.800.2-1.el6.x86_64.rpm
+
+    #
+    # Install QGIS
+    # yum install qgis qgis-python qgis-grass qgis-mapserver    
+    yum install qgis
+
+# ------------------------------------------------------------------
+# Run QGIS
+#[user@desktop]
+      
+    qgis 
+
+        qgis: error while loading shared libraries: libhdf5.so.6: cannot open shared object file: No such file or directory
+
+# ------------------------------------------------------------------
+# Debugging
+#[root@desktop]
+
+    rpm -q -l hdf5-openmpi
+
+        ....
+        /usr/lib64/openmpi/lib/libhdf5.so.6
+        /usr/lib64/openmpi/lib/libhdf5.so.6.0.4
+        ....
+
+    Is usr/lib64/openmpi on the load library path ?
+
+
+    LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/lib64/openmpi/lib/
+    qgis 
+    
+    
+    
+    pushd /usr/lib64/openmpi/lib/
+
+        LD_LIBRARY_PATH=.
+        qgis 
+
+    popd
+    
+
+    #
+    # Check which libraries it uses and where they are
+    ldd $(which qgis)
+
+        ....
+	    liblcms.so.1 => /usr/lib64/liblcms.so.1 (0x0000003b79000000)
+	    libopenjpeg.so.2 => /usr/lib64/libopenjpeg.so.2 (0x0000003811400000)
+	    libltdl.so.7 => /usr/lib64/libltdl.so.7 (0x0000003b7a000000)
+	    libhdf5_hl.so.6 => not found
+	    libhdf5.so.6 => not found
+	    libbz2.so.1 => /lib64/libbz2.so.1 (0x0000003b7b000000)
+	    libxml2.so.2 => /usr/lib64/libxml2.so.2 (0x0000003b77000000)
+	    libuuid.so.1 => /lib64/libuuid.so.1 (0x00007fd9e2ae0000)
+	    libidn.so.11 => /lib64/libidn.so.11 (0x00007fd9e28ad000)
+        ....
+
+    pushd /lib64/
+
+        ln -s /usr/lib64/openmpi/lib/libhdf5.so.6
+        ln -s /usr/lib64/openmpi/lib/libhdf5.so.6.0.4
+
+        ln -s /usr/lib64/openmpi/lib/libhdf5_hl.so.6
+        ln -s /usr/lib64/openmpi/lib/libhdf5_hl.so.6.0.4
+
+    popd
+
+
+
+
+    
+    
+    

@@ -125,59 +125,11 @@ macro:->http://knb.ecoinformatics.org/software/metacat
 macro:->https://knb.ecoinformatics.org/knb/docs/intro.html
 \@endanenote 
 \@doanenote {34}
-macro:->https://www.dataone.org/
+macro:->https://knb.ecoinformatics.org/##external//emlparser/docs/index.html
 \@endanenote 
 \@doanenote {35}
-macro:->http://www.ivoa.net/documents/RegistryInterface/
+macro:->https://www.fgdc.gov/standards/projects/FGDC-standards-projects/metadata/biometadata
 \@endanenote 
 \@doanenote {36}
-macro:->http://www.ivoa.net/documents/latest/IDs.html
-\@endanenote 
-\@doanenote {37}
-macro:->http://www.ivoa.net/Documents/latest/RM.html
-\@endanenote 
-\@doanenote {38}
-macro:->http://www.ivoa.net/documents/latest/VOResource.html
-\@endanenote 
-\@doanenote {39}
-macro:->http://www.ivoa.net/documents/VODataService/
-\@endanenote 
-\@doanenote {40}
-macro:->http://www.ivoa.net/documents/SimpleDALRegExt/20131005/
-\@endanenote 
-\@doanenote {41}
-macro:->http://www.ivoa.net/documents/MOC/
-\@endanenote 
-\@doanenote {42}
-macro:->http://www.ivoa.net/documents/latest/ConeSearch.html
-\@endanenote 
-\@doanenote {43}
-macro:->http://www.ivoa.net/documents/SIA/
-\@endanenote 
-\@doanenote {44}
-macro:->http://www.ivoa.net/documents/SSA/
-\@endanenote 
-\@doanenote {45}
-macro:->http://www.ivoa.net/documents/SLAP/
-\@endanenote 
-\@doanenote {46}
-macro:->http://www.ivoa.net/Documents/TAP/
-\@endanenote 
-\@doanenote {47}
-macro:->http://www.ivoa.net/Documents/latest/ADQL.html
-\@endanenote 
-\@doanenote {48}
-macro:->http://www.ivoa.net/documents/ObsCore/
-\@endanenote 
-\@doanenote {49}
-macro:->http://www.ivoa.net/documents/SSLDM/
-\@endanenote 
-\@doanenote {50}
-macro:->http://www.ivoa.net/documents/Notes/UTypesUsage/index.html
-\@endanenote 
-\@doanenote {51}
-macro:->http://www.ivoa.net/documents/ObsCore/
-\@endanenote 
-\@doanenote {52}
-macro:->http://www.ivoa.net/documents/ObsCore/
+macro:->https://www.dataone.org/
 \@endanenote 

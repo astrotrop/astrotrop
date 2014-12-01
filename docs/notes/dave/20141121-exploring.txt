@@ -120,7 +120,7 @@
         focus on technological, financial, and organizational sustainability approaches to building a distributed
         network of data repositories that are fully interoperable, even when those repositories use divergent underlying
         software and support different data and metadata content standards.
-        
+
         DataONE defines a common web-service service programming interface that allows the main software components
         of the DataONE system to seamlessly communicate.
 
