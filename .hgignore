@@ -1,0 +1,36 @@
+syntax: glob
+
+# Text editor backups
+*~
+*.*~
+
+# Python code.
+*.pyc
+
+# Maven build directories.
+target
+*/target
+
+# Temp data directories.
+*/tmp
+
+# External zip files.
+*/zip
+*/war
+
+# Experiments
+*.frog
+
+# Eclipse junk
+.project
+.classpath
+.settings
+.factorypath
+
+# Java core dumps
+hs_err_*.log
+
+#
+# SVN version control
+*/.svn
+
