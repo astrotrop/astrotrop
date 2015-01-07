@@ -734,6 +734,15 @@ afritron.net
     Satellite Data to Aid Turbine Revolution
     http://www2.le.ac.uk/offices/press/press-releases/2014/april/satellite-data-to-aid-turbine-revolution
 
+    Papers
+
+    Ten years of global burned area products from spaceborne remote sensing—A review: Analysis of user needs and recommendations for future developments
+    International Journal of Applied Earth Observation and Geoinformation, 26, 64-79, doi:10.1016/j.jag.2013.05.014
+    http://www.sciencedirect.com/science/article/pii/S0303243413000639
+    doi:10.1016/j.jag.2013.05.014
+
+    Integrating airborne multispectral imagery and airborne LiDAR data for enhanced lithological mapping in vegetated terrain 
+    http://nora.nerc.ac.uk/12796/
 
 
 

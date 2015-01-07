@@ -1,0 +1,113 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    K.Tansey - in AstroTrop conference report
+
+    "Planetary measurement has been facilitated by two recent developments. First, the
+    free availability of data collected by Landsat and MODIS satellites. Second, the
+    production by NASA of composite image datasets, initially in their Global Land
+    Survey (GLS) composites of the highest quality images for 2000, 2005 and 2010 for
+    the whole world (http://landsat.usgs.gov/science_GLS.php), and most recently in the
+    pre-processed Web Enabled Land Data (WELD) series, produced initially for the
+    continental USA only (http://landsat.usgs.gov/WELD.php).Both datasets do,
+    however, still require classification for mapping purposes."
+
+
+
+    Global Land Surveys (GLS)    
+    http://landsat.usgs.gov/science_GLS.php
+
+    https://lta.cr.usgs.gov/about
+    The U.S. Geological Survey's (USGS) Long Term Archive (LTA) at the National Center
+    for Earth Resource Observations and Science (EROS) in Sioux Falls, SD is one of
+    the largest civilian remote sensing data archives.
+    
+    It contains a comprehensive record of the Earth's changing land surface.
+    
+    Scientists from around the world depend on this archive to conduct research on
+    changes that affect our environment, resources, health, and safety.
+    
+    Time series images are a valuable resource for scientists, disaster managers,
+    engineers, educators, and the general public. USGS EROS has archived, managed,
+    and preserved land remote sensing data for more than 35 years and is a leader
+    in preserving land remote sensing imagery.
+    
+    USGS EROS has a mandate to provide access and data preservation support for
+    its land remote sensing data archive.
+
+    https://lta.cr.usgs.gov/products_overview
+    .. lots
+
+    Earth Explorer
+    http://earthexplorer.usgs.gov/
+    https://lta.cr.usgs.gov/earth_explorer
+
+    The USGS EarthExplorer (EE) tool provides users the ability to query, search,
+    and order satellite images, aerial photographs, and cartographic products from
+    several sources.
+    
+    In addition to data from the Landsat missions and a variety of other data providers,
+    EE now provides access to MODIS land data products from the NASA Terra and Aqua missions,
+    and ASTER level-1B data products over the U.S. and Territories from the NASA ASTER mission.
+
+    Registered users of EE have access to more features than guest users.
+
+
+    GloVis
+    https://lta.cr.usgs.gov/glovis
+
+    The USGS Global Visualization Viewer (GloVis) is an online search and order tool for
+    selected satellite data. The viewer allows access to all available browse images
+    from the Landsat 7 ETM+, Landsat 4/5 TM, Landsat 1-5 MSS, EO-1 ALI, EO-1 Hyperion,
+    MRLC, and Tri-Decadal data sets, as well as Aster TIR, Aster VNIR and MODIS browse
+    images from the DAAC inventory.
+    
+    Through a graphic map display, the user can select any area of interest and immediately
+    view all available browse images for the specified location.
+    
+    From the browse image viewer page, the user may either navigate to view adjacent scene
+    locations or select a new area of interest. GloVis also offers additional features such
+    as cloud cover limits, date limits, user-specified map layer displays, scene list
+    maintenance, and access to metadata
+
+
+
+
+    Web-enabled Landsat data (WELD) Projects
+    http://landsat.usgs.gov/WELD.php
+
+    The WELD data products are processed so users do not need to apply the equations,
+    spectral calibration coefficients, and solar information, needed to convert Landsat
+    digital numbers to reflectance and brightness temperature.
+    
+    They are defined in the same coordinate system and align precisely, making them
+    simple to use for multi-temporal applications.
+    
+    The products provide consistent data that can be used to derive higher-level land
+    cover as well as geo-physical and biophysical products for assessment of surface
+    dynamics and to study Earth system functioning. WELD data products are available
+    to download for all users at no charge.
+
+
+
+
