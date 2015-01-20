@@ -53,6 +53,13 @@
         yum install -y texlive-texconfig
         texconfig rehash
 
+        #
+        # Create a non-root user. 
+        useradd Alfred -u 500
+        id Alfred
+        su - Alfred
+
+
         pushd /var/local/report
 
             pdflatex document
@@ -62,7 +69,17 @@
         popd
 
 
+rm document-blx.bib
+rm document.aux
+rm document.bbl
+rm document.bcf
+rm document.blg
+rm document.log
+rm document.run.xml
 
+document.tex
+document.pdf
+references.bib
 
 
 

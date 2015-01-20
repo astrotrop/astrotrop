@@ -8,9 +8,7 @@
 \usepackage[utf8]{inputenc}
 %\usepackage[english]{babel}
 
-\usepackage[
-backend=bibtex
-]{biblatex}
+\usepackage[style=authoryear,backend=bibtex]{biblatex}
 
 \addbibresource{references}
  
@@ -21,14 +19,9 @@ backend=bibtex
 
 \section{Introduction}
 
-Let's cite! The Einstein's journal paper \cite{einstein} and the Dirac's 
-book \cite{dirac} are physics related items. 
-
 \section{The IVOA Virtual Observatory}
 
-The International Virtual Observatory Alliance (IVOA)
-%\endnote{http://www.ivoa.net/}
-was formed in June 2002 with a mission to
+The \citetitle*{ivoa} (\cite{ivoa}) was formed in June 2002 with a mission to
 \begin{quote}
 "facilitate the international coordination and collaboration
 necessary for the development and deployment of the tools, systems and
@@ -36,30 +29,24 @@ organizational structures necessary to enable the international utilization of
 astronomical archives as an integrated and interoperating virtual observatory."
 \end{quote}
 
+The Virtual Observatory (VO) is the realization of the \cite{ivoa} vision of
+an integrated and interoperating virtual observatory.
 The work of the IVOA focuses on the development of standards, providing a forum
 for members to debate and agree the technical standards that are needed to make
 the VO possible.
 
-The Virtual Observatory (VO) is the realization of the IVOA vision of an
-integrated and interoperating virtual observatory.
-
 The operational VO itself is comprised of a global shared metadata registry,
-along with individual data discovery and data access services deployed at each
-of the participating institutes, which work together to present a uniform
-mechanism for discovering and accessing data, irrespective of where it is
-physically located.
+the Registry, and a range of individual data discovery and data access services
+deployed at each of the participating institutes.
+These components work together to present a uniform mechanism for discovering
+and accessing data, irrespective of where it is physically located.
 
-The VO architecture and data discovery process is very similar to the
-interconnected metadata collections approach described in a paper on 'The new
-bioinformatics: integrating ecological data from the gene to the biosphere'
-(Jones et al. 2006).
-%\endnote{The new bioinformatics: integrating ecological data from the gene to the biosphere (Jones et al. 2006)}
-%\endnote{doi:10.1146/annurev.ecolsys.37.091305.110031}
-%\endnote{http://www.annualreviews.org/doi/abs/10.1146/annurev.ecolsys.37.091305.110031}
+The VO architecture and data discovery processes are very similar to the
+interconnected metadata collections approach described in
+\citetitle{jones-2006} (\cite{jones-2006}).
 
 \begin{quote}
-"An alternative, more robust approach to the highly structured, vertically integrated
-data warehouse is a more loosely structured collection of project-specific data sets
+".... a more loosely structured collection of project-specific data sets
 accompanied by structured metadata about each of the data sets."
 \end{quote}
 
@@ -67,40 +54,45 @@ accompanied by structured metadata about each of the data sets."
 "Each of the data sets is stored in a manner that is opaque to the data system in
 that the data themselves cannot be directly queried; rather, the structured
 metadata describing the data is queried in order to locate data sets of
-interest. After data sets of interest are located, more detailed information
-(such as the detailed data model that specifies, e.g., the definitions of the
-variables) can be extracted from the metadata and used to load, query, and
+interest.
+\end{quote}
+
+\begin{quote}
+After data sets of interest are located, more detailed information
+.... can be extracted from the metadata and used to load, query, and
 manipulate individual data sets."
 \end{quote}
 
 \subsection{Example use case}
 
-A useful way to illustrate how the VO data discovery process works is to look at
-an example task such as selecting images covering a particular region of the
-sky, in a particular wavelength e.g. infrared, visible light, radio or xray.
+A useful way to illustrate how the data discovery process works in the VO
+is to look at an example task such as selecting images covering a particular
+region of the sky, in a particular wavelength e.g. infrared, visible light,
+radio or xray.
 
 \subsubsection{Service discovery}
 
 The first step of the process is to identify the services that provide access to
-the type of data we are looking for by querying the VO Registry.
+the type of data we are looking for by querying the Registry.
 
-The VO Registry is comprised of a number of small local registries, typically
+The Registry is comprised of a number of small local registries, typically
 hosted at the participating institute level, working in cooperation with a set
 of higer level global registries typically hosted by a few key institutes that
 aggregate the data from the smaller registries to create a global searchable
-index of metadata about all the services and datasets in the VO.
+index of metadata describing all of the services and datasets available in
+the VO.
 
 When a new service is deployed, part of the deployment process involves
 registering the service with the local registry. The local registry is then
 responsible for collecting and storing the metadata that describes both the
 service itself and the datasets that it provides access to.
 
-Once the metadata is registered in a local registry, it is automatically
-propagated up to the next level and replicated between the global registries.
+Once the metadata for a serviceor dataset has been registered in a local registry,
+it is automatically propagated up to the next level and replicated between the
+global registries.
 
-This means that makes it possible to access the metadata for all of the
-services and datasets published in the VO by querying any one of the global
-registries.
+This makes it possible to access the metadata for all of the services and datasets
+published in the VO by querying any one of the global registries.
 
 The first step in fulfilling our example use case is to identify services that
 contain the type of data we are looking for, in this case images, by querying
