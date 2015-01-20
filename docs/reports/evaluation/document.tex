@@ -2,24 +2,32 @@
 %%There is just one section and two subsections.
 \documentclass{article}
 
-\usepackage{endnotes}
-	
+%\usepackage{endnotes}
+
+\usepackage{url}	
 \usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
+%\usepackage[english]{babel}
+
+\usepackage[
+backend=bibtex
+]{biblatex}
+
+\addbibresource{references}
  
-\setlength{\parindent}{4em}
-\setlength{\parskip}{1em}
+%\setlength{\parindent}{4em}
+%\setlength{\parskip}{1em}
 
 \begin{document}
 
 \section{Introduction}
 
-Some text \ldots
+Let's cite! The Einstein's journal paper \cite{einstein} and the Dirac's 
+book \cite{dirac} are physics related items. 
 
 \section{The IVOA Virtual Observatory}
 
 The International Virtual Observatory Alliance (IVOA)
-\endnote{http://www.ivoa.net/}
+%\endnote{http://www.ivoa.net/}
 was formed in June 2002 with a mission to
 \begin{quote}
 "facilitate the international coordination and collaboration
@@ -45,9 +53,9 @@ The VO architecture and data discovery process is very similar to the
 interconnected metadata collections approach described in a paper on 'The new
 bioinformatics: integrating ecological data from the gene to the biosphere'
 (Jones et al. 2006).
-\endnote{The new bioinformatics: integrating ecological data from the gene to the biosphere (Jones et al. 2006)}
-\endnote{doi:10.1146/annurev.ecolsys.37.091305.110031}
-\endnote{http://www.annualreviews.org/doi/abs/10.1146/annurev.ecolsys.37.091305.110031}
+%\endnote{The new bioinformatics: integrating ecological data from the gene to the biosphere (Jones et al. 2006)}
+%\endnote{doi:10.1146/annurev.ecolsys.37.091305.110031}
+%\endnote{http://www.annualreviews.org/doi/abs/10.1146/annurev.ecolsys.37.091305.110031}
 
 \begin{quote}
 "An alternative, more robust approach to the highly structured, vertically integrated
@@ -97,7 +105,7 @@ registries.
 The first step in fulfilling our example use case is to identify services that
 contain the type of data we are looking for, in this case images, by querying
 the registry for services that support the Simple Image Access (SIA)
-\endnote{http://www.ivoa.net/documents/SIA/}
+%\endnote{http://www.ivoa.net/documents/SIA/}
 capability.
 
 In addition to the technical details of services and their capabilities the
@@ -116,7 +124,7 @@ additional levels of integration as new features are added to the IVOA
 specifications.
 
 A recent addition to the IVOA is the HEALPix Multi-Order Coverage Map (MOC)
-\endnote{http://www.ivoa.net/documents/MOC/}
+%\endnote{http://www.ivoa.net/documents/MOC/}
 which will allow registry services to perform coarse grained region matches.
 
 Once this is in place we should be able to further refine our query to filter
@@ -138,7 +146,7 @@ region of the sky :
 Each SIA service would return a table of data, each row of which contains
 metadata about an individual image. The details of the fields in the
 image metadata are defined in the ObsCore
-\endnote{http://www.ivoa.net/documents/ObsCore/}
+%\endnote{http://www.ivoa.net/documents/ObsCore/}
 data model.
 
 As every one of the SIA services returns a standard response, it makes it easy
@@ -171,32 +179,32 @@ by individual queries to establish what the data is and how to access it.
 We can compare the VO data discovery process for astronomy data with an example
 use case based on a recent study 'Markedly divergent estimates of Amazon forest
 carbon density from ground plots and satellites' (Mitchard et al. 2014)
-\endnote{doi:10.1111/geb.12168}
-\endnote{http://onlinelibrary.wiley.com/doi/10.1111/geb.12168/abstract}
+%\endnote{doi:10.1111/geb.12168}
+%\endnote{http://onlinelibrary.wiley.com/doi/10.1111/geb.12168/abstract}
 comparing remote sensing data from satellites with ground plot data collected
 in the field.
 
 The study compares two sets of remote sensing data, from
 the NASA Jet Propulsion Laboratory
 (Saatchi et al., 2011)
-\endnote{doi:10.1073/pnas.1019576108}
-\endnote{http://www.pnas.org/content/108/24/9899}
+%\endnote{doi:10.1073/pnas.1019576108}
+%\endnote{http://www.pnas.org/content/108/24/9899}
 and the Woods Hole Research Center
 (Baccini et al., 2012)
-\endnote{doi:10.1038/nclimate1354}
-\endnote{http://www.nature.com/nclimate/journal/v2/n3/full/nclimate1354.html}
+%\endnote{doi:10.1038/nclimate1354}
+%\endnote{http://www.nature.com/nclimate/journal/v2/n3/full/nclimate1354.html}
 with four sets of ground plot data from
 Red Amazónica de Inventarios Forestales (RAINFOR) (Malhi et al. 2002)
-\endnote{http://www.rainfor.org/}
+%\endnote{http://www.rainfor.org/}
 the Amazon Tree Diversity Network (ATDN) (ter Steege et al., 2003)
-\endnote{http://web.science.uu.nl/Amazon/ATDN/}
+%\endnote{http://web.science.uu.nl/Amazon/ATDN/}
 the Tropical Ecology Assessment and Monitoring (TEAM)
-\endnote{http://www.teamnetwork.org/}
+%\endnote{http://www.teamnetwork.org/}
 network and the
 Brazilian Program for Biodiversity Research
 (PPBio).
-\endnote{doi:10.7809/b-e.00083}
-\endnote{http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=10.7809/b-e.00083}
+%\endnote{doi:10.7809/b-e.00083}
+%\endnote{http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=10.7809/b-e.00083}
 
 \subsubsection{Satellite data}
 
@@ -208,9 +216,9 @@ Brazilian Program for Biodiversity Research
 In order to calculate a single above ground biomass (AGB) dataset,
 the ground plot data were brought together in the ForestPlots.Net
 (Lopez-Gonzalez et al. 2009, 2011)
-\endnote{http://www.forestplots.net/}
-\endnote{http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01312.x/abstract}
-\endnote{doi:10.1111/j.1654-1103.2011.01312.x}
+%\endnote{http://www.forestplots.net/}
+%\endnote{http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01312.x/abstract}
+%\endnote{doi:10.1111/j.1654-1103.2011.01312.x}
 database.
 
 ForestPlots.Net is a website and database designed to provide a repository for
@@ -227,9 +235,9 @@ and PPBio projects were manually downloaded and imported into the
 ForestPlots.Net database.
 
 The principal AGB dataset was calculated using a tropical forest model described in Chave et al. (2005),
-\endnote{Tree allometry and improved estimation of carbon stocks and balance in tropical forests}
-\endnote{http://link.springer.com/article/10.1007/s00442-005-0100-x}
-\endnote{doi:10.1007/s00442-005-0100-x}
+%\endnote{Tree allometry and improved estimation of carbon stocks and balance in tropical forests}
+%\endnote{http://link.springer.com/article/10.1007/s00442-005-0100-x}
+%\endnote{doi:10.1007/s00442-005-0100-x}
 using one of the built-in SQL queries provided by the ForestPlots.Net database
 system.
 
@@ -245,26 +253,26 @@ different structures and formats.
 \subsubsection{Global Index of Vegetation-Plot Databases}
 
 The Global Index of Vegetation-Plot Databases (GIVD)
-\endnote{http://www.givd.info/}
+%\endnote{http://www.givd.info/}
 is a database of metadata describing databases of vegetation plot data
 from around the world.
 
 \noindent
 ForestPlots.Net is described in the GIVD database
 \texttt{[GIVD:00-00-001]}
-\endnote{http://www.givd.info/ID/00-00-001}
+%\endnote{http://www.givd.info/ID/00-00-001}
 as is the PPBio information system
 \texttt{[GIVD:SA-BR-001]}	
-\endnote{http://www.givd.info/ID/SA-BR-001}
+%\endnote{http://www.givd.info/ID/SA-BR-001}
 and the data from the TEAM network
 \texttt{[GIVD:00-00-002]}.
-\endnote{http://www.givd.info/ID/00-00-002}
+%\endnote{http://www.givd.info/ID/00-00-002}
 
 Dengler et al. describe the GIVD project in a 2011 paper,
 "The Global Index of Vegetation-Plot Databases (GIVD): a new resource for vegetation science"
 (Dengler et al. 2011)
-\endnote{doi:10.1111/j.1654-1103.2011.01265.x}
-\endnote{http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01265.x/abstract}
+%\endnote{doi:10.1111/j.1654-1103.2011.01265.x}
+%\endnote{http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01265.x/abstract}
 and suggest some future applications, including the idea of combining
 different types of data from different, distributed, databases.
 
@@ -294,7 +302,7 @@ aproaches to handling the metadata associated with
 In a 2012 paper by Flávia Fonseca Pezzini et al. about the PPBio project 
 (Pezzini et al. 2012)
 "The Brazilian Program for Biodiversity Research (PPBio) Information System"
-\endnote{http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=10.7809/b-e.00083}
+%\endnote{http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=10.7809/b-e.00083}
 they describe the role of the data manager and the metadata
 collection processes that are in place.
 
@@ -310,8 +318,8 @@ assist ecological and environmental research.
 \end{quote}
 
 Metacat
-\endnote{http://knb.ecoinformatics.org/software/metacat}
-\endnote{https://knb.ecoinformatics.org/knb/docs/intro.html}
+%\endnote{http://knb.ecoinformatics.org/software/metacat}
+%\endnote{https://knb.ecoinformatics.org/knb/docs/intro.html}
 is an open source data management tool that provides a repository for
 managing both data and metadata in one system.
 
@@ -323,14 +331,14 @@ that have been created by others.
 
 Metacat is capable of handling a variety of different metadata formats,
 including Ecological Metadata Language (EML)
-\endnote{https://knb.ecoinformatics.org/#external//emlparser/docs/index.html}
+%\endnote{https://knb.ecoinformatics.org/#external//emlparser/docs/index.html}
 FGDC Biological Data Profile.
-\endnote{https://www.fgdc.gov/standards/projects/FGDC-standards-projects/metadata/biometadata}
+%\endnote{https://www.fgdc.gov/standards/projects/FGDC-standards-projects/metadata/biometadata}
 
 \subsubsection{DataONE}
 
 The Metacat project is itself part of the Data Observation Network for Earth (DataONE)
-\endnote{https://www.dataone.org/}
+%\endnote{https://www.dataone.org/}
 project, a collaboration spconsored by the U.S. National Science Foundation to build
 an infrastructire from distributed webservices that provides open, persistent, robust,
 and secure access to Earth observational data.
@@ -347,18 +355,18 @@ underlying software and support different data and metadata content standards.
 \end{quote}
 
 The DataONE arcitecture is based on a set of top level 
-\testit{Coordinating Nodes}
+\textit{Coordinating Nodes}
 and
-\testit{Member Nodes}
+\textit{Member Nodes}
 located at each participating institute or organisation
 
-\testit{Coordinating Nodes}
+\textit{Coordinating Nodes}
 provide a replicated catalog of Member Node holdings, enabling
 scientists to discover data wherever they reside,
 and data repositories to make their data and services available
 to the international community.
 
-The individual \testit{Member Nodes}
+The individual \textit{Member Nodes}
 at each institute enable them to make their data available
 to the rest of the DataONE network
 via a standard webservice interface.
@@ -394,6 +402,11 @@ is similar the virtual observatory architecture.
 
 
 
-\theendnotes
+%\theendnotes
+
+%\bibliographystyle{plain}
+%\bibliography{sample}
+
+\printbibliography
 
 \end{document}

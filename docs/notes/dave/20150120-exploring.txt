@@ -1,0 +1,75 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+    JASMIN and CEMS Data Processing Environments 
+    http://www.ceda.ac.uk/services/analysis-environments/
+
+        JASMIN Services
+        The JASMIN "super-data-cluster" is deployed on behalf of NCAS at the STFC Rutherford Appleton Laboratory (RAL).
+        JASMIN supports the data analysis requirements of the UK and European climate and earth system modelling community.
+        It consists of multi-Petabyte fast storage co-located with data analysis computing facilities, with satellite installations at Bristol, Leeds and Reading Universities. 
+
+        CEMS
+        On the JASMIN infrastructure, CEDA hosts the academic part of the Climate and Environmental Monitoring from Space (CEMS) Facility, a collaboration with the Space Applications Catapult.
+        CEMS is a purpose-built facility offering space-based Climate Change and Earth Observation (EO) data and services.
+        Its goal is to nurture growth in EO and climate-based services by providing, within a single facility, high performance computing, extensive data collections and various user services and software applications.
+
+
+    Data Centres
+    http://www.ceda.ac.uk/data-centres/
+
+        The British Atmospheric Data Centre
+        The British Atmospheric Data Centre (BADC), NERC's designated data centre for the UK atmospheric science community, covering climate, composition, observations and NWP data.
+        http://badc.nerc.ac.uk/
+
+        NERC Earth Observation Data Centre
+        The NEODC is NERC's designated data centre for Earth Observation data and is part of NERC's  National Centre for Earth Observation.
+        http://www.neodc.rl.ac.uk/
+    
+        The UK Solar System Data Centre
+        The UK Solar System Data Centre, co-funded by STFC and NERC, curates and provides access to archives of data from the upper atmosphere, ionosphere and Earth's solar environment.
+        http://www.ukssdc.ac.uk/
+
+        IPCC Data Distribution Centre
+        The Intergovernmental Panel on Climate Change (IPCC) DDC provides climate, socio-economic and environmental data, both from the past and also in scenarios projected into the future. Technical guidelines on the selection and use of different types of data and scenarios in research and assessment are also provided.
+        http://www.ipcc-data.org/
+
+
+
+    CEDA Metadata Catalogue
+    http://catalogue.ceda.ac.uk/
+
+        Example : 
+        MODIS Surface Reflectance Product from the Aqua Satellite (MYD09) 
+        http://catalogue.ceda.ac.uk/uuid/29f8759618bc0cea2ca3fd46468b57e7
+
+        For further informaiton regarding the underlying technology driving this catalogue,
+        the MOLES3.4 model or the catalogue contents please feel free to contact CEDA.
+
+
+
+
+    PIMMS (Portable Infrastructure for the Metafor Metadata System) 
+    http://www.ceda.ac.uk/projects/pimms/
+

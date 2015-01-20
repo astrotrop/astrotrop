@@ -1,0 +1,70 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    report=/home/Zarquan/Desktop/astrotrop/googlecode/docs/reports/evaluation
+
+    docker run -it -v ${report:?}:/var/local/report fedora bash
+
+        yum install -y texlive
+        yum install -y texlive-base
+        yum install -y texlive-latex 
+        yum install -y texlive-latex-bin
+
+       #yum install -y lyx-fonts
+       #yum install -y texlive-latex-fonts
+
+        yum install -y texlive-cm
+        yum install -y texlive-cm-lgc
+        yum install -y texlive-cm-super
+        yum install -y texlive-cm-unicode
+
+        yum install -y texlive-collection-mathextra
+        yum install -y texlive-collection-fontsextra
+
+        yum install -y texlive-bibtex
+        yum install -y texlive-biblatex
+
+#        yum install -y texlive-ifluatex
+
+#        yum install -y wget
+#        pushd /etc/yum.repos.d/
+#            wget https://repos.fedorapeople.org/repos/mef/biber/fedora-biber.repo
+#        popd
+
+        yum install -y texlive-texconfig
+        texconfig rehash
+
+        pushd /var/local/report
+
+            pdflatex document
+            bibtex document
+            pdflatex document
+
+        popd
+
+
+
+
+
+
+
+
