@@ -22,6 +22,55 @@
 
 
 
+    OSGeo Open Source Geospatial Foundation
+    OSGeo was created to support the collaborative development of open source geospatial software, and promote its widespread use
+    http://www.osgeo.org/
+
+        PostGIS
+        PostGIS is a spatial database extender for PostgreSQL object-relational database. It adds support for geographic objects allowing location queries to be run in SQL.        
+        http://postgis.net/
+
+        QGIS
+        A Free and Open Source Geographic Information System
+        http://qgis.osgeo.org/en/site/
+
+        GRASS GIS
+        GRASS GIS is a free and open source Geographic Information System (GIS) software suite used for geospatial data management and analysis, image processing, graphics and maps production, spatial modeling, and visualization.
+        http://grass.osgeo.org/
+
+        Marble
+        Marble is a virtual globe and world atlas
+        https://marble.kde.org/
+
+        ....
+
+
+    GRDC
+    Global Runoff Data Centre
+    http://www.bafg.de/GRDC/EN/Home/homepage_node.html
+    The GRDC is an international archive of data up to 200 years old, and fosters multinational and global long-term hydrological studies. 
+
+    WMO
+    https://www.wmo.int/pages/index_en.html
+    The World Meteorological Organization (WMO) is a specialized agency of the United Nations.
+    It is the UN system's authoritative voice on the state and behaviour of the Earth's atmosphere, its interaction with the oceans,
+    the climate it produces and the resulting distribution of water resources.
+
+    IIASA
+    http://www.iiasa.ac.at/
+    The International Institute for Applied Systems Analysis (IIASA) conducts policy-oriented research into problems of a global nature
+    that are too large or too complex to be solved by a single country or academic discipline.
+
+
+
+
+
+
+
+
+
+
+
     JASMIN and CEMS Data Processing Environments 
     http://www.ceda.ac.uk/services/analysis-environments/
 
@@ -56,7 +105,6 @@
         http://www.ipcc-data.org/
 
 
-
     CEDA Metadata Catalogue
     http://catalogue.ceda.ac.uk/
 
@@ -66,8 +114,6 @@
 
         For further informaiton regarding the underlying technology driving this catalogue,
         the MOLES3.4 model or the catalogue contents please feel free to contact CEDA.
-
-
 
 
     PIMMS (Portable Infrastructure for the Metafor Metadata System) 

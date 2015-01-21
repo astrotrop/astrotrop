@@ -20,14 +20,14 @@
 #
 #
 
-    report=/home/Zarquan/Desktop/astrotrop/googlecode/docs/reports/evaluation
+    report=${HOME:?}/Desktop/astrotrop/googlecode/docs/reports/evaluation
 
     docker run -it -v ${report:?}:/var/local/report fedora bash
 
         yum install -y texlive
-        yum install -y texlive-base
+       #yum install -y texlive-base
         yum install -y texlive-latex 
-        yum install -y texlive-latex-bin
+       #yum install -y texlive-latex-bin
 
        #yum install -y lyx-fonts
        #yum install -y texlive-latex-fonts

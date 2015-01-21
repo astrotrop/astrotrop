@@ -35,3 +35,12 @@ hs_err_*.log
 # SVN version control
 */.svn
 
+#
+# pdflatext temp files
+docs/reports/evaluation/document-blx.bib
+docs/reports/evaluation/document.aux
+docs/reports/evaluation/document.bbl
+docs/reports/evaluation/document.blg
+docs/reports/evaluation/document.log
+docs/reports/evaluation/document.run.xml
+
