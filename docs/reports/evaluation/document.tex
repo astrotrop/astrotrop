@@ -54,11 +54,11 @@ accompanied by structured metadata about each of the data sets."
 "Each of the data sets is stored in a manner that is opaque to the data system in
 that the data themselves cannot be directly queried; rather, the structured
 metadata describing the data is queried in order to locate data sets of
-interest.
+interest."
 \end{quote}
 
 \begin{quote}
-After data sets of interest are located, more detailed information
+"After data sets of interest are located, more detailed information
 .... can be extracted from the metadata and used to load, query, and
 manipulate individual data sets."
 \end{quote}
@@ -174,90 +174,208 @@ is very similar to the stages described in \cite{jones-2006} :
 
 We can compare the VO data discovery process for astronomy data with an example
 use case based on a recent study
-\citetitle{mitchard-2014} (\cite{mitchard-2014}).
+\citetitle*{mitchard-2014} (\cite{mitchard-2014}),
 comparing remote sensing data from satellites with ground plot data collected
 in the field.
 
 The study compares two sets of remote sensing data, from
-the NASA Jet Propulsion Laboratory
-\citetitle{saatchi-2011} (\cite{saatchi-2011})
+\citetitle*{nasa-jpl-carbon} (\cite{nasa-jpl-carbon})
+\citetitle{saatchi-2011} (\cite{saatchi-2011}) [RS1]
 and the Woods Hole Research Center
-\citetitle{baccini-2012} (\cite{baccini-2012})
+\citetitle{baccini-2012} (\cite{baccini-2012}) [RS2]
 with four sets of ground plot data from
 \citetitle*{rainfor} (\cite{rainfor})
-(\cite{malhi-2009})
+(\cite{peacock-2007}) (\cite{malhi-2009})
 the \citetitle*{atdn} (\cite{atdn}),
 the \citetitle*{team} (\cite{team}) network and
 the
 the \citetitle*{ppbio} (\cite{ppbio}) (\cite{pezzini-2012})
 
-\subsubsection{Satellite data}
+\subsubsection{Remote sensing source data}
 
+It is not know what data discovery and data access methods were used to
+identify and access the primary remote sensing source data.
 
+However, there are a number of data discovery tools available that enable
+researchers to search for remote sensing data products such as satellite
+images and radar scans.
 
+A good examples of this type of tool are the
+\cite{usgs-explorer}
+and
+\cite{usgs-glovis}
+tools provided by the
+\citetitle*{usgs} (\cite{usgs})
+    
+\begin{quote}
+"The USGS EarthExplorer ... provides users the ability to query, search,
+and order satellite images, aerial photographs, and cartographic products from
+several sources"
+\end{quote}
+
+\begin{quote}
+"In addition to data from the Landsat missions and a variety of other data providers,
+EE now provides access to MODIS land data products from the NASA Terra and Aqua missions,
+and ASTER level-1B data products over the U.S. and Territories from the NASA ASTER mission"
+\end{quote}
+
+\begin{quote}
+"The USGS Global Visualization Viewer (GloVis) is an online search and order tool for
+selected satellite data. The viewer allows access to all available browse images
+from the Landsat 7 ETM+, Landsat 4/5 TM, Landsat 1-5 MSS, EO-1 ALI, EO-1 Hyperion,
+MRLC, and Tri-Decadal data sets, as well as Aster TIR, Aster VNIR and MODIS browse
+images from the DAAC inventory"
+\end{quote}
+
+The \cite{usgs} also provides large area composited mosaics generated from
+\cite{landsat}
+data via the
+\cite{weld}
+project.
+
+\begin{quote}
+"The WELD data products are processed so users do not need to apply the equations,
+spectral calibration coefficients, and solar information, needed to convert Landsat
+digital numbers to reflectance and brightness temperature.
+They are defined in the same coordinate system and align precisely, making them simple
+to use for multi-temporal applications.
+The products provide consistent data that can be used to derive higher-level land
+cover as well as geo-physical and biophysical products for assessment of surface
+dynamics and to study Earth system functioning"
+\end{quote}
+
+The \cite{usgs} also maintains a
+\citetitle*{usgs-lta} (\cite{usgs-lta})
+of historical remote sensing data.
+
+\begin{quote}
+"The U.S. Geological Survey's (USGS) Long Term Archive (LTA) at the National Center
+for Earth Resource Observations and Science (EROS) in Sioux Falls, SD is one of
+the largest civilian remote sensing data archives"
+\end{quote}
+
+\begin{quote}
+"Time series images are a valuable resource for scientists, disaster managers,
+engineers, educators, and the general public. USGS EROS has archived, managed,
+and preserved land remote sensing data for more than 35 years and is a leader
+in preserving land remote sensing imagery"
+\end{quote}
+
+However, all of these interfaces are based around human interaction.
+As far as we know, at the time of writing, there are no machine readable
+data discovery services for remote sensing source data.
+
+\subsubsection{Carbon density maps}
+
+A detailed description of the [RS1] dataset produced by \citetitle*{nasa-jpl-carbon}
+is available in the authors paper (\cite{saatchi-2011}).
+
+The paper, along with the additional supporting information available on the
+\cite{pnas} website, describes the main upstream data sources and the methods applied.
+
+However, details of the data sources, the instruments, target areas and date ranges
+the data covers are not available in a machine readable format.
+
+\begin{quote}
+"Ground data used to train the biomass prediction model were derived from
+various sources including published literature and national forest inventories
+collected by the authors and their colleagues."
+\end{quote}
+
+The carbon density dataset itself is available as \cite{format-geotiff} files,
+with associated \cite{format-world} metadata, for download from the
+\cite{nasa-jpl-carbon-ftp} site.
+
+A detailed description of the RS2 dataset produced by the \citetitle*{whrc}
+is available in the authors paper (\cite{baccini-2012}).
+
+The paper, along with the additional supporting information available from
+the \cite{journal-nature} website,
+describes the upstream data sources and the methods applied.
+However, details of the data sources, the instruments, target areas and date ranges
+the data covers are not available in a machine readable format.
+
+The carbon density dataset itself is available by request from the 
+\cite{whrc-data} website.
+Access to the data requires filling in a simple web form declaring
+who you are and what you want to use the data for.
+On submitting the web-form, an automated email reply is generated
+containing a URL to a \cite{format-zip}
+file on the WHRC website.
+
+The \cite{format-zip} file contains the data as \cite{format-geotiff}
+files, with associated \cite{format-world} metadata.
 
 \subsubsection{Ground plot data}
 
-In order to calculate a single above ground biomass (AGB) dataset,
-the ground plot data were brought together in the ForestPlots.Net
-(Lopez-Gonzalez et al. 2009, 2011)
-%\endnote{http://www.forestplots.net/}
-%\endnote{http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01312.x/abstract}
-%\endnote{doi:10.1111/j.1654-1103.2011.01312.x}
+The four sets of ground plot data from
+\cite{rainfor}, \cite{atdn}, \cite{team}
+and \cite{ppbio}
+were combined together in the 
+\cite{forest-plots}
 database.
 
-ForestPlots.Net is a website and database designed to provide a repository for
-long-term intact tropical forest inventory plots, where trees within an area are
-individually identified, measured and tracked through time.
+Details fo the design and capabilities of the \cite{forest-plots}
+system is presented in \citetitle*{gonzalez-2011} (\cite{gonzalez-2011}).
 
-In addition to the raw measurements of tree diameter, the ForestPlots.Net database
-stores a comprehensive set of metadata including taxonomic information about
-the individual trees and detailed metadata about the plots.
+\begin{quote}
+"The ForestPlots.net web application was designed primarily
+as a repository for long-term intact tropical forest inventory
+plots, where trees within an area are individually identified,
+measured and tracked through time"
+\end{quote}
 
-Of the three sets of ground plot data, the data from RAINFOR and ATDN were
-already available in the ForestPlots.Net database. The plot data from the TEAM
-and PPBio projects were manually downloaded and imported into the
-ForestPlots.Net database.
+Of the three sets of ground plot data, the data from \cite{rainfor} and
+\cite{atdn} were already available in the \cite{forest-plots} database.
 
-The principal AGB dataset was calculated using a tropical forest model described in Chave et al. (2005),
-%\endnote{Tree allometry and improved estimation of carbon stocks and balance in tropical forests}
-%\endnote{http://link.springer.com/article/10.1007/s00442-005-0100-x}
-%\endnote{doi:10.1007/s00442-005-0100-x}
-using one of the built-in SQL queries provided by the ForestPlots.Net database
-system.
+The plot data from the \cite{team} and \cite{ppbio} projects were
+downloaded and imported into the \cite{forest-plots} database manually.
 
-The resulting data set was itself stored in the ForestPlots.Net database as
-a new dataset available for download as part of the source material for the paper.
+The principal \cite{term-agb}
+data was calculated using one of the built-in
+\cite{comp-lang-sql}
+queries provided by the
+\cite{forest-plots}
+database system which implements the tropical forest model described in
+\citetitle*{chave-2005} (\cite{chave-2005})
 
-\subsection{Diverse metadata formats}
+The results of the \cite{term-agb} calculation were stored in the \cite{forest-plots}
+database as a new dataset available for download from the the \cite{forest-plots} site
+and referenced as part of the source material for the paper.
 
-Within the set of datasets used by this use case, we can see a variety of
+
+
+
+
+\section{Metadata formats}
+
+Within the set of datasets used by use cases, we can see a variety of
 different database systems storing different types of metadata in a varierty of
 different structures and formats.
 
 \subsubsection{Global Index of Vegetation-Plot Databases}
 
 The Global Index of Vegetation-Plot Databases (GIVD)
-%\endnote{http://www.givd.info/}
+%%endnote{http://www.givd.info/}
 is a database of metadata describing databases of vegetation plot data
 from around the world.
 
 \noindent
 ForestPlots.Net is described in the GIVD database
 \texttt{[GIVD:00-00-001]}
-%\endnote{http://www.givd.info/ID/00-00-001}
+%%endnote{http://www.givd.info/ID/00-00-001}
 as is the PPBio information system
 \texttt{[GIVD:SA-BR-001]}	
-%\endnote{http://www.givd.info/ID/SA-BR-001}
+%%endnote{http://www.givd.info/ID/SA-BR-001}
 and the data from the TEAM network
 \texttt{[GIVD:00-00-002]}.
-%\endnote{http://www.givd.info/ID/00-00-002}
+%%endnote{http://www.givd.info/ID/00-00-002}
 
 Dengler et al. describe the GIVD project in a 2011 paper,
 "The Global Index of Vegetation-Plot Databases (GIVD): a new resource for vegetation science"
 (Dengler et al. 2011)
-%\endnote{doi:10.1111/j.1654-1103.2011.01265.x}
-%\endnote{http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01265.x/abstract}
+%%endnote{doi:10.1111/j.1654-1103.2011.01265.x}
+%%endnote{http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01265.x/abstract}
 and suggest some future applications, including the idea of combining
 different types of data from different, distributed, databases.
 
@@ -287,7 +405,7 @@ aproaches to handling the metadata associated with
 In a 2012 paper by Flávia Fonseca Pezzini et al. about the PPBio project 
 (Pezzini et al. 2012)
 "The Brazilian Program for Biodiversity Research (PPBio) Information System"
-%\endnote{http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=10.7809/b-e.00083}
+%%endnote{http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=10.7809/b-e.00083}
 they describe the role of the data manager and the metadata
 collection processes that are in place.
 
@@ -303,8 +421,8 @@ assist ecological and environmental research.
 \end{quote}
 
 Metacat
-%\endnote{http://knb.ecoinformatics.org/software/metacat}
-%\endnote{https://knb.ecoinformatics.org/knb/docs/intro.html}
+%%endnote{http://knb.ecoinformatics.org/software/metacat}
+%%endnote{https://knb.ecoinformatics.org/knb/docs/intro.html}
 is an open source data management tool that provides a repository for
 managing both data and metadata in one system.
 
@@ -316,14 +434,14 @@ that have been created by others.
 
 Metacat is capable of handling a variety of different metadata formats,
 including Ecological Metadata Language (EML)
-%\endnote{https://knb.ecoinformatics.org/#external//emlparser/docs/index.html}
+%%endnote{https://knb.ecoinformatics.org/#external//emlparser/docs/index.html}
 FGDC Biological Data Profile.
-%\endnote{https://www.fgdc.gov/standards/projects/FGDC-standards-projects/metadata/biometadata}
+%%endnote{https://www.fgdc.gov/standards/projects/FGDC-standards-projects/metadata/biometadata}
 
 \subsubsection{DataONE}
 
 The Metacat project is itself part of the Data Observation Network for Earth (DataONE)
-%\endnote{https://www.dataone.org/}
+%%endnote{https://www.dataone.org/}
 project, a collaboration spconsored by the U.S. National Science Foundation to build
 an infrastructire from distributed webservices that provides open, persistent, robust,
 and secure access to Earth observational data.
