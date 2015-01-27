@@ -393,9 +393,9 @@ The \cite{format-world} format consists of a plain text file format containing
 details of the location, scale and rotation of a map or raster image
 linked to the target map by one of two naming conventions.
 
-Either by adding a \textit{'w'} to the target map filename, \textit{example.jpg → example.jpgw},
+Either by adding a \textit{'w'} to the target map filename, \textit{example.jpg => example.jpgw},
 or by removing the second letter of the filename extension and adding a \textit{'w'} to the end,
-\textit{example.jpg → example.jgw} or \textit{example.tif → example.tfw}.
+\textit{example.jpg => example.jgw} or \textit{example.tif => example.tfw}.
 
 Both of the remote sensing datasets
 [RS1] (\cite{saatchi-2011})
@@ -476,7 +476,7 @@ by enabling researchers to
 \end{quote}
 
 The \cite{knb} system uses the \cite{metacat} software to store and query
-the \citetitle*{EML} (\cite{eml}) metadata for each of the datasets in the repository.
+the \citetitle*{eml} (\cite{eml}) metadata for each of the datasets in the repository.
 
 In some cases the \cite{knb} system stores both the metadata and actual
 data itself, e.g.
@@ -494,7 +494,7 @@ Ecological Society of America
 and associated efforts
 \citetitle*{michener-1997} (\cite{michener-1997}).
 
-\cite{eml} is implemented as a series of \cite{xml} document types that can be used to describe different aspects of an ecological dataset.
+\cite{eml} is implemented as a series of \cite{format-xml} document types that can be used to describe different aspects of an ecological dataset.
 
 The following metadata registries use or provide metadata in \cite{eml}
 \begin{itemize}
@@ -506,8 +506,6 @@ The following metadata registries use or provide metadata in \cite{eml}
 
 
 Metacat
-%%endnote{http://knb.ecoinformatics.org/software/metacat}
-%%endnote{https://knb.ecoinformatics.org/knb/docs/intro.html}
 is an open source data management tool that provides a repository for
 managing both data and metadata in one system.
 
@@ -565,7 +563,6 @@ is similar the virtual observatory architecture.
 
 
 GBIF
-http://www.gbif.org/
 
 Uses EML
 Uses Hadopop internally
