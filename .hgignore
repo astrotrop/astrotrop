@@ -37,10 +37,10 @@ hs_err_*.log
 
 #
 # pdflatext temp files
-#docs/reports/evaluation/dave/document-blx.bib
-#docs/reports/evaluation/dave/document.aux
-#docs/reports/evaluation/dave/document.bbl
-#docs/reports/evaluation/dave/document.blg
-#docs/reports/evaluation/dave/document.log
-#docs/reports/evaluation/dave/document.run.xml
+docs/reports/evaluation/dave/document-blx.bib
+docs/reports/evaluation/dave/document.aux
+docs/reports/evaluation/dave/document.bbl
+docs/reports/evaluation/dave/document.blg
+docs/reports/evaluation/dave/document.log
+docs/reports/evaluation/dave/document.run.xml
 
