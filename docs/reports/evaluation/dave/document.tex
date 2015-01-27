@@ -6,8 +6,13 @@
 
 \usepackage{url}	
 \usepackage[utf8]{inputenc}
-%\usepackage[english]{babel}
+\usepackage[english]{babel}
 
+\usepackage{mathtools}
+\usepackage{csquotes}	
+
+\usepackage{fixltx2e}
+ 
 \usepackage[style=authoryear,backend=bibtex]{biblatex}
 
 \addbibresource{references}
@@ -74,7 +79,6 @@ radio or xray.
 
 The first step of the process is to identify the services that provide access to
 the type of data we are looking for by querying the \cite{ivoa.reg}.
-
 
 The \cite{ivoa.reg} is comprised of a number of small local registry services,
 typically hosted at the participating institute level, working in cooperation
@@ -154,10 +158,10 @@ within the whole VO that match our search criteria.
 \noindent
 The two key components of this are :
 \begin{itemize}
-  \item A standard interface for the global \cite{ivoa.reg} that uses a standard set of
-  attributes to describe datasets and services
-  \item A standard interface for local \cite{ivoa.sia} data access services that uses a
-  standard set of attributes to describe the available data products
+\item A standard interface for the global \cite{ivoa.reg} that uses a standard
+set of attributes to describe datasets and services
+\item A standard interface for local \cite{ivoa.sia} data access services that
+uses a standard set of attributes to describe the available data products
 \end{itemize}
 
 The separation between the initial service discovery query at the global
@@ -184,12 +188,13 @@ The study compares two sets of remote sensing data, from
 and the Woods Hole Research Center
 \citetitle{baccini-2012} (\cite{baccini-2012}) [RS2]
 with four sets of ground plot data from
-\citetitle*{rainfor} (\cite{rainfor})
-(\cite{peacock-2007}) (\cite{malhi-2009})
-the \citetitle*{atdn} (\cite{atdn}),
-the \citetitle*{team} (\cite{team}) network and
-the
-the \citetitle*{ppbio} (\cite{ppbio}) (\cite{pezzini-2012})
+
+\begin{itemize}
+\item\citetitle*{rainfor} (\cite{rainfor}) (\cite{peacock-2007}) (\cite{malhi-2009})
+\item\citetitle*{atdn} (\cite{atdn})
+\item\citetitle*{team} (\cite{team})
+\item\citetitle*{ppbio} (\cite{ppbio}) (\cite{pezzini-2012})
+\end{itemize}
 
 \subsubsection{Remote sensing source data}
 
@@ -262,8 +267,7 @@ in preserving land remote sensing imagery"
 \end{quote}
 
 However, all of these interfaces are based around human interaction.
-As far as we know, at the time of writing, there are no machine readable
-data discovery services for remote sensing source data.
+There are no machine readable data discovery services for this type of remote sensing data.
 
 \subsubsection{Carbon density maps}
 
@@ -277,16 +281,17 @@ However, details of the data sources, the instruments, target areas and date ran
 the data covers are not available in a machine readable format.
 
 \begin{quote}
-"Ground data used to train the biomass prediction model were derived from
-various sources including published literature and national forest inventories
-collected by the authors and their colleagues."
+"Ground data used to train the biomass prediction model were
+derived from various sources including published literature
+and national forest inventories collected by the authors
+and their colleagues."
 \end{quote}
 
 The carbon density dataset itself is available as \cite{format-geotiff} files,
 with associated \cite{format-world} metadata, for download from the
 \cite{nasa-jpl-carbon-ftp} site.
 
-A detailed description of the RS2 dataset produced by the \citetitle*{whrc}
+A detailed description of the [RS2] dataset produced by the \citetitle*{whrc}
 is available in the authors paper (\cite{baccini-2012}).
 
 The paper, along with the additional supporting information available from
@@ -315,7 +320,7 @@ were combined together in the
 \cite{forest-plots}
 database.
 
-Details fo the design and capabilities of the \cite{forest-plots}
+Details of the design and capabilities of the \cite{forest-plots}
 system is presented in \citetitle*{gonzalez-2011} (\cite{gonzalez-2011}).
 
 \begin{quote}
@@ -331,53 +336,94 @@ Of the three sets of ground plot data, the data from \cite{rainfor} and
 The plot data from the \cite{team} and \cite{ppbio} projects were
 downloaded and imported into the \cite{forest-plots} database manually.
 
-The principal \cite{term-agb}
-data was calculated using one of the built-in
-\cite{comp-lang-sql}
-queries provided by the
-\cite{forest-plots}
-database system which implements the tropical forest model described in
-\citetitle*{chave-2005} (\cite{chave-2005})
+A permanent archive of the combiuned field plot data
+is stored in the \cite{forest-plots} database
+as a publically available dataset\footnote{\url{http://dx.doi.org/10.5521/FORESTPLOTS.NET/2014_1}}
+and is available in the supporting information for the paper. 
 
-The results of the \cite{term-agb} calculation were stored in the \cite{forest-plots}
-database as a new dataset available for download from the the \cite{forest-plots} site
-and referenced as part of the source material for the paper.
+\subsubsection{\cite{term-agb} data}
 
+The \cite{term-agb} data for the forest plots were calculated
+using a \cite{comp-lang-sql} query provided by the \cite{forest-plots}
+system which implements the tropical forest model described in
+\citetitle*{chave-2005} (\cite{chave-2005}).
+The results of the \cite{term-agb} calculation for each
+forest plot are included in the combined field plot dataset
+stored in the \cite{forest-plots} database.
 
+The paper refers to a number of maps derived from the field plot data
+and other sources which were generated as part of the analysis.
 
+\begin{itemize}
+\item \cite{kriged} map of mean wood density ($\rho$)
+\item Ratio of diameter (D) to tree height (H) \cite{feldpausch-2012}
+\item \cite{kriged} map of basal area
+\item \cite{kriged} map of \cite{term-agb} using D and species-specific $\rho$, and a regional height model (K\textsubscript{DH$\rho$})
+\item \cite{kriged} map of \cite{term-agb} using D and species-specific $\rho$, but a pan Amazonian height model (K\textsubscript{D$\rho$})
+\item \cite{kriged} map of \cite{term-agb} using D, regional height models and $\rho$, but with $\rho$ fixed at 0.63 (K\textsubscript{DH})
+\item \cite{kriged} map of \cite{term-agb} using D, pan-Amazonian height model, and $\rho$ fixed at 0.63 (K\textsubscript{D})
+\end{itemize}
 
+\begin{itemize}
+\item \cite{term-agb} map from [RS1] (\cite{saatchi-2011})
+\item \cite{term-agb} map from [RS2] (\cite{baccini-2012})
+\item Difference between [RS1] and K\textsubscript{DH$\rho$}
+\item Difference between [RS2] and K\textsubscript{DH$\rho$}
+\item Difference between [RS1] and [RS2]
+\end{itemize}
+
+These derived datasets and maps are not available in the supporting information for the paper.
+
+The \cite{term-agb} data derived from two remote-sensing-derived maps,
+\cite{saatchi-2011} [RS1] and \cite{baccini-2012} [RS2]
+are not available in the supporting information for the paper.
 
 \section{Metadata formats}
 
-Within the set of datasets used by use cases, we can see a variety of
-different database systems storing different types of metadata in a varierty of
-different structures and formats.
+Within the set of datasets used by our use cases, we can see a variety of
+different systems storing different types of metadata and using a wide
+range of different metadata structures and formats.
+
+\subsubsection{World file GIS metadata}
+
+The \citetitle*{format-world} format provides a simple way of
+annotating an existing map or raster image with GIS location metadata.
+
+The \cite{format-world} format consists of a plain text file format containing
+details of the location, scale and rotation of a map or raster image
+linked to the target map by one of two naming conventions.
+
+Either by adding a \textit{'w'} to the target map filename, \textit{example.jpg → example.jpgw},
+or by removing the second letter of the filename extension and adding a \textit{'w'} to the end,
+\textit{example.jpg → example.jgw} or \textit{example.tif → example.tfw}.
+
+Both of the remote sensing datasets
+[RS1] (\cite{saatchi-2011})
+and
+[RS2] (\cite{baccini-2012})
+provide
+\cite{format-world}
+metadata 
+using the \textit{example.tfw} convention to associate the metadata
+with the \cite{format-geotiff} maps.
 
 \subsubsection{Global Index of Vegetation-Plot Databases}
 
-The Global Index of Vegetation-Plot Databases (GIVD)
-%%endnote{http://www.givd.info/}
-is a database of metadata describing databases of vegetation plot data
-from around the world.
+The \citetitle*{gvid} (\cite{gvid}) system is a complex registry of metadata describing
+databases of vegetation plot data from around the world.
 
-\noindent
-ForestPlots.Net is described in the GIVD database
-\texttt{[GIVD:00-00-001]}
-%%endnote{http://www.givd.info/ID/00-00-001}
-as is the PPBio information system
-\texttt{[GIVD:SA-BR-001]}	
-%%endnote{http://www.givd.info/ID/SA-BR-001}
-and the data from the TEAM network
-\texttt{[GIVD:00-00-002]}.
-%%endnote{http://www.givd.info/ID/00-00-002}
+The \cite{gvid} system contains records for
+\textit{ ... 209 databases with 3,148,605 vegetation plots},
+including three of the datasets used in our use case.
 
-Dengler et al. describe the GIVD project in a 2011 paper,
-"The Global Index of Vegetation-Plot Databases (GIVD): a new resource for vegetation science"
-(Dengler et al. 2011)
-%%endnote{doi:10.1111/j.1654-1103.2011.01265.x}
-%%endnote{http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01265.x/abstract}
-and suggest some future applications, including the idea of combining
-different types of data from different, distributed, databases.
+\begin{itemize}
+\item \cite{forest-plots} \texttt{[GIVD:00-00-001]}\footnote{\url{http://www.givd.info/ID/00-00-001}}
+\item \cite{ppbio} \texttt{[GIVD:SA-BR-001]}\footnote{\url{http://www.givd.info/ID/SA-BR-001}}
+\item \cite{team}  \texttt{[GIVD:00-00-002]}\footnote{\url{http://www.givd.info/ID/00-00-002}}.
+\end{itemize}
+
+In \citetitle*{dengler-2011} (\cite{dengler-2011}) the \cite{gvid} project team describe the system
+architecture and outline plans to aggregate different types of data from external sources.
 
 \begin{quote}
 "Our longer-term vision is to develop GIVD in ways similar to Metacat (Jones et
@@ -387,38 +433,77 @@ but they will also discover other data from distributed databases, with GIVD
 acting as the central node."
 \end{quote}
 
+This is broadly similar to the VO architecture of distributed datasets
+the interconnected metadata collections approach described in
+\citetitle{jones-2006} (\cite{jones-2006}).
+
+However, the emphasis is on providing a human interactive search facility
+with the \cite{gvid} system acting as the central node.
+The plans do not include providing a machine readable interface,
+allowing the \cite{gvid} system itself to be used as a component in
+in a larger distributed system.
+
+\subsubsection{\cite{ppbio} Information System}
+
+In \citetitle*{pezzini-2012} (\cite{pezzini-2012}) 
+the \cite{ppbio} team describe the role of the data manager and the metadata
+collection processes developed as part of the \cite{ppbio} Information System.
+
+They also describe the transition from an initial flat file data storage system,
+to a new system based on \cite{metacat}.
+
 \begin{quote}
-"By coupling species specific trait characteristics (e.g. mean plant height,
-specific leaf area, growth form) found in trait databases, such as LEDA (Kleyer
-et al. 2008) or TRY (http://www.trydb.org), with plot-based distribution
-information on those species, GIVD could support further refinement of DGVMs."
+"To facilitate data searches, all the metadata were converted to XML,
+and the PPBio has installed a METACAT server to integrate with the
+Knowledge Network for Biocomplexity (KNB), a network which aims to
+assist ecological and environmental research."
 \end{quote}
 
-Which is similar to the distributed architectrure of data discovery and data
-access services used by the virtual observatory.
+This indicates a readiness to move towards using open standards for the
+metadata and the service interfaces, enabling the
+\cite{ppbio} Information System
+to become part of a larger distrbuted system.
+
+\subsubsection{\citetitle*{knb}}
+
+The \citetitle*{knb} {\cite{knb}} is a data repository
+\begin{quote}
+"intended to facilitate ecological and environmental research"
+\end{quote}
+by enabling researchers to
+\begin{quote}
+"share, discover, access and interpret complex ecological data"
+\end{quote}
+
+The \cite{knb} system uses the \cite{metacat} software to store and query
+the \citetitle*{EML} (\cite{eml}) metadata for each of the datasets in the repository.
+
+In some cases the \cite{knb} system stores both the metadata and actual
+data itself, e.g.
+\citetitle*{dietze-2004}\footnote{\url{https://knb.ecoinformatics.org/#view/doi:10.5063/AA/mdietze.3.2}}.
+
+In other cases the \cite{knb} system only stores the metadata,
+referring to data that is stored elsewhere, e.g.
+\citetitle*{dietze-2004}\footnote{\url{https://knb.ecoinformatics.org/#view/doi:10.5063/AA/mdietze.3.2}}.
+
+\subsubsection{\citetitle*{eml}}
+
+\citetitle*{eml} (\cite{eml}) is a metadata specification
+for describing ecological datasets, based on work done by the
+Ecological Society of America
+and associated efforts
+\citetitle*{michener-1997} (\cite{michener-1997}).
+
+\cite{eml} is implemented as a series of \cite{xml} document types that can be used to describe different aspects of an ecological dataset.
+
+The following metadata registries use or provide metadata in \cite{eml}
+\begin{itemize}
+\item \citetitle*{knb} {\cite{knb}} 
+\item \citetitle*{gbif} {\cite{gbif}} 
+\end{itemize}
 
 \subsubsection{METACAT}
 
-Different institutes have different emphasis and different
-aproaches to handling the metadata associated with 
- 
-In a 2012 paper by Flávia Fonseca Pezzini et al. about the PPBio project 
-(Pezzini et al. 2012)
-"The Brazilian Program for Biodiversity Research (PPBio) Information System"
-%%endnote{http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=10.7809/b-e.00083}
-they describe the role of the data manager and the metadata
-collection processes that are in place.
-
-They also describe the transition from data storage in flat files,
-which was sufficient for the first five years of the project,
-to a new system based on Metacat.
-
-\begin{quote}
-To facilitate data searches, all the metadata were converted to XML,
-and the PPBio has installed a METACAT server to integrate with the
-Knowledge Network for Biocomplexity (KNB), a network which aims to
-assist ecological and environmental research.
-\end{quote}
 
 Metacat
 %%endnote{http://knb.ecoinformatics.org/software/metacat}
@@ -479,8 +564,14 @@ is similar the virtual observatory architecture.
 
 
 
+GBIF
+http://www.gbif.org/
 
-
+Uses EML
+Uses Hadopop internally
+Exposes RESTful API allowing external access.
+Automated injestion and processing pipeline.
+Apache SOLR for federated search.
 
 
 

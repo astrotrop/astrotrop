@@ -65,6 +65,9 @@
         # Registration for Data Access - National Level Carbon Stock Dataset
         http://www.whrc.org/mapping/pantropical/carbondataset_form.htm
 
+        #
+        # Data download
+        http://www.whrc.org/data/Brazil91.zip
 
 
     #

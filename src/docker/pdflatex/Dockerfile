@@ -37,11 +37,21 @@ RUN yum install -y texlive-cm-lgc
 RUN yum install -y texlive-cm-super
 RUN yum install -y texlive-cm-unicode
 
+RUN yum install -y texlive-csquotes
+
 RUN yum install -y texlive-collection-mathextra
 RUN yum install -y texlive-collection-fontsextra
 
 RUN yum install -y texlive-bibtex
 RUN yum install -y texlive-biblatex
+
+#RUN yum install -y texlive-babel-greek
+
+#RUN yum install -y texlive-cbfonts
+#RUN yum install -y texlive-cbfonts-fd
+
+#RUN yum install -y texlive-greek-fontenc
+#RUN yum install -y texlive-greek-inputenc
 
 RUN yum install -y texlive-texconfig
 RUN texconfig rehash
