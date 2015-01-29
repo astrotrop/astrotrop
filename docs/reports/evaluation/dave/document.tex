@@ -24,6 +24,10 @@
 
 \section{Introduction}
 
+This report looks at AstroTrop project use casees and to determine the project
+requirements, and then evaluates where the concepts, components and services
+from the IVOA can be applied to meet some of the AstroTrop project requirements.
+
 \section{The IVOA Virtual Observatory}
 
 The \citetitle*{ivoa} (\cite{ivoa}) was formed in June 2002 with a mission to
@@ -486,6 +490,7 @@ In other cases the \cite{knb} system only stores the metadata,
 referring to data that is stored elsewhere, e.g.
 \citetitle*{dietze-2004}\footnote{\url{https://knb.ecoinformatics.org/#view/doi:10.5063/AA/mdietze.3.2}}.
 
+
 \subsubsection{\citetitle*{eml}}
 
 \citetitle*{eml} (\cite{eml}) is a metadata specification
@@ -494,7 +499,8 @@ Ecological Society of America
 and associated efforts
 \citetitle*{michener-1997} (\cite{michener-1997}).
 
-\cite{eml} is implemented as a series of \cite{format-xml} document types that can be used to describe different aspects of an ecological dataset.
+\cite{eml} is implemented as a series of \cite{format-xml} document types that can be
+used to describe different aspects of an ecological dataset.
 
 The following metadata registries use or provide metadata in \cite{eml}
 \begin{itemize}
@@ -502,12 +508,10 @@ The following metadata registries use or provide metadata in \cite{eml}
 \item \citetitle*{gbif} {\cite{gbif}} 
 \end{itemize}
 
-\subsubsection{METACAT}
+\subsubsection{\cite{metacat}}
 
-
-Metacat
-is an open source data management tool that provides a repository for
-managing both data and metadata in one system.
+\cite{metacat} is an open source data management tool that provides a
+repository for managing both data and metadata in a single system.
 
 \begin{quote}
 Metacat is a repository for data and metadata (documentation about data) that
@@ -516,9 +520,10 @@ that have been created by others.
 \end{quote}
 
 Metacat is capable of handling a variety of different metadata formats,
-including Ecological Metadata Language (EML)
-%%endnote{https://knb.ecoinformatics.org/#external//emlparser/docs/index.html}
-FGDC Biological Data Profile.
+including
+\citetitle*{eml} (\cite{eml})
+
+
 %%endnote{https://www.fgdc.gov/standards/projects/FGDC-standards-projects/metadata/biometadata}
 
 \subsubsection{DataONE}
@@ -561,6 +566,76 @@ Again, this two layers of data discovery and data access
 is similar the virtual observatory architecture.
 
 
+\subsubsection{\citetitle*{fgdc-geo}}
+
+fgdc
+FGDC
+Federal Geographic Data Committee
+https://www.fgdc.gov/
+
+fgdc-geo
+FGDC Geospatial Platform
+http://www.geoplatform.gov/
+https://www.fgdc.gov/initiatives/geospatial-platform
+
+fgdc-data
+FGDC Dataset Catalog
+http://www.geoplatform.gov/node/201/%26fq%3Dmetadata_type%3A%22geospatial%22%2BAND%2B
+
+Data.Gov
+http://www.data.gov/
+
+Data.Gov Dataset Catalog
+http://catalog.data.gov/dataset
+
+Data.Gov GitHub
+https://github.com/GSA/data.gov
+
+
+Data.Gov.Uk
+http://data.gov.uk/
+http://ckan.org/case-studies/data-gov-uk/
+
+Data.Gov.Uk datasets
+http://data.gov.uk/data/search
+
+
+
+CKAN Data management system
+http://ckan.org/
+
+
+http://ckan.org/features/
+\begin{quote}
+"Many organisations already have their data in repositories with well-defined process and procedures
+for publishing and managing data. In this case the data can be simply pulled regularly into CKAN
+from the existing repositories. To facilitate this model we’ve developed a sophisticated and
+customisable “harvesting” mechanism which can fetch and import records from many different
+repository sources, including:
+\end{quote}
+\begin{itemize}
+\item Geospatial CSW Servers (see geospatial for more information)
+\item Existing web catalogues
+\item Simple HTML index pages or Web Accessible Folders
+\item ArcGIS, Geoportal Servers and Z39.50 databases
+\item Other CKAN instances
+\end{itemize}
+\begin{quote}
+This functionality is used on data.gov to get data in from hundreds of their agencies,
+on data.gov.uk to implement a Discovery Metadata Service used to fulfill the UK’s
+obligations under the EU INSPIRE directive."
+\end{quote}
+
+\begin{quote}
+Because the harvesting functionality can be used to pull in metadata from other CKAN instances,
+it can also be used to create a federated network of CKAN nodes which share data between each other.
+This is useful if, for example, a national portal wanted to aggregate information from local
+government CKAN instances, or if a topic-specific CKAN instance was created which aggregated
+a subset of datasets from other CKAN sources. CKAN follows the DCAT standard for data catalogue
+metadata, so data can also be federated from other non-CKAN catalogues." 
+\end{quote}
+
+
 
 GBIF
 
@@ -574,16 +649,37 @@ Apache SOLR for federated search.
 
 
 
- 
+AstroTrop requirements
 
+    Data discovery for primary data (NASA, ESO, WELD).
+    Data discovery for external data (JPL, WHR).
 
+    Data discovery for community data (ForestPlots, PPBio).
 
+    Data discovery for external data (GIVD, KNB, GBIF).
 
+    Data discovery for community data (Mitchard, Tansey).
 
+    Key requirement is GIS location data, region() etc.
 
+AstroGrid services
 
+    Registry
 
+        XML registry - fixed metadata format based on IVOA VOResource
+        TAP registry - fixed metadata format based on IVOA VOResource
+        MOC support not implemented
 
+    SIAP
+    
+        GIS not implemented, AG services only provide simple box, not cone.
+
+    TAP
+    
+        Updated service is work in progress
+        Can be adapted to meet AT requirements
+        GIS support not implemented on SQLServer.
+        OpenGIS equivalent.
 
 
 

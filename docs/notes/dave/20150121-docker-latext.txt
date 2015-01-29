@@ -62,9 +62,7 @@
 
         pushd /var/local/texdata
 
-            pdflatex document
-            bibtex document
-            pdflatex document
-
-        popd
+pdflatex document
+bibtex document
+pdflatex document
 
