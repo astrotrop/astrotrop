@@ -24,9 +24,9 @@
 
 \section{Introduction}
 
-This report looks at AstroTrop project use casees and to determine the project
+This report looks at \cite{trop} project use casees and to determine the project
 requirements, and then evaluates where the concepts, components and services
-from the IVOA can be applied to meet some of the AstroTrop project requirements.
+from the IVOA can be applied to meet some of the \cite{trop} project requirements.
 
 \section{The IVOA Virtual Observatory}
 
@@ -189,7 +189,8 @@ in the field.
 The study compares two sets of remote sensing data, from
 \citetitle*{nasa-jpl-carbon} (\cite{nasa-jpl-carbon})
 \citetitle{saatchi-2011} (\cite{saatchi-2011}) [RS1]
-and the Woods Hole Research Center
+and the
+\citetitle*{whrc} (\cite{whrc})
 \citetitle{baccini-2012} (\cite{baccini-2012}) [RS2]
 with four sets of ground plot data from
 
@@ -382,24 +383,77 @@ The \cite{term-agb} data derived from two remote-sensing-derived maps,
 \cite{saatchi-2011} [RS1] and \cite{baccini-2012} [RS2]
 are not available in the supporting information for the paper.
 
-\section{Metadata formats}
+\section{Data discovery requirements}
 
-Within the set of datasets used by our use cases, we can see a variety of
-different systems storing different types of metadata and using a wide
-range of different metadata structures and formats.
+Based on the \cite{trop} use cases we have studied so far it is clear that data discovery
+forms a significant part of the requirements for \cite{trop}.
 
-\subsubsection{World file GIS metadata}
+In the many of the use cases a significant part of the source material for the use case has come
+from outside the \cite{trop} community.
 
-The \citetitle*{format-world} format provides a simple way of
-annotating an existing map or raster image with GIS location metadata.
+For example, both the [RS1] (\cite{saatchi-2011}) and [RS2] (\cite{baccini-2012}) datasets used in
+the \cite{mitchard-2014} use case came from external data sources, \citetitle*{nasa-jpl-carbon}
+and \citetitle*{whrc} respectively.
 
-The \cite{format-world} format consists of a plain text file format containing
-details of the location, scale and rotation of a map or raster image
-linked to the target map by one of two naming conventions.
+In the long term, the ideal solution would be to encourage these external data providers to join
+the \cite{trop} community and publish and curate their own data using the \cite{trop}
+system.
 
-Either by adding a \textit{'w'} to the target map filename, \textit{example.jpg => example.jpgw},
-or by removing the second letter of the filename extension and adding a \textit{'w'} to the end,
-\textit{example.jpg => example.jgw} or \textit{example.tif => example.tfw}.
+In the short term, in order to make this type of external data available as part of the \cite{trop}
+data discovery process, it will necessary for a member of the \cite{trop} community to register
+and curate the metadata about the external data in the \cite{trop} system.
+
+A number of the \cite{trop} use cases also require data created or provided by members of the
+\cite{trop} community.
+
+This means that the \cite{trop} needs to provide support for individual members of the
+\cite{trop} community to publish indivudual datasets within the \cite{trop} system.
+Enabling other members of the \cite{trop} community to discover and use the data as
+source material for their own research.
+Promoting the sharing and re-use of results within the \cite{trop} community.
+
+In both cases, the requirements for the data discovery process are that the users is able to specify
+an area of interest and the type of data they are interested in and then gradually narrows the search
+criteria in response to the data discovery results until they find the data they are interested in.
+
+Based on this outline we can begin to evaluate how well the \cite{ivoa} and \cite{astro} software
+meets the \cite{trop} requirements and compare this with equivalent \cite{gis} software
+currently available.
+
+At first glance, the \cite{ivoa} and \cite{trop} data discovery processes are very similar.
+Suggesting that the \cite{ivoa} and \cite{astro} software should be a good fit for the \cite{trop}
+requirements.
+
+However, there are a number of issues that may mean that the \cite{ivoa} and \cite{astro} software
+are not the most best solution for meeting the \cite{trop} requirements.
+
+One issue is that a significant part of the \cite{ivoa} metadata structure relies on a number of
+domain specific astronomy terms and concepts, making it difficult to apply the \cite{ivoa}
+metadata structure to data from a different domain.
+
+Although it would be possible to remove the domain specific terms and concepts from
+the \cite{ivoa} data model and replace them with a set of terms that were more suited to the
+\cite{trop} domain.
+Doing this piece at a time, gradually evolving a new metadata data model for the
+\cite{trop} project would be a non-trivial undertaking involving a significant
+comitment of time and resources.
+It is worth bearing in mind that the \cite{ivoa} \cite{ivoa.obscore} data model
+that forms the basis of a lot of the \cite{ivoa} data discovery process
+is the result of 10 years work by the \cite{ivoa} working groups
+to define a common data model for astronomy observations.
+
+With this in mind, it would probably be more practical to base the \cite{trop} metadata
+data model on a existing data model(s) that has been developed for domains similar to
+\cite{trop}.
+
+Two examples of this are the \citetitle*{format-world} and \citetitle*{eml} (\cite{eml})
+metadata formats.
+
+The \citetitle*{format-world} format provides a simple way of annotating an existing map
+or raster image with GIS location metadata.
+
+The \cite{format-world} format consists of a plain text file format containing details of
+the location, scale and rotation of a map or raster image.
 
 Both of the remote sensing datasets
 [RS1] (\cite{saatchi-2011})
@@ -411,14 +465,62 @@ metadata
 using the \textit{example.tfw} convention to associate the metadata
 with the \cite{format-geotiff} maps.
 
+\citetitle*{eml} (\cite{eml}) is a metadata specification for describing ecological datasets,
+based on work done by the Ecological Society of America and associated efforts
+\citetitle*{michener-1997} (\cite{michener-1997}).
+
+\cite{eml} is implemented as a series of \cite{format-xml} document types that can be
+used to describe different aspects of an ecological dataset.
+
+A second issue with the \cite{ivoa} and \cite{astro} metadata \cite{ivoa.reg} and
+data discovery tools concerns the allocation of roles and responsibilities for
+managing the metadata within the \cite{ivoa.reg}, and the way these reflect the
+structure of the \cite{ivoa} and its members involved in the development process.
+
+Historically, the most active contributors to the development of the \cite{ivoa}
+standards and the \cite{astro} software have been primary data providers within
+the astronomy community.
+
+Many of these represent large scale data providers responsible for publishing and
+curating the primary science archive for a telescope survey or satelite mission.
+
+In the \cite{trop} domain these are equivalent to the upstream data providers who publish
+and curate the original satelite remote sensing data, such as the \citetitle{landsat}
+data archive or the \citetitle{usgs-lta} provided by the \cite{usgs}.
+
+This has influenced the way that the \cite{ivoa} and \cite{astro} software has
+been developed. In particular, the initial emphasis on providing the tools and
+services for publishing large datasets, meant that the curation of the dataset
+metadata was seen as a system administrator role, responsible for curating all of
+the metadata published by that institute.
+
+As a result, many of the current user interface tools for managing and curating data sets
+are designed around a single system administrator managing the metadata for an entire
+service, rather that individual researchers managing the metadata for their own data.
+
+In contrast, in the \cite{trop} use cases a significan portion of the data in the system
+will be provided by and curated by individual researchers or small research groups.
+For example, the results and supplementary data for the \cite{mitchard-2014} paper would
+be published and curated by the members of the research team themselves.
+
+Neither of these issues are 'show stoppers', it should be possible to replace the \cite{ivoa}
+\cite{ivoa.obscore} with a new datamodel designed for \cite{trop}, and it would also be possible
+to develop a new user interface and permission infrastructure to enable individual users
+to publish and curate their own data.
+
+However, bearing in mind the level of resources these changes would require it would be useful
+to compare the data discovery capabilities and features provided by the \cite{ivoa} and
+\cite{astro} software with the data discovery capabilities of some of the current \cite{gis}
+based systems specifically designed to handle geographical and ecological data.
+
 \subsubsection{Global Index of Vegetation-Plot Databases}
 
-The \citetitle*{gvid} (\cite{gvid}) system is a complex registry of metadata describing
+The \citetitle*{givd} (\cite{givd}) system is a complex registry of metadata describing
 databases of vegetation plot data from around the world.
 
-The \cite{gvid} system contains records for
+The \cite{givd} system contains records for
 \textit{ ... 209 databases with 3,148,605 vegetation plots},
-including three of the datasets used in our use case.
+including three of the datasets from our use cases.
 
 \begin{itemize}
 \item \cite{forest-plots} \texttt{[GIVD:00-00-001]}\footnote{\url{http://www.givd.info/ID/00-00-001}}
@@ -426,7 +528,7 @@ including three of the datasets used in our use case.
 \item \cite{team}  \texttt{[GIVD:00-00-002]}\footnote{\url{http://www.givd.info/ID/00-00-002}}.
 \end{itemize}
 
-In \citetitle*{dengler-2011} (\cite{dengler-2011}) the \cite{gvid} project team describe the system
+In \citetitle*{dengler-2011} (\cite{dengler-2011}) the \cite{givd} project team describe the system
 architecture and outline plans to aggregate different types of data from external sources.
 
 \begin{quote}
@@ -442,9 +544,9 @@ the interconnected metadata collections approach described in
 \citetitle{jones-2006} (\cite{jones-2006}).
 
 However, the emphasis is on providing a human interactive search facility
-with the \cite{gvid} system acting as the central node.
-The plans do not include providing a machine readable interface,
-allowing the \cite{gvid} system itself to be used as a component in
+with the \cite{givd} system acting as the central node.
+The current published plans do not include providing a machine readable
+interface to enable \cite{givd} system itself to be used as a component in
 in a larger distributed system.
 
 \subsubsection{\cite{ppbio} Information System}
@@ -463,7 +565,7 @@ Knowledge Network for Biocomplexity (KNB), a network which aims to
 assist ecological and environmental research."
 \end{quote}
 
-This indicates a readiness to move towards using open standards for the
+This indicates a move towards using open standards for the
 metadata and the service interfaces, enabling the
 \cite{ppbio} Information System
 to become part of a larger distrbuted system.
@@ -490,23 +592,6 @@ In other cases the \cite{knb} system only stores the metadata,
 referring to data that is stored elsewhere, e.g.
 \citetitle*{dietze-2004}\footnote{\url{https://knb.ecoinformatics.org/#view/doi:10.5063/AA/mdietze.3.2}}.
 
-
-\subsubsection{\citetitle*{eml}}
-
-\citetitle*{eml} (\cite{eml}) is a metadata specification
-for describing ecological datasets, based on work done by the
-Ecological Society of America
-and associated efforts
-\citetitle*{michener-1997} (\cite{michener-1997}).
-
-\cite{eml} is implemented as a series of \cite{format-xml} document types that can be
-used to describe different aspects of an ecological dataset.
-
-The following metadata registries use or provide metadata in \cite{eml}
-\begin{itemize}
-\item \citetitle*{knb} {\cite{knb}} 
-\item \citetitle*{gbif} {\cite{gbif}} 
-\end{itemize}
 
 \subsubsection{\cite{metacat}}
 
@@ -568,43 +653,6 @@ is similar the virtual observatory architecture.
 
 \subsubsection{\citetitle*{fgdc-geo}}
 
-fgdc
-FGDC
-Federal Geographic Data Committee
-https://www.fgdc.gov/
-
-fgdc-geo
-FGDC Geospatial Platform
-http://www.geoplatform.gov/
-https://www.fgdc.gov/initiatives/geospatial-platform
-
-fgdc-data
-FGDC Dataset Catalog
-http://www.geoplatform.gov/node/201/%26fq%3Dmetadata_type%3A%22geospatial%22%2BAND%2B
-
-Data.Gov
-http://www.data.gov/
-
-Data.Gov Dataset Catalog
-http://catalog.data.gov/dataset
-
-Data.Gov GitHub
-https://github.com/GSA/data.gov
-
-
-Data.Gov.Uk
-http://data.gov.uk/
-http://ckan.org/case-studies/data-gov-uk/
-
-Data.Gov.Uk datasets
-http://data.gov.uk/data/search
-
-
-
-CKAN Data management system
-http://ckan.org/
-
-
 http://ckan.org/features/
 \begin{quote}
 "Many organisations already have their data in repositories with well-defined process and procedures
@@ -649,7 +697,7 @@ Apache SOLR for federated search.
 
 
 
-AstroTrop requirements
+\cite{trop} requirements
 
     Data discovery for primary data (NASA, ESO, WELD).
     Data discovery for external data (JPL, WHR).
@@ -662,7 +710,7 @@ AstroTrop requirements
 
     Key requirement is GIS location data, region() etc.
 
-AstroGrid services
+\cite{astro} services
 
     Registry
 

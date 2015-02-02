@@ -53,7 +53,8 @@
 # Run our container.
 #[user@desktop]
 
-    report=${HOME:?}/Desktop/astrotrop/googlecode/docs/reports/evaluation/dave
+    project=/var/local/projects/edinburgh/astrotrop
+    report=${project:?}/googlecode/docs/reports/evaluation/dave
 
     docker run -it -v ${report:?}:/var/local/texdata pdflatex bash
 
