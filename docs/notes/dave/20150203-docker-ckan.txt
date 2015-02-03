@@ -1,0 +1,58 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # http://docs.ckan.org/en/latest/maintaining/installing/install-using-docker.html
+
+# -------------------------------------------------------------------------------------------
+# Using Docker to install CKAN.
+#[root@desktop]
+
+    #
+    # Start a new VM
+    ischnura-createvm 
+
+        INFO : Node name [polyethylene]
+        INFO : Base name [centos-65-base-20140211.qcow]
+        INFO : Disc name [polyethylene.qcow]
+        INFO : Disc size [8G]
+
+    #
+    # Install the EPEL repository
+    yum -y localinstall --nogpgcheck \
+        'https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm'
+
+    #
+    # Install the ELREPO repository
+    yum localinstall -y --nogpgcheck \
+        'http://elrepo.org/elrepo-release-6-6.el6.elrepo.noarch.rpm'
+
+    #
+    # Install Docker
+    yum install docker-io
+
+    docker run -d --name db ckan/postgresql
+    docker run -d --name solr ckan/solr
+    docker run -d -p 80:80 --link db:db --link solr:solr ckan/ckan
+
+
+
