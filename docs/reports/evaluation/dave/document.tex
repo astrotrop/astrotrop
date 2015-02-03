@@ -38,20 +38,20 @@ organizational structures necessary to enable the international utilization of
 astronomical archives as an integrated and interoperating virtual observatory."
 \end{quote}
 
-The Virtual Observatory (VO) is the realization of the \cite{ivoa} vision of
+The \citetitle*{vo} (\cite{vo}) is the realization of the \cite{ivoa} vision of
 an integrated and interoperating virtual observatory.
-The work of the IVOA focuses on the development of standards, providing a forum
+The work of the \cite{ivoa} focuses on the development of standards, providing a forum
 for members to debate and agree the technical standards that are needed to make
-the VO possible.
+the \cite{vo} possible.
 
-The operational VO itself is comprised of a global shared metadata registry,
+The operational \cite{vo} itself is comprised of a global shared metadata registry,
 the Registry, and a number of individual data discovery and data access services
 deployed at each of the participating institutes.
 These components work together to present a uniform mechanism for discovering
 and accessing data, irrespective of where it is physically located.
 
-The VO architecture and data discovery processes are very similar to the
-interconnected metadata collections approach described in
+The \cite{vo} architecture and data discovery processes are very similar to the
+\textit{'interconnected metadata collections'} approach described in
 \citetitle{jones-2006} (\cite{jones-2006}).
 
 \begin{quote}
@@ -285,13 +285,6 @@ The paper, along with the additional supporting information available on the
 However, details of the data sources, the instruments, target areas and date ranges
 the data covers are not available in a machine readable format.
 
-\begin{quote}
-"Ground data used to train the biomass prediction model were
-derived from various sources including published literature
-and national forest inventories collected by the authors
-and their colleagues."
-\end{quote}
-
 The carbon density dataset itself is available as \cite{format-geotiff} files,
 with associated \cite{format-world} metadata, for download from the
 \cite{nasa-jpl-carbon-ftp} site.
@@ -475,52 +468,51 @@ used to describe different aspects of an ecological dataset.
 A second issue with the \cite{ivoa} and \cite{astro} metadata \cite{ivoa.reg} and
 data discovery tools concerns the allocation of roles and responsibilities for
 managing the metadata within the \cite{ivoa.reg}, and the way these reflect the
-structure of the \cite{ivoa} and its members involved in the development process.
+structure of the \cite{ivoa} and the members involved in developing the \cite{ivoa.reg}.
 
 Historically, the most active contributors to the development of the \cite{ivoa}
 standards and the \cite{astro} software have been primary data providers within
-the astronomy community.
-
+the international and UK astronomy communities.
 Many of these represent large scale data providers responsible for publishing and
-curating the primary science archive for a telescope survey or satelite mission.
+curating primary science archives for telescope surves or satelite missions.
 
 In the \cite{trop} domain these are equivalent to the upstream data providers who publish
-and curate the original satelite remote sensing data, such as the \citetitle{landsat}
-data archive or the \citetitle{usgs-lta} provided by the \cite{usgs}.
+the original satelite remote sensing data, such as the \cite{landsat}
+data archive or the \citetitle{usgs-lta} of remote sensing data published by by the
+\cite{usgs}.
 
 This has influenced the way that the \cite{ivoa} and \cite{astro} software has
-been developed. In particular, the initial emphasis on providing the tools and
-services for publishing large datasets, meant that the curation of the dataset
-metadata was seen as a system administrator role, responsible for curating all of
-the metadata published by that institute.
-
+been developed. In particular, the general emphasis on providing tools and services
+for publishing large datasets, has meant that the curation of the dataset
+metadata was seen as a system administrator role.
 As a result, many of the current user interface tools for managing and curating data sets
 are designed around a single system administrator managing the metadata for an entire
 service, rather that individual researchers managing the metadata for their own data.
 
 In contrast, in the \cite{trop} use cases a significan portion of the data in the system
 will be provided by and curated by individual researchers or small research groups.
-For example, the results and supplementary data for the \cite{mitchard-2014} paper would
-be published and curated by the members of the research team themselves.
+For example, the results and supplementary data for the (\cite{mitchard-2014}) paper would
+probably be published and curated by the members of the research team themselves.
 
-Neither of these issues are 'show stoppers', it should be possible to replace the \cite{ivoa}
-\cite{ivoa.obscore} with a new datamodel designed for \cite{trop}, and it would also be possible
+Neither of these issues are 'show stoppers'. It should be possible to replace the \cite{ivoa}
+\cite{ivoa.obscore} with a new datamodel designed for \cite{trop}, and it should be possible
 to develop a new user interface and permission infrastructure to enable individual users
 to publish and curate their own data.
 
-However, bearing in mind the level of resources these changes would require it would be useful
-to compare the data discovery capabilities and features provided by the \cite{ivoa} and
-\cite{astro} software with the data discovery capabilities of some of the current \cite{gis}
-based systems specifically designed to handle geographical and ecological data.
+However, bearing in mind the level of resources these changes would require it may also be
+useful to compare the data discovery capabilities and features provided by the \cite{ivoa} and
+\cite{astro} software with the equivalent capabilities of some of the current \cite{gis}
+based systems which are designed to handle geographical and ecological data.
 
 \subsubsection{Global Index of Vegetation-Plot Databases}
 
 The \citetitle*{givd} (\cite{givd}) system is a complex registry of metadata describing
 databases of vegetation plot data from around the world.
 
-The \cite{givd} system contains records for
-\textit{ ... 209 databases with 3,148,605 vegetation plots},
-including three of the datasets from our use cases.
+The \cite{givd} system contains records for over 200 databases and 3 million individual
+vegetation plots.
+
+Three of the datasets used in our use cases are listed in the \cite{givd} system :
 
 \begin{itemize}
 \item \cite{forest-plots} \texttt{[GIVD:00-00-001]}\footnote{\url{http://www.givd.info/ID/00-00-001}}
@@ -529,7 +521,7 @@ including three of the datasets from our use cases.
 \end{itemize}
 
 In \citetitle*{dengler-2011} (\cite{dengler-2011}) the \cite{givd} project team describe the system
-architecture and outline plans to aggregate different types of data from external sources.
+architecture and some plans for the future to aggregate different types of data from external sources.
 
 \begin{quote}
 "Our longer-term vision is to develop GIVD in ways similar to Metacat (Jones et
@@ -539,15 +531,15 @@ but they will also discover other data from distributed databases, with GIVD
 acting as the central node."
 \end{quote}
 
-This is broadly similar to the VO architecture of distributed datasets
-the interconnected metadata collections approach described in
+This is broadly similar to the \cite{vo} architecture of distributed datasets and to the
+\textit{'interconnected metadata collections approach'} described in
 \citetitle{jones-2006} (\cite{jones-2006}).
 
-However, the current emphasis is on providing a human interactive search
-facility with the \cite{givd} system acting as the central node.
-The current published plans do not include providing a machine readable
-interface to enable \cite{givd} system itself to be used as a component in
-in a larger distributed system.
+However, the current emphasis is focussed on providing a human interactive
+search facility with the \cite{givd} system acting as the central node.
+So far, the plans do not include providing a machine readable interface to
+enable \cite{givd} system itself to be used as a component in in a larger
+distributed system.
 
 \subsubsection{\cite{ppbio} Information System}
 
@@ -565,10 +557,9 @@ Knowledge Network for Biocomplexity (KNB), a network which aims to
 assist ecological and environmental research."
 \end{quote}
 
-This indicates a move towards using open standards for the
-metadata and the service interfaces, enabling the
-\cite{ppbio} Information System
-to become part of a larger distrbuted system.
+This move towards using open standards for the metadata and the service
+interfaces, enables the \cite{ppbio} Information System to become part
+of a larger distrbuted system.
 
 \subsubsection{\citetitle*{knb}}
 
@@ -592,10 +583,41 @@ In other cases the \cite{knb} system only stores the metadata,
 referring to data that is stored elsewhere, e.g.
 \citetitle*{dietze-2004}\footnote{\url{https://knb.ecoinformatics.org/#view/doi:10.5063/AA/mdietze.3.2}}.
 
-\subsubsection{\cite{metacat}}
+This is may be good model for the \cite{trop} system to follow.
+
+In some cases, the system would store both the data and the metadata,
+e.g the results and supplementary data for (\cite{mitchard-2014}).
+
+In other cases, the system would only store the metadata, along with a refence to
+the data stored in an external system,
+e.g. the [RS1] (\cite{saatchi-2011}) and [RS2] (\cite{baccini-2012}) source material
+datasets used by (\cite{mitchard-2014})
+
+In this second example, the members of the
+(\cite{mitchard-2014}) research team would enter the metadata details of the 
+[RS1] (\cite{saatchi-2011}) and [RS2] (\cite{baccini-2012})
+datasets into the \cite{trop} system, but the datasets themselves
+would remain with their original publishers, \citetitle*{nasa-jpl-carbon}
+and \citetitle*{whrc} respectively.
+
+This would enable other members of the \cite{trop} community to discover the 
+[RS1] (\cite{saatchi-2011}) and [RS2] (\cite{baccini-2012})
+datasets using the \cite{trop} search facility, which would refer them to the
+\citetitle*{nasa-jpl-carbon} and \citetitle*{whrc} websites to download the data.
+
+As the \cite{trop} system is developed further, the ideal outcome would
+be for \citetitle*{nasa-jpl-carbon} and \citetitle*{whrc} to join the \cite{trop}
+community and participate in the development of the standards and interfaces
+for data sharing and data discovery.
+
+A number of \cite{nasa} projects are active in the \cite{ivoa},
+participating in the working groups and conferences and contributing
+towards developing the \cite{ivoa} standards.
+
+\subsubsection{\citetitle*{metacat}}
 
 \cite{metacat} is an open source data management tool that provides a
-repository for managing both data and metadata in a single system.
+repository for managing data and metadata in a single system.
 
 \begin{quote}
 Metacat is a repository for data and metadata (documentation about data) that
@@ -603,17 +625,10 @@ helps scientists find, understand and effectively use data sets they manage or
 that have been created by others.
 \end{quote}
 
-Metacat is capable of handling a variety of different metadata formats,
-including
-\citetitle*{eml} (\cite{eml})
+\subsubsection{\citetitle*{data.one}}
 
-
-%%endnote{https://www.fgdc.gov/standards/projects/FGDC-standards-projects/metadata/biometadata}
-
-\subsubsection{DataONE}
-
-The Metacat project is itself part of the Data Observation Network for Earth (DataONE)
-%%endnote{https://www.dataone.org/}
+The \cite{metacat} project is itself part of the
+\citetitle*{data.one} (\cite{data.one})
 project, a collaboration spconsored by the U.S. National Science Foundation to build
 an infrastructire from distributed webservices that provides open, persistent, robust,
 and secure access to Earth observational data.
@@ -629,29 +644,36 @@ that are fully interoperable, even when those repositories use divergent
 underlying software and support different data and metadata content standards.
 \end{quote}
 
-The DataONE arcitecture is based on a set of top level 
-\textit{Coordinating Nodes}
-and
-\textit{Member Nodes}
-located at each participating institute or organisation
+The \cite{data.one} architecture is based on a set of top level \textit{Coordinating Nodes}
+and individual \textit{Member Nodes} located at each participating institute or organisation.
 
-\textit{Coordinating Nodes}
-provide a replicated catalog of Member Node holdings, enabling
-scientists to discover data wherever they reside,
-and data repositories to make their data and services available
-to the international community.
+The \textit{Coordinating Nodes} provide a replicated catalog of the data in the
+\textit{Member Nodes}, enabling researchers to search for and discover data across
+the whole network.
 
-The individual \textit{Member Nodes}
-at each institute enable them to make their data available
-to the rest of the DataONE network
-via a standard webservice interface.
+The individual \textit{Member Nodes} at each institute enable researchers to publish data
+to the whole \cite{data.one} network.
 
-Again, this two layers of data discovery and data access
-is similar the virtual observatory architecture.
+This aproach is very similar to the \cite{vo} architecture of distributed datasets
+and the \textit{'interconnected metadata collections approach'} described in
+\citetitle{jones-2006} (\cite{jones-2006}).
 
 \subsubsection{\citetitle*{fgdc-geo}}
 
-http://ckan.org/features/
+The \citetitle*{fgdc-geo} was developed by the \citetitle*{fgdc} to
+\begin{quote}
+"provide a suite of well‐managed, highly available, and trusted geospatial 
+data, services, and applications for use by Federal agencies—and their State,
+local, Tribal, and regional partners"
+\end{quote}
+
+
+A key component of the system is 
+
+
+
+\subsubsection{\citetitle*{ckan}}
+
 \begin{quote}
 "Many organisations already have their data in repositories with well-defined process and procedures
 for publishing and managing data. In this case the data can be simply pulled regularly into CKAN
@@ -659,6 +681,7 @@ from the existing repositories. To facilitate this model we’ve developed a sop
 customisable “harvesting” mechanism which can fetch and import records from many different
 repository sources, including:
 \end{quote}
+
 \begin{itemize}
 \item Geospatial CSW Servers (see geospatial for more information)
 \item Existing web catalogues
@@ -666,6 +689,7 @@ repository sources, including:
 \item ArcGIS, Geoportal Servers and Z39.50 databases
 \item Other CKAN instances
 \end{itemize}
+
 \begin{quote}
 This functionality is used on data.gov to get data in from hundreds of their agencies,
 on data.gov.uk to implement a Discovery Metadata Service used to fulfill the UK’s
@@ -680,51 +704,6 @@ government CKAN instances, or if a topic-specific CKAN instance was created whic
 a subset of datasets from other CKAN sources. CKAN follows the DCAT standard for data catalogue
 metadata, so data can also be federated from other non-CKAN catalogues." 
 \end{quote}
-
-
-
-
-
-
-
-
-\cite{trop} requirements
-
-    Data discovery for primary data (NASA, ESO, WELD).
-    Data discovery for external data (JPL, WHR).
-
-    Data discovery for community data (ForestPlots, PPBio).
-
-    Data discovery for external data (GIVD, KNB, GBIF).
-
-    Data discovery for community data (Mitchard, Tansey).
-
-    Key requirement is GIS location data, region() etc.
-
-\cite{astro} services
-
-    Registry
-
-        XML registry - fixed metadata format based on IVOA VOResource
-        TAP registry - fixed metadata format based on IVOA VOResource
-        MOC support not implemented
-
-    SIAP
-    
-        GIS not implemented, AG services only provide simple box, not cone.
-
-    TAP
-    
-        Updated service is work in progress
-        Can be adapted to meet AT requirements
-        GIS support not implemented on SQLServer.
-        OpenGIS equivalent.
-
-
-
-
-
-
 
 
 
