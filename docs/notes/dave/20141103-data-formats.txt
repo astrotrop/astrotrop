@@ -1,0 +1,69 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (C) 2014 by Wizzard Solutions Ltd, ischnura@metagrid.co.uk
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+HDF
+https://en.wikipedia.org/wiki/Hierarchical_Data_Format
+
+    "Hierarchical Data Format (HDF) is a set of file formats (HDF4, HDF5)
+    designed to store and organize large amounts of numerical data."
+
+NetCDF
+https://en.wikipedia.org/wiki/NetCDF
+
+    "NetCDF (Network Common Data Form) is a set of software libraries and self-describing,
+    machine-independent data formats that support the creation, access, and sharing of
+    array-oriented scientific data.
+
+Climate and Forecast Metadata Conventions
+https://en.wikipedia.org/wiki/Climate_and_Forecast_Metadata_Conventions
+
+    "The CF conventions were introduced in 2003, after several years of development
+    by a collaboration that included staff from U.S. and European climate and weather
+    laboratories."
+
+    "The conventions contained generalizations and extensions to the earlier
+    Cooperative Ocean/Atmosphere Research Data Service (COARDS) conventions and the
+    Gregory/Drach/Tett (GDT) conventions."
+
+    "The CF conventions have been adopted by a wide variety of national and international
+    programs and activities in the Earth sciences."
+    "For example, they were required for the climate model output data collected for
+    Coupled model intercomparison projects, which are the basis of Intergovernmental
+    Panel on Climate Change assessment reports."
+
+
+    "CF originated as a standard for data written in netCDF, but its structure is
+    general and it has been adapted for use with other data formats."
+    "For example, using the CF conventions with Hierarchical Data Format data has
+    been explored."
+
+
+Earth System Grid
+https://en.wikipedia.org/wiki/Earth_System_Grid
+
+    "The Earth System Grid (ESG) is a data distribution portal whose development is
+    funded mainly by the United States Department of Energy.
+
+    "It is the portal through which the Program for Climate Model Diagnosis and
+    Intercomparison at Lawrence Livermore National Laboratory is distributing
+    data for the IPCC Fourth Assessment Report and the upcoming 2014 IPCC Fifth
+    Assessment Report."

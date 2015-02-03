@@ -1,0 +1,153 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    Google cache HTML version of
+    ftp://fapespclima.ccst.inpe.br/lba/inpe/presentations/LBA-SSC-14th-Presentations-Nov2003/Malhi-Fortaleza%20SSC%20Rainfor.pdf
+
+        Malhi et al, 2002, Journal of Vegetation Science
+        An international network to monitor the
+        structure, composition and dynamics of
+        Amazonian forests (RAINFOR)
+
+        Red Amazonica de Inventarios Forestales
+        Rede Amazonica de Inventarios Florestais
+        The Amazon Forest Inventory Network
+
+        http://www.geog.leeds.ac.uk/projects/rainfor
+
+
+    #
+    # Brazilian Progam for Biodiversity Research (PPBio) Information System
+    # GIVD Database ID: SA-BR-001
+    http://www.givd.info/db_details.html?choosen_db=196
+
+
+
+
+    #
+    # Translated text from Brazilian Progam for Biodiversity Research (PPBio) Information System
+    # GIVD Database ID: SA-BR-001
+    http://ppbio.inpa.gov.br/repositorio/dados
+
+
+        To be useful for scientists, professionals involved with environmental management and public policy makers,
+        a data set must be properly stored in an organized structure and always be accompanied by detailed explanations,
+        including information on how they were collected, where, by whom and when - the so-called Primary Metadata.
+        Thus, it ensures that this data set can be understood and used again by anyone, not necessarily by whom collected.
+        Metadata is data about data that helps researchers to find, understand and use efficiently these data sets generated
+        by them or other researchers.
+
+        Aiming to provide a database on Amazon biodiversity for various sectors of society, PPBio follows the principle
+        that every collection of information should be documented in the form of metadata associated with the corresponding
+        set of validated data and made available on a website with free access.
+        
+        Political Data PPBio is available in Section Politics data .
+
+        The metadata present in the Western Amazon Portal PPBio follow the standard EML
+        (Ecological Metadata Language - http://knb.ecoinformatics.org/software/eml/ , Fegraus et al., 2005),
+        developed by the Knowledge Network for Biocomplexity
+        (KNB - http: //knb.ecoinformatics.org/index.jsp ),
+        an international network that aims to integrate data from multiple collection sites, laboratories and researchers.
+        They are arranged as follows: title and abstract, keywords, owner, contact, associated parts, research project,
+        usage rights, geographical coverage, temporal coverage, taxonomic coverage, methods, information access, data files
+        and information on the attribute table.
+        The making of metadata must be made ​​through the Morpho software, available for free download on the KNB network site.
+        The PPBio team developed a manual for use of Morpho, which can be downloaded here (last update May / 2012).
+        Read the manual before starting your metadata. 
+
+
+    #
+    # From paper describing the dataset.
+    # The Brazilian Program for Biodiversity Research (PPBio) Information System
+    http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=10.7809/b-e.00083
+
+
+        To facilitate data searches, all the meta-
+        data were converted to XML, and the
+        PPBio has installed a METACAT server
+        (http://knb.ecoinformatics.org/software/metacat/) to integrate with the Knowledge
+        Network for Biocomplexity (KNB), a
+        network which aims to assist ecological
+        and environmental research. 
+
+
+    #
+    # METACAT 
+    # OpenSource GPL
+    http://knb.ecoinformatics.org/software/metacat
+    https://knb.ecoinformatics.org/knb/docs/intro.html
+
+        Metacat is a repository for data and metadata (documentation about data) that helps scientists find,
+        understand and effectively use data sets they manage or that have been created by others.
+        Thousands of data sets are currently documented in a standardized way and stored in Metacat systems,
+        providing the scientific community with a broad range of science data that–because the data are well
+        and consistently described–can be easily searched, compared, merged, or used in other ways.
+
+        Metacat is a Java servlet application that runs on Linux, Mac OS, and Windows platforms in conjunction
+        with a database, such as PostgreSQL (or Oracle), and a Web server.
+
+        The Metacat application stores data in an XML format using Ecological Metadata Language (EML) or other
+        metadata standards such as ISO 19139 or the FGDC Biological Data Profile. 
+
+    #
+    # DataONE
+    # Data Observation Network for Earth    
+    https://www.dataone.org/
+
+        The DataONE project is a collaboration among scientists, technologists, librarians, and social scientists
+        to build a robust, interoperable, and sustainable system for preserving and accessing Earth observational
+        data at national and global scales. Supported by the U.S. National Science Foundation, DataONE partners
+        focus on technological, financial, and organizational sustainability approaches to building a distributed
+        network of data repositories that are fully interoperable, even when those repositories use divergent underlying
+        software and support different data and metadata content standards.
+
+        DataONE defines a common web-service service programming interface that allows the main software components
+        of the DataONE system to seamlessly communicate.
+
+        Funded by NSA
+        2009 - 2015 ($21,194,548.00 to date)
+        http://www.nsf.gov/awardsearch/showAward?AWD_ID=0830944
+        2014 - 2019 ($3,909,117.00 to date)
+        http://www.nsf.gov/awardsearch/showAward?AWD_ID=1430508
+
+
+
+        Authentication systems
+        http://www.cilogon.org/
+        http://www.incommon.org/
+
+
+    #
+    # Estimated carbon dioxide emissions from tropical deforestation improved by carbon-density maps
+    # A.Baccini et al (2012)
+    http://www.nature.com/nclimate/journal/v2/n3/full/nclimate1354.html
+
+    #
+    # Benchmark map of forest carbon stocks in tropical regions across three continents
+    # Saatchi et al (2010)
+    http://www.pnas.org/content/108/24/9899
+    http://dx.doi.org/10.1073/pnas.1019576108
+
+
+
+

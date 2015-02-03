@@ -1,0 +1,90 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Running GUI apps with Docker
+# http://fabiorehm.com/blog/2014/09/11/running-gui-apps-with-docker/
+#[user@desktop]
+
+    pushd $(mktemp -d)
+
+    cat > Dockerfile << 'EOF'
+FROM ubuntu:trusty
+MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+
+RUN useradd --create-home --uid 500 albert
+RUN chmod -R albert /home/albert
+
+RUN apt-get update
+RUN apt-get install -y gedit
+
+#RUN apt-get install -y qgis
+
+#RUN apt-get install -y python-software-properties
+#RUN add-apt-repository ppa:ubuntugis/ubuntugis-unstable
+#RUN apt-get update
+#RUN apt-get install -y qgis python-qgis qgis-plugin-grass
+
+RUN apt-get install -y software-properties-common
+RUN add-apt-repository -y ppa:ubuntugis/ubuntugis-unstable
+RUN apt-get update
+RUN apt-get install -y qgis python-qgis qgis-plugin-grass
+
+USER albert
+ENV HOME /home/albert
+WORKDIR  /home/albert
+
+#CMD /usr/bin/gedit
+CMD /usr/bin/qgis
+
+EOF
+
+    #
+    # Build the image    
+    docker build -t albert . 
+
+    #
+    # Run the container
+    docker run -ti --rm \
+       -e DISPLAY=$DISPLAY \
+       -v /tmp/.X11-unix:/tmp/.X11-unix \
+       albert qgis
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

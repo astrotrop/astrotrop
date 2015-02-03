@@ -1,0 +1,810 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2014, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+# ------------------------------------------------------------------
+# 3 Area
+
+- 4 Heiko Balzter (Leicester)
+- 5 Mark Cutler (Dundee)
+- 6 Giles Foody (Nottingham)
+- 7 Richard Lucas (Aberystwyth)
+- 8 Mark Mulligan (Kings) 
+
+
+# 11 Shaun Quegan  (Sheffield)
+
+# 13 Iain Woodhouse (Edinburgh)
+
+
+# ------------------------------------------------------------------
+# 4 Heiko Balzter (Professor, Leicester)
+# http://www2.le.ac.uk/departments/geography/people/hb91
+
+    REDD+ Reducing Emissions from Deforestation and Degradation
+    http://www.un-redd.org/AboutREDD/tabid/102614/Default.aspx
+
+    TerraSAR-X earth observation satellite
+    https://en.wikipedia.org/wiki/TerraSAR-X
+
+    Disaster Monitoring Constellation
+    https://en.wikipedia.org/wiki/Disaster_Monitoring_Constellation
+
+    ENVISAT- Envisat earth observation satellite
+    https://en.wikipedia.org/wiki/Envisat
+
+    ERS-1/2 - European Remote-Sensing Satellite
+    https://en.wikipedia.org/wiki/European_Remote-Sensing_Satellite
+
+    JERS-1 Japanese Earth Resources Satellite
+    https://en.wikipedia.org/wiki/JERS-1
+    https://directory.eoportal.org/web/eoportal/satellite-missions/j/jers-1
+    https://earth.esa.int/web/guest/missions/3rd-party-missions/historical-missions/jers-1
+
+    ALOS - PALSAR
+    http://www.eorc.jaxa.jp/ALOS/en/about/palsar.htm
+
+    GIONET Network for Earth Observation Research Training
+    http://www.gionet.eu/
+
+
+    GMES - Global Monitoring for Environment and Security
+    http://www.copernicus.eu/
+    https://en.wikipedia.org/wiki/Copernicus_Programme
+
+        related
+
+        INSPIRE DIRECTIVE
+        http://inspire.ec.europa.eu/        
+
+        Shared Environmental Information System 
+        http://ec.europa.eu/environment/archives/seis/index.htm
+
+        Global Earth Observation System of Systems
+        https://en.wikipedia.org/wiki/Global_Earth_Observation_System_of_Systems
+
+        European geo-information services
+        http://www.geoland2.eu/
+
+        Land Cover and Land Use Monitoring (EUROLAND)
+
+            sample data refers to
+            Assessment of the European Terrestrial Carbon Balance 
+            http://www.carboeurope.org/
+
+    Climate and Land-Surface Systems Interaction Centre (CLASSIC)
+    http://www2.le.ac.uk/departments/geography/research/projects/completed/classic
+        - some dead pages
+        - nothing active found
+
+
+        founding partner :-
+        Centre for Ecology and Hydrology
+        http://www.ceh.ac.uk/sci_programmes/biogeochem/earthobservation.html
+
+            NERC Earth Observation Data Centre
+            http://neodc.nerc.ac.uk/?option=displaypage&Itemid=115&op=page&SubMenu=-1
+
+                Get data            
+                http://badc.nerc.ac.uk/cedabrowse/neodc
+
+                    Datasets held by the BADC and NEODC
+                    https://services.ceda.ac.uk/cedasite/resreg/index/
+
+                        Example
+                        Airborne and Ground-based Measurements of Atmospheric Oxydants
+                        http://badc.nerc.ac.uk/view/badc.nerc.ac.uk__ATOM__dataent_11746761484318953
+
+                            XML metadata
+                            http://badc.nerc.ac.uk/retrieve/badc.nerc.ac.uk__ATOM__dataent_11746761484318953?format=raw
+
+                            Data files
+                            http://badc.nerc.ac.uk/cedabrowse/badc/acsoe/data/ease-97/macehead
+                            
+                                JPEG
+                                http://badc.nerc.ac.uk/cedabrowse/badc/acsoe/data/ease-97/macehead/ir970424.jpg
+                                Tabular data
+                                http://badc.nerc.ac.uk/cedabrowse/badc/acsoe/data/ease-97/macehead/mh970424.jo1
+                                Graph plot
+                                http://badc.nerc.ac.uk/cgi-bin/naplot/naplot/badc/acsoe/data/ease-97/macehead/mh970424.jo1
+                                Tabular data
+                                http://badc.nerc.ac.uk/cedabrowse/badc/acsoe/data/ease-97/macehead/mh970424.mt3
+                                Graph plot
+                                http://badc.nerc.ac.uk/cgi-bin/naplot/naplot/badc/acsoe/data/ease-97/macehead/mh970424.mt3
+
+
+    SibFORD
+    http://www.sibford.uni-jena.de/
+
+    CARBOAFRICA
+    http://www.carboafrica.net/index_en.asp
+
+    SIBERIA-II
+    http://www.fao.org/gtos/tcopjs1.html
+
+        Part of
+        Global terestrial observing system
+        http://www.fao.org/gtos/index.html
+    
+        Includes
+
+        Global observation of forest and land conerage dynamics
+        http://www.fao.org/gtos/gofc-gold/data.html    
+
+            Data Information Services and Systems
+            http://www.fao.org/gtos/gofc-gold/data.html
+
+                Catalogs
+                http://www.fao.org/gtos/gofc-gold/catalogs.html
+                
+                    GOFC Data portal (not responding)
+                    http://www.fao.org/gtos/gofc-gold/portal/portal_1.html
+
+                    GOFC Free text portal (blank page)
+                    http://gcmd.gsfc.nasa.gov/KeywordSearch/PageForward.do?ForwardPage=advancedSearch.jsp&KeywordPath=Parameters&Portal=gofc&MetadataType=0
+                    http://gcmd.gsfc.nasa.gov/KeywordSearch/Home.do?Portal=gofc&MetadataType=0
+
+                    GOFC Keyword search
+                    http://gcmd.nasa.gov/Data/portals/gofc/
+
+
+# ------------------------------------------------------------------
+# 5 Mark Cutler (Head of Geography, Dundee)
+# http://www.dundee.ac.uk/environment/staff/profile/mark-cutler
+
+    GloboLakes
+    http://www.globolakes.ac.uk/
+    
+    LIMNADES
+    Database of ground bio-optical measurements of worldwide lakes
+    http://www.globolakes.ac.uk/limnades/index.html
+
+
+# ------------------------------------------------------------------
+# 6 Giles Foody (Nottingham)
+# 
+
+# ------------------------------------------------------------------
+# 7 Richard Lucas (Professor, Aberystwyth)
+# http://www.aber.ac.uk/en/iges/staff/academic-staff/rml/
+
+    Earth Observation and Ecosystem Dynamics Research Group
+    http://www.aber.ac.uk/en/iges/research-groups/earth-observation-laboratory/
+
+    Earth Observation and Ecosystem Dynamics Software
+    http://www.aber.ac.uk/en/iges/research-groups/earth-observation-laboratory/software/
+
+        RSGISLib - Remote Sensing and GIS Software Library
+        http://www.rsgislib.org/
+        https://bitbucket.org/petebunting/rsgislib
+
+
+# ------------------------------------------------------------------
+# 8 Mark Mulligan (Kings)
+# https://www.kcl.ac.uk/sspp/departments/geography/people/academic/mulligan/index.aspx
+# https://www.kcl.ac.uk/sspp/departments/geography/people/academic/mulligan/Research.aspx
+  
+    http://ambiotek.com/
+    Research projects
+    http://ambiotek.com/website/content/view/14/33/
+
+    Data
+    http://ambiotek.com/website/content/view/15/37/
+
+# ------------------------------------------------------------------
+# 10 Edward Mitchard (Edinburgh)
+# http://www.geos.ed.ac.uk/homes/emitchar
+# http://www.ed.ac.uk/schools-departments/geosciences/people?indv=1664
+# http://www.research.ed.ac.uk/portal/en/persons/edward-mitchard%28c55fb6b0-0495-466e-a38a-bbd98c414538%29.html
+# http://scholar.google.co.uk/citations?user=DSmGQwEAAAAJ
+
+# http://deforestationwatch.wordpress.com/
+
+
+https://deforestationwatch.wordpress.com/2013/04/25/a-step-by-step-guide-to-making-maps-of-vegetation-carbon-stocks/
+http://www.geos.ed.ac.uk/~emitchar/carbonmapcomparison/datasources.html
+
+
+
+
+# ------------------------------------------------------------------
+# 12 Kevin Tansey  (Leicester)
+# See #74
+ 
+# ------------------------------------------------------------------
+# 14 Biodiversity
+
+# 15 Antje Ahrends (RBG Edinburgh) 
+# 16 Jos Barlow (Lancaster)
+# 17 David Burslem (Aberdeen)
+# 18 Mark Cutler (Dundee)
+# 19 Rob Ewers (Imperial)
+# 20 Giles Foody (Nottingham)
+# 21 Toby Gardner (Cambridge)
+# 22 Alan Grainger (Leeds)
+# 23 John Healey (Bangor)
+# 24 Ross Hill (Bournemouth) 
+# 25 Tom Meagher (St Andrews)
+# 26 William Milliken (RBG Kew)
+# 27 Mark Mulligan (Kings) 
+# 29 Alan Paton (RBG Kew)
+# 30 Kelvin Peh (Cambridge)
+# 31 Toby Pennington (RBG Edinburgh)
+
+- 33 Oliver Phillips (Leeds)
+# 34 Tiina Sarkinen (RBG Edinburgh) 
+- 35 Chris Thomas (York)
+# 36 Yongyut Trisurat (Kasertsart)
+
+
+# ------------------------------------------------------------------
+# 28 Adrian Newton (Bournemouth)
+
+
+http://staffprofiles.bournemouth.ac.uk/display/anewton
+http://bournemouth.academia.edu/AdrianNewton
+http://scholar.google.co.uk/citations?user=JCMrZ5YAAAAJ&hl=en
+http://www.espa.ac.uk/global-forum/adrian-newton
+
+
+
+# ------------------------------------------------------------------
+# 33  Oliver Phillips (Professor, Leeds)
+# http://www.geog.leeds.ac.uk/people/o.phillips
+
+    RAINFOR
+    http://www.geog.leeds.ac.uk/research/ecology-and-global-change/projects/rainfor/
+    http://www.rainfor.org/en
+
+    Google Map
+    http://www.rainfor.org/en/map
+    https://www.google.com/fusiontables/embedviz?q=select+col0+from+1yE-1TvGbZH2kVYgZYQBjWA_5Gi-ntgNldaki2zqr&viz=MAP&h=false&lat=-8.265197208630594&lng=-56.34933953125&t=3&z=4&l=col0&y=2&tmplt=2&hml=TWO_COL_LAT_LNG
+
+    Google Data - "Rainfor_2014_embed"
+    (Imported at Wed Jul 30 04:22:20 PDT 2014 from Rainfro_upload_wed.xlsx)
+    (Edited on September 17, 2014)
+    https://www.google.com/fusiontables/DataSource?docid=1yE-1TvGbZH2kVYgZYQBjWA_5Gi-ntgNldaki2zqr
+    
+    http://www.rainfor.org/en/project/links
+
+
+        AMAZON TREE DIVERSITY NETWORK    
+        http://testweb.science.uu.nl/Amazon/atdn/
+        http://web.science.uu.nl/Amazon/atdn/
+        http://web.science.uu.nl/Amazon/atdn/pagina42.html
+        
+        Links
+        http://web.science.uu.nl/Amazon/atdn/pagina27.html 
+        Embeded Map (404)
+        http://www.gmodules.com/ig/ifr?url=http://code.google.com/apis/kml/embed/embedkmlgadget.xml&up_kml_url=http%3A%2F%2Fweb.science.uu.nl%2FAmazon%2FATDN%2FKML%2FATDN.kml&up_view_mode=earth&up_earth_2d_fallback=0&up_earth_fly_from_space=1&up_earth_show_nav_controls=1&up_earth_show_buildings=1&up_earth_show_terrain=1&up_earth_show_roads=1&up_earth_show_borders=1&up_earth_sphere=earth&up_maps_zoom_out=0&up_maps_default_type=map&synd=open&w=740&h=500&title=ATDN+Plot+Viewer&border=%23ffffff%7C3px%2C1px+solid+%23999999&output=js
+ 
+        KML URL (404)
+        http://web.science.uu.nl/Amazon/ATDN/KML/ATDN.kml
+        http://web.science.uu.nl/Amazon/atdn/kml/atdn.kml
+ 
+ 
+    FORESTPLOTS.NET
+    http://www.forestplots.net/
+
+        Google Map
+        https://www.google.com/fusiontables/embedviz?q=select+col12+from+1tbLYANoQ_iae991uDx3qoxsttof22WkvB5vMUmx5&viz=MAP&h=false&lat=-6.343707640047472&lng=35.177035969238304&t=3&z=3&l=col12&y=2&tmplt=2&hml=TWO_COL_LAT_LNG
+
+        Google Data - "ForestPlots_upload_Thurs"
+        (Imported at Thu Jul 31 02:15:42 PDT 2014 from ForestPlots_upload_Thurs.xlsx)
+        (Edited on October 24, 2014)
+        https://www.google.com/fusiontables/DataSource?docid=1tbLYANoQ_iae991uDx3qoxsttof22WkvB5vMUmx5
+
+
+    “Tropical Forests in the Changing Earth System"
+    http://www.tforces.net/
+
+        Google Map
+        https://www.google.com/fusiontables/embedviz?q=select+col5+from+10_CW_HXjbmRtPDdFmWMU4J72yR7YqcmBfKhTNR2s&viz=MAP&h=false&lat=-5.937547&lng=34.608182617187474&t=3&z=2&l=col5&y=2&tmplt=2&hml=TWO_COL_LAT_LNG
+        
+        Google Data - "ERCmap_OP_SL_FinalEdits"
+        (Imported at Wed Mar 19 03:18:30 PDT 2014 from ERCmap_OP_alternative.xlsx)
+        (Edited on March 19, 2014)
+        https://www.google.com/fusiontables/DataSource?docid=10_CW_HXjbmRtPDdFmWMU4J72yR7YqcmBfKhTNR2s
+
+        Data references [
+                {
+                African Tropical Rainforest Observation Network (AfriTRON)
+                http://www.afritron.net/
+                },
+                {
+                For more information please visit the RAINFOR website 
+                http://www.rainfor.org/
+                },
+                {
+                Data managed through ForestPlots.net
+                http://www.forestplots.net/
+                }
+            }
+
+        Logos [
+                {
+                European Research Council
+                http://erc.europa.eu/
+                },
+                {
+                GeoCarbon
+                http://www.geocarbon.net/
+                },
+                {
+                Natural Environment Research Council
+                http://www.nerc.ac.uk/
+                },
+                {
+                FORESTPLOTS.NET
+                http://www.forestplots.net/
+                },
+                {
+                RAINFOR
+                http://www.rainfor.org/
+                }
+            ]
+
+    African Tropical Rainforest Observation Network (AfriTRON)
+    http://www.afritron.net/
+
+        Google Map
+        https://www.google.com/fusiontables/embedviz?q=select+col4+from+11qpsPC4qwZGTQQrG7hqgCkmaOiBQB5RkVZ3qVW8Y&viz=MAP&h=false&lat=-1.403535&lng=15.15564&t=3&z=4&l=col4&y=2&tmplt=2&hml=TWO_COL_LAT_LNG
+
+        Google Data - "AfricaMap_18.03.2014_amended"
+        (Imported at Wed Mar 19 04:15:38 PDT 2014 from AfricaMap_18.03.2014.xlsx)
+        (Edited on October 23, 2014)
+        https://www.google.com/fusiontables/DataSource?docid=11qpsPC4qwZGTQQrG7hqgCkmaOiBQB5RkVZ3qVW8Y
+
+
+    Four separate rainforest data websites.
+    Registered to two departments at the University of Leeds.
+
+        whois forestplots.net - Jeremy Harmer, University of Leeds
+        whois tforces.net     - Jeremy Harmer, University of Leeds
+        whois rainfor.org     - Richard Bettie, Faculty of Environment, University Of Leeds
+        whois afritron.net    - Richard Bettie, Faculty of Environment, University Of Leeds
+
+forestplots.net
+tforces.net
+rainfor.org
+afritron.net
+
+
+
+        Jeremy Harmer
+        University Webmaster
+        http://www.personal.leeds.ac.uk/~issjmh/
+        http://www.personal.leeds.ac.uk/~issjmh/otherinfo.htm
+
+        Richard Bettie
+        Web Service Leader
+        http://www.environment.leeds.ac.uk/people/r.bettie
+        http://www.environment.leeds.ac.uk/people/it-staff.php
+    
+    Faculty of Environment
+    http://www.environment.leeds.ac.uk
+
+        School of Earth and Environment
+        http://www.see.leeds.ac.uk/
+    
+        School of Geography
+        http://www.geog.leeds.ac.uk
+
+# ------------------------------------------------------------------
+# 35  Chris Thomas (York)
+# http://www.york.ac.uk/biology/research/ecology-evolution/chris-d-thomas/
+# https://pure.york.ac.uk/portal/en/researchers/chris-d-thomas%2875de1a24-019b-4791-8397-c8632e27de07%29.html
+    
+   
+# ------------------------------------------------------------------
+# 40 Carbon
+
+# 41 Antje Ahrends (RBG Edinburgh)
+# 42 Tim Baker (Leeds)
+# 43 Pru Foster (Bristol)
+# 44 Manuel Gloor (Leeds)
+# 45 John Grace (Edinburgh)
+# 46 Simon Lewis (UCL) 
+
+# 48 Robin Matthews (James Hutton)
+# 49 Patrick Meir (Edinburgh)
+
+# 51 Edward Mitchard (Edinburgh)
+# 52 Sue Page (Leicester)
+# 53 Oliver Phillips (Leeds)
+# 54 Shaun Quegan  (Sheffield)
+
+# ------------------------------------------------------------------
+# 47 Yadvinder Malhi (Oxford)
+# http://www.geog.ox.ac.uk/staff/ymalhi.html
+# http://www.eci.ox.ac.uk/people/malhiyadvinder.php
+
+
+    Director, Oxford Centre for Tropical Forests 
+    http://www.tropicalforests.ox.ac.uk/
+    http://www.tropicalforests.ox.ac.uk/professor-yadvinder-malhi-0
+
+        "The Oxford Centre for Tropical Forests (OCTF) is a network of
+        Oxford University departments and neighbouring NGOs,
+        consultancies and businesses in the Oxford area."
+
+        Members
+        http://www.tropicalforests.ox.ac.uk/members
+            Lots of links to follow ..
+
+        GEM
+        Global Ecosystems Monitoring Network
+        http://gem.tropicalforests.ox.ac.uk/
+            Lots of links to follow ..
+
+                
+    Blog
+    http://www.yadvindermalhi.org/
+
+        Projects
+        http://www.yadvindermalhi.org/projects.html
+        
+            RAINFOR
+            http://www.rainfor.org/
+
+            AFRITRON
+            http://www.geog.leeds.ac.uk/projects/afritron/
+
+            TFORCES
+            http://www.tforces.net/en
+
+                See Leeds
+
+            SAFE
+            Stability of Altered Forest Ecosystems project
+            http://www.safeproject.net/
+
+                The Stability of Altered Forest Ecosystems project (SAFE)
+                explores how forest biodiversity and ecosystem function
+                vary along a gradient from intact forests (Maliau Basin),
+                through to logged forest, fragmented forest and oil palm
+                plantations in Sabah, Malaysian Borneo
+
+                Data protocols
+                http://www.safeproject.net/working-at-safe/data-protocols-for-the-safe-project/
+
+                    We require all researchers to deposit a copy of their data,
+                    and associated metadata, with the SAFE Project to be stored
+                    in a central data repository.
+
+                    The SAFE Project uses the Earthcape platform for data management.
+                    Earthcape provides a flexible framework for describing, storing
+                    and linking a wide variety of ecological, genomic and geographic data. 
+
+                    Earthcape - Biodiversity information platform
+                    http://earthcape.com/
+                    http://earthcape.com/features/
+
+                        Coool website ... not much else.
+                        Windows only :-(
+
+                        Recent blog posts - Sept 2013
+                        http://earthcape.com/blog/
+                        
+                        Forum contains three posts all of them spam
+                        https://earthcape.zendesk.com/forums 
+
+            ECOFOR
+            ECOFOR is a UK-Brazil consortium project looking at the links between biodiversity and ecosytem function along forest disturbance gradients in Brazil.
+
+            Ancient southern temperate forests of Chile
+            Exploring the functioning and carbon dynamics of the magnificent Fitzroya forests of Chile. 
+ 
+            Wytham Woods
+            http://www.wytham.ox.ac.uk/
+
+
+
+    Gogle scholar
+    http://scholar.google.co.uk/citations?user=ymyYqB4AAAAJ
+
+        FLUXNET: A new tool to study the temporal and spatial variability of ecosystem-scale carbon dioxide, water vapor, and energy flux densities
+        http://scholar.google.co.uk/citations?view_op=view_citation&hl=en&user=ymyYqB4AAAAJ&citation_for_view=ymyYqB4AAAAJ:u5HHmVD_uO8C
+    
+        FLUXNET
+        http://fluxnet.ornl.gov/    
+    
+            FLUXNET, a "network of regional networks," coordinates regional and global
+            analysis of observations from micrometeorological tower sites.
+    
+            The flux tower sites use eddy covariance methods to measure the exchanges
+            of carbon dioxide (CO2), water vapor, and energy between terrestrial
+            ecosystems and the atmosphere.
+
+            The FLUXNET database contains information about tower location and site
+            characteristics as well as data availability.
+
+            ** Lots of interesting metadata **
+            Example
+            http://fluxnet.ornl.gov/site/2687
+
+                Site Flux data
+
+                    External Web Site: 	 http://gaia.agraria.unitus.it/home/log-in/
+                    FTP Data Access: 	 http://database.amma-international.org/main.jsf
+
+                    MODIS Visualization: http://daac.ornl.gov/cgi-bin/MODIS/GR_col5_1/mod_viz.html?id=2687
+
+                Affiliations
+
+                    Affiliation Name: 	    CarboAfrica (EU-FP6)
+                    Affiliation Site Page: 	http://gaia.agraria.unitus.it/home/site-details?id=190
+
+
+        European Fluxes Database Cluster
+        http://gaia.agraria.unitus.it/home
+
+            The European Eddy Fluxes Database Cluster is an initiative to
+            improve standardization, integration and collaboration between
+            databases that are part of European research projects.
+            
+            It has been created with the aim to host in a single infrastructure
+            fluxes measurements between ecosystems and atmosphere and to provide
+            standard and high quality data processing and data sharing tools.
+
+            -------
+
+            Eddy Covariance Community Software
+            http://gaia.agraria.unitus.it/eco2s
+
+            Carbo-Extreme
+            http://gaia.agraria.unitus.it/carboextreme    
+
+                The Carbo-Extreme FP7 project, coordinated by the Max Planck Institute
+                for Biogeochemistry (Jena - Germany) is focused on the effest of climate
+                variability and extremes on terrestrial ecosystems.
+
+                Ecosystem Manipulation Experiment data 
+                http://gaia.agraria.unitus.it/carboextreme/data/emes-data
+
+                    Manual process, via contact name
+
+                INFUSION
+                http://gaia.agraria.unitus.it/carboextreme/data/infusion
+
+                    INFUSION is a Model Data Fusion exercise in the context of the CarboExtreme
+                    project where sites data are used in model development and parameterization.
+
+                    Password controlled ftp site
+                
+            CarboAfrica Database
+            http://gaia.agraria.unitus.it/carboafrica
+
+                The CarboAfrica interface has been removed because it is under evaluation the
+                best solution to support the development of an African network of ecosystem sites.
+
+                All the data acquired under the CarboAfrica EU project are however available
+                through the Home Page of the database.
+                
+                PIs that want to submit new data or new information about their sites can use
+                the PI Area general section available in the top bar menu.
+
+            GHG Europe Database
+            http://gaia.agraria.unitus.it/ghg-europe
+
+                The GHG-Europe project aims to improve our understanding and capacity for predicting
+                the European terrestrial carbon and greenhouse gas budget.
+
+                Example data
+                http://www.ua.ac.be/main.aspx?c=sebastiaan.luyssaert&n=35884
+
+                    zip file containing
+                        doc documentation
+                        mdb database 
+
+            ICOS
+            http://gaia.agraria.unitus.it/icos
+
+                ICOS (Integrated Carbon Observation System) is a European Research Infrastructure (ESFRI)
+                for quantifying and understanding the greenhouse gas balance of the European continent
+                and of adjacent regions (www.icos-infrastructure.eu). 
+
+            InGOS
+            http://gaia.agraria.unitus.it/ingos
+
+                InGOS is an EU funded IA (Integrating Activity) project targeted at improving and
+                extending the European observation capacity for non-CO2 greenhouse gases.
+
+            PAGE21
+            http://gaia.agraria.unitus.it/page21
+
+                PAGE21 is a Large-scale integrating collaborative project under the ENV call topic
+                "Vulnerability of Arctic permafrost to climate change and implications for global
+                GHG emissions and future climate" (ENV.2011.1.1.3-1)
+
+    MODIS Land Product Subsets 
+    http://daac.ornl.gov/MODIS/MODIS-menu/intro.html
+
+        The goal of the MODIS Land Product Subsets project is to provide
+        summaries of selected MODIS Land Products for the community to
+        use for validation of models and remote-sensing products, and
+        to characterize field sites.
+
+        Link to/from FLUXNET example
+        http://daac.ornl.gov/cgi-bin/MODIS/GR_col5_1/mod_viz.html?id=2687
+
+
+    AMMA
+    African Monsoon Multidisciplinary Analyses
+    http://amma-international.org/
+
+        AMMA is an international project to improve our knowledge and understanding of the West African Monsoon (WAM) and its variability. 
+
+        AMMA database
+        http://database.amma-international.org/home.jsf
+
+            The AMMA database aims at archiving and distributing to the AMMA research community different types of information:
+                * field data (LOP/EOP/SOP) produced during the project;
+                * historical data over West African area, that can be rescued;
+                * satellite and added value data produced or of interest for the project scientific objectives;
+                * pertinent model outputs calculated by the AMMA modelling groups or used by them as interpretation or comparison references;
+                * quantitative and qualitative data produced in the framework of the AMMA human dimension studies.
+
+        AMMA websites
+        http://database.amma-international.org/links.jsf
+
+        Data catalog
+        http://catalogue.amma-international.org/
+
+            ** lots of data **
+
+
+# ------------------------------------------------------------------
+# 55 Ecosystem Services
+# 56 Luiz Aragao (Exeter)
+# 57 Lindsay Banin (CEH)
+# 58 Mike Bonell (Dundee)
+# 59 Nick Chappell  (Lancaster)
+# 60 Daisy Dent (Stirling)
+# 61 David Galbraith (Leeds)
+# 62 Mark Mulligan (Kings) 
+# 63 Kelvin Peh (Southampton)
+# 64 Simon Queenborough (Sheffield)
+# 66 Ed Tanner (Cambridge)
+# 67 Jill Thompson (CEH)
+
+
+# ------------------------------------------------------------------
+# 72 Fires
+# 73 Thomas Smith (Kings)
+
+# ------------------------------------------------------------------
+# 74 Kevin Tansey  (Leicester)
+# http://www2.le.ac.uk/departments/geography/people/kjt7
+
+    Google scholar
+    http://scholar.google.co.uk/citations?user=nuYZ-xIAAAAJ&hl=en
+
+    GeoTIFF format
+    https://en.wikipedia.org/wiki/GeoTIFF
+    http://trac.osgeo.org/geotiff/
+    http://www.gisdevelopment.net/technology/ip/mi03117pf.htm
+
+    SIBERIA
+    http://www.siberia1.uni-jena.de/
+    SIBERIA is a shared-cost action (SCA) financed through the 4th Framework Programme
+    of the European Commission, Environment and Climate, Area 3.3: Center for Earth Observation,
+    Theme 3: Space Techniques Applied to Environmental Monitoring (Contract No. ENV4-CT97-0743-SIBERIA).
+    SIBERIA's work is based on extensive satellite data made available through ESA's 3rd ERS
+    Announcement of Opportunity (Project Number AO3.120 (SIBERIA) and NASDA's JERS initiative
+    "Global Boreal Forest Mapping".
+    The satellite data were received by a mobile receiving station of the German Remote Sensing
+    Data Center of DLR (DFD), which was deployed for this purpose in Ulaanbaatar, Mongolia.
+
+    ESA Fire CCI (Climate Change Initiative)
+    http://www2.le.ac.uk/departments/geography/research/projects/esafire
+
+    Global VGT burnt area product 2000 (GBA 2000)
+    http://bioval.jrc.ec.europa.eu/products/burnt_areas_gba2000/global2000.php
+
+    Geoland2
+    http://www2.le.ac.uk/departments/geography/research/projects/geolandtwo
+
+    GIONET
+    http://www2.le.ac.uk/departments/geography/research/projects/gionet
+
+    Copernicus, Global Land Service
+    http://land.copernicus.eu/global/
+    The Global Land Component in the framework of GMES Initial Operations (GIO)
+    is earmarked as a component of the Land service to operate
+    “a multi-purpose service component” that will provide a series bio-geophysical
+    products on the status and evolution of land surface at global scale.
+
+    Global VGT burnt area product 2000 -2007 (L3JRC)
+    http://bioval.jrc.ec.europa.eu/products/burnt_areas_L3JRC/GlobalBurntAreas2000-2007.php
+
+    Satellite Data to Aid Turbine Revolution
+    http://www2.le.ac.uk/offices/press/press-releases/2014/april/satellite-data-to-aid-turbine-revolution
+
+    Papers
+
+    Ten years of global burned area products from spaceborne remote sensing—A review: Analysis of user needs and recommendations for future developments
+    International Journal of Applied Earth Observation and Geoinformation, 26, 64-79, doi:10.1016/j.jag.2013.05.014
+    http://www.sciencedirect.com/science/article/pii/S0303243413000639
+    doi:10.1016/j.jag.2013.05.014
+
+    Integrating airborne multispectral imagery and airborne LiDAR data for enhanced lithological mapping in vegetated terrain 
+    http://nora.nerc.ac.uk/12796/
+
+
+
+
+
+# ------------------------------------------------------------------
+# 75 Forest Management
+# 76 Jim Lynch (Surrey)
+# 77 Stephen Morse (Surrey)
+
+# ------------------------------------------------------------------
+# 79 Gaseous Emissions
+
+# ------------------------------------------------------------------
+# 80 Mat Evans (York)
+# http://www.york.ac.uk/chemistry/staff/academic/d-g/evansm/
+# https://pure.york.ac.uk/portal/en/researchers/mathew-john-evans%282d7bd271-d035-4ea7-b3ae-51c71645dcae%29.html
+
+    National Centre for Atmospheric Science
+    https://www.ncas.ac.uk/index.php/en/scientist-profile/101-scientist-profile-mat-evans
+
+    Google Scholar
+    http://scholar.google.co.uk/citations?user=DCWuQ9wAAAAJ&hl=en
+
+# ------------------------------------------------------------------
+# 81 Pru Foster  (Bristol)
+# 82 Neil Harris (Cambridge)
+# 83 Alastair Lewis (York)
+# 84 Eric Sofen (York)
+    
+# ------------------------------------------------------------------
+# Other
+    
+    Next ESA SAR Toolbox (NEST)
+    https://earth.esa.int/web/nest/home
+
+    Toolbox for reading, processing, analysing and visualising ESA (ERS-1/2, ENVISAT, SENTINEL-1)
+    and other spaceborne* (TerraSAR-X, RADARSAT 1-2, COSMO-SkyMed, JERS-1, ALOS PALSAR)
+    SAR data processed to Level-1 or higher.
+
+
+
+
+    Global Index of Vegetation-Plot Databases (GIVD)
+    http://www.givd.info/559.html
+
+    GIVD entry for ForestPlots.net
+    http://www.givd.info/db_details.html?givd_id=00-00-001
+
+
+
+
+    MOC
+    http://www.ivoa.net/documents/MOC/
+    http://wiki.ivoa.net/twiki/bin/view/IVOA/MocInfo
+    http://cds.u-strasbg.fr/resources/doku.php?id=moc
+
+
+
+
+
