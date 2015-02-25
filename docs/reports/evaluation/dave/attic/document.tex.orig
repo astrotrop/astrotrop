@@ -1,0 +1,524 @@
+%%This is a very basic article template.
+%%There is just one section and two subsections.
+\documentclass{article}
+
+\usepackage{endnotes}
+	
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+ 
+\setlength{\parindent}{4em}
+\setlength{\parskip}{1em}
+
+\begin{document}
+
+\section{Introduction}
+
+Some text \ldots
+
+\section{The IVOA Virtual Observatory}
+
+The International Virtual Observatory Alliance (IVOA)
+\endnote{http://www.ivoa.net/}
+was formed in June 2002 with a mission to
+\begin{quote}
+"facilitate the international coordination and collaboration
+necessary for the development and deployment of the tools, systems and
+organizational structures necessary to enable the international utilization of
+astronomical archives as an integrated and interoperating virtual observatory."
+\end{quote}
+
+The work of the IVOA focuses on the development of standards, providing a forum
+for members to debate and agree the technical standards that are needed to make
+the VO possible.
+
+The Virtual Observatory (VO) is the realization of the IVOA vision of an
+integrated and interoperating virtual observatory.
+
+The operational VO itself is comprised of a global shared metadata registry,
+along with individual data discovery and data access services deployed at each
+of the participating institutes, which work together to present a uniform
+mechanism for discovering and accessing data, irrespective of where it is
+physically located.
+
+The VO architecture and data discovery process is very similar to the
+interconnected metadata collections approach described in a paper on 'The new
+bioinformatics: integrating ecological data from the gene to the biosphere'
+(Jones et al. 2006).
+\endnote{The new bioinformatics: integrating ecological data from the gene to the biosphere (Jones et al. 2006)}
+\endnote{doi:10.1146/annurev.ecolsys.37.091305.110031}
+\endnote{http://www.annualreviews.org/doi/abs/10.1146/annurev.ecolsys.37.091305.110031}
+
+\begin{quote}
+"An alternative, more robust approach to the highly structured, vertically integrated
+data warehouse is a more loosely structured collection of project-specific data sets
+accompanied by structured metadata about each of the data sets."
+\end{quote}
+
+\begin{quote}
+"Each of the data sets is stored in a manner that is opaque to the data system in
+that the data themselves cannot be directly queried; rather, the structured
+metadata describing the data is queried in order to locate data sets of
+interest. After data sets of interest are located, more detailed information
+(such as the detailed data model that specifies, e.g., the definitions of the
+variables) can be extracted from the metadata and used to load, query, and
+manipulate individual data sets."
+\end{quote}
+
+\subsection{Example use case}
+
+A useful way to illustrate how the VO data discovery process works is to look at
+an example task such as selecting images covering a particular region of the
+sky, in a particular wavelength e.g. infrared, visible light, radio or xray.
+
+\subsubsection{Service discovery}
+
+The first step of the process is to identify the services that provide access to
+the type of data we are looking for by querying the VO Registry.
+
+The VO Registry is comprised of a number of small local registries, typically
+hosted at the participating institute level, working in cooperation with a set
+of higer level global registries typically hosted by a few key institutes that
+aggregate the data from the smaller registries to create a global searchable
+index of metadata about all the services and datasets in the VO.
+
+When a new service is deployed, part of the deployment process involves
+registering the service with the local registry. The local registry is then
+responsible for collecting and storing the metadata that describes both the
+service itself and the datasets that it provides access to.
+
+Once the metadata is registered in a local registry, it is automatically
+propagated up to the next level and replicated between the global registries.
+
+This means that makes it possible to access the metadata for all of the
+services and datasets published in the VO by querying any one of the global
+registries.
+
+The first step in fulfilling our example use case is to identify services that
+contain the type of data we are looking for, in this case images, by querying
+the registry for services that support the Simple Image Access (SIA)
+\endnote{http://www.ivoa.net/documents/SIA/}
+capability.
+
+In addition to the technical details of services and their capabilities the
+registry metadata also contains details about the content of datasets, including
+details of the wavelength(s) measured, e.g. infrared, visible, radio or xray.
+
+This allows us to refine our query to search for SIA services that contain
+images in a specific waveband, e.g. optical, infrared or x-ray.
+
+The registry query would return a table of data, each row of which contains
+information about a SIA service that provides the type of data we are
+interested in - images in a particular wavelength.
+
+The VO is itself an evolving system, building on the existing work to add
+additional levels of integration as new features are added to the IVOA
+specifications.
+
+A recent addition to the IVOA is the HEALPix Multi-Order Coverage Map (MOC)
+\endnote{http://www.ivoa.net/documents/MOC/}
+which will allow registry services to perform coarse grained region matches.
+
+Once this is in place we should be able to further refine our query to filter
+for SIA services that contained data in a particular region of the sky.
+
+\subsubsection{Data discovery}
+
+The next stage of the process is to query each of the SIA services in the list
+to discover details about the individual images available from that service.
+
+\noindent
+A SIA query can specify parameters for a particular wavelength and a particular
+region of the sky :
+\begin{itemize}
+  \item \texttt{POS}  The positional region
+  \item \texttt{BAND} The energy interval
+\end{itemize}
+
+Each SIA service would return a table of data, each row of which contains
+metadata about an individual image. The details of the fields in the
+image metadata are defined in the ObsCore
+\endnote{http://www.ivoa.net/documents/ObsCore/}
+data model.
+
+As every one of the SIA services returns a standard response, it makes it easy
+to combine them to produce a single list of all the images available in the VO
+that match our search criteria.
+
+The user can then select which data products they are interested in, and their
+client software can use the metadata in the SIA results to access the individual
+data products and display them in the appropriate tools.
+
+\noindent
+The two key components of this process are :
+\begin{itemize}
+  \item A standard interface for the global registry that uses a standard set of
+  attributes to describe datasets and services
+  \item A standard interface for local data access services that uses a standard
+  set of attributes to describe the available data products
+\end{itemize}
+
+The separation between the initial service discovery query at the global
+level followed by individual data discovery queries at the local level
+are very similar to the stages described in (Jones et al. 2006) - of first
+querying the metadata to establish the location of suitable data followed
+by individual queries to establish what the data is and how to access it.
+
+\section{Tropical forest science}
+
+\subsection{Carbon density comparison}
+
+We can compare the VO data discovery process for astronomy data with an example
+use case based on a recent study 'Markedly divergent estimates of Amazon forest
+carbon density from ground plots and satellites' (Mitchard et al. 2014)
+\endnote{doi:10.1111/geb.12168}
+\endnote{http://onlinelibrary.wiley.com/doi/10.1111/geb.12168/abstract}
+which compared 
+above ground carbon density maps
+generated from remote sensing satellite data
+with a range of ground plot data collected in the field.
+
+The study compares two carbon density maps
+generated from remote sensing satellite data,
+one from the NASA Jet Propulsion Laboratory
+\endnote{http://www.jpl.nasa.gov/}
+(Saatchi et al., 2011)
+\endnote{doi:10.1073/pnas.1019576108}
+\endnote{http://www.pnas.org/content/108/24/9899}
+and one from the Woods Hole Research Center
+
+(Baccini et al., 2012)
+\endnote{doi:10.1038/nclimate1354}
+\endnote{http://www.nature.com/nclimate/journal/v2/n3/full/nclimate1354.html}
+with four sets of ground plot data from
+Red Amazónica de Inventarios Forestales (RAINFOR) (Malhi et al. 2002)
+\endnote{http://www.rainfor.org/}
+the Amazon Tree Diversity Network (ATDN) (ter Steege et al., 2003)
+\endnote{http://web.science.uu.nl/Amazon/ATDN/}
+the Tropical Ecology Assessment and Monitoring (TEAM)
+\endnote{http://www.teamnetwork.org/}
+network and the
+Brazilian Program for Biodiversity Research
+(PPBio).
+\endnote{doi:10.7809/b-e.00083}
+\endnote{http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=10.7809/b-e.00083}
+
+\subsubsection{Remote sensing carbon density maps}
+
+A detailed description of the RS1 dataset produced by Saatchi et al at the Jet Propulsion Laboratory
+\endnote{http://carbon.jpl.nasa.gov/}
+is available in their 2011 PNAS paper (PDF, open) 
+\endnote{doi:10.1073/pnas.1019576108}
+and is accompanied by additional supporting information available on the PNAS website (PDF, DOC, DOCX)
+\endnote{Supporting Information}
+\endnote{http://www.pnas.org/content/suppl/2011/05/24/1019576108.DCSupplemental}
+
+The paper describes the main upstream data sources and the methods applied.
+However, details of the data sources, the instruments, target areas and date ranges
+the data covers are not available in a machine readable format.
+
+\begin{quote}
+Ground data used to train the biomass prediction model were derived from
+various sources including published literature and national forest inventories
+collected by the authors and their colleagues.
+\end{quote}
+
+The carbon density dataset itself is available from the JPL FTP site
+\endnote{ftp://www-radar.jpl.nasa.gov/projects/carbon/datasets/}
+which provides public access to the data as GeoTIFF
+\endnote{http://trac.osgeo.org/geotiff/}
+\endnote{https://en.wikipedia.org/wiki/GeoTIFF}
+files, with associated
+GIS georeference metadata
+\endnote{https://en.wikipedia.org/wiki/World_file}
+\endnote{https://en.wikipedia.org/wiki/Georeference}
+files hosted on a public FTP
+\endnote{https://en.wikipedia.org/wiki/File_Transfer_Protocol}
+server.
+
+
+A detailed description of the dataset produced by Baccini et al., 2012 at 
+the Woods Hole Research Center (WHRC)
+\endnote{http://www.whrc.org/}
+is available in the 2012 Nature paper (PDF, paywall)
+\endnote{http://www.nature.com/nclimate/journal/v2/n3/full/nclimate1354.html}
+and is accompanied by additional supporting information available on the Nature website (PDF, paywall)
+\endnote{http://www.nature.com/nclimate/journal/v2/n3/extref/nclimate1354-s1.pdf}
+
+The paper describes the upstream data sources and the methods applied.
+However, details of the data sources, the instruments, target areas and date ranges
+the data covers are not available in a machine readable format.
+
+The carbon density dataset itself is available by request from the 
+WHRC website
+\endnote{http://www.whrc.org/mapping/pantropical/carbon_dataset.html}
+\endnote{http://www.whrc.org/mapping/pantropical/carbondataset_form.htm}
+
+Access to the data requires filling in a simple web form declaring
+who you are and what you want to use the data for.
+An automated email reply includes a URL to a ZIP
+\endnote{https://en.wikipedia.org/wiki/Zip_(file_format)}
+file on the WHRC website.
+
+The ZIP file contains the data as GeoTIFF files,
+with associated GIS georeference metadata files.
+
+\subsubsection{Remote sensing source data}
+
+There are a number of data discovery tools available that enable researchers to search for
+remote sensing data products such as satellite images.
+
+A good examples of this type of tool are the Earth Explorer
+\endnote{https://lta.cr.usgs.gov/earth_explorer}
+and Global Visualization Viewer (GloVis)
+\endnote{https://lta.cr.usgs.gov/glovis}
+tools provided by the U.S. Geological Survey (USGS)
+\endnote{http://www.usgs.gov/}.
+    
+\begin{quote}
+"The USGS EarthExplorer (EE) tool provides users the ability to query, search,
+and order satellite images, aerial photographs, and cartographic products from
+several sources"
+\end{quote}
+
+\begin{quote}
+"In addition to data from the Landsat missions and a variety of other data providers,
+EE now provides access to MODIS land data products from the NASA Terra and Aqua missions,
+and ASTER level-1B data products over the U.S. and Territories from the NASA ASTER mission"
+\end{quote}
+
+\begin{quote}
+"The USGS Global Visualization Viewer (GloVis) is an online search and order tool for
+selected satellite data. The viewer allows access to all available browse images
+from the Landsat 7 ETM+, Landsat 4/5 TM, Landsat 1-5 MSS, EO-1 ALI, EO-1 Hyperion,
+MRLC, and Tri-Decadal data sets, as well as Aster TIR, Aster VNIR and MODIS browse
+images from the DAAC inventory"
+\end{quote}
+
+The USGS provides large area composited mosaics generated from Landsat data
+via the Web-enabled Landsat data (WELD) Projects
+\endnote{http://landsat.usgs.gov/WELD.php}
+
+\begin{quote}
+"The WELD data products are processed so users do not need to apply the equations,
+spectral calibration coefficients, and solar information, needed to convert Landsat
+digital numbers to reflectance and brightness temperature.
+They are defined in the same coordinate system and align precisely, making them simple
+to use for multi-temporal applications.
+The products provide consistent data that can be used to derive higher-level land
+cover as well as geo-physical and biophysical products for assessment of surface
+dynamics and to study Earth system functioning"
+\end{quote}
+
+The USGS also maintains a Long Term Archive
+\endnote{https://lta.cr.usgs.gov/about}
+of historical remote sensing data.
+
+\begin{quote}
+"The U.S. Geological Survey's (USGS) Long Term Archive (LTA) at the National Center
+for Earth Resource Observations and Science (EROS) in Sioux Falls, SD is one of
+the largest civilian remote sensing data archives"
+\end{quote}
+
+\begin{quote}
+"Time series images are a valuable resource for scientists, disaster managers,
+engineers, educators, and the general public. USGS EROS has archived, managed,
+and preserved land remote sensing data for more than 35 years and is a leader
+in preserving land remote sensing imagery"
+\end{quote}
+
+\subsubsection{Ground plot data}
+
+
+In order to calculate a single above ground biomass (AGB) dataset,
+the ground plot data were brought together in the ForestPlots.Net
+(Lopez-Gonzalez et al. 2009, 2011)
+\endnote{http://www.forestplots.net/}
+\endnote{http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01312.x/abstract}
+\endnote{doi:10.1111/j.1654-1103.2011.01312.x}
+database.
+
+ForestPlots.Net is a website and database designed to provide a repository for
+long-term intact tropical forest inventory plots, where trees within an area are
+individually identified, measured and tracked through time.
+
+In addition to the raw measurements of tree diameter, the ForestPlots.Net database
+stores a comprehensive set of metadata including taxonomic information about
+the individual trees and detailed metadata about the plots.
+
+Of the three sets of ground plot data, the data from RAINFOR and ATDN were
+already available in the ForestPlots.Net database. The plot data from the TEAM
+and PPBio projects were manually downloaded and imported into the
+ForestPlots.Net database.
+
+The principal AGB dataset was calculated using a tropical forest model described in Chave et al. (2005),
+\endnote{Tree allometry and improved estimation of carbon stocks and balance in tropical forests}
+\endnote{http://link.springer.com/article/10.1007/s00442-005-0100-x}
+\endnote{doi:10.1007/s00442-005-0100-x}
+using one of the built-in SQL queries provided by the ForestPlots.Net database
+system.
+
+The resulting data set was itself stored in the ForestPlots.Net database as
+a new dataset available for download as part of the source material for the paper.
+
+\subsection{Diverse metadata formats}
+
+Within the set of datasets used by this use case, we can see a variety of
+different database systems storing different types of metadata in a varierty of
+different structures and formats.
+
+\subsubsection{Global Index of Vegetation-Plot Databases}
+
+The Global Index of Vegetation-Plot Databases (GIVD)
+\endnote{http://www.givd.info/}
+is a database of metadata describing databases of vegetation plot data
+from around the world.
+
+\noindent
+ForestPlots.Net is described in the GIVD database
+\texttt{[GIVD:00-00-001]}
+\endnote{http://www.givd.info/ID/00-00-001}
+as is the PPBio information system
+\texttt{[GIVD:SA-BR-001]}	
+\endnote{http://www.givd.info/ID/SA-BR-001}
+and the data from the TEAM network
+\texttt{[GIVD:00-00-002]}.
+\endnote{http://www.givd.info/ID/00-00-002}
+
+Dengler et al. describe the GIVD project in a 2011 paper,
+"The Global Index of Vegetation-Plot Databases (GIVD): a new resource for vegetation science"
+(Dengler et al. 2011)
+\endnote{doi:10.1111/j.1654-1103.2011.01265.x}
+\endnote{http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01265.x/abstract}
+and suggest some future applications, including the idea of combining
+different types of data from different, distributed, databases.
+
+\begin{quote}
+"Our longer-term vision is to develop GIVD in ways similar to Metacat (Jones et
+al. 2006), so that, ultimately, users who query GIVD will not only receive
+information on which databases contain data suitable for the intended analyses,
+but they will also discover other data from distributed databases, with GIVD
+acting as the central node."
+\end{quote}
+
+\begin{quote}
+"By coupling species specific trait characteristics (e.g. mean plant height,
+specific leaf area, growth form) found in trait databases, such as LEDA (Kleyer
+et al. 2008) or TRY (http://www.trydb.org), with plot-based distribution
+information on those species, GIVD could support further refinement of DGVMs."
+\end{quote}
+
+Which is similar to the distributed architectrure of data discovery and data
+access services used by the virtual observatory.
+
+\subsubsection{METACAT}
+
+Different institutes have different emphasis and different
+aproaches to handling the metadata associated with 
+ 
+In a 2012 paper by Flávia Fonseca Pezzini et al. about the PPBio project 
+(Pezzini et al. 2012)
+"The Brazilian Program for Biodiversity Research (PPBio) Information System"
+\endnote{http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=10.7809/b-e.00083}
+they describe the role of the data manager and the metadata
+collection processes that are in place.
+
+They also describe the transition from data storage in flat files,
+which was sufficient for the first five years of the project,
+to a new system based on Metacat.
+
+\begin{quote}
+To facilitate data searches, all the metadata were converted to XML,
+and the PPBio has installed a METACAT server to integrate with the
+Knowledge Network for Biocomplexity (KNB), a network which aims to
+assist ecological and environmental research.
+\end{quote}
+
+Metacat
+\endnote{http://knb.ecoinformatics.org/software/metacat}
+\endnote{https://knb.ecoinformatics.org/knb/docs/intro.html}
+is an open source data management tool that provides a repository for
+managing both data and metadata in one system.
+
+\begin{quote}
+Metacat is a repository for data and metadata (documentation about data) that
+helps scientists find, understand and effectively use data sets they manage or
+that have been created by others.
+\end{quote}
+
+Metacat is capable of handling a variety of different metadata formats,
+including Ecological Metadata Language (EML)
+\endnote{https://knb.ecoinformatics.org/#external//emlparser/docs/index.html}
+FGDC Biological Data Profile.
+\endnote{https://www.fgdc.gov/standards/projects/FGDC-standards-projects/metadata/biometadata}
+
+\subsubsection{DataONE}
+
+The Metacat project is itself part of the Data Observation Network for Earth (DataONE)
+\endnote{https://www.dataone.org/}
+project, a collaboration spconsored by the U.S. National Science Foundation to build
+an infrastructire from distributed webservices that provides open, persistent, robust,
+and secure access to Earth observational data.
+ 
+\begin{quote}
+The DataONE project is a collaboration among scientists, technologists,
+librarians, and social scientists to build a robust, interoperable, and
+sustainable system for preserving and accessing Earth observational data at
+national and global scales. Supported by the U.S. National Science Foundation,
+DataONE partners focus on technological, financial, and organizational
+sustainability approaches to building a distributed network of data repositories
+that are fully interoperable, even when those repositories use divergent
+underlying software and support different data and metadata content standards.
+\end{quote}
+
+The DataONE arcitecture is based on a set of top level 
+\testit{Coordinating Nodes}
+and
+\testit{Member Nodes}
+located at each participating institute or organisation
+
+\testit{Coordinating Nodes}
+provide a replicated catalog of Member Node holdings, enabling
+scientists to discover data wherever they reside,
+and data repositories to make their data and services available
+to the international community.
+
+The individual \testit{Member Nodes}
+at each institute enable them to make their data available
+to the rest of the DataONE network
+via a standard webservice interface.
+
+Again, this two layers of data discovery and data access
+is similar the virtual observatory architecture.
+
+
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\theendnotes
+
+\end{document}

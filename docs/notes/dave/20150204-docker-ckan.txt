@@ -1,0 +1,106 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # http://docs.ckan.org/en/latest/maintaining/installing/install-using-docker.html
+
+# -------------------------------------------------------------------------------------------
+# Using Docker to install CKAN.
+#[root@desktop]
+
+    #
+    # Start a new VM
+    ischnura-createvm 
+
+        INFO : Node name [polyethylene]
+        INFO : Base name [centos-65-base-20140211.qcow]
+        INFO : Disc name [polyethylene.qcow]
+        INFO : Disc size [8G]
+
+    #
+    # Install the EPEL repository
+    yum -y localinstall --nogpgcheck \
+        'https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm'
+
+    #
+    # Install the ELREPO repository
+    yum localinstall -y --nogpgcheck \
+        'http://elrepo.org/elrepo-release-6-6.el6.elrepo.noarch.rpm'
+
+    #
+    # Install Docker
+    yum -y install docker-io
+
+    #
+    # Install CKAN
+    #docker run -d --name db ckan/postgresql
+    #docker run -d --name solr ckan/solr
+    #docker run -d --name ckan -p 80:80 --link db:db --link solr:solr ckan/ckan
+
+    #
+    # Run CKAN container, extract the schema. 
+    mkdir data
+    docker run -i -t -r -v $(pwd)/data:/var/local/data ckan/ckan /bin/bash
+
+        cp ${CKAN_HOME:?}/src/ckan/ckan/config/solr/schema.xml \
+            /var/local/data/schema-2.3.xml
+
+        exit
+
+    #
+    # ADD the schema to a new SOLR container.
+    cat > Dockerfile << EOF
+FROM ckan/solr
+MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+COPY data/schema-2.3.xml /opt/solr/example/solr/ckan/conf/schema.xml
+EOF
+
+    docker build -t ckan/solr23 . 
+
+    #
+    # Run our containers.
+    docker run -d --name db   ckan/postgresql
+    docker run -d --name solr ckan/solr23
+    docker run -d --name ckan -p 80:80 --link db:db --link solr:solr ckan/ckan
+    docker run -i -t --rm --name ckan -p 80:80 --link db:db --link solr:solr ckan/ckan
+
+    #
+    # Run a shell in the CKAN container
+    docker exec -i -t ckan /bin/bash
+
+            source ${CKAN_HOME:?}/bin/activate
+            pushd  ${CKAN_HOME:?}/src/ckan
+
+                ${CKAN_HOME:?}/bin/paster sysadmin -c ${CKAN_CONFIG:?}/ckan.ini add albert
+
+                    User "albert" not found
+                    Create new user: albert? [y/n]
+                    Password: 
+                    Confirm password: 
+                    Creating albert user
+                    Added albert as sysadmin
+
+    #
+    # Login to our new site.
+    http://polyethylene.andrews.metagrid.co.uk/
+
+

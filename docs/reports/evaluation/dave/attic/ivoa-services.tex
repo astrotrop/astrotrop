@@ -1,0 +1,166 @@
+
+
+
+
+
+
+\subsection{VO services}
+
+\subsection{The registry}
+
+The VO Registry provides the first layer of data discovery available in the
+virtual observatory. The individual registry services deployed at participating
+institutes work together to provide a shared repository for describing datasets,
+data access services and data processing services in a standard way.
+
+The IVOA Registry Interfaces standard
+\endnote{http://www.ivoa.net/documents/RegistryInterface/}
+defines the web service interfaces that support interactions between
+applications and registries as well as between the registries themselves.
+
+The high level structure of the registry content is defined by a
+set of IVOA standards, including a standard format for IVOA Identifiers
+\endnote{http://www.ivoa.net/documents/latest/IDs.html}
+and the basic Resource Metadata
+\endnote{http://www.ivoa.net/Documents/latest/RM.html}
+
+The details of the registry metadata are covered by a set of technical
+standards defining the detailed XML schemas for resource metadata.
+\begin{itemize}
+  \item VOResource
+  \endnote{http://www.ivoa.net/documents/latest/VOResource.html}
+  \item VODataService
+  \endnote{http://www.ivoa.net/documents/VODataService/} 
+  \item Simple Data Access Services
+  \endnote{http://www.ivoa.net/documents/SimpleDALRegExt/20131005/}
+\end{itemize}
+
+\subsection{Service registration}
+
+VOSI \ldots and stuff \ldots
+
+\subsection{Service metadata}
+
+registry metadata queries \ldots and stuff \ldots
+
+\subsection{Service footprint}
+
+registry footprint queries \ldots and stuff \ldots
+
+HEALPix Multi-Order Coverage Map (MOC)
+\endnote{http://www.ivoa.net/documents/MOC/}
+
+\subsection{Data access services}
+
+The VO DataAccess services can be categorised as two types of services.
+
+A set of type specific data discovery servces which are designed to provide
+simple service interfaces for discovering and acessing data of a specific type.
+
+\begin{itemize}
+  \item Simple Cone Search (SCS)
+  \endnote{http://www.ivoa.net/documents/latest/ConeSearch.html}
+  \item Simple Image Access (SIA)
+  \endnote{http://www.ivoa.net/documents/SIA/}
+  \item Simple Spectral Access (SSA)
+  \endnote{http://www.ivoa.net/documents/SSA/}
+  \item Simple Line Access (SLA)
+  \endnote{http://www.ivoa.net/documents/SLAP/}
+\end{itemize}
+
+A tabular data access services for querying tabluar data using a common query
+derrived from SQL.
+
+\begin{itemize}
+  \item Table Access Protocol (TAP)
+  \endnote{http://www.ivoa.net/Documents/TAP/}
+  \item Astronomy Data Query Language (ADQL)
+  \endnote{http://www.ivoa.net/Documents/latest/ADQL.html}
+\end{itemize}
+
+\subsubsection{Simple Image Access}
+
+The Simple Image Access (SIA) protocol provides 
+\begin{quote}
+parameter based discovery of images and datacubes, querying the service(s) with
+a few well known kinds of queries that cover greater than 95\% of use, and
+getting back easily parsed summary metadata about each available data product
+\end{quote}
+
+The Simple Image Access (SIA) data discovery service provides support for
+the following use cases:
+
+\begin{itemize}
+  \item find data that includes specified coordinates (e.g. for some object) 
+  \item find data in the circle with coordinate centre and radius 
+  \item find data in a range of longitude and latitude 
+  \item find data within a specified simple  polygon (one region, no holes, less
+  than half the sphere)
+  \item find data containing a specified energy (e.g. wavelength) or in a
+  specified range of energy values
+  \item find data obtained at a specified time (e.g. including a time instant)
+  or during a specified range of times
+  \item find data obtained with specified polarization (Stokes) states 
+  \item find data within a specified range of spatial resolution 
+  \item find data within a specified range of field-of-view 
+  \item find data within a range of exposure (integration) time 
+\end{itemize}
+
+The response from a successful SIA data discovery query is a VOTable containing
+instances of the ObsCore \endnote{http://www.ivoa.net/documents/ObsCore/} data
+model.
+
+Each row in the results corresponds to a data product that matches the search
+criteria and includes details of how to access the data products or how
+to request additional matadata.
+
+\subsubsection{Simple Spectral Access}
+
+The Simple Spectral Access (SSA) protocol is similar to the Simple Image Access (SIA) protocol.
+
+The primary differences are the type of data searched for, and the set of query
+parameters.
+
+\begin{quote}
+\ldots discover and access one dimensional spectra
+\ldots based on a general data model capable of describing most tabular
+spectrophotometric data, including time series and spectral energy distributions
+(SEDs) as well as 1-D spectra
+\end{quote}
+
+\subsubsection{Simple Line Access}
+
+The Simple Line Access (SLA) protocol is similar to the Simple Image Access
+(SIA) protocol.
+
+The primary differences are the type of data searched for, and the set of query
+parameters.
+
+\begin{quote}
+\ldots retrieving spectral lines coming from various Spectral Line Data
+Collections
+\ldots either observed or theoretical and will be typically used to identify
+emission or absorption features in astronomical spectra.
+\ldots makes use of the Simple Spectral Line Data Model
+(SSLDM) \endnote{http://www.ivoa.net/documents/SSLDM/} to characterize spectral
+lines through the use of uTypes
+\endnote{http://www.ivoa.net/documents/Notes/UTypesUsage/index.html}
+\end{quote}
+  
+\subsubsection{Table Access Protocol}
+
+Table Access Protocol (TAP) is a generic protocol for accessing general table
+data, including astronomical catalogs as well as general database tables, with
+support for both synchronous and asynchronous queries.
+
+Special support is provided for spatially indexed queries using the spatial
+extensions in ADQL.
+
+A multi-position query capability permits queries against an arbitrarily large
+list of astronomical targets, providing a simple spatial cross-matching
+capability.
+
+Deploying the same standard interface and query language across multiple sites
+means that cross-matching queries are possible by orchestrating a distributed
+query across multiple TAP services.
+
