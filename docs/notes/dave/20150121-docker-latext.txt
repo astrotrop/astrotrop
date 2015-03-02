@@ -25,26 +25,29 @@
 # Create our Docker file.
 #[user@desktop]
 
-    pushd src/docker
+    pushd /var/local/projects/edinburgh/astrotrop/googlecode
+        pushd src/docker
 
-        mkdir pdflatex
-        pushd pdflatex
-    
-            gedit Dockerfile &
-            
+            mkdir pdflatex
+            pushd pdflatex
+        
+                gedit Dockerfile &
+                
+            popd
         popd
-    popf
 
 # -------------------------------------------------------------------------------------------
 # Build our image.
 #[user@desktop]
 
-    pushd src/docker
+    pushd /var/local/projects/edinburgh/astrotrop/googlecode
+        pushd src/docker
 
-        docker build \
-            --tag pdflatex \
-            build pdflatex
+            docker build \
+                --tag pdflatex \
+                pdflatex
 
+        popd
     popd
 
     docker images
@@ -53,17 +56,19 @@
 # Run our container.
 #[user@desktop]
 
-    project=/var/local/projects/edinburgh/astrotrop
-    report=${project:?}/googlecode/docs/reports/evaluation/dave
+    report=docs/reports/evaluation/dave
 
-    docker run -it -v ${report:?}:/var/local/texdata pdflatex bash
+    pushd /var/local/projects/edinburgh/astrotrop/googlecode
 
-        useradd texuser -u 500
-        su texuser
+        docker run -it -v ${report:?}:/var/local/texdata pdflatex bash
 
-        pushd /var/local/texdata
+            useradd texuser -u 500
+            su texuser
+
+            pushd /var/local/texdata
 
 pdflatex document
 bibtex document
 pdflatex document
+
 

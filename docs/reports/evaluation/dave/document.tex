@@ -730,7 +730,7 @@ described in \citetitle{jones-2006} (\cite{jones-2006}).
 
 \subsection{\citetitle*{fgdc-geo}}
 
-The \citetitle*{fgdc-geo} was developed by the \citetitle*{fgdc} to:
+The \citetitle*{fgdc-geo} (\cite{fgdc}) \citetitle*{fgdc-geo} is designed to :
 
 \begin{quote}
 "provide a suite of well-managed, highly available, and trusted geospatial 
@@ -738,7 +738,7 @@ data, services, and applications for use by Federal agencies-and their State,
 local, Tribal, and regional partners."
 \end{quote}
 
-The \citetitle*{fgdc-geo} system brings together metadata standards, software
+The \cite{fgdc-geo} system brings together metadata standards, software
 and services that provide a set of features which are similar to those that
 the \cite{trop} aims to provide.
 
@@ -789,9 +789,83 @@ is similar to the \cite{ivoa} and \cite{astro} architecture and the
 \textit{'interconnected metadata collections approach'} described in
 \citetitle{jones-2006} (\cite{jones-2006}).
 
+\section{\cite{ivoa} process}
+
+
+** TODO ** Need more details here
+
+
+The thing we want to keep from \cite{ivoa} and \cite{astro}.
+
+\begin{itemize}
+    \item Scientists and engineers from the community members.
+    \item Specialist working groups looking at specific areas.
+    \item Development based on open source model.
+    \item Standards evolve as a result of public discussion.
+    \item Small meetings focussed on specific technical details.
+    \item Large meetings focussed on interoperability and standards.
+\end{itemize}
+
 \section{Conclusion}
 
-Some clever stuff here ...
+\subsection{Core software}
+
+For reasons outline above, the \cite{astro} software may not be the best
+solution for meeting the \cite{trop} requirements.
+It may be more practical to base the \cite{trop} system on one of the
+\cite{gis} based systems such as \cite{metacat} and \cite{ckan}.
+
+Both \cite{metacat} and \cite{ckan} already provide support for the \cite{gis}
+and \cite{eml} metadata models.
+
+In addition, both \cite{metacat} and \cite{ckan} are involved in large
+scale cross disciplinary data management projects.
+
+\begin{itemize}
+    \item \cite{metacat} is part of the \cite{data-one} project, which is
+    specifically aimed at building the infrastructure for earth observational
+    data.
+    \item \cite{ckan} is used in a number of national \cite{data-gov}
+    projects, in particular the \cite{fgdc} \cite{fgdc-geo} system which
+    is specifically aimed at handling geospatial data.
+\end{itemize}
+
+A number of the \cite{trop} science cases are based on remote sensing data
+from sources such as \cite{landsat} and on processed data products from
+groups such as \cite{nasa-jpl-carbon} and \cite{whrc}.
+
+Ideally, in the long term, the best way to support these \cite{trop}
+science cases would be to encourage these external data providers to join
+the \cite{trop} community and adopt the same metadata and service standards
+for data discovery and data access.
+ 
+Basing the \cite{trop} system on software that is already being used by
+projects that handle earth observational and geospatial data and use the
+\cite{gis} and \cite{eml} metadata models is likely to make it easier
+encourage data providers such as \cite{nasa-jpl-carbon} and \cite{whrc}
+to participate.
+
+\subsection{Project structure}
+
+However, that said, we strongly recomend adopting the political structure
+and development processes from the \cite{ivoa} and \cite{astro} projects.
+
+The \cite{astro} project succeded in its goal of delivering a \cite{vo}
+system for the UK astronomy community, and as one of the founding members
+of the \cite{ivoa} played a significant part in establishing the \cite{ivoa}
+structure and processes.
+
+Over 10 years after it was established the \cite{ivoa} is still an active
+and thriving community of scientists and engineers working on developing
+the next generation of servces and specifications needed to support the
+latest research techniques and for handling and processing the huge data
+volumes the next generation of telescopes and satelite missions will generate.
+
+Much of that success is due to the structures and processes put inplace
+early in the \cite{astro} and \cite{ivoa} projects.
+
+\subsection{Next steps}
+
 
 \appendix
 
