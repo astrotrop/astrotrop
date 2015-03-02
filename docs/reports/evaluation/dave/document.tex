@@ -445,8 +445,7 @@ However, there are a number of issues that may mean that the \cite{ivoa} and
 \cite{astro} software are not the best solution for meeting the \cite{trop}
 requirements.
 
-\subsubsection{Design issues}
-\subsubsection{Data models}
+\subsection{Data models}
 
 One issue is that a significant part of the \cite{ivoa} metadata structure
 relies on a number of domain specific astronomy terms and concepts, making
@@ -505,7 +504,7 @@ already in use by members of the \cite{trop} community and to work together
 to define a common set of interoperable models and techniques that best
 describe the data used by the \cite{trop} community.
 
-\subsubsection{Data owners}
+\subsection{Data owners}
 
 A second issue with the \cite{ivoa} and \cite{astro} metadata \cite{ivoa-reg}
 and data discovery tools concerns the allocation of roles and responsibilities
@@ -545,7 +544,7 @@ themselves.
 
 \section{Alternative software}
 
-The design issues identified with the \cite{ivoa} software would prevent
+The design issues identified with the \cite{ivoa} software would not prevent
 using it as the basis for developing the \cite{trop} system.
 
 It should be possible to gradually replace the \cite{ivoa-obscore} data model
@@ -557,8 +556,8 @@ own data.
 However, bearing in mind the level of resources these changes would require,
 it may be useful to compare the data discovery capabilities and features
 provided by the \cite{ivoa} and \cite{astro} software with the equivalent
-capabilities of some of the current \cite{gis} based systems which are
-designed to handle geographical and ecological data.
+capabilities of some alternative systems which are designed to handle
+geographical and ecological data.
 
 \subsection{Global Index of Vegetation-Plot Databases}
 
@@ -730,7 +729,7 @@ described in \citetitle{jones-2006} (\cite{jones-2006}).
 
 \subsection{\citetitle*{fgdc-geo}}
 
-The \citetitle*{fgdc-geo} (\cite{fgdc}) \citetitle*{fgdc-geo} is designed to :
+The \citetitle*{fgdc} (\cite{fgdc}) \citetitle*{fgdc-geo} is designed to :
 
 \begin{quote}
 "provide a suite of well-managed, highly available, and trusted geospatial 
@@ -798,10 +797,10 @@ is similar to the \cite{ivoa} and \cite{astro} architecture and the
 The thing we want to keep from \cite{ivoa} and \cite{astro}.
 
 \begin{itemize}
-    \item Scientists and engineers from the community members.
-    \item Specialist working groups looking at specific areas.
+    \item Both scientists and engineers involved.
+    \item Working groups looking at specific areas.
     \item Development based on open source model.
-    \item Standards evolve as a result of public discussion.
+    \item Standards evolve through public discussion.
     \item Small meetings focussed on specific technical details.
     \item Large meetings focussed on interoperability and standards.
 \end{itemize}
@@ -813,13 +812,11 @@ The thing we want to keep from \cite{ivoa} and \cite{astro}.
 For reasons outline above, the \cite{astro} software may not be the best
 solution for meeting the \cite{trop} requirements.
 It may be more practical to base the \cite{trop} system on one of the
-\cite{gis} based systems such as \cite{metacat} and \cite{ckan}.
+\cite{gis} based systems such as \cite{metacat} or \cite{ckan}.
 
 Both \cite{metacat} and \cite{ckan} already provide support for the \cite{gis}
-and \cite{eml} metadata models.
-
-In addition, both \cite{metacat} and \cite{ckan} are involved in large
-scale cross disciplinary data management projects.
+and \cite{eml} metadata models. In addition, both projects are actively
+involved in large scale cross disciplinary data management projects.
 
 \begin{itemize}
     \item \cite{metacat} is part of the \cite{data-one} project, which is
@@ -830,39 +827,38 @@ scale cross disciplinary data management projects.
     is specifically aimed at handling geospatial data.
 \end{itemize}
 
-A number of the \cite{trop} science cases are based on remote sensing data
-from sources such as \cite{landsat} and on processed data products from
-groups such as \cite{nasa-jpl-carbon} and \cite{whrc}.
+A number of the \cite{trop} science cases are based on primary remote
+sensing data from sources such as \cite{landsat} and on processed data
+products from groups such as \cite{nasa-jpl-carbon} and \cite{whrc}.
 
-Ideally, in the long term, the best way to support these \cite{trop}
-science cases would be to encourage these external data providers to join
-the \cite{trop} community and adopt the same metadata and service standards
-for data discovery and data access.
+Ideally, in the long term, the best way to support the \cite{trop}
+science cases would be to encourage the external data providers to join
+the \cite{trop} community and adopt the same metadata and service standards.
  
 Basing the \cite{trop} system on software that is already being used by
-projects that handle earth observational and geospatial data and use the
-\cite{gis} and \cite{eml} metadata models is likely to make it easier
-encourage data providers such as \cite{nasa-jpl-carbon} and \cite{whrc}
-to participate.
+established cross disciplinary projects that handle earth observational
+and geospatial data and use the \cite{gis} and \cite{eml} metadata
+models is likely to make it easier encourage data providers such as
+\cite{nasa-jpl-carbon} and \cite{whrc} to participate.
 
 \subsection{Project structure}
 
-However, that said, we strongly recomend adopting the political structure
-and development processes from the \cite{ivoa} and \cite{astro} projects.
+However, that said, we would strongly recomend adopting the organizational
+structure and development processes from the \cite{ivoa} and \cite{astro}
+projects.
+
 
 The \cite{astro} project succeded in its goal of delivering a \cite{vo}
 system for the UK astronomy community, and as one of the founding members
 of the \cite{ivoa} played a significant part in establishing the \cite{ivoa}
 structure and processes.
 
-Over 10 years after it was established the \cite{ivoa} is still an active
-and thriving community of scientists and engineers working on developing
-the next generation of servces and specifications needed to support the
-latest research techniques and for handling and processing the huge data
-volumes the next generation of telescopes and satelite missions will generate.
+The fact that over 10 years after it was first established the the \cite{ivoa}
+is still an active community of scientists and engineers busy working on
+developing the next generation of servces and specifications is in no small
+part due to the organizational structures and processes put inplace early
+in the \cite{astro} and \cite{ivoa} projects.
 
-Much of that success is due to the structures and processes put inplace
-early in the \cite{astro} and \cite{ivoa} projects.
 
 \subsection{Next steps}
 
