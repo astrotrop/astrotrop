@@ -15,16 +15,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM fedora:20
+FROM metagrid/notroot-fedora
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
-
-#
-# Enable delta rpms.
-RUN yum -y install deltarpm
-
-#
-# Update the system
-RUN yum -y update
 
 #
 # Install texlive
