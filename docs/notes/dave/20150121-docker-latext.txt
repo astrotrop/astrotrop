@@ -60,7 +60,7 @@
 
     pushd /var/local/projects/edinburgh/astrotrop/googlecode
 
-        docker run -it -v ${report:?}:/var/local/texdata pdflatex bash
+        docker run -it -v "$(pwd)/${report:?}:/var/local/texdata" pdflatex bash
 
             useradd texuser -u 500
             su texuser
