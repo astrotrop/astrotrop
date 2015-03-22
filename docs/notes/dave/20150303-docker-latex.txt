@@ -60,7 +60,7 @@
 
     pushd /var/local/projects/edinburgh/astrotrop/googlecode
 
-    docker run -it \
+    docker run -it --rm \
         -e "useruid=$(id -u)" \
         -v "$(pwd)/${report:?}:/var/local/texdata" \
         astrotrop/pdflatex
