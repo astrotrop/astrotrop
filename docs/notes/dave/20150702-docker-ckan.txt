@@ -1,0 +1,128 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -------------------------------------------------------------------------------------------
+# Start a new VM.
+#[root@desktop]
+
+    ischnura-createvm 
+
+        INFO : Node name [polyethylene]
+        INFO : Base name [centos-65-base-20140211.qcow]
+        INFO : Disc name [polyethylene.qcow]
+        INFO : Disc size [8G]
+
+        INFO : Node name [omicron]
+        INFO : Base name [fedora-21-base-20150317.qcow]
+        INFO : Disc name [omicron.qcow]
+        INFO : Disc size [8G]
+
+# -----------------------------------------
+# Fix network config (only required for poly).
+#[root@virtual]
+
+#
+#cat > /etc/sysconfig/network-scripts/ifcfg-eth0 << EOF
+#
+#NAME=eth0
+#ONBOOT=yes
+#TYPE=Ethernet
+#BOOTPROTO=none
+#
+#IPADDR=81.187.152.21
+#NETMASK=255.255.255.240
+#DNS1=2001:8b0:be72:d4ea:2a92:4aff:fe38:35a4
+#DNS2=10.0.0.4
+#DOMAIN=andrews.metagrid.co.uk
+#SEARCH=andrews.metagrid.co.uk,metagrid.co.uk
+#GATEWAY=81.187.152.25
+#
+#PEERDNS=no
+#
+#EOF
+#
+#cat > /etc/resolv.conf << EOF
+#
+#search andrews.metagrid.co.uk,metagrid.co.uk
+#nameserver 2001:8b0:be72:d4ea:2a92:4aff:fe38:35a4
+#
+#EOF
+#
+#
+# -----------------------------------------
+# Install additional repositories (CentOS only).
+#[root@virtual]
+
+#
+#    #
+#    # Install the EPEL repository
+#    yum -y localinstall --nogpgcheck \
+#        'https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm'
+#
+#    #
+#    # Install the ELREPO repository
+#    yum localinstall -y --nogpgcheck \
+#        'http://elrepo.org/elrepo-release-6-6.el6.elrepo.noarch.rpm'
+#
+
+# -----------------------------------------
+# Install genric admin tools.
+#[root@virtual]
+
+    yum -y install htop
+    yum -y install pwgen
+    
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy generator.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@virtual]
+
+    yum install -y haveged
+    systemctl enable haveged.service
+    systemctl start  haveged.service
+
+# -----------------------------------------------------
+# Install and run Docker.
+#[root@virtual]
+
+    yum -y install docker-io
+
+    systemctl enable docker.service
+    systemctl start  docker.service
+    systemctl status docker.service
+
+# -------------------------------------------------------------------------------------------
+# Use Docker to install CKAN.
+#[root@virtual]
+
+    #
+    # Run CKAN
+    docker run -d --name db   ckan/postgresql
+    docker run -d --name solr ckan/solr
+    docker run -d --name ckan -p 80:80 --link db:db --link solr:solr ckan/ckan
+
+
+
+
+

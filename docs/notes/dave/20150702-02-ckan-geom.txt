@@ -1,0 +1,69 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+    #
+    # ckanext-spatial - Geo related plugins for CKAN
+    https://ckanext-spatial.readthedocs.org/en/latest/index.html
+
+
+    #
+    # CSW support
+    https://ckanext-spatial.readthedocs.org/en/latest/csw.html
+    
+    "The (ckanext-spatial) extension provides the support for the CSW standard,
+    a specification from the Open Geospatial Consortium for
+    exposing geospatial catalogues over the web."
+    
+    #
+    # OGC Catalogue Service 
+    http://www.opengeospatial.org/standards/cat
+    
+    "Catalogue services support the ability to publish and search collections
+    of descriptive information (metadata) for data, services, and related
+    information objects."
+
+
+    Common base layers for Map Widgets
+    http://docs.ckan.org/projects/ckanext-spatial/en/latest/map-widgets.html
+
+
+    ckanext-geoview - Geospatial viewer for CKAN resources
+    https://github.com/ckan/ckanext-geoview
+    
+    OpenLayers - JavaScript map library
+    http://openlayers.org/
+
+    Leaflet is the leading open-source JavaScript library for
+    mobile-friendly interactive maps. 
+    http://leafletjs.com/
+
+
+    Drupal based equivalent to CKAN    
+    http://docs.getdkan.com/
+
+    Comparing DKAN and CKAN
+    http://docs.getdkan.com/dkan-documentation/dkan-features/comparing-dkan-and-ckan
+
+
+
