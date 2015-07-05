@@ -26,39 +26,10 @@
 
     ischnura-createvm 
 
-        INFO : Node name [polyethylene]
-        INFO : Base name [centos-65-base-20140211.qcow]
-        INFO : Disc name [polyethylene.qcow]
+        INFO : Node name [omicron]
+        INFO : Base name [fedora-21-base-20150317.qcow]
+        INFO : Disc name [omicron.qcow]
         INFO : Disc size [8G]
-
-# -----------------------------------------
-# Fix network config.
-#[root@virtual]
-
-cat > /etc/sysconfig/network-scripts/ifcfg-eth0 << EOF
-
-NAME="eth0"
-ONBOOT=yes
-TYPE="Ethernet"
-BOOTPROTO="none"
-
-IPADDR=81.187.152.21
-NETMASK=255.255.255.240
-DNS1=2001:8b0:be72:d4ea:2a92:4aff:fe38:35a4
-DNS2=
-DOMAIN=andrews.metagrid.co.uk
-SEARCH=andrews.metagrid.co.uk,metagrid.co.uk
-GATEWAY=81.187.152.25
-
-EOF
-
-cat > /etc/resolve.comf
-
-search andrews.metagrid.co.uk,metagrid.co.uk
-nameserver 2001:8b0:be72:d4ea:2a92:4aff:fe38:35a4
-
-EOF
-
 
 # -----------------------------------------
 # Install genric admin tools.
@@ -88,11 +59,9 @@ EOF
     systemctl start  docker.service
     systemctl status docker.service
 
-
 # -------------------------------------------------------------------------------------------
-# Use Docker to install CKAN.
+# Run the CKAN containers.
 #[root@virtual]
-
 
     #
     # Run CKAN
@@ -100,7 +69,116 @@ EOF
     docker run -d --name solr ckan/solr
     docker run -d --name ckan -p 80:80 --link db:db --link solr:solr ckan/ckan
 
+    docker logs -f ckan
 
+        *** Running /etc/my_init.d/50_configure...
+        Distribution already installed:
+          ckan 2.5.0a from /usr/lib/ckan/default/src/ckan
+        Creating /etc/ckan/default/ckan.ini
+
+        ....
+        ....
+
+        *** Running /etc/my_init.d/70_initdb...
+        Traceback (most recent call last):
+          File "/usr/lib/ckan/default/bin/paster", line 9, in <module>
+            load_entry_point('PasteScript==1.7.5', 'console_scripts', 'paster')()
+          File "/usr/lib/ckan/default/local/lib/python2.7/site-packages/paste/script/command.py", line 104, in run
+            invoke(command, command_name, options, args[1:])
+          File "/usr/lib/ckan/default/local/lib/python2.7/site-packages/paste/script/command.py", line 143, in invoke
+          ....
+          ....
+          File "/usr/lib/ckan/default/src/ckan/ckan/plugins/core.py", line 116, in plugins_update
+            environment.update_config()
+          File "/usr/lib/ckan/default/src/ckan/ckan/config/environment.py", line 316, in update_config
+            search.check_solr_schema_version()
+          File "/usr/lib/ckan/default/src/ckan/ckan/lib/search/__init__.py", line 306, in check_solr_schema_version
+            % (version, ', '.join(SUPPORTED_SCHEMA_VERSIONS)))
+        ckan.lib.search.common.SearchError: SOLR schema version not supported: 2.0. Supported versions are [2.3]
+        *** /etc/my_init.d/70_initdb failed with status 1
+
+        *** Killing all processes...
+
+# -------------------------------------------------------------------------------------------
+# Run bash in the CKAN container and extract the 2.3 schema. 
+#[root@virtual]
+
+    #
+    # Create temp directory and allow Docker to access it.
+    temp=$(mktemp -d)
+    chcon -t svirt_sandbox_file_t "${temp:?}" 
+
+    docker run -it --rm \
+        --volume ${temp}:/temp \
+        ckan/ckan /bin/bash
+
+        cp ${CKAN_HOME:?}/src/ckan/ckan/config/solr/schema.xml \
+            /temp/schema-2.3.xml
+
+        exit
+
+    #
+    # ADD the schema to a new SOLR container.
+    cat > "${temp:?}/Dockerfile" << EOF
+FROM ckan/solr
+MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+COPY schema-2.3.xml /opt/solr/example/solr/ckan/conf/schema.xml
+EOF
+
+    docker build --tag ckan/solr23 ${temp:?}
+
+# -------------------------------------------------------------------------------------------
+# Run our CKAN containers.
+#[root@virtual]
+
+    docker rm $(docker stop $(docker ps -aq))
+
+    #
+    # Run CKAN dependencies.
+    docker run -d --name db ckan/postgresql
+    docker run -d --name solr ckan/solr23
+
+    #
+    # Sleep to give SOLR time to start.
+    sleep 10
+
+    #
+    # Run CKAN.
+    docker run -d --name ckan -p 80:80 --link db:db --link solr:solr ckan/ckan
+    docker logs -f ckan
+
+# -------------------------------------------------------------------------------------------
+# Execute a shell in the CKAN container.
+#[root@virtual]
+
+    docker exec -it ckan bash
+
+    # Do we need this ?
+    # source "${CKAN_HOME:?}/bin/activate"
+
+    pushd "${CKAN_HOME:?}"
+        pushd src/ckan
+
+            CKAN_INI="${CKAN_CONFIG:?}/ckan.ini"
+
+            paster \
+                user list \
+                -c "${CKAN_INI:?}"
+
+            paster \
+                sysadmin add zarquan \
+                -c "${CKAN_INI:?}"
+
+        popd
+    popd
+
+# -------------------------------------------------------------------------------------------
+# TODO : Install DataStore .... 
+#[root@virtual]
+
+    #
+    # Need DataStore
+    https://github.com/ckan/ckan/blob/master/doc/maintaining/datastore.rst
 
 
 
