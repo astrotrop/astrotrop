@@ -56,17 +56,3 @@
     https://github.com/astrotrop/astrotrop
 
 
-    #
-    # Pushing to GitHub ..
-
-    git remote -v
-    origin	https://github.com/astrotrop/astrotrop (fetch)
-    origin	https://github.com/astrotrop/astrotrop (push)
-
-    git remote set-url origin https://zarquan@github.com/astrotrop/astrotrop
-
-    git remote set-url origin git@github.com:astrotrop/astrotrop.git
-
-
-
-
