@@ -18,11 +18,11 @@
 set -e
 
 #
-# Load our cnmfig properties.
+# Load our config properties.
 source /ckandata.conf
 
 #
-# Create our CKAN database.
+# Create our CKAN role.
 gosu postgres postgres --single -jE << EOSQL
 
     CREATE ROLE ${ckanrole:?} WITH 
@@ -33,8 +33,18 @@ gosu postgres postgres --single -jE << EOSQL
         LOGIN
         ;
 
+EOSQL
+
+#
+# Create our CKAN database.
+gosu postgres postgres --single -jE << EOSQL
+
     CREATE DATABASE ${ckandata:?} WITH
         OWNER = ${ckanrole:?}
         ;
 
 EOSQL
+
+#
+# Create our tables ...
+

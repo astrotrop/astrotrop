@@ -24,6 +24,43 @@
     # Latest documentation.
     # https://ckan.readthedocs.org/en/latest/index.html
 
+# -----------------------------------------------------
+# Configure our machine.
+#[user@desktop]
+
+    ssh root@chaffinch
+
+# -----------------------------------------
+# Install admin tools.
+#[root@virtual]
+
+    yum -y install htop
+    yum -y install pwgen
+    
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy generator.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@virtual]
+
+    yum install -y haveged
+    systemctl enable haveged.service
+    systemctl start  haveged.service
+
+# -----------------------------------------------------
+# Install and run Docker.
+#[root@virtual]
+
+    yum -y install docker-io
+    systemctl enable docker.service
+    systemctl start  docker.service
+    systemctl status docker.service
+
+# -----------------------------------------------------
+# Configure our build.
+#[user@desktop]
+
     project=/var/local/projects/astrotrop
 
     tempdir=${project:?}/temp
@@ -31,7 +68,6 @@
 
     mkdir --parent ${tempdir:?}
     mkdir --parent ${datadir:?}
-
 
     yum -y install git
     pushd ${project:?}
@@ -121,10 +157,21 @@ EOF
         --detach \
         --expose 5432 \
         --name   "${postname:?}" \
-        --volume "${postconf:?}:/ckandata.conf"
         --volume "${posttemp:?}:/temp" \
+        --volume "${postconf:?}:/ckandata.conf" \
         --volume "${postdata:?}:/var/lib/postgresql/data" \
         astrotrop/postgres
+
+    docker run \
+        --detach \
+        --expose 5432 \
+        --name   "${postname:?}" \
+        --volume "${posttemp:?}:/temp" \
+        --volume "${postdata:?}:/var/lib/postgresql/data" \
+        --env POSTGRES_USER postgresuser \
+        --env POSTGRES_PASSWORD postgrespass \
+        astrotrop/postgres
+
 
 # -----------------------------------------------------
 # Run our CKAN container.
