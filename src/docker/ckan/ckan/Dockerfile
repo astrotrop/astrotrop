@@ -68,15 +68,15 @@ RUN ln -s ${ckanroot}/src/ckan/who.ini ${ckanconf}/who.ini
 
 #
 # Install our CKAN config.
-RUN COPY ckan.ini ${ckanconf}/ckan.ini
+COPY ckan.ini ${ckanconf}/ckan.ini
 
 #
 # Install our WSGI config.
-RUN COPY wsgi.conf ${ckanconf}/wsgi.conf
+COPY ckan.wsgi ${ckanconf}/ckan.wsgi
 
 #
 # Install our Apache config.
-RUN COPY ckan.conf /etc/httpd/conf.d/ckan.conf
+COPY ckan.conf /etc/httpd/conf.d/ckan.conf
 
 #
 # Install Apache foreground script.
