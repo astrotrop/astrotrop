@@ -24,15 +24,19 @@
     # Latest documentation.
     # https://ckan.readthedocs.org/en/latest/index.html
 
-    cd ~/frog
-    
-    tempdir=$(pwd -P)/temp
-    datadir=$(pwd -P)/data
+    workspace=~/work
+    project=/var/local/projects/edinburgh/astrotrop/github
+
+    tempdir=${workspace}/temp
+    datadir=${workspace}/data
 
     mkdir --parent ${tempdir:?}
     mkdir --parent ${datadir:?}
 
-    project=/var/local/projects/edinburgh/astrotrop/github
+
+    yum -y install git
+    git clone https://github.com/astrotrop/astrotrop.git github
+    project=~/github
 
 # -----------------------------------------------------
 # Build our SOLR container.
