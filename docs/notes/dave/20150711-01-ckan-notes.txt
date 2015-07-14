@@ -1,0 +1,194 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Latest documentation
+    https://ckan.readthedocs.org/en/latest/
+
+
+    Paster command line
+    http://docs.ckan.org/en/ckan-2.2/paster.html
+
+
+
+
+# -------------------------------------------------------------------------------------------
+# Update the Solr schema. 
+#[root@virtual]
+
+    #
+    # Create temp directory and allow Docker to access it.
+    temp=$(mktemp -d)
+    chcon -t svirt_sandbox_file_t "${temp:?}" 
+
+    docker run -it --rm \
+        --volume ${temp}:/temp \
+        ckan/ckan /bin/bash
+
+        cp ${CKAN_HOME:?}/src/ckan/ckan/config/solr/schema.xml \
+            /temp/schema-2.3.xml
+
+        exit
+
+    #
+    # ADD the schema to a new SOLR container.
+    cat > "${temp:?}/Dockerfile" << EOF
+FROM ckan/solr
+MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
+COPY schema-2.3.xml /opt/solr/example/solr/ckan/conf/schema.xml
+EOF
+
+    docker build --tag ckan/solr23 ${temp:?}
+
+# -------------------------------------------------------------------------------------------
+# Add the DataStore extension. 
+#[root@virtual]
+
+
+    #
+    # DataStore extension
+    # http://docs.ckan.org/en/ckan-2.2/datastore.html
+
+    #
+    # Setting up the DataStore
+    # http://docs.ckan.org/en/ckan-2.2/datastore.html#setting-up-the-datastore
+
+
+    #
+    # Add the GB locale.
+    docker exec -it db bash
+
+        #
+        # Add the UK locale
+        # https://serverfault.com/questions/491237/postgresql-9-2-invalid-locale-name-on-ubuntu-12-04
+        locale-gen en_GB.utf8
+
+    #
+    # Restart Postgres.
+    docker stop  db
+    docker start db
+
+    #
+    # Create the DataStore database.
+    docker exec -it db bash
+
+        psql \
+            --username postgres \
+            postgres
+
+            --
+            -- Create our database roles.
+            CREATE ROLE datastoreowner WITH 
+                PASSWORD 'datastoreownerpass'
+                NOSUPERUSER
+                NOCREATEDB
+                NOCREATEROLE
+                NOLOGIN
+                ;
+
+            CREATE ROLE datastorereader WITH 
+                PASSWORD 'datastorereaderpass'
+                NOSUPERUSER
+                NOCREATEDB
+                NOCREATEROLE
+                LOGIN
+                ;
+
+            CREATE ROLE datastorewriter WITH 
+                PASSWORD 'datastorewriterpass'
+                NOSUPERUSER
+                NOCREATEDB
+                NOCREATEROLE
+                LOGIN
+                ;
+
+            --
+            -- Create our database.
+            CREATE DATABASE datastoredata WITH
+                OWNER = datastoreowner
+                TEMPLATE = template0
+                LC_COLLATE = 'en_GB.UTF-8'
+                LC_CTYPE   = 'en_GB.UTF-8'
+                ENCODING = 'UTF-8'
+                ;
+                                    
+            --
+            -- Connect to the new database.
+            \connect datastoredata
+
+            --
+            -- Revoke permissions for the read-only role.
+            REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+            REVOKE USAGE  ON SCHEMA public FROM PUBLIC;
+
+            --
+            -- Grant permissions to the 'ckan' role.
+            GRANT CREATE ON SCHEMA public TO "ckan";
+            GRANT USAGE  ON SCHEMA public TO "ckan";
+
+            --
+            -- Grant permissions to the read-write role.
+            GRANT CREATE ON SCHEMA public TO "datastorewriter";
+            GRANT USAGE  ON SCHEMA public TO "datastorewriter";
+
+            --
+            -- Revoke connect permissions for main database.
+            REVOKE CONNECT ON DATABASE "ckan" FROM "datastorereader";
+
+            --
+            -- Grant select permissions for read-only role.
+            GRANT CONNECT ON DATABASE "datastoredata" TO "datastorereader";
+            GRANT USAGE   ON SCHEMA public TO "datastorereader";
+
+            --
+            -- Grant access to current tables and views to read-only role.
+            GRANT SELECT ON ALL TABLES IN SCHEMA public TO "datastorereader";
+
+            --
+            -- Grant access to new tables and views.
+            ALTER DEFAULT PRIVILEGES FOR USER "datastorewriter" IN SCHEMA public
+                GRANT SELECT ON TABLES TO "datastorereader";
+
+            --
+            -- Exit
+            \q
+
+
+    #
+    # Update CKAN config.
+    docker exec -it ckan bash
+
+        source "${CKAN_HOME:?}/bin/activate"
+        CKAN_INI="${CKAN_CONFIG:?}/ckan.ini"
+
+        vi "${CKAN_INI:?}"
+
+        -   ckan.plugins = stats text_view image_view recline_view
+        +   ckan.plugins = stats text_view image_view recline_view datastore
+
+        ~   ckan.datastore.write_url = postgresql://datastorewriter:datastorewriterpass@db:5432/datastoredata
+        ~   ckan.datastore.read_url  = postgresql://datastorereader:datastorereaderpass@db:5432/datastoredata
+
+
+
+
+

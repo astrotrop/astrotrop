@@ -14,39 +14,25 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-FROM metagrid/notroot-fedora
+#
+FROM postgres
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# Install texlive
-RUN yum install -y texlive
-RUN yum install -y texlive-latex 
-RUN yum install -y texlive-latex-bin
+# Set the default locale
+RUN localedef -i en_GB -c -f UTF-8 -A /usr/share/locale/locale.alias en_GB.UTF-8
+ENV LANG en_GB.utf8
 
-RUN yum install -y texlive-cm
-RUN yum install -y texlive-cm-lgc
-RUN yum install -y texlive-cm-super
-RUN yum install -y texlive-cm-unicode
+#
+# Expose our data directory.
+# https://github.com/DanielCaldwell/postgres-docker-persistant-data
+RUN mkdir --parents /var/lib/postgresql/data
+RUN chown postgres:postgres /var/lib/postgresql/data
+RUN chown postgres:postgres /var/lib/postgresql
 
-RUN yum install -y texlive-csquotes
+VOLUME /var/lib/postgresql/data
 
-RUN yum install -y texlive-collection-mathextra
-RUN yum install -y texlive-collection-fontsextra
-
-RUN yum install -y texlive-bibtex
-RUN yum install -y texlive-biblatex
-
-#RUN yum install -y texlive-babel-greek
-
-#RUN yum install -y texlive-cbfonts
-#RUN yum install -y texlive-cbfonts-fd
-
-#RUN yum install -y texlive-greek-fontenc
-#RUN yum install -y texlive-greek-inputenc
-
-RUN yum install -y texlive-texconfig
-RUN texconfig rehash
-
-
+#
+# Install our init script.
+COPY init-ckandata.sh /docker-entrypoint-initdb.d/init-ckandata.sh
 

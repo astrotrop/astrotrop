@@ -1,0 +1,2439 @@
+% $ biblatex auxiliary file $
+% $ biblatex version 2.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\entry{term-agb}{online}{}
+  \keyw{ipcc, agb}
+  \field{sortinit}{A}
+  \field{shorttitle}{AGB}
+  \field{title}{Above Ground Biomass}
+  \verb{url}
+  \verb http://www.ipcc-nggip.iges.or.jp/public/2006gl/pdf/4_Volume4/V4_04_Ch4_
+  \verb Forest_Land.pdf
+  \endverb
+\endentry
+
+\entry{atdn}{online}{}
+  \keyw{amazon, atdn}
+  \field{sortinit}{A}
+  \field{shorttitle}{ATDN}
+  \field{title}{Amazon Tree Diversity Network}
+  \verb{url}
+  \verb http://web.science.uu.nl/Amazon/ATDN/
+  \endverb
+\endentry
+
+\entry{astro}{online}{}
+  \field{sortinit}{A}
+  \field{title}{AstroGrid}
+  \verb{url}
+  \verb http://www.astrogrid.org/
+  \endverb
+\endentry
+
+\entry{trop}{online}{}
+  \field{sortinit}{A}
+  \field{title}{AstroTrop}
+  \verb{url}
+  \verb http://www.astrotrop.org/
+  \endverb
+\endentry
+
+\entry{baccini-2012}{article}{}
+  \name{author}{12}{}{%
+    {{}%
+     {Baccini}{B.}%
+     {A.}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Goetz}{G.}%
+     {S.~J.}{S.~J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Walker}{W.}%
+     {W.~S.}{W.~S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Laporte}{L.}%
+     {N.~T.}{N.~T.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Sun}{S.}%
+     {M.}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Sulla-Menashe}{S.-M.}%
+     {D.}{D.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Hackler}{H.}%
+     {J.}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Beck}{B.}%
+     {P.~S.~A.}{P.~S.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Dubayah}{D.}%
+     {R.}{R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Friedl}{F.}%
+     {M.~A.}{M.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Samanta}{S.}%
+     {S.}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Houghton}{H.}%
+     {R.~A.}{R.~A.}%
+     {}{}%
+     {}{}}%
+  }
+  \keyw{carbon, carbon dioxide, deforestation, carbon-density}
+  \strng{namehash}{BA+1}
+  \strng{fullhash}{BAGSJWWSLNTSMSMDHJBPSADRFMASSHRA1}
+  \field{labelyear}{2012}
+  \field{sortinit}{B}
+  \verb{doi}
+  \verb 10.1038/nclimate1354
+  \endverb
+  \field{issue}{3}
+  \field{pages}{182–185}
+  \field{title}{Estimated carbon dioxide emissions from tropical deforestation
+  improved by carbon-density maps}
+  \verb{url}
+  \verb http://www.nature.com/nclimate/journal/v2/n3/full/nclimate1354.html
+  \endverb
+  \field{volume}{2}
+  \field{journaltitle}{Nature Climate Change}
+  \field{month}{01}
+  \field{year}{2012}
+\endentry
+
+\entry{ppbio}{online}{}
+  \keyw{team}
+  \field{sortinit}{B}
+  \field{shorttitle}{PPBio}
+  \field{title}{Brazilian Program for Biodiversity Research}
+  \verb{url}
+  \verb http://www.teamnetwork.org/
+  \endverb
+\endentry
+
+\entry{chave-2005}{article}{}
+  \name{author}{16}{}{%
+    {{}%
+     {Chave}{C.}%
+     {J.}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Andalo}{A.}%
+     {C.}{C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Brown}{B.}%
+     {S.}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Cairns}{C.}%
+     {M.~A.}{M.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Chambers}{C.}%
+     {J.~Q.}{J.~Q.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Eamus}{E.}%
+     {D.}{D.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Fölster}{F.}%
+     {H.}{H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Fromard}{F.}%
+     {F.}{F.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Higuchi}{H.}%
+     {N.}{N.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Kira}{K.}%
+     {T.}{T.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lescure}{L.}%
+     {J.-P.}{J.-P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Nelson}{N.}%
+     {B.~W.}{B.~W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Ogawa}{O.}%
+     {H.}{H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Puig}{P.}%
+     {H.}{H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Riéra}{R.}%
+     {B.}{B.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Yamakura}{Y.}%
+     {T.}{T.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{CJ+1}
+  \strng{fullhash}{CJACBSCMACJQEDFHFFHNKTLJPNBWOHPHRBYT1}
+  \field{labelyear}{2005}
+  \field{sortinit}{C}
+  \verb{doi}
+  \verb 10.1007/s00442-005-0100-x
+  \endverb
+  \field{issue}{1}
+  \field{pages}{87\bibrangedash 99}
+  \field{title}{Tree allometry and improved estimation of carbon stocks and
+  balance in tropical forests}
+  \verb{url}
+  \verb http://link.springer.com/article/10.1007/s00442-005-0100-x
+  \endverb
+  \field{volume}{145}
+  \field{journaltitle}{Oecologia}
+  \field{month}{08}
+  \field{year}{2005}
+\endentry
+
+\entry{ckan}{online}{}
+  \field{sortinit}{C}
+  \field{shorttitle}{CKAN}
+  \field{title}{Comprehensive Knowledge Archive Network}
+  \verb{url}
+  \verb http://ckan.org/
+  \endverb
+\endentry
+
+\entry{drdsi}{online}{}
+  \field{sortinit}{D}
+  \field{shorttitle}{DRDSI}
+  \field{title}{Danube Reference Data and Service Infrastructure}
+  \verb{url}
+  \verb http://drdsi.jrc.ec.europa.eu/
+  \endverb
+\endentry
+
+\entry{data-one}{online}{}
+  \field{sortinit}{D}
+  \field{shorttitle}{DataONE}
+  \field{title}{Data Observation Network}
+  \verb{url}
+  \verb https://www.dataone.org/
+  \endverb
+\endentry
+
+\entry{data-gov}{online}{}
+  \field{sortinit}{D}
+  \field{title}{Data.Gov}
+  \verb{url}
+  \verb http://www.data.gov/
+  \endverb
+\endentry
+
+\entry{data-net}{online}{}
+  \field{sortinit}{D}
+  \field{title}{DataNet}
+  \verb{url}
+  \verb https://www.nsf.gov/funding/pgm_summ.jsp?pims_id=503141
+  \endverb
+\endentry
+
+\entry{dengler-2011}{article}{}
+  \name{author}{14}{}{%
+    {{}%
+     {Dengler}{D.}%
+     {Jürgen}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Jansen}{J.}%
+     {Florian}{F.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Glöckler}{G.}%
+     {Falko}{F.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Peet}{P.}%
+     {Robert~K.}{R.~K.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Cáceres}{C.}%
+     {Miquel~De}{M.~D.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Chytrý}{C.}%
+     {Milan}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Ewald}{E.}%
+     {Jörg}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Oldeland}{O.}%
+     {Jens}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lopez-Gonzalez}{L.-G.}%
+     {Gabriela}{G.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Finckh}{F.}%
+     {Manfred}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Mucina}{M.}%
+     {Ladislav}{L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Rodwell}{R.}%
+     {John~S.}{J.~S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Schaminée}{S.}%
+     {Joop H.~J.}{J.~H.~J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Spencer}{S.}%
+     {Nick}{N.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{DJ+1}
+  \strng{fullhash}{DJJFGFPRKCMDCMEJOJLGGFMMLRJSSJHJSN1}
+  \field{labelyear}{2011}
+  \field{sortinit}{D}
+  \verb{doi}
+  \verb 10.1111/j.1654-1103.2011.01265.x
+  \endverb
+  \field{issue}{4}
+  \field{pages}{582\bibrangedash 597}
+  \field{title}{The Global Index of Vegetation-Plot Databases (GIVD): a new
+  resource for vegetation science}
+  \verb{url}
+  \verb http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01265.x/abs
+  \verb tract
+  \endverb
+  \field{volume}{22}
+  \field{journaltitle}{Journal of Vegetation Science}
+  \field{month}{08}
+  \field{year}{2011}
+\endentry
+
+\entry{dietze-2004}{online}{}
+  \name{author}{3}{}{%
+    {{}%
+     {Dietze}{D.}%
+     {Michael}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Wolosin}{W.}%
+     {Michael}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Clark}{C.}%
+     {James}{J.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{DMWMCJ1}
+  \strng{fullhash}{DMWMCJ1}
+  \field{labelyear}{2004}
+  \field{sortinit}{D}
+  \verb{doi}
+  \verb 10.5063/AA/mdietze.3.2
+  \endverb
+  \field{title}{Tree crown allometries, Piedmont and Southern Appalachians
+  2001-2004}
+  \verb{url}
+  \verb https://knb.ecoinformatics.org/#view/doi:10.5063/AA/mdietze.3.2
+  \endverb
+  \field{year}{2004}
+\endentry
+
+\entry{usgs-explorer}{online}{}
+  \field{sortinit}{E}
+  \field{title}{Earth Explorer}
+  \verb{url}
+  \verb https://lta.cr.usgs.gov/earth_explorer
+  \endverb
+\endentry
+
+\entry{eml}{online}{}
+  \field{sortinit}{E}
+  \field{shorttitle}{EML}
+  \field{title}{Ecological Metadata Language}
+  \verb{url}
+  \verb https://en.wikipedia.org/wiki/Ecological_Metadata_Language
+  \endverb
+\endentry
+
+\entry{fgdc}{online}{}
+  \field{sortinit}{F}
+  \field{shorttitle}{FGDC}
+  \field{title}{Federal Geographic Data Committee}
+  \verb{url}
+  \verb https://www.fgdc.gov/
+  \endverb
+\endentry
+
+\entry{feldpausch-2012}{article}{}
+  \name{author}{87}{}{%
+    {{}%
+     {Feldpausch}{F.}%
+     {T.~R.}{T.~R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lloyd}{L.}%
+     {J.}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lewis}{L.}%
+     {S.~L.}{S.~L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Brienen}{B.}%
+     {R.~J.~W.}{R.~J.~W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Gloor}{G.}%
+     {M.}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Mendoza}{M.}%
+     {A.~Monteagudo}{A.~M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lopez-Gonzalez}{L.-G.}%
+     {G.}{G.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Banin}{B.}%
+     {L.}{L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Salim}{S.}%
+     {K.~Abu}{K.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Affum-Baffoe}{A.-B.}%
+     {K.}{K.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Alexiades}{A.}%
+     {M.}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Almeida}{A.}%
+     {S.}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Amaral}{A.}%
+     {I.}{I.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Andrade}{A.}%
+     {A.}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Aragão}{A.}%
+     {L.~E. O.~C.}{L.~E. O.~C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Murakami}{M.}%
+     {A.~Araujo}{A.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Arets}{A.}%
+     {E.~J. M.~M.}{E.~J. M.~M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Arroyo}{A.}%
+     {L.}{L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {C.}{C.}%
+     {G.~A.~Aymard}{G.~A.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Baker}{B.}%
+     {T.~R.}{T.~R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Bánki}{B.}%
+     {O.~S.}{O.~S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Berry}{B.}%
+     {N.~J.}{N.~J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Cardozo}{C.}%
+     {N.}{N.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Chave}{C.}%
+     {J.}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Comiskey}{C.}%
+     {J.~A.}{J.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Alvarez}{A.}%
+     {E.}{E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Oliveira}{O.}%
+     {A.}{A.}%
+     {de}{d.}%
+     {}{}}%
+    {{}%
+     {Fiore}{F.}%
+     {A.~Di}{A.~D.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Djagbletey}{D.}%
+     {G.}{G.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Domingues}{D.}%
+     {T.~F.}{T.~F.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Erwin}{E.}%
+     {T.~L.}{T.~L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Fearnside}{F.}%
+     {P.~M.}{P.~M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {França}{F.}%
+     {M.~B.}{M.~B.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Freitas}{F.}%
+     {M.~A.}{M.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Higuchi}{H.}%
+     {N.}{N.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {C.}{C.}%
+     {E.~Honorio}{E.~H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Iida}{I.}%
+     {Y.}{Y.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Jiménez}{J.}%
+     {E.}{E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Kassim}{K.}%
+     {A.~R.}{A.~R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Killeen}{K.}%
+     {T.~J.}{T.~J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Laurance}{L.}%
+     {W.~F.}{W.~F.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lovett}{L.}%
+     {J.~C.}{J.~C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Malhi}{M.}%
+     {Y.}{Y.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Marimon}{M.}%
+     {B.~S.}{B.~S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Marimon-Junior}{M.-J.}%
+     {B.~H.}{B.~H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lenza}{L.}%
+     {E.}{E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Marshall}{M.}%
+     {A.~R.}{A.~R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Mendoza}{M.}%
+     {C.}{C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Metcalfe}{M.}%
+     {D.~J.}{D.~J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Mitchard}{M.}%
+     {E.~T.~A.}{E.~T.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Neill}{N.}%
+     {D.~A.}{D.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Nelson}{N.}%
+     {B.~W.}{B.~W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Nilus}{N.}%
+     {R.}{R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Nogueira}{N.}%
+     {E.~M.}{E.~M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Parada}{P.}%
+     {A.}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Peh}{P.}%
+     {K.~S.-H.}{K.~S.-H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Cruz}{C.}%
+     {A.~Pena}{A.~P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Peñuela}{P.}%
+     {M.~C.}{M.~C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Pitman}{P.}%
+     {N.~C.~A.}{N.~C.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Prieto}{P.}%
+     {A.}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Quesada}{Q.}%
+     {C.~A.}{C.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Ramírez}{R.}%
+     {F.}{F.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Ramírez-Angulo}{R.-A.}%
+     {H.}{H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Reitsma}{R.}%
+     {J.~M.}{J.~M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Rudas}{R.}%
+     {A.}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Saiz}{S.}%
+     {G.}{G.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Salomão}{S.}%
+     {R.~P.}{R.~P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Schwarz}{S.}%
+     {M.}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Silva}{S.}%
+     {N.}{N.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Silva-Espejo}{S.-E.}%
+     {J.~E.}{J.~E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Silveira}{S.}%
+     {M.}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Sonké}{S.}%
+     {B.}{B.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Stropp}{S.}%
+     {J.}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Taedoumg}{T.}%
+     {H.~E.}{H.~E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Tan}{T.}%
+     {S.}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Steege}{S.}%
+     {H.}{H.}%
+     {ter}{t.}%
+     {}{}}%
+    {{}%
+     {Terborgh}{T.}%
+     {J.}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Torello-Raventos}{T.-R.}%
+     {M.}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Heijden}{H.}%
+     {G.~M.~F.}{G.~M.~F.}%
+     {van~der}{v.~d.}%
+     {}{}}%
+    {{}%
+     {Vásquez}{V.}%
+     {R.}{R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Vilanova}{V.}%
+     {E.}{E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Vos}{V.}%
+     {V.~A.}{V.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {White}{W.}%
+     {L.}{L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Willcock}{W.}%
+     {S.}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Woell}{W.}%
+     {H.}{H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {}{}%
+     {}{}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Phillips}{P.}%
+     {O.~L.}{O.~L.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{FTR+1}
+  \strng{fullhash}{FTRLJLSLBRJWGMMAMLGGBLSKAABKAMASAIAAALEOCMAAAEJMMALCGAABTRBOSBNJCNCJCJAAEOAdFADDGDTFETLFPMFMBFMAHNCEHIYJEKARKTJLWFLJCMYMBSMJBHLEMARMCMDJMETANDANBWNRNEMPAPKSHCAPPMCPNCAPAQCARFRAHRJMRASGSRPSMSNSEJESMSBSJTHETSSHtTJTRMHGMFvdVRVEVVAWLWSWHPOL1}
+  \field{labelyear}{2012}
+  \field{sortinit}{F}
+  \verb{doi}
+  \verb 10.5194/bg-9-3381-2012
+  \endverb
+  \field{issue}{8}
+  \field{pages}{3381–3403}
+  \field{title}{Tree height integrated into pantropical forest biomass
+  estimates}
+  \verb{url}
+  \verb http://www.biogeosciences.net/9/3381/2012/bg-9-3381-2012.html
+  \endverb
+  \field{volume}{9}
+  \field{journaltitle}{Biogeosciences}
+  \field{month}{08}
+  \field{year}{2012}
+\endentry
+
+\entry{forest-plots}{online}{}
+  \field{sortinit}{F}
+  \field{title}{ForestPlots.Net}
+  \verb{url}
+  \verb http://www.forestplots.net/
+  \endverb
+\endentry
+
+\entry{kriged}{online}{}
+  \field{sortinit}{G}
+  \field{shorttitle}{Kriged}
+  \field{title}{Gaussian process regression}
+  \verb{url}
+  \verb https://en.wikipedia.org/wiki/Kriging
+  \endverb
+\endentry
+
+\entry{gis}{online}{}
+  \field{sortinit}{G}
+  \field{shorttitle}{GIS}
+  \field{title}{Geographic Information System}
+  \verb{url}
+  \verb http://en.wikipedia.org/wiki/Geographic_information_system
+  \endverb
+\endentry
+
+\entry{fgdc-geo}{online}{}
+  \field{sortinit}{G}
+  \field{title}{Geospatial Platform}
+  \verb{url}
+  \verb http://www.geoplatform.gov/
+  \endverb
+\endentry
+
+\entry{format-geotiff}{online}{}
+  \keyw{format, geotiff}
+  \field{sortinit}{G}
+  \field{shorttitle}{GTIF}
+  \field{title}{GeoTIFF}
+  \verb{url}
+  \verb http://trac.osgeo.org/geotiff/
+  \endverb
+\endentry
+
+\entry{givd}{online}{}
+  \field{sortinit}{G}
+  \field{shorttitle}{GIVD}
+  \field{title}{Global Index of Vegetation-Plot Databases}
+  \verb{url}
+  \verb http://www.givd.info/
+  \endverb
+\endentry
+
+\entry{usgs-glovis}{online}{}
+  \field{sortinit}{G}
+  \field{shorttitle}{GloVis}
+  \field{title}{Global Visualization Viewer}
+  \verb{url}
+  \verb https://lta.cr.usgs.gov/glovis
+  \endverb
+\endentry
+
+\entry{ivoa-moc}{online}{}
+  \keyw{ivoa, moc, healpix}
+  \field{sortinit}{H}
+  \field{shorttitle}{MOC}
+  \field{title}{HEALPix Multi-Order Coverage Map}
+  \verb{url}
+  \verb http://www.ivoa.net/documents/MOC/
+  \endverb
+\endentry
+
+\entry{ivoa}{online}{}
+  \keyw{ivoa}
+  \field{sortinit}{I}
+  \field{shorttitle}{IVOA}
+  \field{title}{International Virtual Observatory Alliance}
+  \verb{url}
+  \verb http://www.ivoa.net/
+  \endverb
+\endentry
+
+\entry{ivoa-reg}{online}{}
+  \keyw{ivoa, registry}
+  \field{sortinit}{I}
+  \field{shorttitle}{Registry}
+  \field{title}{IVOA Registry}
+  \verb{url}
+  \verb http://www.ivoa.net/documents/RegistryInterface/
+  \endverb
+\endentry
+
+\entry{ivoa-sia}{online}{}
+  \keyw{ivoa, sia}
+  \field{sortinit}{I}
+  \field{shorttitle}{SIA}
+  \field{title}{IVOA Simple Image Access}
+  \verb{url}
+  \verb http://www.ivoa.net/documents/SIA/
+  \endverb
+\endentry
+
+\entry{jones-2006}{article}{}
+  \name{author}{4}{}{%
+    {{}%
+     {Jones}{J.}%
+     {Matthew~B.}{M.~B.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Schildhauer}{S.}%
+     {Mark~P.}{M.~P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Reichman}{R.}%
+     {O.J.}{O.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Bowers}{B.}%
+     {Shawn}{S.}%
+     {}{}%
+     {}{}}%
+  }
+  \keyw{bioinformatics, ecology}
+  \strng{namehash}{JMB+1}
+  \strng{fullhash}{JMBSMPROBS1}
+  \field{labelyear}{2006}
+  \field{sortinit}{J}
+  \verb{doi}
+  \verb 10.1146/annurev.ecolsys.37.091305.110031
+  \endverb
+  \field{pages}{519\bibrangedash 544}
+  \field{title}{The new bioinformatics: integrating ecological data from the
+  gene to the biosphere}
+  \verb{url}
+  \verb http://www.annualreviews.org/doi/abs/10.1146/annurev.ecolsys.37.091305.
+  \verb 110031
+  \endverb
+  \field{volume}{37}
+  \field{journaltitle}{Annual Review of Ecology, Evolution, and Systematics}
+  \field{month}{12}
+  \field{year}{2006}
+\endentry
+
+\entry{knb}{online}{}
+  \field{sortinit}{K}
+  \field{shorttitle}{KNB}
+  \field{title}{Knowledge Network for Biocomplexity}
+  \verb{url}
+  \verb https://knb.ecoinformatics.org/
+  \endverb
+\endentry
+
+\entry{landsat}{online}{}
+  \field{sortinit}{L}
+  \field{shorttitle}{Landsat}
+  \field{title}{Landsat Program}
+  \verb{url}
+  \verb http://landsat.gsfc.nasa.gov/
+  \endverb
+\endentry
+
+\entry{usgs-lta}{online}{}
+  \field{sortinit}{L}
+  \field{shorttitle}{LTA}
+  \field{title}{Long Term Archive}
+  \verb{url}
+  \verb https://lta.cr.usgs.gov/about
+  \endverb
+\endentry
+
+\entry{gonzalez-2011}{article}{}
+  \name{author}{4}{}{%
+    {{}%
+     {Lopez-Gonzalez}{L.-G.}%
+     {Gabriela}{G.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lewis}{L.}%
+     {Simon~L.}{S.~L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Burkitt}{B.}%
+     {Mark}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Phillips}{P.}%
+     {Oliver~L.}{O.~L.}%
+     {}{}%
+     {}{}}%
+  }
+  \keyw{forestplots, tropical, forest, plot, database}
+  \strng{namehash}{LGG+1}
+  \strng{fullhash}{LGGLSLBMPOL1}
+  \field{labelyear}{2011}
+  \field{sortinit}{L}
+  \verb{doi}
+  \verb 10.1111/j.1654-1103.2011.01312.x
+  \endverb
+  \field{issue}{4}
+  \field{pages}{610\bibrangedash 613}
+  \field{title}{ForestPlots.net: a web application and research tool to manage
+  and analyse tropical forest plot data}
+  \verb{url}
+  \verb http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2011.01312.x/abs
+  \verb tract
+  \endverb
+  \field{volume}{22}
+  \field{journaltitle}{Journal of Vegetation Science}
+  \field{month}{07}
+  \field{year}{2011}
+\endentry
+
+\entry{machine-readable}{online}{}
+  \field{sortinit}{M}
+  \field{title}{machine readable}
+\endentry
+
+\entry{malhi-2009}{article}{}
+  \name{author}{33}{}{%
+    {{}%
+     {Malhi}{M.}%
+     {Y.}{Y.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Phillips}{P.}%
+     {O.L.}{O.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lloyd}{L.}%
+     {J.}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Baker}{B.}%
+     {T.}{T.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Wright}{W.}%
+     {J.}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Almeida}{A.}%
+     {S.}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Arroyo}{A.}%
+     {L.}{L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Frederiksen}{F.}%
+     {T.}{T.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Grace}{G.}%
+     {J.}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Higuchi}{H.}%
+     {N.}{N.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Killeen}{K.}%
+     {T.}{T.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Laurance}{L.}%
+     {W.F.}{W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Leaño}{L.}%
+     {C.}{C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lewis}{L.}%
+     {S.}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Meir}{M.}%
+     {P.}{P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Monteagudo}{M.}%
+     {A.}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Neill}{N.}%
+     {D.}{D.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Vargas}{V.}%
+     {P.~Núñez}{P.~N.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Panfil}{P.}%
+     {S.N.}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Patiño}{P.}%
+     {S.}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Pitman}{P.}%
+     {N.}{N.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Quesada}{Q.}%
+     {C.A.}{C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Rudas-Ll.}{R.-L.}%
+     {A.}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Salomão}{S.}%
+     {R.}{R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Saleska}{S.}%
+     {S.}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Silva}{S.}%
+     {N.}{N.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Silveira}{S.}%
+     {M.}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Sombroek}{S.}%
+     {W.G.}{W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Valencia}{V.}%
+     {R.}{R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Martínez}{M.}%
+     {R.~Vásquez}{R.~V.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Vieira3}{V.}%
+     {I.C.G.}{I.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {}{}%
+     {}{}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {and}{a.}%
+     {B.~Vinceti}{B.~V.}%
+     {}{}%
+     {}{}}%
+  }
+  \keyw{amazon, forest, carbon}
+  \strng{namehash}{MY+1}
+  \strng{fullhash}{MYPOLJBTWJASALFTGJHNKTLWLCLSMPMANDVPNPSPSPNQCRLASRSSSNSMSWVRMRVVIaBV1}
+  \field{labelyear}{2009}
+  \field{sortinit}{M}
+  \verb{doi}
+  \verb 10.1111/j.1654-1103.2002.tb02068.x
+  \endverb
+  \field{issue}{3}
+  \field{pages}{439\bibrangedash 450}
+  \field{title}{An international network to monitor the structure, composition
+  and dynamics of Amazonian forests (RAINFOR)}
+  \verb{url}
+  \verb http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2002.tb02068.x/a
+  \verb bstract
+  \endverb
+  \field{volume}{13}
+  \field{journaltitle}{Journal of Vegetation Science}
+  \field{month}{02}
+  \field{year}{2009}
+\endentry
+
+\entry{metacat}{online}{}
+  \field{sortinit}{M}
+  \field{title}{Metacat}
+  \verb{url}
+  \verb https://knb.ecoinformatics.org/knb/docs/intro.html
+  \endverb
+\endentry
+
+\entry{michener-1997}{article}{}
+  \name{author}{5}{}{%
+    {{}%
+     {Michener}{M.}%
+     {William~K.}{W.~K.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Brunt}{B.}%
+     {James~W.}{J.~W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Helly}{H.}%
+     {John~J.}{J.~J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Kirchner}{K.}%
+     {Thomas~B.}{T.~B.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Stafford}{S.}%
+     {Susan~G.}{S.~G.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{MWK+1}
+  \strng{fullhash}{MWKBJWHJJKTBSSG1}
+  \field{labelyear}{1997}
+  \field{sortinit}{M}
+  \verb{doi}
+  \verb 10.1890/1051-0761(1997)007[0330:NMFTES]2.0.CO;2
+  \endverb
+  \field{issue}{1}
+  \field{pages}{330\bibrangedash 342}
+  \field{title}{Nongeospatial metadata for the ecological sciences}
+  \verb{url}
+  \verb http://www.esajournals.org/doi/abs/10.1890/1051-0761%281997%29007%5B033
+  \verb 0%3ANMFTES%5D2.0.CO%3B2
+  \endverb
+  \field{volume}{7}
+  \field{journaltitle}{Ecological Applications}
+  \field{month}{02}
+  \field{year}{1997}
+\endentry
+
+\entry{mitchard-2014}{article}{}
+  \name{author}{80}{}{%
+    {{}%
+     {Mitchard}{M.}%
+     {Edward T.~A.}{E.~T.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Feldpausch}{F.}%
+     {Ted~R.}{T.~R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Brienen}{B.}%
+     {Roel J.~W.}{R.~J.~W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lopez-Gonzalez}{L.-G.}%
+     {Gabriela}{G.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Monteagudo}{M.}%
+     {Abel}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Baker}{B.}%
+     {Timothy~R.}{T.~R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lewis}{L.}%
+     {Simon~L.}{S.~L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lloyd}{L.}%
+     {Jon}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Quesada}{Q.}%
+     {Carlos~A.}{C.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Gloor}{G.}%
+     {Manuel}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Steege}{S.}%
+     {Hans}{H.}%
+     {ter}{t.}%
+     {}{}}%
+    {{}%
+     {Meir}{M.}%
+     {Patrick}{P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Alvarez}{A.}%
+     {Esteban}{E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Araujo-Murakami}{A.-M.}%
+     {Alejandro}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Aragão}{A.}%
+     {Luiz E. O.~C.}{L.~E. O.~C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Arroyo}{A.}%
+     {Luzmila}{L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Aymard}{A.}%
+     {Gerardo}{G.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Banki}{B.}%
+     {Olaf}{O.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Bonal}{B.}%
+     {Damien}{D.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Brown}{B.}%
+     {Sandra}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Brown}{B.}%
+     {Foster~I.}{F.~I.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Cerón}{C.}%
+     {Carlos~E.}{C.~E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Moscoso}{M.}%
+     {Victor~Chama}{V.~C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Chave}{C.}%
+     {Jerome}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Comiskey}{C.}%
+     {James~A.}{J.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Cornejo}{C.}%
+     {Fernando}{F.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Medina}{M.}%
+     {Massiel~Corrales}{M.~C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Costa}{C.}%
+     {Lola~Da}{L.~D.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Costa}{C.}%
+     {Flavia R.~C.}{F.~R.~C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Fiore}{F.}%
+     {Anthony~Di}{A.~D.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Domingues}{D.}%
+     {Tomas~F.}{T.~F.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Erwin}{E.}%
+     {Terry~L.}{T.~L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Frederickson}{F.}%
+     {Todd}{T.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Higuchi}{H.}%
+     {Niro}{N.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Coronado}{C.}%
+     {Euridice N.~Honorio}{E.~N.~H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Killeen}{K.}%
+     {Tim~J.}{T.~J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Laurance}{L.}%
+     {William~F.}{W.~F.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Levis}{L.}%
+     {Carolina}{C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Magnusson}{M.}%
+     {William~E.}{W.~E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Marimon}{M.}%
+     {Beatriz~S.}{B.~S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Junior}{J.}%
+     {Ben Hur~Marimon}{B.~H.~M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Polo}{P.}%
+     {Irina~Mendoza}{I.~M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Mishra}{M.}%
+     {Piyush}{P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Nascimento}{N.}%
+     {Marcelo~T.}{M.~T.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Neill}{N.}%
+     {David}{D.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Vargas}{V.}%
+     {Mario P.~Núñez}{M.~P.~N.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Palacios}{P.}%
+     {Walter~A.}{W.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Parada}{P.}%
+     {Alexander}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Molina}{M.}%
+     {Guido~Pardo}{G.~P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Peña-Claros}{P.-C.}%
+     {Marielos}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Pitman}{P.}%
+     {Nigel}{N.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Peres}{P.}%
+     {Carlos~A.}{C.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Poorter}{P.}%
+     {Lourens}{L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Prieto}{P.}%
+     {Adriana}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Ramirez-Angulo}{R.-A.}%
+     {Hirma}{H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Correa}{C.}%
+     {Zorayda~Restrepo}{Z.~R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Roopsind}{R.}%
+     {Anand}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Roucoux}{R.}%
+     {Katherine~H.}{K.~H.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Rudas}{R.}%
+     {Agustin}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Salomão}{S.}%
+     {Rafael~P.}{R.~P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Schietti}{S.}%
+     {Juliana}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Silveira}{S.}%
+     {Marcos}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Souza}{S.}%
+     {Priscila~F.}{P.~F.}%
+     {de}{d.}%
+     {}{}}%
+    {{}%
+     {Steininger}{S.}%
+     {Marc~K.}{M.~K.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Stropp}{S.}%
+     {Juliana}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Terborgh}{T.}%
+     {John}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Thomas}{T.}%
+     {Raquel}{R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Toledo}{T.}%
+     {Marisol}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Torres-Lezama}{T.-L.}%
+     {Armando}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Andel}{A.}%
+     {Tinde~R.}{T.~R.}%
+     {van}{v.}%
+     {}{}}%
+    {{}%
+     {Heijden}{H.}%
+     {Geertje M.~F.}{G.~M.~F.}%
+     {van~der}{v.~d.}%
+     {}{}}%
+    {{}%
+     {Vieira}{V.}%
+     {Ima C.~G.}{I.~C.~G.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Vieira}{V.}%
+     {Simone}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Vilanova-Torre}{V.-T.}%
+     {Emilio}{E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Vos}{V.}%
+     {Vincent~A.}{V.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Wang}{W.}%
+     {Ophelia}{O.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Zartman}{Z.}%
+     {Charles~E.}{C.~E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Malhi58}{M.}%
+     {Yadvinder}{Y.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {}{}%
+     {}{}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Phillips}{P.}%
+     {Oliver~L.}{O.~L.}%
+     {}{}%
+     {}{}}%
+  }
+  \keyw{forest, carbon, amazon}
+  \strng{namehash}{META+1}
+  \strng{fullhash}{METAFTRBRJWLGGMABTRLSLLJQCAGMSHtMPAEAMAALEOCALAGBOBDBSBFICCEMVCCJCJACFMMCCLDCFRCFADDTFETLFTHNCENHKTJLWFLCMWEMBSJBHMPIMMPNMTNDVMPNPWAPAMGPPCMPNPCAPLPARAHCZRRARKHRASRPSJSMSPFdSMKSJTJTRTMTLAATRvHGMFvdVICGVSVTEVVAWOZCEMYPOL1}
+  \field{labelyear}{2014}
+  \field{sortinit}{M}
+  \verb{doi}
+  \verb 10.1111/geb.12168
+  \endverb
+  \field{issue}{8}
+  \field{pages}{935\bibrangedash 946}
+  \field{title}{Markedly divergent estimates of Amazon forest carbon density
+  from ground plots and satellites}
+  \verb{url}
+  \verb http://onlinelibrary.wiley.com/doi/10.1111/geb.12168/abstract
+  \endverb
+  \field{volume}{23}
+  \field{journaltitle}{Global Ecology and Biogeography}
+  \field{month}{04}
+  \field{year}{2014}
+\endentry
+
+\entry{morpho}{online}{}
+  \field{sortinit}{M}
+  \field{title}{Morpho}
+  \verb{url}
+  \verb https://www.dataone.org/software-tools/morpho
+  \endverb
+\endentry
+
+\entry{nasa-jpl-carbon}{online}{}
+  \keyw{nasa, jpl, carbon}
+  \field{sortinit}{N}
+  \field{shorttitle}{JPL}
+  \field{title}{NASA Jet Propulsion Laboratory}
+  \verb{url}
+  \verb http://carbon.jpl.nasa.gov/
+  \endverb
+\endentry
+
+\entry{nasa-jpl-carbon-ftp}{online}{}
+  \keyw{nasa, jpl, carbon, ftp}
+  \field{sortinit}{N}
+  \field{title}{NASA JPL carbon dataset}
+  \verb{url}
+  \verb ftp://www-radar.jpl.nasa.gov/projects/carbon/datasets/
+  \endverb
+\endentry
+
+\entry{nasa}{online}{}
+  \keyw{nasa}
+  \field{sortinit}{N}
+  \field{shorttitle}{NASA}
+  \field{title}{National Aeronautics and Space Administration}
+  \verb{url}
+  \verb http://www.nasa.gov/
+  \endverb
+\endentry
+
+\entry{netl}{online}{}
+  \field{sortinit}{N}
+  \field{shorttitle}{NETL}
+  \field{title}{National Energy Technology Laboratory}
+  \verb{url}
+  \verb http://www.netl.doe.gov/
+  \endverb
+\endentry
+
+\entry{ngds}{online}{}
+  \field{sortinit}{N}
+  \field{shorttitle}{NGDS}
+  \field{title}{National Geothermal Data System}
+  \verb{url}
+  \verb http://geothermaldata.org/
+  \endverb
+\endentry
+
+\entry{noaa}{online}{}
+  \field{sortinit}{N}
+  \field{shorttitle}{NOAA}
+  \field{title}{National Oceanic and Atmospheric Administration}
+  \verb{url}
+  \verb http://www.noaa.gov/
+  \endverb
+\endentry
+
+\entry{nsf}{online}{}
+  \field{sortinit}{N}
+  \field{shorttitle}{NSF}
+  \field{title}{National Science Foundation}
+  \verb{url}
+  \verb http://www.nsf.gov/
+  \endverb
+\endentry
+
+\entry{journal-nature}{online}{}
+  \keyw{journal, nature}
+  \field{sortinit}{N}
+  \field{title}{Nature}
+  \verb{url}
+  \verb http://www.nature.com/
+  \endverb
+\endentry
+
+\entry{ivoa-obscore}{online}{}
+  \keyw{ivoa, obscore, datamodel}
+  \field{sortinit}{O}
+  \field{shorttitle}{ObsCore}
+  \field{title}{Observation Data Model Core Components}
+  \verb{url}
+  \verb http://www.ivoa.net/documents/ObsCore/
+  \endverb
+\endentry
+
+\entry{okfn}{online}{}
+  \field{sortinit}{O}
+  \field{shorttitle}{OKFN}
+  \field{title}{Open Knowledge}
+  \verb{url}
+  \verb https://okfn.org/
+  \endverb
+\endentry
+
+\entry{open-source}{online}{}
+  \field{sortinit}{O}
+  \field{title}{open source}
+  \verb{url}
+  \verb https://en.wikipedia.org/wiki/Open_source
+  \endverb
+\endentry
+
+\entry{open-data}{online}{}
+  \field{sortinit}{O}
+  \field{title}{OpenData}
+  \verb{url}
+  \verb https://en.wikipedia.org/wiki/Open_data
+  \endverb
+\endentry
+
+\entry{peacock-2007}{article}{}
+  \name{author}{5}{}{%
+    {{}%
+     {Peacock}{P.}%
+     {J}{J}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Baker}{B.}%
+     {T.R.}{T.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lewis}{L.}%
+     {Simon~L.}{S.~L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lopez-Gonzalez}{L.-G.}%
+     {Gabriela}{G.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Phillips}{P.}%
+     {Oliver~L.}{O.~L.}%
+     {}{}%
+     {}{}}%
+  }
+  \keyw{empty}
+  \strng{namehash}{PJ+1}
+  \strng{fullhash}{PJBTLSLLGGPOL1}
+  \field{labelyear}{2007}
+  \field{sortinit}{P}
+  \verb{doi}
+  \verb 10.1111/j.1654-1103.2007.tb02568.x
+  \endverb
+  \field{issue}{4}
+  \field{pages}{535–542}
+  \field{title}{The RAINFOR database: monitoring forest biomass and dynamics}
+  \verb{url}
+  \verb http://onlinelibrary.wiley.com/doi/10.1111/j.1654-1103.2007.tb02568.x/a
+  \verb bstract
+  \endverb
+  \field{volume}{18}
+  \field{journaltitle}{Journal of Vegetation Science}
+  \field{month}{08}
+  \field{year}{2007}
+\endentry
+
+\entry{pezzini-2012}{article}{}
+  \name{author}{45}{}{%
+    {{}%
+     {Pezzini}{P.}%
+     {Flávia~Fonseca}{F.~F.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Melo}{M.}%
+     {Pablo Hendrigo~Alves}{P.~H.~A.}%
+     {de}{d.}%
+     {}{}}%
+    {{}%
+     {Oliveira}{O.}%
+     {Dayane Mayely~Silva}{D.~M.~S.}%
+     {de}{d.}%
+     {}{}}%
+    {{}%
+     {Amorim}{A.}%
+     {Rainer~Xavier}{R.~X.}%
+     {de}{d.}%
+     {}{}}%
+    {{}%
+     {Figueiredo}{F.}%
+     {Fernando Oliveira~Gouvêa}{F.~O.~G.}%
+     {de}{d.}%
+     {}{}}%
+    {{}%
+     {Drucker}{D.}%
+     {Debora~Pignatari}{D.~P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Oliveira~Rodrigues}{O.~R.}%
+     {Flávio~Rogério}{F.~R.}%
+     {de}{d.}%
+     {}{}}%
+    {{}%
+     {Zuquim}{Z.}%
+     {Gabriela}{G.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Emilio}{E.}%
+     {Thaise}{T.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Costa}{C.}%
+     {Flávia Regina~Capellotto}{F.~R.~C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Magnusson}{M.}%
+     {William~Ernest}{W.~E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Sampaio}{S.}%
+     {Adeilza~Felipe}{A.~F.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lima}{L.}%
+     {Albertina~Pimentel}{A.~P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Mesquita~Garcia}{M.~G.}%
+     {Ana~Raquel}{A.~R.}%
+     {de}{d.}%
+     {}{}}%
+    {{}%
+     {Manzatto}{M.}%
+     {Angelo~Gilberto}{A.~G.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Nogueira}{N.}%
+     {Anselmo}{A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Costa}{C.}%
+     {Cândida~Pereira}{C.~P.}%
+     {da}{d.}%
+     {}{}}%
+    {{}%
+     {Araújo~Barbosa}{A.~B.}%
+     {Carlos~Eduardo}{C.~E.}%
+     {de}{d.}%
+     {}{}}%
+    {{}%
+     {Bernardes}{B.}%
+     {Carolina}{C.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Castilho}{C.}%
+     {Carolina~Volkmer}{C.~V.}%
+     {de}{d.}%
+     {}{}}%
+    {{}%
+     {Cunha}{C.}%
+     {Catia~Nunes}{C.~N.}%
+     {da}{d.}%
+     {}{}}%
+    {{}%
+     {Freitas}{F.}%
+     {Cintia~Gomes}{C.~G.}%
+     {de}{d.}%
+     {}{}}%
+    {{}%
+     {Oliveira~Cavalcante}{O.~C.}%
+     {Claymir}{C.}%
+     {de}{d.}%
+     {}{}}%
+    {{}%
+     {Brandão}{B.}%
+     {Diego~Oliveira}{D.~O.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Jesus~Rodrigues}{J.~R.}%
+     {Domingos}{D.}%
+     {de}{d.}%
+     {}{}}%
+    {{}%
+     {Santos}{S.}%
+     {Eliana~Celestino}{E.~C.}%
+     {da~Paixão Rodrigues~dos}{d.~P. R.~d.}%
+     {}{}}%
+    {{}%
+     {Baccaro}{B.}%
+     {Fabricio~Beggiato}{F.~B.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Ishida}{I.}%
+     {Françoise~Yoko}{F.~Y.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Carvalho}{C.}%
+     {Fernanda~Antunes}{F.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Moulatlet}{M.}%
+     {Gabriel~Massaine}{G.~M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Guillaumet}{G.}%
+     {Jean-Louis~Bernard}{J.-L.~B.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Pinto}{P.}%
+     {José Luiz Purri~Veiga}{J.~L. P.~V.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Schietti}{S.}%
+     {Juliana}{J.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Vale}{V.}%
+     {Julio~Daniel}{J.~D.}%
+     {do}{d.}%
+     {}{}}%
+    {{}%
+     {Belger}{B.}%
+     {Lauren}{L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Verdade}{V.}%
+     {Luciano~Martins}{L.~M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Pansonato}{P.}%
+     {Marcelo~Petratti}{M.~P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Nascimento}{N.}%
+     {Marcelo~Trindade}{M.~T.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Santos}{S.}%
+     {Márcia Cléia~Vilela}{M.~C.~V.}%
+     {dos}{d.}%
+     {}{}}%
+    {{}%
+     {Cunha}{C.}%
+     {Mariana~Souza}{M.~S.}%
+     {da}{d.}%
+     {}{}}%
+    {{}%
+     {Arruda}{A.}%
+     {Rafael}{R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Barbosa}{B.}%
+     {Reinaldo~Imbrozio}{R.~I.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Romero}{R.}%
+     {Ricardo~Laerte}{R.~L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Pansini}{P.}%
+     {Susamar}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Pimentel}{P.}%
+     {Tania~Pena}{T.~P.}%
+     {}{}%
+     {}{}}%
+  }
+  \keyw{biodiversity, brazil}
+  \strng{namehash}{PFF+1}
+  \strng{fullhash}{PFFMPHAdODMSdARXdFFOGdDDPORFRdZGETCFRCMWESAFLAPMGARdMAGNACCPdABCEdBCCCVdCCNdFCGdOCCdBDOJRDdSECdPRdBFBIFYCFAMGMGJLBPJLPVSJVJDdBLVLMPMPNMTSMCVdCMSdARBRIRRLPSPTP1}
+  \field{labelyear}{2012}
+  \field{sortinit}{P}
+  \verb{doi}
+  \verb 10.7809/b-e.00083
+  \endverb
+  \field{issue}{24}
+  \field{pages}{265–274}
+  \field{title}{The Brazilian Program for Biodiversity Research (PPBio)
+  Information System}
+  \verb{url}
+  \verb http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=1
+  \verb 0.7809/b-e.00083
+  \endverb
+  \field{volume}{4}
+  \field{journaltitle}{Biodiversity \& Ecology}
+  \field{month}{09}
+  \field{year}{2012}
+\endentry
+
+\entry{pnas}{online}{}
+  \keyw{pnas}
+  \field{sortinit}{P}
+  \field{shorttitle}{PNAS}
+  \field{title}{Proceedings of the National Academy of Sciences of the United
+  States of America}
+  \verb{url}
+  \verb http://www.pnas.org/
+  \endverb
+\endentry
+
+\entry{rainfor}{online}{}
+  \keyw{rainfor}
+  \field{sortinit}{R}
+  \field{shorttitle}{RAINFOR}
+  \field{title}{Red Amazónica de Inventarios Forestales}
+  \verb{url}
+  \verb http://www.rainfor.org/
+  \endverb
+\endentry
+
+\entry{saatchi-2011}{article}{}
+  \name{author}{14}{}{%
+    {{}%
+     {Saatchi}{S.}%
+     {Sassan~S.}{S.~S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Harris}{H.}%
+     {Nancy~L.}{N.~L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Brown}{B.}%
+     {Sandra}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lefsky}{L.}%
+     {Michael}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Mitchard}{M.}%
+     {Edward T.~A.}{E.~T.~A.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Salas}{S.}%
+     {William}{W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Zutta}{Z.}%
+     {Brian~R.}{B.~R.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Buermann}{B.}%
+     {Wolfgang}{W.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Lewis}{L.}%
+     {Simon~L.}{S.~L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Hagen}{H.}%
+     {Stephen}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Petrova}{P.}%
+     {Silvia}{S.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {White}{W.}%
+     {Lee}{L.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Silman}{S.}%
+     {Miles}{M.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Morelj}{M.}%
+     {Alexandra}{A.}%
+     {}{}%
+     {}{}}%
+  }
+  \keyw{forest, carbon}
+  \strng{namehash}{SSS+1}
+  \strng{fullhash}{SSSHNLBSLMMETASWZBRBWLSLHSPSWLSMMA1}
+  \field{labelyear}{2011}
+  \field{sortinit}{S}
+  \verb{doi}
+  \verb 10.1073/pnas.1019576108
+  \endverb
+  \field{issue}{24}
+  \field{pages}{9899–9904}
+  \field{title}{Benchmark map of forest carbon stocks in tropical regions
+  across three continents}
+  \verb{url}
+  \verb http://www.pnas.org/content/108/24/9899
+  \endverb
+  \field{volume}{108}
+  \field{journaltitle}{Proceedings of the National Academy of Sciences of the
+  United States of America}
+  \field{month}{05}
+  \field{year}{2011}
+\endentry
+
+\entry{comp-lang-sql}{online}{}
+  \keyw{sql}
+  \field{sortinit}{S}
+  \field{shorttitle}{SQL}
+  \field{title}{Structured Query Language}
+  \verb{url}
+  \verb https://en.wikipedia.org/wiki/SQL
+  \endverb
+\endentry
+
+\entry{team}{online}{}
+  \keyw{team}
+  \field{sortinit}{T}
+  \field{shorttitle}{TEAM}
+  \field{title}{Tropical Ecology Assessment and Monitoring}
+  \verb{url}
+  \verb http://www.teamnetwork.org/
+  \endverb
+\endentry
+
+\entry{bris}{online}{}
+  \field{sortinit}{U}
+  \field{title}{University of Bristol}
+  \verb{url}
+  \verb http://www.bris.ac.uk/
+  \endverb
+\endentry
+
+\entry{usgs}{online}{}
+  \field{sortinit}{U}
+  \field{shorttitle}{USGS}
+  \field{title}{U.S. Geological Survey}
+  \verb{url}
+  \verb http://www.usgs.gov/
+  \endverb
+\endentry
+
+\entry{vo}{online}{}
+  \keyw{ivoa}
+  \field{sortinit}{V}
+  \field{shorttitle}{VO}
+  \field{title}{Virtual Observatory}
+  \verb{url}
+  \verb http://www.ivoa.net/
+  \endverb
+\endentry
+
+\entry{weld}{online}{}
+  \field{sortinit}{W}
+  \field{shorttitle}{WELD}
+  \field{title}{Web-enabled Landsat data}
+  \verb{url}
+  \verb http://landsat.usgs.gov/WELD.php
+  \endverb
+\endentry
+
+\entry{web-service}{online}{}
+  \keyw{rest, webservice, w3c}
+  \field{sortinit}{W}
+  \field{title}{web service}
+  \verb{url}
+  \verb https://en.wikipedia.org/wiki/Web_service
+  \endverb
+\endentry
+
+\entry{whrc-data}{online}{}
+  \keyw{whrc, data}
+  \field{sortinit}{W}
+  \field{title}{WHRC carbon dataset}
+  \verb{url}
+  \verb http://www.whrc.org/mapping/pantropical/carbon_dataset.html
+  \endverb
+\endentry
+
+\entry{whrc}{online}{}
+  \keyw{whrc}
+  \field{sortinit}{W}
+  \field{shorttitle}{WHRC}
+  \field{title}{Woods Hole Research Center}
+  \verb{url}
+  \verb http://www.whrc.org/
+  \endverb
+\endentry
+
+\entry{format-world}{online}{}
+  \keyw{format, geotiff}
+  \field{sortinit}{W}
+  \field{shorttitle}{World file}
+  \field{title}{World file GIS metadata}
+  \verb{url}
+  \verb https://en.wikipedia.org/wiki/World_file
+  \endverb
+\endentry
+
+\entry{format-zip}{online}{}
+  \keyw{format, zip}
+  \field{sortinit}{Z}
+  \field{shorttitle}{ZIP}
+  \field{title}{ZIP archive}
+  \verb{url}
+  \verb https://en.wikipedia.org/wiki/Zip_(file_format)
+  \endverb
+\endentry
+
+\lossort
+\endlossort
+
+\endinput

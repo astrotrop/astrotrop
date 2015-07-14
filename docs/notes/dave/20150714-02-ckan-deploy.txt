@@ -1,0 +1,159 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Latest documentation.
+    # https://ckan.readthedocs.org/en/latest/index.html
+
+    cd ~/frog
+    
+    tempdir=$(pwd -P)/temp
+    datadir=$(pwd -P)/data
+
+    mkdir --parent ${tempdir:?}
+    mkdir --parent ${datadir:?}
+
+    project=/var/local/projects/edinburgh/astrotrop/github
+
+# -----------------------------------------------------
+# Build our SOLR container.
+#[user@desktop]
+
+    pushd ${project:?}
+        pushd src/docker/ckan
+
+            docker build \
+                --tag astrotrop/solr \
+                solr
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Build our PostgreSQL container.
+#[user@desktop]
+
+    pushd ${project:?}
+        pushd src/docker/ckan
+
+            docker build \
+                --tag astrotrop/postgres \
+                postgres
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Build our CKAN container.
+#[user@desktop]
+
+    pushd ${project:?}
+        pushd src/docker/ckan
+
+            docker build \
+                --tag astrotrop/ckan \
+                ckan
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Run our SOLR container.
+#[user@desktop]
+
+    solrname=solrname
+    solrlink=solrlink
+
+    solrdata=${datadir:?}/solr
+    solrtemp=${tempdir:?}/solr
+
+    docker run \
+        --detach \
+        --expose 8983 \
+        --name   "${solrname:?}" \
+        --volume "${solrtemp:?}:/temp" \
+        --volume "${solrdata:?}:/opt/solr/example/solr/ckan/data" \
+        astrotrop/solr
+
+# -----------------------------------------------------
+# Run our PostgreSQL container.
+#[user@desktop]
+
+    postconf=$(mktemp)
+    cat > "${postconf:?}" << EOF
+
+    ckandata=ckandata
+    ckanrole=ckanrole
+    ckanpass=ckanpass
+
+EOF
+
+    postname=postname
+    postlink=postlink
+
+    postdata=${datadir:?}/post
+    posttemp=${tempdir:?}/post
+
+    docker run \
+        --detach \
+        --expose 5432 \
+        --name   "${postname:?}" \
+        --volume "${postconf:?}:/postgres.conf"
+        --volume "${posttemp:?}:/temp" \
+        --volume "${postdata:?}:/var/lib/postgresql/data" \
+        astrotrop/postgres
+
+# -----------------------------------------------------
+# Run our CKAN container.
+#[user@desktop]
+
+    ckanname=ckanname
+    ckanlink=ckanlink
+
+    ckandata=${datadir:?}/ckan
+    ckantemp=${tempdir:?}/ckan
+
+    docker run \
+        --detach \
+        --name   "${ckanname:?}" \
+        --volume "${postconf:?}:/postgres.conf"
+        --volume "${ckantemp:?}:/temp" \
+        --volume "${ckandata:?}:/var/lib/ckan" \
+        astrotrop/postgres
+
+
+
+
+
+
+
+        #
+        # Create our database tables.
+        pushd "${ckanroot:?}/src/ckan"
+            paster db init -c "${ckanconf:?}/ckan.ini"
+        popd
+
+
+
+
+
+

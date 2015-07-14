@@ -1,0 +1,443 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    #
+    # Latest documentation.
+    # https://ckan.readthedocs.org/en/latest/index.html
+
+    Package install (Ubuntu).
+    
+    Source install (Ubuntu).
+    
+        Nginx - port 80
+            proxy/cache
+
+        Apache - port 8080
+            mod_wsgi
+                CKAN webapp
+                    Clone from GitHub
+                        Python
+                        
+        Jetty - port 8983
+            Solr
+                Java
+        
+        Postgresql - port 5432
+
+# -------------------------------------------------------------------------------------------
+# Start a new VM.
+#[root@desktop]
+
+    ischnura-createvm 
+
+        INFO : Node name [pi]
+        INFO : Base name [fedora-21-base-20150317.qcow]
+        INFO : Disc name [pi.qcow]
+        INFO : Disc size [8G]
+
+
+# -----------------------------------------
+# Install EPEL and ELREPO.
+#[root@virtual]
+
+** CentOS only **
+
+    #
+    # Install the EPEL repository
+    yum -y localinstall --nogpgcheck \
+        'https://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm'
+
+    #
+    # Install the ELREPO repository
+    yum localinstall -y --nogpgcheck \
+        'http://elrepo.org/elrepo-release-6-5.el6.elrepo.noarch.rpm'
+
+
+# -----------------------------------------
+# Install admin tools.
+#[root@virtual]
+
+    yum -y install htop
+    yum -y install pwgen
+    
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy generator.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@virtual]
+
+    yum install -y haveged
+    systemctl enable haveged.service
+    systemctl start  haveged.service
+
+# -----------------------------------------------------
+# Install and run Docker.
+#[root@virtual]
+
+    yum -y install docker-io
+
+    systemctl enable docker.service
+    systemctl start  docker.service
+    systemctl status docker.service
+
+# -----------------------------------------------------
+# Run our PostgreSQL container.
+#[user@desktop]
+
+    postname=postname
+    postlink=postlink
+
+    postdata=postdata
+    postuser=postuser
+    postpass=postpass
+
+    docker run \
+        --detach \
+        --expose 5432 \
+        --name "${postname:?}" \
+        postgres
+
+# -----------------------------------------------------
+# Create our main CKAN database database.
+#[user@desktop]
+
+    docker exec -it "${postname:?}" psql postgres postgres
+
+        CREATE ROLE ckanrole WITH 
+            PASSWORD 'ckanrolepass'
+            NOSUPERUSER
+            NOCREATEDB
+            NOCREATEROLE
+            LOGIN
+            ;
+
+        CREATE DATABASE ckandata WITH
+            OWNER = ckanrole
+            TEMPLATE = template0
+            ENCODING = 'UTF-8'
+            ;
+
+        \q
+
+# -----------------------------------------------------
+# Run a SOLR container.
+#[user@desktop]
+
+    solrname=solrname
+    solrlink=solrlink
+
+    #
+    # Ready packaged SOLR .. no source code ?
+    # https://registry.hub.docker.com/u/manisnesan/solr-4.8.0/
+    # http://blog.nihed.com/2014/11/run-solr-docker-fedora/
+
+    docker run \
+        --detach \
+        --expose 8983 \
+        --name "${solrname:?}" \
+        --volume $(pwd -P)/temp:/temp \
+        manisnesan/solr-4.8.0
+
+    #
+    # Inspect the image to find out what is in it.
+    # https://imagelayers.io/?images=manisnesan%2Fsolr-4.8.0
+
+        unknown instruction
+        RUN yum update -y; yum clean all
+        RUN yum install -y java-1.7.0-openjdk; yum clean all
+        ENV SOLR_VERSION=4.8.0
+        ENV SOLR=solr-4.8.0
+        RUN mkdir -p /opt
+        ADD tarsum+sha256:73dc98633069e7f95fa34628dbceda9a0d9ead026c988f8681376a25754e4a78 in /opt/solr-4.8.0.tgz
+        RUN tar -C /opt --extract --file /opt/$SOLR.tgz
+        RUN ln -s /opt/$SOLR /opt/solr
+        EXPOSE 8983
+        CMD /bin/bash -c cd /opt/solr/example; java -jar start.jar
+
+
+    #
+    # CKAN SOLR .. 
+    docker run \
+        --detach \
+        --expose 8983 \
+        --name "${solrname:?}" \
+        --volume $(pwd -P)/temp:/temp \
+        --volume $(pwd -P)/solr:/opt/solr/example/solr/ckan/data/index \
+        ckan/solr
+
+
+    #
+    # Inspect the image to find out what is in it.
+    # https://imagelayers.io/?images=ckan%2Fsolr
+
+        FROM scratch
+        ADD file:481ca6c4ad290cd6ec0b678a97a7648ebfd4fb703a4071ef46aa3023799387a0 in /
+        RUN echo '#!/bin/sh' > /usr/sbin/policy-rc.d && echo 'exit 101' >> /usr/sbin/policy-rc.d && chmod +x /usr/sbin/policy-rc.d && dpkg-divert --local --rename --add /sbin/initctl && ln -sf /bin/true /sbin/initctl && echo 'force-unsafe-io' > /etc/dpkg/dpkg.cfg.d/02apt-speedup && echo 'DPkg::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };' > /etc/apt/apt.conf.d/no-cache && echo 'APT::Update::Post-Invoke { "rm -f /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin || true"; };' >> /etc/apt/apt.conf.d/no-cache && echo 'Dir::Cache::pkgcache ""; Dir::Cache::srcpkgcache "";' >> /etc/apt/apt.conf.d/no-cache && echo 'Acquire::Languages "none";' > /etc/apt/apt.conf.d/no-languages
+        RUN sed -i 's/^#\s*\(deb.*universe\$/\1/g' /etc/apt/sources.list
+        RUN apt-get update && apt-get install -y $(dpkg-query -W '*ssl*' | awk '{ print $1 }'
+        MAINTAINER Open Knowledge
+        RUN apt-get -q -y update
+        RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y install default-jre-headless
+        ENV SOLR_HOME=/opt/solr/example/solr
+        ENV SOLR_VERSION=4.8.1
+        ENV SOLR=solr-4.8.1
+        RUN mkdir -p /opt/solr
+        ADD tarsum+sha256:809283a8843d773c7717ad5e23f7889f2fd3039073c815c06add03d8896ddeeb in /opt/solr-4.8.1.tgz
+        RUN tar zxf /opt/$SOLR.tgz -C /opt/solr --strip-components 1
+        RUN cp -R $SOLR_HOME/collection1/ $SOLR_HOME/ckan/
+        RUN echo name=ckan > $SOLR_HOME/ckan/core.properties
+        ADD file:3fdf502f6ec02a012423b21630a5a8aa638ab1bd43f167f772b1ff3e3d0dc295 in /opt/solr/example/solr/ckan/conf/schema.xml
+        EXPOSE 8983
+        WORKDIR /opt/solr/example
+        CMD java -jar start.jar
+
+# -----------------------------------------------------
+# Check our container addresses.
+#[user@desktop]
+
+    docker inspect --format='{{.NetworkSettings.IPAddress}}' "solrname"
+    172.17.0.9
+
+    docker inspect --format='{{.NetworkSettings.IPAddress}}' "postname"
+    172.17.0.7
+
+# -----------------------------------------------------
+# Create our CKAN container.
+#[user@desktop]
+
+    ckanname=ckanname
+    ckanlink=ckanlink
+
+    docker run -it \
+        --expose 80 \
+        --name "${ckanname:?}" \
+        --link "${postname:?}:${postlink:?}" \
+        --link "${solrname:?}:${solrlink:?}" \
+        --volume $(pwd -P)/temp:/temp \
+        --volume $(pwd -P)/store:/var/lib/ckan \
+
+        firethorn/fedora bash
+
+        #
+        # Install Apache.
+        yum -y install httpd
+
+        #
+        # Install mod_wsgi.
+        yum -y install mod_wsgi
+
+        #
+        # Install postgresql client.
+        yum -y install postgresql
+        yum -y install postgresql-devel
+        yum -y install python-psycopg2
+
+        #
+        # Install the CKAN source code.
+        yum -y install gcc
+        yum -y install git
+        yum -y install python-pip
+        yum -y install python-virtualenv
+
+        ckanconf=/etc/ckan/default
+        ckanroot=/usr/lib/ckan/default
+
+        #
+        # Create virtualenv.
+        mkdir -p "${ckanroot:?}"
+        virtualenv --no-site-packages "${ckanroot:?}"
+        source "${ckanroot:?}/bin/activate"
+
+            #
+            # Install CKAN and dependencies.
+            pip install -e 'git+https://github.com/ckan/ckan.git@ckan-2.3#egg=ckan'
+            pip install -r "${ckanroot:?}/src/ckan/requirements.txt"
+
+        #
+        # Restart virtualenv.
+        deactivate
+        source "${ckanroot:?}/bin/activate"
+
+        #
+        # Create our CKAN config.
+        mkdir -p "${ckanconf:?}"
+        pushd "${ckanroot:?}/src/ckan"
+            paster make-config ckan "${ckanconf:?}/ckan.ini"
+        popd
+
+        #
+        # Edit our CKAN config.
+        vi "${ckanconf:?}/ckan.ini"
+
+        -   sqlalchemy.url = postgresql://ckan_default:pass@localhost/ckan_default
+        +   sqlalchemy.url = postgresql://ckanrole:ckanpass@postlink/ckandata
+
+        -   ckan.site_url = http://demo.ckan.org
+        +   ckan.site_url = http://172.17.0.11
+        
+        -   ckan.site_id = default
+        +   ckan.site_id = ckan
+
+        -   solr_url = http://127.0.0.1:8983/solr
+        +   solr_url = http://solrlink:8983/solr
+        +   solr_url = http://172.17.0.13:8983/solr/ckan
+
+        -   ckan.storage_path = /var/lib/ckan
+        +   ckan.storage_path = /var/lib/ckan
+
+
+# -----------------------------------------------------
+# Update our SOLR container.
+#[user@desktop]
+
+    solrname=solrname
+    solrlink=solrlink
+
+    ckanname=ckanname
+    ckanlink=ckanlink
+
+    #
+    # Save a copy of our 2.3 schema.
+    docker exec -it "${ckanname:?}" bash
+
+        ckanconf=/etc/ckan/default
+        ckanroot=/usr/lib/ckan/default
+
+        cp "${ckanroot:?}/src/ckan/ckan/config/solr/schema.xml" /vol/schema-2.3.xml
+
+    exit
+
+    #
+    # Install of our 2.3 schema.
+    docker exec -it "${solrname:?}" bash
+
+        solrconf=/opt/solr/example/solr/ckan/conf
+        
+        pushd "${solrconf:?}"
+
+            mv schema.xml schema-2.0.old
+            cp /vol/schema-2.3.xml schema.xml
+
+        popd
+    exit
+
+    #
+    # Restart our SOLR container.
+    docker stop  "${solrname:?}"
+    docker start "${solrname:?}"
+
+# -----------------------------------------------------
+# Update our CKAN container.
+#[user@ckan]
+
+        #
+        # Create our database tables.
+        pushd "${ckanroot:?}/src/ckan"
+            paster db init -c "${ckanconf:?}/ckan.ini"
+        popd
+
+        #
+        # Link our Repoze.who config file.
+        ln -s "${ckanroot:?}/src/ckan/who.ini" "${ckanconf:?}/who.ini"
+
+        #
+        # Create our WSGI config.
+cat > "${ckanconf:?}/ckan.wsgi" << EOF
+import os
+activate_this = os.path.join('${ckanroot:?}/bin/activate_this.py')
+execfile(activate_this, dict(__file__=activate_this))
+
+from paste.deploy import loadapp
+config_filepath = os.path.join('${ckanconf:?}/ckan.ini')
+from paste.script.util.logging_config import fileConfig
+fileConfig(config_filepath)
+application = loadapp('config:%s' % config_filepath)
+
+EOF
+
+        #
+        # Create our Apache config.
+cat > /etc/httpd/conf.d/ckan.conf << EOF
+
+<VirtualHost *:80>
+    ServerName ckan.metagrid.co.uk
+    WSGIScriptAlias / ${ckanconf:?}/ckan.wsgi
+
+    # Pass authorization info on (needed for rest api).
+    WSGIPassAuthorization On
+
+    # Deploy as a daemon (avoids conflicts between CKAN instances).
+    WSGIDaemonProcess ckan_default display-name=ckan_default processes=2 threads=15
+
+    WSGIProcessGroup ckan_default
+
+    ErrorLog  /var/log/httpd/ckan.metagrid.co.uk.error.log
+    CustomLog /var/log/httpd/ckan.metagrid.co.uk.access.log combined
+
+    <Directory />
+        Require all granted
+    </Directory>
+
+    <IfModule mod_rpaf.c>
+        RPAFenable On
+        RPAFsethostname On
+        RPAFproxy_ips 127.0.0.1
+    </IfModule>
+</VirtualHost>
+
+EOF
+
+        #
+        # Create our Apache foreground script.
+        # https://github.com/docker-library/httpd/blob/master/2.4/httpd-foreground
+        cat > httpd-foreground << EOF
+#!/usr/bin/bash
+set -e
+
+# Apache gets grumpy about PID files pre-existing
+rm -f /var/run/httpd/httpd.pid
+
+exec httpd -DFOREGROUND
+EOF
+
+        #
+        # Run Apache as a foreground process.
+        chmod a+x httpd-foreground
+        ./httpd-foreground
+
+
+
+
+
+
+............................................................................
+
+Please specify a ckan.storage_path in your config
+
+
+
+
+
+
+

@@ -1,0 +1,107 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    # --------------------------------------------------------------------------
+    # Example data sources, harvest targets.
+    #
+
+        # ----------------------------------------------------------------------
+        # FAO Core Datasets
+        http://www.fao.org/geonetwork/srv/en/main.home
+
+        "FAO produces a large number of Geographic Information System (GIS)
+        datasets for monitoring, assessment and analysis of environmental and
+        socio-economic factors causing poverty and food insecurity."
+
+        "The FAO Core Datasets are described through their own ISO standard
+        metadata and are available for download."
+
+
+        # ----------------------------------------------------------------------
+        # Czech Center for Science and Society
+        http://ckan.ccss.cz/dataset
+        
+
+    # --------------------------------------------------------------------------
+    # Data.gov.au
+    # https://toolkit.data.gov.au/index.php?title=How_to_use_data.gov.au
+    
+    Open data example, including open source extensions
+
+
+        GitHub
+        https://github.com/datagovau
+
+        ckanext-spatial
+        https://github.com/datagovau/ckanext-spatial
+
+        Metadata
+        https://toolkit.data.gov.au/index.php?title=How_to_use_data.gov.au#Metadata
+
+        Spatial_data
+        https://toolkit.data.gov.au/index.php?title=How_to_use_data.gov.au#Spatial_data
+
+
+    # --------------------------------------------------------------------------
+    # International Geothermal Association (IGA)
+    # http://www.geothermal-energy.org/
+
+    "The International Geothermal Association (IGA), founded in 1988, is
+    a scientific, educational and cultural organization established to
+    operate worldwide. It has more than 5,000 members in over 65 countries."
+
+
+    New Geothermal Data System Could Open Up Clean-Energy Reserves
+    http://www.scientificamerican.com/article/new-geothermal-data-system/
+
+    National Geothermal Data System (NGDS)
+    http://geothermaldata.org/
+
+    Example search
+    http://search.geothermaldata.org/dataset?q=forest
+
+    Paper on the development of the site.
+    "NGDS Node Deployment Adoption of CKAN for Domestic and International Data Deployment"
+    https://pangea.stanford.edu/ERE/db/IGAstandard/record_detail.php?id=19582
+    http://www.geothermal-energy.org/pdf/IGAstandard/SGW/2013/Clark.pdf
+
+    An Open Source Stack for the National Geothermal Data System
+    http://lanyrd.com/2013/foss4gna-2013/schqtt/
+
+
+    # --------------------------------------------------------------------------
+    # GeoServer - External Web Feature Server
+    # http://docs.geoserver.org/stable/en/user/data/cascaded/wfs.html
+
+    "GeoServer has the ability to load data from a remote Web Feature Server
+    (WFS). This is useful if the remote WFS lacks certain functionality that
+    GeoServer contains. For example, if the remote WFS is not also a Web
+    Map Server (WMS), data from the WFS can be cascaded through GeoServer to
+    utilize GeoServer’s WMS. If the remote WFS has a WMS but that WMS cannot
+    output KML, data can be cascaded through GeoServer’s WMS to output KML."
+
+
+    Geoserver Extension for CKAN
+    https://github.com/ngds/ckanext-geoserver
+
+

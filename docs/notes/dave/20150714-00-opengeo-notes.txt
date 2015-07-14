@@ -1,0 +1,49 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+    http://boundlessgeo.com/solutions/opengeo-suite/
+
+
+    http://suite.opengeo.org/4.1/introduction/whatis.html
+    http://suite.opengeo.org/4.1/cartography/rt/index.html
+
+
+    Desktop Analyst’s Guide to QGIS
+    http://boundlessgeo.com/2015/07/desktop-analysts-guide-qgis-part-2-beyond-basics/
+
+
+        "QGIS uses the GDAL library to read and write raster data formats,
+        including ArcInfo Binary Grid, ArcInfo ASCII Grid, GeoTIFF, ERDAS
+        IMAGINE, and many more."
+
+        "If you aren’t familiar, GDAL stands for Geospatial Data Abstraction
+        Library.  As noted on the GDAL website, GDAL is a translator library
+        for raster and vector geospatial data formats that is released under
+        an X/MIT style Open Source license by the Open Source Geospatial
+        Foundation. In total, GDAL enables support for over 140 different
+        raster formats, and over 80 different vector formats with the help
+        of its brother OGR (now part of GDAL)."
+
+
+

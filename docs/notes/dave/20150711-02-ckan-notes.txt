@@ -1,0 +1,184 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    #
+    # Latest documentation.
+    # https://ckan.readthedocs.org/en/latest/index.html
+
+    Package install (Ubuntu).
+    
+    Source install (Ubuntu).
+    
+        Nginx - port 80
+            proxy/cache
+
+        Apache - port 8080
+            mod_wsgi
+                CKAN webapp
+                    Clone from GitHub
+                        Python
+                        
+        Jetty - port 8983
+            Solr
+                Java
+        
+        Postgresql - port 5432
+        
+
+    #
+    # Python paster service.
+    # http://127.0.0.1:5000/
+    paster serve /etc/ckan/default/development.ini
+
+    #
+    # mod_wsgi
+    # https://code.google.com/p/modwsgi/
+
+    #
+    # Example Apache mod_wsgi container
+    # https://github.com/florianernst/apache-wsgi-python
+
+
+
+
+    #
+    # Circular links.
+    https://github.com/docker/docker/issues/2588
+    https://github.com/docker/compose/issues/666
+    https://stackoverflow.com/questions/25324860/how-to-create-a-bidirectional-link-between-containers
+    https://stackoverflow.com/questions/29307645/how-to-link-docker-container-to-each-other-with-docker-compose
+    
+    #
+    # Grand ambassador
+    https://github.com/cpuguy83/docker-grand-ambassador
+
+    #
+    # Docker DNS.
+    https://github.com/docker/compose/issues/666#issuecomment-109580454
+    https://sgillis.github.io/posts/2015-03-23-docker-dns.html
+
+
+
+# -----------------------------------------------------
+# Install the selinux-dockersock SELinux policy.
+# https://github.com/dpw/selinux-dockersock
+#[root@virtual]
+
+    # Test if present
+    # semodule -l | grep dockersock
+
+    yum install -y git
+    yum install -y make
+    yum install -y checkpolicy
+    yum install -y policycoreutils policycoreutils-python
+    
+    pushd /var/local/projects
+
+        git clone https://github.com/dpw/selinux-dockersock
+
+        pushd selinux-dockersock
+
+            make dockersock.pp
+
+            semodule -i dockersock.pp
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Run the dnsdock container.
+# https://github.com/tonistiigi/dnsdock
+#[root@virtual]
+
+    docker run -d \
+        --name dnsdock \
+        --expose 53 \
+        --volume /var/run/docker.sock:/var/run/docker.sock \
+        tonistiigi/dnsdock
+        
+    dnsdockip=$(docker inspect --format='{{.NetworkSettings.IPAddress}}' dnsdock)
+
+
+    docker run -it \
+        --dns ${dnsdockip:?} \
+        centos bash
+
+
+        yum install -y iputils
+        yum install -y bind-utils
+
+        ping solr.solr23.docker
+
+            PING solr.solr23.docker (172.17.0.17) 56(84) bytes of data.
+            64 bytes from solr23.docker (172.17.0.17): icmp_seq=1 ttl=64 time=0.166 ms
+            64 bytes from solr23.docker (172.17.0.17): icmp_seq=2 ttl=64 time=0.352 ms
+
+        
+        host solr.solr23.docker
+
+            solr.solr23.docker has address 172.17.0.17
+            Host solr.solr23.docker not found: 3(NXDOMAIN)
+            solr.solr23.docker mail is handled by 0 solr.solr23.docker.
+
+        dig solr.solr23.docker
+
+            ; <<>> DiG 9.9.4-RedHat-9.9.4-18.el7_1.1 <<>> solr.solr23.docker
+            ;; global options: +cmd
+            ;; Got answer:
+            ;; ->>HEADER<<- opcode: QUERY, status: NOERROR, id: 25799
+            ;; flags: qr rd; QUERY: 1, ANSWER: 1, AUTHORITY: 0, ADDITIONAL: 0
+            ;; WARNING: recursion requested but not available
+
+            ;; QUESTION SECTION:
+            ;solr.solr23.docker.		IN	A
+
+            ;; ANSWER SECTION:
+            solr.solr23.docker.	0	IN	A	172.17.0.17
+
+            ;; Query time: 5 msec
+            ;; SERVER: 172.17.0.31#53(172.17.0.31)
+            ;; WHEN: Sat Jul 11 14:49:31 UTC 2015
+            ;; MSG SIZE  rcvd: 70
+
+    #
+    # Works, but we need the image name in the DNS name.
+
+        solr.solr23.docker
+
+    #
+    # Cleaner if it just used the container name and id.
+    
+        solr.name.docker
+
+        d230e2fc6bdc.id.docker
+
+    #
+    # Build our own .. later
+
+
+
+
+
+
+https://lists.okfn.org/pipermail/ckan-dev/2015-April/008920.html    
+

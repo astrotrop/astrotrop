@@ -26,7 +26,6 @@
     # ckanext-spatial - Geo related plugins for CKAN
     https://ckanext-spatial.readthedocs.org/en/latest/index.html
 
-
     #
     # CSW support
     https://ckanext-spatial.readthedocs.org/en/latest/csw.html
@@ -42,6 +41,10 @@
     "Catalogue services support the ability to publish and search collections
     of descriptive information (metadata) for data, services, and related
     information objects."
+
+
+
+
 
 
     Common base layers for Map Widgets

@@ -1,0 +1,51 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+    #
+    # CKAN Dockerfile
+    https://github.com/ckan/ckan-docker/blob/master/docker/postgres/Dockerfile
+    
+    #
+    # Based on phusion/baseimage
+    FROM phusion/baseimage:0.9.16
+    MAINTAINER Open Knowledge
+    
+    #
+    # phusion/baseimage
+    https://github.com/phusion/baseimage-docker
+    
+    #
+    # PID 1 zombine reaping problem 
+    https://blog.phusion.nl/2015/01/20/docker-and-the-pid-1-zombie-reaping-problem/
+
+
+    #
+    # Using my_init in CentOS images.
+    https://github.com/phusion/passenger_rpm_automation
+
+    #
+    # Automated RPM builds
+    https://github.com/phusion/passenger_rpm_automation
+
+

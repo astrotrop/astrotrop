@@ -68,5 +68,12 @@
     git remote set-url origin git@github.com:astrotrop/astrotrop.git
 
 
+    git commit --amend --author='Name <email@example.com>'
+
+
+    git config --global user.name "Name"
+    git config --global user.email email@example.com
+
+
 
 

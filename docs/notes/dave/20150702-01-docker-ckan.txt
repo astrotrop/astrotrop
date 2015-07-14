@@ -135,7 +135,7 @@ EOF
 
     #
     # Run CKAN dependencies.
-    docker run -d --name db ckan/postgresql
+    docker run -d --name db   ckan/postgresql
     docker run -d --name solr ckan/solr23
 
     #
@@ -144,33 +144,48 @@ EOF
 
     #
     # Run CKAN.
-    docker run -d --name ckan -p 80:80 --link db:db --link solr:solr ckan/ckan
+    docker run \
+        --detach \
+        --name ckan \
+        --publish 80:80 \
+        --link db:db \
+        --link solr:solr \
+        ckan/ckan
+
     docker logs -f ckan
+
+#
+# Stuff ...
+
+--volume "$(pwd)/ckan.ini:/etc/ckan/default/ckan.ini" \
+
+ckan.site_url = http://omicron.virtual.metagrid.co.uk
+
 
 # -------------------------------------------------------------------------------------------
 # Execute a shell in the CKAN container.
 #[root@virtual]
 
+    #
+    # Run bash in the CKAN container.
     docker exec -it ckan bash
 
-    # Do we need this ?
-    # source "${CKAN_HOME:?}/bin/activate"
+        source "${CKAN_HOME:?}/bin/activate"
+        CKAN_INI="${CKAN_CONFIG:?}/ckan.ini"
 
-    pushd "${CKAN_HOME:?}"
-        pushd src/ckan
+        pushd "${CKAN_HOME:?}"
+            pushd src/ckan
 
-            CKAN_INI="${CKAN_CONFIG:?}/ckan.ini"
+                paster \
+                    user list \
+                    -c "${CKAN_INI:?}"
 
-            paster \
-                user list \
-                -c "${CKAN_INI:?}"
+                paster \
+                    sysadmin add zarquan \
+                    -c "${CKAN_INI:?}"
 
-            paster \
-                sysadmin add zarquan \
-                -c "${CKAN_INI:?}"
-
+            popd
         popd
-    popd
 
 # -------------------------------------------------------------------------------------------
 # TODO : Install DataStore .... 
@@ -180,5 +195,300 @@ EOF
     # Need DataStore
     https://github.com/ckan/ckan/blob/master/doc/maintaining/datastore.rst
 
+# -------------------------------------------------------------------------------------------
+# Install DataStore
+# https://github.com/ckan/ckan/blob/master/doc/maintaining/datastore.rst
+# http://docs.ckan.org/en/ckan-1.8/datastore-setup.html
+#[root@virtual]
+
+    #
+    # Run bash in the Postgres container.
+    docker exec -it db bash
+
+        #
+        # Add the UK locale
+        # https://serverfault.com/questions/491237/postgresql-9-2-invalid-locale-name-on-ubuntu-12-04
+        locale-gen en_GB.utf8
+
+    #
+    # Restart the postgresql container.
+    docker stop  db
+    docker start db
+
+    #
+    # BUG : Our en_GB.utf8 locale is still not visible in Postgres.
+
+    #
+    # Run bash in the Postgres container.
+    docker exec -it db bash
+
+        #
+        # Create our database
+        psql \
+            --username postgres \
+            postgres
+
+            --
+            -- Create our database roles.
+            CREATE ROLE datastoreowner WITH 
+                PASSWORD 'datastoreownerpass'
+                NOSUPERUSER
+                NOCREATEDB
+                NOCREATEROLE
+                NOLOGIN
+                ;
+
+            CREATE ROLE datastorereader WITH 
+                PASSWORD 'datastorereaderpass'
+                NOSUPERUSER
+                NOCREATEDB
+                NOCREATEROLE
+                LOGIN
+                ;
+
+            CREATE ROLE datastorewriter WITH 
+                PASSWORD 'datastorewriterpass'
+                NOSUPERUSER
+                NOCREATEDB
+                NOCREATEROLE
+                LOGIN
+                ;
+
+            --
+            -- Create our database.
+            CREATE DATABASE datastoredata WITH
+                OWNER = datastoreowner
+                TEMPLATE = template0
+                LC_COLLATE = 'en_GB.UTF-8'
+                LC_CTYPE   = 'en_GB.UTF-8'
+                ENCODING = 'UTF-8'
+                ;
+                                    
+            --
+            -- Exit
+            \q
+        exit
+
+    #
+    # Run bash in the CKAN container.
+    docker exec -it ckan bash
+
+        source "${CKAN_HOME:?}/bin/activate"
+        CKAN_INI="${CKAN_CONFIG:?}/ckan.ini"
+
+        vi "${CKAN_INI:?}"
+
+-   ckan.plugins = stats text_view image_view recline_view
++   ckan.plugins = stats text_view image_view recline_view datastore
+
+~   ckan.datastore.write_url = postgresql://datastorewriter:datastorewriterpass@db:5432/datastoredata
+~   ckan.datastore.read_url  = postgresql://datastorereader:datastorereaderpass@db:5432/datastoredata
+
+        tmpfile=$(mktemp)
+
+        pushd "${CKAN_HOME:?}"
+            pushd src/ckan
+
+                paster --plugin=ckan \
+                    datastore set-permissions -v \
+                    -c "${CKAN_INI:?}" \
+                    > "${tmpfile:?}"
+
+            popd
+        popd
+
+        #
+        # Export the commands (manual copy/paste).
+        cat "${tmpfile:?}"
+
+        exit
+
+    #
+    # Run bash in the Postgres container.
+    docker exec -it db bash
+
+        #
+        # Import the commands (manual copy/paste).
+        tmpfile=$(mktemp)
+        cat > "${tmpfile:?}" << EOF
+
+\connect datastoredata
+
+-- revoke permissions for the read-only user
+REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+REVOKE USAGE  ON SCHEMA public FROM PUBLIC;
+
+GRANT CREATE ON SCHEMA public TO "ckan";
+GRANT USAGE  ON SCHEMA public TO "ckan";
+
+GRANT CREATE ON SCHEMA public TO "datastorewriter";
+GRANT USAGE  ON SCHEMA public TO "datastorewriter";
+
+-- take connect permissions from main db
+REVOKE CONNECT ON DATABASE "ckan" FROM "datastorereader";
+
+-- grant select permissions for read-only user
+GRANT CONNECT ON DATABASE "datastoredata" TO "datastorereader";
+GRANT USAGE   ON SCHEMA public TO "datastorereader";
+
+-- grant access to current tables and views to read-only user
+GRANT SELECT ON ALL TABLES IN SCHEMA public TO "datastorereader";
+
+-- grant access to new tables and views by default
+ALTER DEFAULT PRIVILEGES FOR USER "datastorewriter" IN SCHEMA public
+GRANT SELECT ON TABLES TO "datastorereader";
+
+EOF
+
+        psql \
+            --username postgres \
+            --file "${tmpfile:?}" \
+            postgres
+
+        exit
+
+
+    #
+    # Run bash in the CKAN container.
+    docker exec -it ckan bash
+
+        source "${CKAN_HOME:?}/bin/activate"
+        CKAN_INI="${CKAN_CONFIG:?}/ckan.ini"
+
+        #
+        # Test search.
+        curl -X GET "http://127.0.0.1:80/api/3/action/datastore_search?resource_id=_table_metadata"
+            {
+            "help": "http://127.0.0.1/api/3/action/help_show?name=datastore_search",
+            "success": true,
+            "result": {
+                "resource_id": "_table_metadata",
+                "fields": [
+                        {
+                        "type": "text",
+                        "id": "_id"
+                        },
+                        {
+                        "type": "name",
+                        "id": "name"
+                        },
+                        {
+                        "type": "oid",
+                        "id": "oid"
+                        },
+                        {
+                        "type": "name",
+                        "id": "alias_of"
+                        }
+                    ],
+                "records": [
+                        {
+                        "_id": "1fab8662e5772995",
+                        "alias_of": "pg_views",
+                        "name": "_table_metadata",
+                        "oid": 18108
+                        },
+                        {
+                        "_id": "21b5fe766665b205",
+                        "alias_of": "pg_tables",
+                        "name": "_table_metadata",
+                        "oid": 18108
+                        }
+                    ],
+                "_links": {
+                    "start": "/api/3/action/datastore_search?resource_id=_table_metadata",
+                    "next": "/api/3/action/datastore_search?offset=100&resource_id=_table_metadata"
+                    },
+                "total": 2
+                }
+            }
+
+        #
+        # Test create - readonly permission error.
+        curl -X POST "http://127.0.0.1:80/api/3/action/datastore_create" \
+            -H "Authorization: cf5a43e0-19ca-4576-b41d-35daa32a40fc" \
+            -d '{
+                "resource_id": "00dea287-8b8f-414e-baf3-e2e026060bdc",
+                "fields": [
+                    {"id": "a"},
+                    {"id": "b"}
+                    ],
+                "records": [
+                    { "a": 1, "b": "xyz"},
+                    {"a": 2, "b": "zzz"}
+                    ]
+                }'
+
+            {
+            "help": "http://127.0.0.1/api/3/action/help_show?name=datastore_create",
+            "success": false,
+            "error": {
+                "__type": "Validation Error",
+                "read-only": [
+                    "Cannot edit read-only resource. Either pass\"force=True\" or change url-type to \"datastore\""
+                    ]
+                }
+            }
+
+        #
+        # Test help
+        curl -X GET "http://127.0.0.1/api/3/action/help_show?name=datastore_create"
+            {
+            "help": "http://127.0.0.1/api/3/action/help_show?name=help_show",
+            "success": true,
+            "result": "
+                Adds a new table to the DataStore.\n\n
+
+                The datastore_create action allows you to post JSON data to be\n
+                stored against a resource. This endpoint also supports altering tables,\n
+                aliases and indexes and bulk insertion. This endpoint can be called multiple\n
+                times to initially insert more data, add fields, change the aliases or indexes\n
+                as well as the primary keys.\n\n
+                
+                To create an empty datastore resource and a CKAN resource at the same time,\n
+                provide ``resource`` with a valid ``package_id`` and omit the ``resource_id``.\n\n
+                
+                If you want to create a datastore resource from the content of a file,\n
+                provide ``resource`` with a valid ``url``.\n\n
+                
+                See :ref:`fields` and :ref:`records` for details on how to lay out records.\n\n
+                
+                :param resource_id: resource id that the data is going to be stored against.\n
+                :type resource_id: string\n
+                
+                :param force: set to True to edit a read-only resource\n
+                :type force: bool (optional, default: False)\n
+                
+                :param resource: resource dictionary that is passed to\n
+                :meth:`~ckan.logic.action.create.resource_create`.\n
+                Use instead of ``resource_id`` (optional)\n
+                :type resource: dictionary\n
+                
+                :param aliases: names for read only aliases of the resource. (optional)\n
+                :type aliases: list or comma separated string\n
+                
+                :param fields: fields/columns and their extra metadata. (optional)\n
+                :type fields: list of dictionaries\n
+                
+                :param records: the data, eg: [{\"dob\": \"2005\", \"some_stuff\": [\"a\", \"b\"]}]  (optional)\n
+                :type records: list of dictionaries\n
+                
+                :param primary_key: fields that represent a unique key (optional)\n
+                :type primary_key: list or comma separated string\n
+                
+                :param indexes: indexes on table (optional)\n
+                :type indexes: list or comma separated string\n\n
+                
+                Please note that setting the ``aliases``, ``indexes`` or ``primary_key`` replaces the exising\n
+                aliases or constraints. Setting ``records`` appends the provided records to the resource.\n\n
+                
+                **Results:**\n\n
+                
+                :returns: The newly created data object.\n
+                :rtype: dictionary\n\n
+                
+                See :ref:`fields` and :ref:`records` for details on how to lay out records.\n\n
+                "
+            }
 
 
