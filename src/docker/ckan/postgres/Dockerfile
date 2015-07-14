@@ -32,7 +32,4 @@ RUN chown postgres:postgres /var/lib/postgresql
 
 VOLUME /var/lib/postgresql/data
 
-#
-# Install our init script.
-COPY init-ckandata.sh /docker-entrypoint-initdb.d/init-ckandata.sh
 

@@ -138,14 +138,8 @@
 # Run our PostgreSQL container.
 #[user@desktop]
 
-    postconf=$(mktemp)
-    cat > "${postconf:?}" << EOF
-
-    ckandata=ckandata
     ckanrole=ckanrole
     ckanpass=ckanpass
-
-EOF
 
     postname=postname
     postlink=postlink
@@ -153,14 +147,8 @@ EOF
     postdata=${datadir:?}/postgres
     posttemp=${tempdir:?}/postgres
 
-    docker run \
-        --detach \
-        --expose 5432 \
-        --name   "${postname:?}" \
-        --volume "${posttemp:?}:/temp" \
-        --volume "${postconf:?}:/ckandata.conf" \
-        --volume "${postdata:?}:/var/lib/postgresql/data" \
-        astrotrop/postgres
+    postuser=postuser
+    postpass=postpass
 
     docker run \
         --detach \
@@ -168,8 +156,8 @@ EOF
         --name   "${postname:?}" \
         --volume "${posttemp:?}:/temp" \
         --volume "${postdata:?}:/var/lib/postgresql/data" \
-        --env POSTGRES_USER postgresuser \
-        --env POSTGRES_PASSWORD postgrespass \
+        --env POSTGRES_USER=${postuser:?} \
+        --env POSTGRES_PASSWORD=${postpass:?} \
         astrotrop/postgres
 
 
@@ -185,11 +173,12 @@ EOF
 
     docker run \
         --detach \
-        --name   "${ckanname:?}" \
-        --volume "${postconf:?}:/postgres.conf"
+        --name "${ckanname:?}" \
+        --link ${postname:?}:${postlink:?} \
+        --link ${solrname:?}:${solrlink:?} \
         --volume "${ckantemp:?}:/temp" \
         --volume "${ckandata:?}:/var/lib/ckan" \
-        astrotrop/postgres
+        astrotrop/ckan
 
 
 
