@@ -19,7 +19,7 @@ set -e
 
 #
 # Load our cnmfig properties.
-source /postgres.conf
+source /ckandata.conf
 
 #
 # Create our CKAN database.

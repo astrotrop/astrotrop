@@ -24,25 +24,25 @@
     # Latest documentation.
     # https://ckan.readthedocs.org/en/latest/index.html
 
-    workspace=~/work
-    project=/var/local/projects/edinburgh/astrotrop/github
+    project=/var/local/projects/astrotrop
 
-    tempdir=${workspace}/temp
-    datadir=${workspace}/data
+    tempdir=${project:?}/temp
+    datadir=${project:?}/data
 
     mkdir --parent ${tempdir:?}
     mkdir --parent ${datadir:?}
 
 
     yum -y install git
-    git clone https://github.com/astrotrop/astrotrop.git github
-    project=~/github
+    pushd ${project:?}
+        git clone https://github.com/astrotrop/astrotrop.git github
+    popd
 
 # -----------------------------------------------------
 # Build our SOLR container.
 #[user@desktop]
 
-    pushd ${project:?}
+    pushd ${project:?}/github
         pushd src/docker/ckan
 
             docker build \
@@ -56,7 +56,7 @@
 # Build our PostgreSQL container.
 #[user@desktop]
 
-    pushd ${project:?}
+    pushd ${project:?}/github
         pushd src/docker/ckan
 
             docker build \
@@ -70,7 +70,7 @@
 # Build our CKAN container.
 #[user@desktop]
 
-    pushd ${project:?}
+    pushd ${project:?}/github
         pushd src/docker/ckan
 
             docker build \
@@ -114,14 +114,14 @@ EOF
     postname=postname
     postlink=postlink
 
-    postdata=${datadir:?}/post
-    posttemp=${tempdir:?}/post
+    postdata=${datadir:?}/postgres
+    posttemp=${tempdir:?}/postgres
 
     docker run \
         --detach \
         --expose 5432 \
         --name   "${postname:?}" \
-        --volume "${postconf:?}:/postgres.conf"
+        --volume "${postconf:?}:/ckandata.conf"
         --volume "${posttemp:?}:/temp" \
         --volume "${postdata:?}:/var/lib/postgresql/data" \
         astrotrop/postgres
