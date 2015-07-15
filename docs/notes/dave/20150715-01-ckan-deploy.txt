@@ -45,7 +45,6 @@
         pushlink=pushlink
         pushtemp=${tempdir:?}/push
 
-
 EOF
 
     source "${HOME:?}/astrotrop.conf"
@@ -54,7 +53,18 @@ EOF
         --detach \
         --publish 80:80 \
         --name "${pushname:?}" \
-        --link ${ckanname:?}:${ckanlink:?} \
         --volume "${pushtemp:?}:/temp" \
         astrotrop/push
+
+# -----------------------------------------------------
+# Tail the CKAN Apache logs
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${pushname:?}" \
+        tail -f /var/log/httpd/push.metagrid.co.uk.error.log
+
+
+        --link ${ckanname:?}:${ckanlink:?} \
 
