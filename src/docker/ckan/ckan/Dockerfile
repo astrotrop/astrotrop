@@ -52,6 +52,7 @@ RUN dnf -y install python-virtualenv
 # Create our target directories.
 RUN mkdir -p ${ckanroot}
 RUN mkdir -p ${ckanconf}
+RUN mkdir -p ${ckandata}
 RUN mkdir -p ${ckandata}/storage
 RUN mkdir -p ${ckandata}/resources
 RUN chown -R apache ${ckandata}

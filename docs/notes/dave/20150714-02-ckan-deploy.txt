@@ -138,16 +138,12 @@
 # Run our PostgreSQL container.
 #[user@desktop]
 
-    ckanrole=ckanrole
-    ckanpass=ckanpass
-
     postname=postname
     postlink=postlink
 
     postdata=${datadir:?}/postgres
     posttemp=${tempdir:?}/postgres
 
-    postuser=postuser
     postpass=postpass
 
     docker run \
@@ -156,10 +152,38 @@
         --name   "${postname:?}" \
         --volume "${posttemp:?}:/temp" \
         --volume "${postdata:?}:/var/lib/postgresql/data" \
-        --env POSTGRES_USER=${postuser:?} \
         --env POSTGRES_PASSWORD=${postpass:?} \
         astrotrop/postgres
 
+    docker logs postname
+
+# -----------------------------------------------------
+# Configure our PostgreSQL container.
+#[user@desktop]
+
+    ckanbase=ckanbase
+    ckanrole=ckanrole
+    ckanpass=ckanpass
+
+    cat > ${posttemp:?}/ckan-init.sh << EOF
+
+        CREATE ROLE ${ckanrole:?} WITH 
+            PASSWORD '${ckanpass:?}'
+            NOSUPERUSER
+            NOCREATEDB
+            NOCREATEROLE
+            LOGIN
+            ;
+
+        CREATE DATABASE ${ckanbase:?} WITH
+            OWNER = ${ckanrole:?}
+            ;
+EOF
+
+    docker exec -it "${postname:?}" psql postgres postgres
+
+        \i /temp/ckan-init.sh
+        \q
 
 # -----------------------------------------------------
 # Run our CKAN container.
@@ -173,6 +197,7 @@
 
     docker run \
         --detach \
+        --publish 80:80 \
         --name "${ckanname:?}" \
         --link ${postname:?}:${postlink:?} \
         --link ${solrname:?}:${solrlink:?} \
@@ -180,19 +205,69 @@
         --volume "${ckandata:?}:/var/lib/ckan" \
         astrotrop/ckan
 
+# -----------------------------------------------------
+# Configure our CKAN container.
+#[user@desktop]
 
+    docker exec -it "${ckanname:?}" bash
 
+        ckanbase=ckanbase
+        ckanrole=ckanrole
+        ckanpass=ckanpass
 
-
-
+        #
+        # Check our config file.
+        vi "${ckanconf:?}/ckan.ini"
 
         #
         # Create our database tables.
         pushd "${ckanroot:?}/src/ckan"
-            paster db init -c "${ckanconf:?}/ckan.ini"
+            paster --plugin ckan db init -c "${ckanconf:?}/ckan.ini"
         popd
 
+# -----------------------------------------------------
+# Dump our PostgreSQL database.
+#[user@desktop]
 
+    docker exec -it "${postname:?}" bash
+
+        pg_dump \
+            --username postgres \
+            --schema-only ckanbase \
+            > /temp/ckanbase.schema
+
+        exit
+        
+# -----------------------------------------------------
+# Tail the CKAN Apache logs
+#[user@desktop]
+
+    docker exec -it "${ckanname:?}" \
+        tail -f /var/log/httpd/ckan.metagrid.co.uk.error.log
+
+# -----------------------------------------------------
+# Tail the SOLR logs
+#[user@desktop]
+
+    docker exec -it "${solrname:?}" \
+        tail -f /opt/solr/example/logs/solr.log
+
+# -----------------------------------------------------
+# Configure the admin user
+#[user@desktop]
+
+    docker exec -it "${ckanname:?}" bash
+
+        paster --plugin ckan sysadmin add zarquan \
+            -c "${ckanconf:?}/ckan.ini"
+
+
+
+TODO
+DataStore  extension
+DataPusher extension
+Public DNS name
+dnsdock
 
 
 

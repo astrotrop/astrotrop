@@ -395,10 +395,6 @@ EOF
         paster user list -c "${ckanconf:?}/ckan.ini"
         paster sysadmin add zarquan -c "${ckanconf:?}/ckan.ini"
 
-0vklHwZlonFPWwGk4MYSlOplz1FvNy
-
-
-
 
 
 
