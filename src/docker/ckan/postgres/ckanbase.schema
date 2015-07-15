@@ -1,0 +1,2429 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: activity; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE activity (
+    id text NOT NULL,
+    "timestamp" timestamp without time zone,
+    user_id text,
+    object_id text,
+    revision_id text,
+    activity_type text,
+    data text
+);
+
+
+ALTER TABLE activity OWNER TO ckanrole;
+
+--
+-- Name: activity_detail; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE activity_detail (
+    id text NOT NULL,
+    activity_id text,
+    object_id text,
+    object_type text,
+    activity_type text,
+    data text
+);
+
+
+ALTER TABLE activity_detail OWNER TO ckanrole;
+
+--
+-- Name: authorization_group; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE authorization_group (
+    id text NOT NULL,
+    name text,
+    created timestamp without time zone
+);
+
+
+ALTER TABLE authorization_group OWNER TO ckanrole;
+
+--
+-- Name: authorization_group_role; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE authorization_group_role (
+    user_object_role_id text NOT NULL,
+    authorization_group_id text
+);
+
+
+ALTER TABLE authorization_group_role OWNER TO ckanrole;
+
+--
+-- Name: authorization_group_user; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE authorization_group_user (
+    authorization_group_id text NOT NULL,
+    user_id text NOT NULL,
+    id text NOT NULL
+);
+
+
+ALTER TABLE authorization_group_user OWNER TO ckanrole;
+
+--
+-- Name: dashboard; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE dashboard (
+    user_id text NOT NULL,
+    activity_stream_last_viewed timestamp without time zone NOT NULL,
+    email_last_sent timestamp without time zone DEFAULT ('now'::text)::timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE dashboard OWNER TO ckanrole;
+
+--
+-- Name: group; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE "group" (
+    id text NOT NULL,
+    name text NOT NULL,
+    title text,
+    description text,
+    created timestamp without time zone,
+    state text,
+    revision_id text,
+    type text NOT NULL,
+    approval_status text,
+    image_url text,
+    is_organization boolean DEFAULT false
+);
+
+
+ALTER TABLE "group" OWNER TO ckanrole;
+
+--
+-- Name: group_extra; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE group_extra (
+    id text NOT NULL,
+    group_id text,
+    key text,
+    value text,
+    state text,
+    revision_id text
+);
+
+
+ALTER TABLE group_extra OWNER TO ckanrole;
+
+--
+-- Name: group_extra_revision; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE group_extra_revision (
+    id text NOT NULL,
+    group_id text,
+    key text,
+    value text,
+    state text,
+    revision_id text NOT NULL,
+    continuity_id text,
+    expired_id text,
+    revision_timestamp timestamp without time zone,
+    expired_timestamp timestamp without time zone,
+    current boolean
+);
+
+
+ALTER TABLE group_extra_revision OWNER TO ckanrole;
+
+--
+-- Name: group_revision; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE group_revision (
+    id text NOT NULL,
+    name text NOT NULL,
+    title text,
+    description text,
+    created timestamp without time zone,
+    state text,
+    revision_id text NOT NULL,
+    continuity_id text,
+    expired_id text,
+    revision_timestamp timestamp without time zone,
+    expired_timestamp timestamp without time zone,
+    current boolean,
+    type text NOT NULL,
+    approval_status text,
+    image_url text,
+    is_organization boolean DEFAULT false
+);
+
+
+ALTER TABLE group_revision OWNER TO ckanrole;
+
+--
+-- Name: group_role; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE group_role (
+    user_object_role_id text NOT NULL,
+    group_id text
+);
+
+
+ALTER TABLE group_role OWNER TO ckanrole;
+
+--
+-- Name: member; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE member (
+    id text NOT NULL,
+    table_id text NOT NULL,
+    group_id text,
+    state text,
+    revision_id text,
+    table_name text NOT NULL,
+    capacity text NOT NULL
+);
+
+
+ALTER TABLE member OWNER TO ckanrole;
+
+--
+-- Name: member_revision; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE member_revision (
+    id text NOT NULL,
+    table_id text NOT NULL,
+    group_id text,
+    state text,
+    revision_id text NOT NULL,
+    continuity_id text,
+    expired_id text,
+    revision_timestamp timestamp without time zone,
+    expired_timestamp timestamp without time zone,
+    current boolean,
+    table_name text NOT NULL,
+    capacity text NOT NULL
+);
+
+
+ALTER TABLE member_revision OWNER TO ckanrole;
+
+--
+-- Name: migrate_version; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE migrate_version (
+    repository_id character varying(250) NOT NULL,
+    repository_path text,
+    version integer
+);
+
+
+ALTER TABLE migrate_version OWNER TO ckanrole;
+
+--
+-- Name: package; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE package (
+    id text NOT NULL,
+    name character varying(100) NOT NULL,
+    title text,
+    version character varying(100),
+    url text,
+    notes text,
+    license_id text,
+    revision_id text,
+    author text,
+    author_email text,
+    maintainer text,
+    maintainer_email text,
+    state text,
+    type text,
+    owner_org text,
+    private boolean DEFAULT false,
+    metadata_modified timestamp without time zone,
+    creator_user_id text
+);
+
+
+ALTER TABLE package OWNER TO ckanrole;
+
+--
+-- Name: package_extra; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE package_extra (
+    id text NOT NULL,
+    package_id text,
+    key text,
+    value text,
+    revision_id text,
+    state text
+);
+
+
+ALTER TABLE package_extra OWNER TO ckanrole;
+
+--
+-- Name: package_extra_revision; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE package_extra_revision (
+    id text NOT NULL,
+    package_id text,
+    key text,
+    value text,
+    revision_id text NOT NULL,
+    continuity_id text,
+    state text,
+    expired_id text,
+    revision_timestamp timestamp without time zone,
+    expired_timestamp timestamp without time zone,
+    current boolean
+);
+
+
+ALTER TABLE package_extra_revision OWNER TO ckanrole;
+
+--
+-- Name: package_relationship; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE package_relationship (
+    id text NOT NULL,
+    subject_package_id text,
+    object_package_id text,
+    type text,
+    comment text,
+    revision_id text,
+    state text
+);
+
+
+ALTER TABLE package_relationship OWNER TO ckanrole;
+
+--
+-- Name: package_relationship_revision; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE package_relationship_revision (
+    id text NOT NULL,
+    subject_package_id text,
+    object_package_id text,
+    type text,
+    comment text,
+    revision_id text NOT NULL,
+    continuity_id text,
+    state text,
+    expired_id text,
+    revision_timestamp timestamp without time zone,
+    expired_timestamp timestamp without time zone,
+    current boolean
+);
+
+
+ALTER TABLE package_relationship_revision OWNER TO ckanrole;
+
+--
+-- Name: package_revision; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE package_revision (
+    id text NOT NULL,
+    name character varying(100) NOT NULL,
+    title text,
+    version character varying(100),
+    url text,
+    notes text,
+    license_id text,
+    revision_id text NOT NULL,
+    continuity_id text,
+    author text,
+    author_email text,
+    maintainer text,
+    maintainer_email text,
+    state text,
+    expired_id text,
+    revision_timestamp timestamp without time zone,
+    expired_timestamp timestamp without time zone,
+    current boolean,
+    type text,
+    owner_org text,
+    private boolean DEFAULT false,
+    metadata_modified timestamp without time zone,
+    creator_user_id text
+);
+
+
+ALTER TABLE package_revision OWNER TO ckanrole;
+
+--
+-- Name: package_role; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE package_role (
+    user_object_role_id text NOT NULL,
+    package_id text
+);
+
+
+ALTER TABLE package_role OWNER TO ckanrole;
+
+--
+-- Name: package_tag; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE package_tag (
+    id text NOT NULL,
+    package_id text,
+    tag_id text,
+    revision_id text,
+    state text
+);
+
+
+ALTER TABLE package_tag OWNER TO ckanrole;
+
+--
+-- Name: package_tag_revision; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE package_tag_revision (
+    id text NOT NULL,
+    package_id text,
+    tag_id text,
+    revision_id text NOT NULL,
+    continuity_id text,
+    state text,
+    expired_id text,
+    revision_timestamp timestamp without time zone,
+    expired_timestamp timestamp without time zone,
+    current boolean
+);
+
+
+ALTER TABLE package_tag_revision OWNER TO ckanrole;
+
+--
+-- Name: rating; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE rating (
+    id text NOT NULL,
+    user_id text,
+    user_ip_address text,
+    package_id text,
+    rating double precision,
+    created timestamp without time zone
+);
+
+
+ALTER TABLE rating OWNER TO ckanrole;
+
+--
+-- Name: related; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE related (
+    id text NOT NULL,
+    type text NOT NULL,
+    title text,
+    description text,
+    image_url text,
+    url text,
+    created timestamp without time zone,
+    owner_id text,
+    view_count integer DEFAULT 0 NOT NULL,
+    featured integer DEFAULT 0 NOT NULL
+);
+
+
+ALTER TABLE related OWNER TO ckanrole;
+
+--
+-- Name: related_dataset; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE related_dataset (
+    id text NOT NULL,
+    dataset_id text NOT NULL,
+    related_id text NOT NULL,
+    status text
+);
+
+
+ALTER TABLE related_dataset OWNER TO ckanrole;
+
+--
+-- Name: resource; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE resource (
+    id text NOT NULL,
+    url text NOT NULL,
+    format text,
+    description text,
+    "position" integer,
+    revision_id text,
+    hash text,
+    state text,
+    extras text,
+    name text,
+    resource_type text,
+    mimetype text,
+    mimetype_inner text,
+    size bigint,
+    last_modified timestamp without time zone,
+    cache_url text,
+    cache_last_updated timestamp without time zone,
+    webstore_url text,
+    webstore_last_updated timestamp without time zone,
+    created timestamp without time zone,
+    url_type text,
+    package_id text DEFAULT ''::text NOT NULL
+);
+
+
+ALTER TABLE resource OWNER TO ckanrole;
+
+--
+-- Name: resource_revision; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE resource_revision (
+    id text NOT NULL,
+    url text NOT NULL,
+    format text,
+    description text,
+    "position" integer,
+    revision_id text NOT NULL,
+    continuity_id text,
+    hash text,
+    state text,
+    extras text,
+    expired_id text,
+    revision_timestamp timestamp without time zone,
+    expired_timestamp timestamp without time zone,
+    current boolean,
+    name text,
+    resource_type text,
+    mimetype text,
+    mimetype_inner text,
+    size bigint,
+    last_modified timestamp without time zone,
+    cache_url text,
+    cache_last_updated timestamp without time zone,
+    webstore_url text,
+    webstore_last_updated timestamp without time zone,
+    created timestamp without time zone,
+    url_type text,
+    package_id text DEFAULT ''::text NOT NULL
+);
+
+
+ALTER TABLE resource_revision OWNER TO ckanrole;
+
+--
+-- Name: resource_view; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE resource_view (
+    id text NOT NULL,
+    resource_id text,
+    title text,
+    description text,
+    view_type text NOT NULL,
+    "order" integer NOT NULL,
+    config text
+);
+
+
+ALTER TABLE resource_view OWNER TO ckanrole;
+
+--
+-- Name: revision; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE revision (
+    id text NOT NULL,
+    "timestamp" timestamp without time zone,
+    author character varying(200),
+    message text,
+    state text,
+    approved_timestamp timestamp without time zone
+);
+
+
+ALTER TABLE revision OWNER TO ckanrole;
+
+--
+-- Name: role_action; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE role_action (
+    id text NOT NULL,
+    role text,
+    context text NOT NULL,
+    action text
+);
+
+
+ALTER TABLE role_action OWNER TO ckanrole;
+
+--
+-- Name: system_info; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE system_info (
+    id integer NOT NULL,
+    key character varying(100) NOT NULL,
+    value text,
+    revision_id text
+);
+
+
+ALTER TABLE system_info OWNER TO ckanrole;
+
+--
+-- Name: system_info_id_seq; Type: SEQUENCE; Schema: public; Owner: ckanrole
+--
+
+CREATE SEQUENCE system_info_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE system_info_id_seq OWNER TO ckanrole;
+
+--
+-- Name: system_info_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ckanrole
+--
+
+ALTER SEQUENCE system_info_id_seq OWNED BY system_info.id;
+
+
+--
+-- Name: system_info_revision; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE system_info_revision (
+    id integer NOT NULL,
+    key character varying(100) NOT NULL,
+    value text,
+    revision_id text NOT NULL,
+    continuity_id integer
+);
+
+
+ALTER TABLE system_info_revision OWNER TO ckanrole;
+
+--
+-- Name: system_info_revision_id_seq; Type: SEQUENCE; Schema: public; Owner: ckanrole
+--
+
+CREATE SEQUENCE system_info_revision_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE system_info_revision_id_seq OWNER TO ckanrole;
+
+--
+-- Name: system_info_revision_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: ckanrole
+--
+
+ALTER SEQUENCE system_info_revision_id_seq OWNED BY system_info_revision.id;
+
+
+--
+-- Name: system_role; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE system_role (
+    user_object_role_id text NOT NULL
+);
+
+
+ALTER TABLE system_role OWNER TO ckanrole;
+
+--
+-- Name: tag; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE tag (
+    id text NOT NULL,
+    name character varying(100) NOT NULL,
+    vocabulary_id character varying(100)
+);
+
+
+ALTER TABLE tag OWNER TO ckanrole;
+
+--
+-- Name: task_status; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE task_status (
+    id text NOT NULL,
+    entity_id text NOT NULL,
+    entity_type text NOT NULL,
+    task_type text NOT NULL,
+    key text NOT NULL,
+    value text NOT NULL,
+    state text,
+    error text,
+    last_updated timestamp without time zone
+);
+
+
+ALTER TABLE task_status OWNER TO ckanrole;
+
+--
+-- Name: term_translation; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE term_translation (
+    term text NOT NULL,
+    term_translation text NOT NULL,
+    lang_code text NOT NULL
+);
+
+
+ALTER TABLE term_translation OWNER TO ckanrole;
+
+--
+-- Name: tracking_raw; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE tracking_raw (
+    user_key character varying(100) NOT NULL,
+    url text NOT NULL,
+    tracking_type character varying(10) NOT NULL,
+    access_timestamp timestamp without time zone DEFAULT now()
+);
+
+
+ALTER TABLE tracking_raw OWNER TO ckanrole;
+
+--
+-- Name: tracking_summary; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE tracking_summary (
+    url text NOT NULL,
+    package_id text,
+    tracking_type character varying(10) NOT NULL,
+    count integer NOT NULL,
+    running_total integer DEFAULT 0 NOT NULL,
+    recent_views integer DEFAULT 0 NOT NULL,
+    tracking_date date
+);
+
+
+ALTER TABLE tracking_summary OWNER TO ckanrole;
+
+--
+-- Name: user; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE "user" (
+    id text NOT NULL,
+    name text NOT NULL,
+    apikey text,
+    created timestamp without time zone,
+    about text,
+    openid text,
+    password text,
+    fullname text,
+    email text,
+    reset_key text,
+    sysadmin boolean DEFAULT false,
+    activity_streams_email_notifications boolean DEFAULT false,
+    state text DEFAULT 'active'::text NOT NULL
+);
+
+
+ALTER TABLE "user" OWNER TO ckanrole;
+
+--
+-- Name: user_following_dataset; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE user_following_dataset (
+    follower_id text NOT NULL,
+    object_id text NOT NULL,
+    datetime timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE user_following_dataset OWNER TO ckanrole;
+
+--
+-- Name: user_following_group; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE user_following_group (
+    follower_id text NOT NULL,
+    object_id text NOT NULL,
+    datetime timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE user_following_group OWNER TO ckanrole;
+
+--
+-- Name: user_following_user; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE user_following_user (
+    follower_id text NOT NULL,
+    object_id text NOT NULL,
+    datetime timestamp without time zone NOT NULL
+);
+
+
+ALTER TABLE user_following_user OWNER TO ckanrole;
+
+--
+-- Name: user_object_role; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE user_object_role (
+    id text NOT NULL,
+    user_id text,
+    context text NOT NULL,
+    role text,
+    authorized_group_id text
+);
+
+
+ALTER TABLE user_object_role OWNER TO ckanrole;
+
+--
+-- Name: vocabulary; Type: TABLE; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE TABLE vocabulary (
+    id text NOT NULL,
+    name character varying(100) NOT NULL
+);
+
+
+ALTER TABLE vocabulary OWNER TO ckanrole;
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY system_info ALTER COLUMN id SET DEFAULT nextval('system_info_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY system_info_revision ALTER COLUMN id SET DEFAULT nextval('system_info_revision_id_seq'::regclass);
+
+
+--
+-- Name: activity_detail_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY activity_detail
+    ADD CONSTRAINT activity_detail_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: activity_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY activity
+    ADD CONSTRAINT activity_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: authorization_group_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY authorization_group
+    ADD CONSTRAINT authorization_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: authorization_group_role_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY authorization_group_role
+    ADD CONSTRAINT authorization_group_role_pkey PRIMARY KEY (user_object_role_id);
+
+
+--
+-- Name: authorization_group_user_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY authorization_group_user
+    ADD CONSTRAINT authorization_group_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: dashboard_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY dashboard
+    ADD CONSTRAINT dashboard_pkey PRIMARY KEY (user_id);
+
+
+--
+-- Name: group_extra_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY group_extra
+    ADD CONSTRAINT group_extra_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: group_extra_revision_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY group_extra_revision
+    ADD CONSTRAINT group_extra_revision_pkey PRIMARY KEY (id, revision_id);
+
+
+--
+-- Name: group_name_key; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY "group"
+    ADD CONSTRAINT group_name_key UNIQUE (name);
+
+
+--
+-- Name: group_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY "group"
+    ADD CONSTRAINT group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: group_revision_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY group_revision
+    ADD CONSTRAINT group_revision_pkey PRIMARY KEY (id, revision_id);
+
+
+--
+-- Name: group_role_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY group_role
+    ADD CONSTRAINT group_role_pkey PRIMARY KEY (user_object_role_id);
+
+
+--
+-- Name: member_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY member
+    ADD CONSTRAINT member_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: member_revision_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY member_revision
+    ADD CONSTRAINT member_revision_pkey PRIMARY KEY (id, revision_id);
+
+
+--
+-- Name: migrate_version_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY migrate_version
+    ADD CONSTRAINT migrate_version_pkey PRIMARY KEY (repository_id);
+
+
+--
+-- Name: package_extra_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY package_extra
+    ADD CONSTRAINT package_extra_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: package_extra_revision_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY package_extra_revision
+    ADD CONSTRAINT package_extra_revision_pkey PRIMARY KEY (id, revision_id);
+
+
+--
+-- Name: package_name_key; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY package
+    ADD CONSTRAINT package_name_key UNIQUE (name);
+
+
+--
+-- Name: package_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY package
+    ADD CONSTRAINT package_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: package_relationship_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY package_relationship
+    ADD CONSTRAINT package_relationship_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: package_relationship_revision_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY package_relationship_revision
+    ADD CONSTRAINT package_relationship_revision_pkey PRIMARY KEY (id, revision_id);
+
+
+--
+-- Name: package_revision_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY package_revision
+    ADD CONSTRAINT package_revision_pkey PRIMARY KEY (id, revision_id);
+
+
+--
+-- Name: package_role_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY package_role
+    ADD CONSTRAINT package_role_pkey PRIMARY KEY (user_object_role_id);
+
+
+--
+-- Name: package_tag_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY package_tag
+    ADD CONSTRAINT package_tag_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: package_tag_revision_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY package_tag_revision
+    ADD CONSTRAINT package_tag_revision_pkey PRIMARY KEY (id, revision_id);
+
+
+--
+-- Name: rating_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY rating
+    ADD CONSTRAINT rating_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: related_dataset_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY related_dataset
+    ADD CONSTRAINT related_dataset_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: related_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY related
+    ADD CONSTRAINT related_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: resource_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY resource
+    ADD CONSTRAINT resource_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: resource_revision_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY resource_revision
+    ADD CONSTRAINT resource_revision_pkey PRIMARY KEY (id, revision_id);
+
+
+--
+-- Name: resource_view_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY resource_view
+    ADD CONSTRAINT resource_view_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: revision_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY revision
+    ADD CONSTRAINT revision_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: role_action_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY role_action
+    ADD CONSTRAINT role_action_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: system_info_key_key; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY system_info
+    ADD CONSTRAINT system_info_key_key UNIQUE (key);
+
+
+--
+-- Name: system_info_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY system_info
+    ADD CONSTRAINT system_info_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: system_info_revision_key_key; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY system_info_revision
+    ADD CONSTRAINT system_info_revision_key_key UNIQUE (key);
+
+
+--
+-- Name: system_info_revision_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY system_info_revision
+    ADD CONSTRAINT system_info_revision_pkey PRIMARY KEY (id, revision_id);
+
+
+--
+-- Name: system_role_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY system_role
+    ADD CONSTRAINT system_role_pkey PRIMARY KEY (user_object_role_id);
+
+
+--
+-- Name: tag_name_vocabulary_id_key; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY tag
+    ADD CONSTRAINT tag_name_vocabulary_id_key UNIQUE (name, vocabulary_id);
+
+
+--
+-- Name: tag_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY tag
+    ADD CONSTRAINT tag_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: task_status_entity_id_task_type_key_key; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY task_status
+    ADD CONSTRAINT task_status_entity_id_task_type_key_key UNIQUE (entity_id, task_type, key);
+
+
+--
+-- Name: task_status_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY task_status
+    ADD CONSTRAINT task_status_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_following_dataset_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY user_following_dataset
+    ADD CONSTRAINT user_following_dataset_pkey PRIMARY KEY (follower_id, object_id);
+
+
+--
+-- Name: user_following_group_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY user_following_group
+    ADD CONSTRAINT user_following_group_pkey PRIMARY KEY (follower_id, object_id);
+
+
+--
+-- Name: user_following_user_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY user_following_user
+    ADD CONSTRAINT user_following_user_pkey PRIMARY KEY (follower_id, object_id);
+
+
+--
+-- Name: user_name_key; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY "user"
+    ADD CONSTRAINT user_name_key UNIQUE (name);
+
+
+--
+-- Name: user_object_role_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY user_object_role
+    ADD CONSTRAINT user_object_role_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: user_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY "user"
+    ADD CONSTRAINT user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: vocabulary_name_key; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY vocabulary
+    ADD CONSTRAINT vocabulary_name_key UNIQUE (name);
+
+
+--
+-- Name: vocabulary_pkey; Type: CONSTRAINT; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+ALTER TABLE ONLY vocabulary
+    ADD CONSTRAINT vocabulary_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: idx_activity_detail_activity_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_activity_detail_activity_id ON activity_detail USING btree (activity_id);
+
+
+--
+-- Name: idx_activity_object_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_activity_object_id ON activity USING btree (object_id, "timestamp");
+
+
+--
+-- Name: idx_activity_user_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_activity_user_id ON activity USING btree (user_id, "timestamp");
+
+
+--
+-- Name: idx_extra_grp_id_pkg_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_extra_grp_id_pkg_id ON member USING btree (group_id, table_id);
+
+
+--
+-- Name: idx_extra_id_pkg_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_extra_id_pkg_id ON package_extra USING btree (id, package_id);
+
+
+--
+-- Name: idx_extra_pkg_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_extra_pkg_id ON package_extra USING btree (package_id);
+
+
+--
+-- Name: idx_group_current; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_group_current ON group_revision USING btree (current);
+
+
+--
+-- Name: idx_group_extra_current; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_group_extra_current ON group_extra_revision USING btree (current);
+
+
+--
+-- Name: idx_group_extra_period; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_group_extra_period ON group_extra_revision USING btree (revision_timestamp, expired_timestamp, id);
+
+
+--
+-- Name: idx_group_extra_period_group; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_group_extra_period_group ON group_extra_revision USING btree (revision_timestamp, expired_timestamp, group_id);
+
+
+--
+-- Name: idx_group_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_group_id ON "group" USING btree (id);
+
+
+--
+-- Name: idx_group_name; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_group_name ON "group" USING btree (name);
+
+
+--
+-- Name: idx_group_period; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_group_period ON group_revision USING btree (revision_timestamp, expired_timestamp, id);
+
+
+--
+-- Name: idx_group_pkg_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_group_pkg_id ON member USING btree (table_id);
+
+
+--
+-- Name: idx_openid; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_openid ON "user" USING btree (openid);
+
+
+--
+-- Name: idx_package_current; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_current ON package_revision USING btree (current);
+
+
+--
+-- Name: idx_package_extra_current; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_extra_current ON package_extra_revision USING btree (current);
+
+
+--
+-- Name: idx_package_extra_package_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_extra_package_id ON package_extra_revision USING btree (package_id, current);
+
+
+--
+-- Name: idx_package_extra_period; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_extra_period ON package_extra_revision USING btree (revision_timestamp, expired_timestamp, id);
+
+
+--
+-- Name: idx_package_extra_period_package; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_extra_period_package ON package_extra_revision USING btree (revision_timestamp, expired_timestamp, package_id);
+
+
+--
+-- Name: idx_package_extra_rev_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_extra_rev_id ON package_extra_revision USING btree (revision_id);
+
+
+--
+-- Name: idx_package_group_current; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_group_current ON member_revision USING btree (current);
+
+
+--
+-- Name: idx_package_group_group_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_group_group_id ON member USING btree (group_id);
+
+
+--
+-- Name: idx_package_group_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_group_id ON member USING btree (id);
+
+
+--
+-- Name: idx_package_group_period_package_group; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_group_period_package_group ON member_revision USING btree (revision_timestamp, expired_timestamp, table_id, group_id);
+
+
+--
+-- Name: idx_package_group_pkg_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_group_pkg_id ON member USING btree (table_id);
+
+
+--
+-- Name: idx_package_group_pkg_id_group_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_group_pkg_id_group_id ON member USING btree (group_id, table_id);
+
+
+--
+-- Name: idx_package_period; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_period ON package_revision USING btree (revision_timestamp, expired_timestamp, id);
+
+
+--
+-- Name: idx_package_relationship_current; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_relationship_current ON package_relationship_revision USING btree (current);
+
+
+--
+-- Name: idx_package_resource_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_resource_id ON resource USING btree (id);
+
+
+--
+-- Name: idx_package_resource_rev_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_resource_rev_id ON resource_revision USING btree (revision_id);
+
+
+--
+-- Name: idx_package_resource_url; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_resource_url ON resource USING btree (url);
+
+
+--
+-- Name: idx_package_tag_current; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_tag_current ON package_tag_revision USING btree (current);
+
+
+--
+-- Name: idx_package_tag_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_tag_id ON package_tag USING btree (id);
+
+
+--
+-- Name: idx_package_tag_pkg_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_tag_pkg_id ON package_tag USING btree (package_id);
+
+
+--
+-- Name: idx_package_tag_pkg_id_tag_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_tag_pkg_id_tag_id ON package_tag USING btree (tag_id, package_id);
+
+
+--
+-- Name: idx_package_tag_revision_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_tag_revision_id ON package_tag_revision USING btree (id);
+
+
+--
+-- Name: idx_package_tag_revision_pkg_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_tag_revision_pkg_id ON package_tag_revision USING btree (package_id);
+
+
+--
+-- Name: idx_package_tag_revision_pkg_id_tag_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_tag_revision_pkg_id_tag_id ON package_tag_revision USING btree (tag_id, package_id);
+
+
+--
+-- Name: idx_package_tag_revision_rev_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_tag_revision_rev_id ON package_tag_revision USING btree (revision_id);
+
+
+--
+-- Name: idx_package_tag_revision_tag_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_tag_revision_tag_id ON package_tag_revision USING btree (tag_id);
+
+
+--
+-- Name: idx_package_tag_tag_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_package_tag_tag_id ON package_tag USING btree (tag_id);
+
+
+--
+-- Name: idx_period_package_relationship; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_period_package_relationship ON package_relationship_revision USING btree (revision_timestamp, expired_timestamp, object_package_id, subject_package_id);
+
+
+--
+-- Name: idx_period_package_tag; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_period_package_tag ON package_tag_revision USING btree (revision_timestamp, expired_timestamp, package_id, tag_id);
+
+
+--
+-- Name: idx_pkg_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_pkg_id ON package USING btree (id);
+
+
+--
+-- Name: idx_pkg_lname; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_pkg_lname ON package USING btree (lower((name)::text));
+
+
+--
+-- Name: idx_pkg_name; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_pkg_name ON package USING btree (name);
+
+
+--
+-- Name: idx_pkg_rev_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_pkg_rev_id ON package USING btree (revision_id);
+
+
+--
+-- Name: idx_pkg_revision_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_pkg_revision_id ON package_revision USING btree (id);
+
+
+--
+-- Name: idx_pkg_revision_name; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_pkg_revision_name ON package_revision USING btree (name);
+
+
+--
+-- Name: idx_pkg_revision_rev_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_pkg_revision_rev_id ON package_revision USING btree (revision_id);
+
+
+--
+-- Name: idx_pkg_sid; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_pkg_sid ON package USING btree (id, state);
+
+
+--
+-- Name: idx_pkg_slname; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_pkg_slname ON package USING btree (lower((name)::text), state);
+
+
+--
+-- Name: idx_pkg_sname; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_pkg_sname ON package USING btree (name, state);
+
+
+--
+-- Name: idx_pkg_srev_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_pkg_srev_id ON package USING btree (revision_id, state);
+
+
+--
+-- Name: idx_pkg_stitle; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_pkg_stitle ON package USING btree (title, state);
+
+
+--
+-- Name: idx_pkg_suname; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_pkg_suname ON package USING btree (upper((name)::text), state);
+
+
+--
+-- Name: idx_pkg_title; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_pkg_title ON package USING btree (title);
+
+
+--
+-- Name: idx_pkg_uname; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_pkg_uname ON package USING btree (upper((name)::text));
+
+
+--
+-- Name: idx_ra_action; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_ra_action ON role_action USING btree (action);
+
+
+--
+-- Name: idx_ra_role; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_ra_role ON role_action USING btree (role);
+
+
+--
+-- Name: idx_ra_role_action; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_ra_role_action ON role_action USING btree (action, role);
+
+
+--
+-- Name: idx_rating_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_rating_id ON rating USING btree (id);
+
+
+--
+-- Name: idx_rating_package_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_rating_package_id ON rating USING btree (package_id);
+
+
+--
+-- Name: idx_rating_user_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_rating_user_id ON rating USING btree (user_id);
+
+
+--
+-- Name: idx_resource_current; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_resource_current ON resource_revision USING btree (current);
+
+
+--
+-- Name: idx_resource_period; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_resource_period ON resource_revision USING btree (revision_timestamp, expired_timestamp, id);
+
+
+--
+-- Name: idx_rev_state; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_rev_state ON revision USING btree (state);
+
+
+--
+-- Name: idx_revision_author; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_revision_author ON revision USING btree (author);
+
+
+--
+-- Name: idx_tag_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_tag_id ON tag USING btree (id);
+
+
+--
+-- Name: idx_tag_name; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_tag_name ON tag USING btree (name);
+
+
+--
+-- Name: idx_uor_context; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_uor_context ON user_object_role USING btree (context);
+
+
+--
+-- Name: idx_uor_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_uor_id ON user_object_role USING btree (id);
+
+
+--
+-- Name: idx_uor_role; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_uor_role ON user_object_role USING btree (role);
+
+
+--
+-- Name: idx_uor_user_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_uor_user_id ON user_object_role USING btree (user_id);
+
+
+--
+-- Name: idx_uor_user_id_role; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_uor_user_id_role ON user_object_role USING btree (user_id, role);
+
+
+--
+-- Name: idx_user_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_user_id ON "user" USING btree (id);
+
+
+--
+-- Name: idx_user_name; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_user_name ON "user" USING btree (name);
+
+
+--
+-- Name: idx_user_name_index; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX idx_user_name_index ON "user" USING btree ((
+CASE
+    WHEN ((fullname IS NULL) OR (fullname = ''::text)) THEN name
+    ELSE fullname
+END));
+
+
+--
+-- Name: term; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX term ON term_translation USING btree (term);
+
+
+--
+-- Name: term_lang; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX term_lang ON term_translation USING btree (term, lang_code);
+
+
+--
+-- Name: tracking_raw_access_timestamp; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX tracking_raw_access_timestamp ON tracking_raw USING btree (access_timestamp);
+
+
+--
+-- Name: tracking_raw_url; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX tracking_raw_url ON tracking_raw USING btree (url);
+
+
+--
+-- Name: tracking_raw_user_key; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX tracking_raw_user_key ON tracking_raw USING btree (user_key);
+
+
+--
+-- Name: tracking_summary_date; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX tracking_summary_date ON tracking_summary USING btree (tracking_date);
+
+
+--
+-- Name: tracking_summary_package_id; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX tracking_summary_package_id ON tracking_summary USING btree (package_id);
+
+
+--
+-- Name: tracking_summary_url; Type: INDEX; Schema: public; Owner: ckanrole; Tablespace: 
+--
+
+CREATE INDEX tracking_summary_url ON tracking_summary USING btree (url);
+
+
+--
+-- Name: activity_detail_activity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY activity_detail
+    ADD CONSTRAINT activity_detail_activity_id_fkey FOREIGN KEY (activity_id) REFERENCES activity(id);
+
+
+--
+-- Name: authorization_group_role_authorization_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY authorization_group_role
+    ADD CONSTRAINT authorization_group_role_authorization_group_id_fkey FOREIGN KEY (authorization_group_id) REFERENCES authorization_group(id);
+
+
+--
+-- Name: authorization_group_role_user_object_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY authorization_group_role
+    ADD CONSTRAINT authorization_group_role_user_object_role_id_fkey FOREIGN KEY (user_object_role_id) REFERENCES user_object_role(id);
+
+
+--
+-- Name: authorization_group_user_authorization_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY authorization_group_user
+    ADD CONSTRAINT authorization_group_user_authorization_group_id_fkey FOREIGN KEY (authorization_group_id) REFERENCES authorization_group(id);
+
+
+--
+-- Name: authorization_group_user_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY authorization_group_user
+    ADD CONSTRAINT authorization_group_user_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
+
+
+--
+-- Name: dashboard_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY dashboard
+    ADD CONSTRAINT dashboard_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: group_extra_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY group_extra
+    ADD CONSTRAINT group_extra_group_id_fkey FOREIGN KEY (group_id) REFERENCES "group"(id);
+
+
+--
+-- Name: group_extra_revision_continuity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY group_extra_revision
+    ADD CONSTRAINT group_extra_revision_continuity_id_fkey FOREIGN KEY (continuity_id) REFERENCES group_extra(id);
+
+
+--
+-- Name: group_extra_revision_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY group_extra_revision
+    ADD CONSTRAINT group_extra_revision_group_id_fkey FOREIGN KEY (group_id) REFERENCES "group"(id);
+
+
+--
+-- Name: group_extra_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY group_extra
+    ADD CONSTRAINT group_extra_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: group_extra_revision_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY group_extra_revision
+    ADD CONSTRAINT group_extra_revision_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: group_revision_continuity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY group_revision
+    ADD CONSTRAINT group_revision_continuity_id_fkey FOREIGN KEY (continuity_id) REFERENCES "group"(id);
+
+
+--
+-- Name: group_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY "group"
+    ADD CONSTRAINT group_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: group_revision_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY group_revision
+    ADD CONSTRAINT group_revision_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: group_role_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY group_role
+    ADD CONSTRAINT group_role_group_id_fkey FOREIGN KEY (group_id) REFERENCES "group"(id);
+
+
+--
+-- Name: group_role_user_object_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY group_role
+    ADD CONSTRAINT group_role_user_object_role_id_fkey FOREIGN KEY (user_object_role_id) REFERENCES user_object_role(id);
+
+
+--
+-- Name: member_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY member
+    ADD CONSTRAINT member_group_id_fkey FOREIGN KEY (group_id) REFERENCES "group"(id);
+
+
+--
+-- Name: member_revision_continuity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY member_revision
+    ADD CONSTRAINT member_revision_continuity_id_fkey FOREIGN KEY (continuity_id) REFERENCES member(id);
+
+
+--
+-- Name: member_revision_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY member_revision
+    ADD CONSTRAINT member_revision_group_id_fkey FOREIGN KEY (group_id) REFERENCES "group"(id);
+
+
+--
+-- Name: member_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY member
+    ADD CONSTRAINT member_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: member_revision_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY member_revision
+    ADD CONSTRAINT member_revision_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: package_extra_package_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_extra
+    ADD CONSTRAINT package_extra_package_id_fkey FOREIGN KEY (package_id) REFERENCES package(id);
+
+
+--
+-- Name: package_extra_revision_continuity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_extra_revision
+    ADD CONSTRAINT package_extra_revision_continuity_id_fkey FOREIGN KEY (continuity_id) REFERENCES package_extra(id);
+
+
+--
+-- Name: package_extra_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_extra
+    ADD CONSTRAINT package_extra_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: package_extra_revision_package_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_extra_revision
+    ADD CONSTRAINT package_extra_revision_package_id_fkey FOREIGN KEY (package_id) REFERENCES package(id);
+
+
+--
+-- Name: package_extra_revision_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_extra_revision
+    ADD CONSTRAINT package_extra_revision_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: package_relationship_object_package_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_relationship
+    ADD CONSTRAINT package_relationship_object_package_id_fkey FOREIGN KEY (object_package_id) REFERENCES package(id);
+
+
+--
+-- Name: package_relationship_revision_continuity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_relationship_revision
+    ADD CONSTRAINT package_relationship_revision_continuity_id_fkey FOREIGN KEY (continuity_id) REFERENCES package_relationship(id);
+
+
+--
+-- Name: package_relationship_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_relationship
+    ADD CONSTRAINT package_relationship_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: package_relationship_revision_object_package_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_relationship_revision
+    ADD CONSTRAINT package_relationship_revision_object_package_id_fkey FOREIGN KEY (object_package_id) REFERENCES package(id);
+
+
+--
+-- Name: package_relationship_revision_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_relationship_revision
+    ADD CONSTRAINT package_relationship_revision_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: package_relationship_revision_subject_package_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_relationship_revision
+    ADD CONSTRAINT package_relationship_revision_subject_package_id_fkey FOREIGN KEY (subject_package_id) REFERENCES package(id);
+
+
+--
+-- Name: package_relationship_subject_package_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_relationship
+    ADD CONSTRAINT package_relationship_subject_package_id_fkey FOREIGN KEY (subject_package_id) REFERENCES package(id);
+
+
+--
+-- Name: package_revision_continuity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_revision
+    ADD CONSTRAINT package_revision_continuity_id_fkey FOREIGN KEY (continuity_id) REFERENCES package(id);
+
+
+--
+-- Name: package_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package
+    ADD CONSTRAINT package_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: package_revision_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_revision
+    ADD CONSTRAINT package_revision_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: package_role_package_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_role
+    ADD CONSTRAINT package_role_package_id_fkey FOREIGN KEY (package_id) REFERENCES package(id);
+
+
+--
+-- Name: package_role_user_object_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_role
+    ADD CONSTRAINT package_role_user_object_role_id_fkey FOREIGN KEY (user_object_role_id) REFERENCES user_object_role(id);
+
+
+--
+-- Name: package_tag_package_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_tag
+    ADD CONSTRAINT package_tag_package_id_fkey FOREIGN KEY (package_id) REFERENCES package(id);
+
+
+--
+-- Name: package_tag_revision_continuity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_tag_revision
+    ADD CONSTRAINT package_tag_revision_continuity_id_fkey FOREIGN KEY (continuity_id) REFERENCES package_tag(id);
+
+
+--
+-- Name: package_tag_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_tag
+    ADD CONSTRAINT package_tag_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: package_tag_revision_package_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_tag_revision
+    ADD CONSTRAINT package_tag_revision_package_id_fkey FOREIGN KEY (package_id) REFERENCES package(id);
+
+
+--
+-- Name: package_tag_revision_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_tag_revision
+    ADD CONSTRAINT package_tag_revision_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: package_tag_revision_tag_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_tag_revision
+    ADD CONSTRAINT package_tag_revision_tag_id_fkey FOREIGN KEY (tag_id) REFERENCES tag(id);
+
+
+--
+-- Name: package_tag_tag_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY package_tag
+    ADD CONSTRAINT package_tag_tag_id_fkey FOREIGN KEY (tag_id) REFERENCES tag(id);
+
+
+--
+-- Name: rating_package_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY rating
+    ADD CONSTRAINT rating_package_id_fkey FOREIGN KEY (package_id) REFERENCES package(id);
+
+
+--
+-- Name: rating_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY rating
+    ADD CONSTRAINT rating_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
+
+
+--
+-- Name: related_dataset_dataset_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY related_dataset
+    ADD CONSTRAINT related_dataset_dataset_id_fkey FOREIGN KEY (dataset_id) REFERENCES package(id);
+
+
+--
+-- Name: related_dataset_related_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY related_dataset
+    ADD CONSTRAINT related_dataset_related_id_fkey FOREIGN KEY (related_id) REFERENCES related(id);
+
+
+--
+-- Name: resource_revision_continuity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY resource_revision
+    ADD CONSTRAINT resource_revision_continuity_id_fkey FOREIGN KEY (continuity_id) REFERENCES resource(id);
+
+
+--
+-- Name: resource_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY resource
+    ADD CONSTRAINT resource_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: resource_revision_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY resource_revision
+    ADD CONSTRAINT resource_revision_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: resource_view_resource_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY resource_view
+    ADD CONSTRAINT resource_view_resource_id_fkey FOREIGN KEY (resource_id) REFERENCES resource(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: system_info_revision_continuity_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY system_info_revision
+    ADD CONSTRAINT system_info_revision_continuity_id_fkey FOREIGN KEY (continuity_id) REFERENCES system_info(id);
+
+
+--
+-- Name: system_info_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY system_info
+    ADD CONSTRAINT system_info_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: system_info_revision_revision_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY system_info_revision
+    ADD CONSTRAINT system_info_revision_revision_id_fkey FOREIGN KEY (revision_id) REFERENCES revision(id);
+
+
+--
+-- Name: system_role_user_object_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY system_role
+    ADD CONSTRAINT system_role_user_object_role_id_fkey FOREIGN KEY (user_object_role_id) REFERENCES user_object_role(id);
+
+
+--
+-- Name: tag_vocabulary_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY tag
+    ADD CONSTRAINT tag_vocabulary_id_fkey FOREIGN KEY (vocabulary_id) REFERENCES vocabulary(id);
+
+
+--
+-- Name: user_following_dataset_follower_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY user_following_dataset
+    ADD CONSTRAINT user_following_dataset_follower_id_fkey FOREIGN KEY (follower_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: user_following_dataset_object_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY user_following_dataset
+    ADD CONSTRAINT user_following_dataset_object_id_fkey FOREIGN KEY (object_id) REFERENCES package(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: user_following_group_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY user_following_group
+    ADD CONSTRAINT user_following_group_group_id_fkey FOREIGN KEY (object_id) REFERENCES "group"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: user_following_group_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY user_following_group
+    ADD CONSTRAINT user_following_group_user_id_fkey FOREIGN KEY (follower_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: user_following_user_follower_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY user_following_user
+    ADD CONSTRAINT user_following_user_follower_id_fkey FOREIGN KEY (follower_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: user_following_user_object_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY user_following_user
+    ADD CONSTRAINT user_following_user_object_id_fkey FOREIGN KEY (object_id) REFERENCES "user"(id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+
+--
+-- Name: user_object_role_authorized_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY user_object_role
+    ADD CONSTRAINT user_object_role_authorized_group_id_fkey FOREIGN KEY (authorized_group_id) REFERENCES authorization_group(id);
+
+
+--
+-- Name: user_object_role_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: ckanrole
+--
+
+ALTER TABLE ONLY user_object_role
+    ADD CONSTRAINT user_object_role_user_id_fkey FOREIGN KEY (user_id) REFERENCES "user"(id);
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
