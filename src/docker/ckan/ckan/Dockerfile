@@ -36,7 +36,6 @@ RUN dnf -y install mod_wsgi
 # Install postgresql client.
 RUN dnf -y install postgresql
 RUN dnf -y install postgresql-devel
-RUN dnf -y install python-psycopg2
 
 #
 # Install the build tools.
@@ -47,6 +46,8 @@ RUN dnf -y install git
 # Install the Python tools.
 RUN dnf -y install python
 RUN dnf -y install python-pip
+RUN dnf -y install python-devel
+RUN dnf -y install python-psycopg2
 
 #
 # Create our target directories.
