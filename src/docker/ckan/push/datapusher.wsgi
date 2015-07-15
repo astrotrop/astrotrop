@@ -16,10 +16,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 import os
-from paste.deploy import loadapp
-from paste.script.util.logging_config import fileConfig
+import sys
+import hashlib
 
-config_filepath = os.path.join('/etc/ckan', 'ckan.ini')
-fileConfig(config_filepath)
-application = loadapp('config:%s' % config_filepath)
+import ckanserviceprovider.web as web
+import datapusher.jobs as jobs
+os.environ['JOB_CONFIG'] = '/etc/ckan/datapusher_settings.py'
+
+web.configure()
+application = web.app
 

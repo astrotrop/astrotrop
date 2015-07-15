@@ -24,60 +24,55 @@ ENV ckanconf /etc/ckan
 ENV ckanroot /usr/lib/ckan
 ENV ckandata /var/lib/ckan
 
-#
-# Install Apache.
-RUN dnf -y install httpd
-
-#
-# Install mod_wsgi.
-RUN dnf -y install mod_wsgi
-
-#
-# Install postgresql client.
-RUN dnf -y install postgresql
-RUN dnf -y install postgresql-devel
-RUN dnf -y install python-psycopg2
-
-#
-# Install the build tools.
-RUN dnf -y install gcc
-RUN dnf -y install git
+#ENV pushroot /usr/lib/ckan/datapusher
 
 #
 # Install the Python tools.
 RUN dnf -y install python
+RUN dnf -y install python-devel
 RUN dnf -y install python-pip
+
+#
+# Install the build tools.
+RUN dnf -y install git
+RUN dnf -y install gcc
+
+#
+# Install the build dependencies.
+RUN dnf -y install libxml2-devel
+RUN dnf -y install libxslt-devel
 
 #
 # Create our target directories.
 RUN mkdir --parent ${ckanroot}
 RUN mkdir --parent ${ckanconf}
 RUN mkdir --parent ${ckandata}
-RUN mkdir --parent ${ckandata}/storage
-RUN mkdir --parent ${ckandata}/resources
-RUN chown --recursive apache ${ckandata}
+
+#RUN mkdir --parent ${pushroot}
+#RUN mkdir --parent ${pushroot}/src
 
 #
-# Install CKAN and dependencies.
+# Clone the source (always target the stable branch)
 WORKDIR ${ckanroot}
-RUN pip install -e 'git+https://github.com/ckan/ckan.git@ckan-2.3#egg=ckan'
-RUN pip install -r "${ckanroot}/src/ckan/requirements.txt"
+RUN git clone -b stable https://github.com/ckan/datapusher.git
 
 #
-# Link our Repoze.who config file.
-RUN ln -s ${ckanroot}/src/ckan/who.ini ${ckanconf}/who.ini
+# Build and install the DataPusher.
+WORKDIR ${ckanroot}/datapusher
+RUN pip install -r requirements.txt
+RUN python setup.py develop
 
 #
-# Install our CKAN config.
-COPY ckan.ini ${ckanconf}/ckan.ini
+# Install our DataPusher config.
+COPY datapusher_settings.py ${ckanconf}/datapusher_settings.py
 
 #
 # Install our WSGI config.
-COPY ckan.wsgi ${ckanconf}/ckan.wsgi
+COPY datapusher.wsgi ${ckanconf}/datapusher.wsgi
 
 #
 # Install our Apache config.
-COPY ckan.conf /etc/httpd/conf.d/ckan.conf
+COPY datapusher.conf /etc/httpd/conf.d/datapusher.conf
 
 #
 # Install Apache foreground script.
