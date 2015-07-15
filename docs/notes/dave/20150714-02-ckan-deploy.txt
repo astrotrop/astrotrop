@@ -120,11 +120,16 @@
 # Run our SOLR container.
 #[user@desktop]
 
-    solrname=solrname
-    solrlink=solrlink
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
 
-    solrdata=${datadir:?}/solr
-    solrtemp=${tempdir:?}/solr
+        solrname=solrname
+        solrlink=solrlink
+
+        solrdata=${datadir:?}/solr
+        solrtemp=${tempdir:?}/solr
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
 
     docker run \
         --detach \
@@ -138,13 +143,18 @@
 # Run our PostgreSQL container.
 #[user@desktop]
 
-    postname=postname
-    postlink=postlink
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
 
-    postdata=${datadir:?}/postgres
-    posttemp=${tempdir:?}/postgres
+        postname=postname
+        postlink=postlink
 
-    postpass=postpass
+        postdata=${datadir:?}/postgres
+        posttemp=${tempdir:?}/postgres
+
+        postpass=postpass
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
 
     docker run \
         --detach \
@@ -161,9 +171,14 @@
 # Configure our PostgreSQL container.
 #[user@desktop]
 
-    ckanbase=ckanbase
-    ckanrole=ckanrole
-    ckanpass=ckanpass
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        ckandatabase=ckandatabase
+        ckanrole=ckanrole
+        ckanpass=ckanpass
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
 
     cat > ${posttemp:?}/ckan-init.sh << EOF
 
@@ -189,11 +204,16 @@ EOF
 # Run our CKAN container.
 #[user@desktop]
 
-    ckanname=ckanname
-    ckanlink=ckanlink
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
 
-    ckandata=${datadir:?}/ckan
-    ckantemp=${tempdir:?}/ckan
+        ckanname=ckanname
+        ckanlink=ckanlink
+
+        ckandata=${datadir:?}/ckan
+        ckantemp=${tempdir:?}/ckan
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
 
     docker run \
         --detach \
@@ -209,11 +229,9 @@ EOF
 # Configure our CKAN container.
 #[user@desktop]
 
-    docker exec -it "${ckanname:?}" bash
+    source "${HOME:?}/astrotrop.conf"
 
-        ckanbase=ckanbase
-        ckanrole=ckanrole
-        ckanpass=ckanpass
+    docker exec -it "${ckanname:?}" bash
 
         #
         # Check our config file.
@@ -229,6 +247,8 @@ EOF
 # Dump our PostgreSQL database.
 #[user@desktop]
 
+    source "${HOME:?}/astrotrop.conf"
+
     docker exec -it "${postname:?}" bash
 
         pg_dump \
@@ -242,12 +262,16 @@ EOF
 # Tail the CKAN Apache logs
 #[user@desktop]
 
+    source "${HOME:?}/astrotrop.conf"
+
     docker exec -it "${ckanname:?}" \
         tail -f /var/log/httpd/ckan.metagrid.co.uk.error.log
 
 # -----------------------------------------------------
 # Tail the SOLR logs
 #[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
 
     docker exec -it "${solrname:?}" \
         tail -f /opt/solr/example/logs/solr.log
@@ -256,19 +280,172 @@ EOF
 # Configure the admin user
 #[user@desktop]
 
+    source "${HOME:?}/astrotrop.conf"
+
     docker exec -it "${ckanname:?}" bash
 
         paster --plugin ckan sysadmin add zarquan \
             -c "${ckanconf:?}/ckan.ini"
 
+# -----------------------------------------------------
+# Configure our DataStore database.
+# http://docs.ckan.org/en/master/datastore-setup.html
+#[user@desktop]
 
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
 
-TODO
-DataStore  extension
-DataPusher extension
-Public DNS name
-dnsdock
+        storedatabase=storedatabase
 
+        storeowner=storeowner
+        storeownerpass=storeownerpass
 
+        storereader=storereader
+        storereaderpass=storereaderpass
 
+        storewriter=storewriter
+        storewriterpass=storewriterpass
+
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
+
+    cat > ${posttemp:?}/store-init.sh << EOF
+
+        --
+        -- Create our database roles.
+        CREATE ROLE ${storeowner:?} WITH 
+            PASSWORD '${storeownerpass:?}'
+            NOSUPERUSER
+            NOCREATEDB
+            NOCREATEROLE
+            NOLOGIN
+            ;
+
+        CREATE ROLE ${storereader:?} WITH 
+            PASSWORD '${storereaderpass:?}'
+            NOSUPERUSER
+            NOCREATEDB
+            NOCREATEROLE
+            LOGIN
+            ;
+
+        CREATE ROLE ${storewriter:?} WITH 
+            PASSWORD '${storewriterpass:?}'
+            NOSUPERUSER
+            NOCREATEDB
+            NOCREATEROLE
+            LOGIN
+            ;
+
+        --
+        -- Create our database.
+        CREATE DATABASE ${storedatabase:?} WITH
+            OWNER = ${storeowner:?}
+            TEMPLATE = template0
+            ENCODING = 'UTF-8'
+            ;
+
+EOF
+
+    cat > ${posttemp:?}/store-grant.sh << EOF
+
+        --
+        -- Revoke permissions for the public role.
+        REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+        REVOKE USAGE  ON SCHEMA public FROM PUBLIC;
+
+        --
+        -- Grant permissions for the ckanuser role.
+        GRANT CREATE ON SCHEMA public TO "${ckanrole:?}";
+        GRANT USAGE  ON SCHEMA public TO "${ckanrole:?}";
+
+        --
+        -- Grant permissions for the storewriter role.
+        GRANT CREATE ON SCHEMA public TO "${storewriter:?}";
+        GRANT USAGE  ON SCHEMA public TO "${storewriter:?}";
+
+        --
+        -- Prevent storereader connecting to the ckan database.  
+        REVOKE CONNECT ON DATABASE "${ckanbase:?}" FROM "${storereader:?}";
+
+        --
+        -- Grant connect and select permissions to the storereader role.
+        GRANT CONNECT ON DATABASE "${storedatabase:?}" TO "${storereader:?}";
+        GRANT USAGE   ON SCHEMA public TO "${storereader:?}";
+
+        --
+        -- Grant access to current tables to the storereader role.
+        GRANT SELECT ON ALL TABLES IN SCHEMA public TO "${storereader:?}";
+
+        --
+        -- Grant access to new tables created by storewriter to storereader.
+        ALTER DEFAULT PRIVILEGES FOR USER "${storewriter:?}" IN SCHEMA public
+            GRANT SELECT ON TABLES TO "${storereader:?}";
+
+EOF
+
+    docker exec -it "${postname:?}" psql postgres postgres
+
+        \i /temp/store-init.sh
+        \q
+
+    docker exec -it "${postname:?}" psql "${storedatabase:?}" postgres
+
+        \i /temp/store-grant.sh
+        \q
+
+# -----------------------------------------------------
+# Configure CKAN to use our DataStore.
+# http://docs.ckan.org/en/master/datastore-setup.html
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${ckanname:?}" bash
+
+        #
+        # Check our config file.
+        vi "${ckanconf:?}/ckan.ini"
+
+        -   ckan.plugins = stats text_view image_view recline_view
+        +   ckan.plugins = stats text_view image_view recline_view datastore
+
+        +   ckan.datastore.write_url = postgresql://storewriter:storewriterpass@postlink:5432/storedatabase
+        +   ckan.datastore.read_url  = postgresql://storereader:storereaderpass@postlink:5432/storedatabase
+
+# -----------------------------------------------------
+# Restart CKAN to get the changes.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker stop  "${ckanname:?}"
+    docker start "${ckanname:?}"
+
+# -----------------------------------------------------
+# Test our DataStore.
+#[user@desktop]
+
+    curl -X GET "http://ckan.metagrid.co.uk/api/3/action/help_show?name=datastore_create"
+
+    curl -X POST "http://ckan.metagrid.co.uk/api/3/action/datastore_create" \
+        -H "Authorization: f8bf0cbb-f5ac-4ce7-ae07-3d606ea57014" \
+        -d '{
+            "resource": {
+                "package_id": "d69ef1d0-68a6-41bd-8ffa-53a265142671"
+                },
+            "fields": [
+                {"id": "a"},
+                {"id": "b"}
+                ],
+            "records": [
+                { "a": 1, "b": "xyz"},
+                {"a": 2, "b": "zzz"}
+                ]
+            }'
+
+# -----------------------------------------------------
+# Configure our .
+# http://docs.ckan.org/projects/datapusher/en/latest/
+#[user@desktop]
 
