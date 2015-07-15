@@ -221,6 +221,7 @@ EOF
         --name "${ckanname:?}" \
         --link ${postname:?}:${postlink:?} \
         --link ${solrname:?}:${solrlink:?} \
+        --link ${pushname:?}:${pushlink:?} \
         --volume "${ckantemp:?}:/temp" \
         --volume "${ckandata:?}:/var/lib/ckan" \
         astrotrop/ckan

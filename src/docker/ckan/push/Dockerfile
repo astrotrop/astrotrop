@@ -24,7 +24,13 @@ ENV ckanconf /etc/ckan
 ENV ckanroot /usr/lib/ckan
 ENV ckandata /var/lib/ckan
 
-#ENV pushroot /usr/lib/ckan/datapusher
+#
+# Install Apache.
+RUN dnf -y install httpd
+
+#
+# Install mod_wsgi.
+RUN dnf -y install mod_wsgi
 
 #
 # Install the Python tools.
