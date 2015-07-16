@@ -48,7 +48,11 @@ RUN mkdir --parent ${ckanconf}
 RUN mkdir --parent ${ckandata}
 RUN mkdir --parent ${ckandata}/storage
 RUN mkdir --parent ${ckandata}/resources
+
+RUN chgrp --recursive apache ${ckandata}
 RUN chown --recursive apache ${ckandata}
+RUN chmod --recursive o=rwxs ${ckandata}
+RUN chmod --recursive g=rwxs ${ckandata}
 
 #
 # Install CKAN and dependencies.
