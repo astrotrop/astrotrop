@@ -48,6 +48,20 @@ TODO mount ckain.ini as an external volume
     rm -rf ${datadir:?}
 
 # -----------------------------------------------------
+# Build our base containers.
+#[user@desktop]
+
+    pushd ${project:?}/github
+        pushd src/docker/ckan
+
+            docker build \
+                --tag astrotrop/fedora \
+                base/fedora
+
+        popd
+    popd
+
+# -----------------------------------------------------
 # Build our SOLR container.
 #[user@desktop]
 
