@@ -22,8 +22,6 @@
 
 TODO mount ckain.ini as an external volume
 
-    docker rm $(docker stop $(docker ps -aq))
-
 # -----------------------------------------------------
 # Configure our build.
 #[user@desktop]
@@ -32,6 +30,22 @@ TODO mount ckain.ini as an external volume
 
     tempdir=${project:?}/temp
     datadir=${project:?}/data
+
+# -----------------------------------------------------
+# Start from clean.
+#[user@desktop]
+
+    rm -f "${HOME:?}/astrotrop.conf"
+
+    docker rm  $(docker stop $(docker ps -aq))
+    docker rmi $(docker images -q)
+
+    pushd ${project:?}/github
+        git pull
+    popd
+
+    rm -rf ${tempdir:?}
+    rm -rf ${datadir:?}
 
 # -----------------------------------------------------
 # Build our SOLR container.
@@ -62,20 +76,6 @@ TODO mount ckain.ini as an external volume
     popd
 
 # -----------------------------------------------------
-# Build our CKAN container.
-#[user@desktop]
-
-    pushd ${project:?}/github
-        pushd src/docker/ckan
-
-            docker build \
-                --tag astrotrop/ckan \
-                ckan
-
-        popd
-    popd
-
-# -----------------------------------------------------
 # Build our DataPusher container.
 #[user@desktop]
 
@@ -85,6 +85,20 @@ TODO mount ckain.ini as an external volume
             docker build \
                 --tag astrotrop/push \
                 push
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Build our CKAN container.
+#[user@desktop]
+
+    pushd ${project:?}/github
+        pushd src/docker/ckan
+
+            docker build \
+                --tag astrotrop/ckan \
+                ckan
 
         popd
     popd
@@ -138,6 +152,8 @@ EOF
         --env POSTGRES_PASSWORD=${postpass:?} \
         astrotrop/postgres
 
+    sleep 20
+
 # -----------------------------------------------------
 # Create our (empty) CKAN database.
 #[user@desktop]
@@ -165,8 +181,6 @@ EOF
             OWNER = ${ckanrole:?}
             ;
 EOF
-
-    sleep 30
     
     docker exec -it "${postname:?}" psql postgres postgres
 
@@ -252,7 +266,7 @@ EOF
 
         --
         -- Prevent storereader connecting to the ckan database.  
-        REVOKE CONNECT ON DATABASE "${ckanbase:?}" FROM "${storereader:?}";
+        REVOKE CONNECT ON DATABASE "${ckandatabase:?}" FROM "${storereader:?}";
 
         --
         -- Grant connect and select permissions to the storereader role.
@@ -327,6 +341,19 @@ EOF
         astrotrop/ckan
 
 # -----------------------------------------------------
+# Initialise our CKAN storage.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${ckanname:?}" bash
+
+        chown -R apache /var/lib/ckan/
+        chmod -R o=rwxs /var/lib/ckan/
+        chmod -R g=wrxs /var/lib/ckan/
+
+
+# -----------------------------------------------------
 # Create our CKAN database.
 #[user@desktop]
 
@@ -334,20 +361,10 @@ EOF
 
     docker exec -it "${ckanname:?}" bash
 
-        pushd "${ckanroot:?}/src/ckan"
-            paster --plugin ckan db init -c "${ckanconf:?}/ckan.ini"
-        popd
-
-# -----------------------------------------------------
-# Configure the admin user
-#[user@desktop]
-
-    source "${HOME:?}/astrotrop.conf"
-
-    docker exec -it "${ckanname:?}" bash
-
-        paster --plugin ckan sysadmin add zarquan \
+        paster --plugin ckan db init \
             -c "${ckanconf:?}/ckan.ini"
+        exit
+
 
 # -----------------------------------------------------
 # Tail the SOLR logs
@@ -377,26 +394,33 @@ EOF
         tail -f /var/log/httpd/ckan.metagrid.co.uk.error.log
 
 # -----------------------------------------------------
-# Test our DataStore.
+# Check our CKAN config
 #[user@desktop]
 
-    curl -X GET "http://ckan.metagrid.co.uk/api/3/action/help_show?name=datastore_create"
+    source "${HOME:?}/astrotrop.conf"
 
-    curl -X POST "http://ckan.metagrid.co.uk/api/3/action/datastore_create" \
-        -H "Authorization: f8bf0cbb-f5ac-4ce7-ae07-3d606ea57014" \
-        -d '{
-            "resource": {
-                "package_id": "d69ef1d0-68a6-41bd-8ffa-53a265142671"
-                },
-            "fields": [
-                {"id": "a"},
-                {"id": "b"}
-                ],
-            "records": [
-                { "a": 1, "b": "xyz"},
-                {"a": 2, "b": "zzz"}
-                ]
-            }'
+    docker exec -it "${ckanname:?}" bash
+
+        vi "${ckanconf:?}/ckan.ini"
+
+
+# -----------------------------------------------------
+# Configure our admin user
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${ckanname:?}" bash
+
+        paster --plugin ckan sysadmin add zarquan \
+            -c "${ckanconf:?}/ckan.ini"
+
+            # Create new user: zarquan? [y/n]
+            # Password: 
+            # Confirm password: 
+
+        exit
+
 
 
 

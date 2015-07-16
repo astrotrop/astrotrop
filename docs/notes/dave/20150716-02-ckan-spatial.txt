@@ -32,6 +32,23 @@
 
 
 
+https://github.com/ckan/ckanext-spatial
+http://docs.ckan.org/projects/ckanext-spatial/en/latest/install.html#install-postgis-and-system-packages
+
+https://ckanext-spatial.readthedocs.org/en/latest/install.html
+
+https://github.com/docker-library/postgres
+https://github.com/appropriate/docker-postgis
+
+
+
+Other ..
+http://open-data.fokus.fraunhofer.de/en/ernten-und-geerntet-werden-erfahrungen-beim-govdata-de-harvesting/
+https://github.com/ckan/ckanext-geoview
+https://github.com/ckan/ckanext-harvest
+
+
+
 # -----------------------------------------------------
 # Enable PostGIS  support.
 #[user@desktop]
