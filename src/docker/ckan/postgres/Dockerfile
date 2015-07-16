@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 #FROM postgres
-FROM mdillon/postgis/
+FROM mdillon/postgis
 
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
