@@ -366,10 +366,15 @@ EOF
 
     docker exec -it "${ckanname:?}" bash
 
-        chown -R apache /var/lib/ckan/
-        chgrp -R apache /var/lib/ckan/
-        chmod -R o=rwxs /var/lib/ckan/
-        chmod -R g=wrxs /var/lib/ckan/
+# Need to update this after the run, because the directory is mounted as a volume ?
+
+        chown -R apache "${ckandata:?}"
+        chgrp -R apache "${ckandata:?}"
+        chmod -R o=rwxs "${ckandata:?}"
+        chmod -R g=wrxs "${ckandata:?}"
+
+        mkdir --parent "${ckandata:?}/storage"
+        mkdir --parent "${ckandata:?}/resources"
 
         exit
 

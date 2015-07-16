@@ -1,0 +1,262 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # We can create a data set
+    http://ckan.metagrid.co.uk/dataset/test-dataset
+    
+    #
+    # We can upload a resource (100 row xlsx spread sheet)
+    http://ckan.metagrid.co.uk/dataset/test-dataset/resource/d6a3cc6b-d7b3-4614-baf6-6cd31b3f0770
+
+    #
+    # We can download the spread sheet.
+    http://ckan.metagrid.co.uk/dataset/8ca6e73c-c240-454a-a197-21f1901f3733/resource/d6a3cc6b-d7b3-4614-baf6-6cd31b3f0770/download/biomass002.xlsx
+
+    #
+    # Looking at the DataStore page for this resource crashes.
+    http://ckan.metagrid.co.uk/dataset/test-dataset/resource_data/d6a3cc6b-d7b3-4614-baf6-6cd31b3f0770
+
+
+    Huge big stack trace.
+
+        [Thu Jul 16 15:11:41.714685 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] Error - <class 'jinja2.exceptions.UndefinedError'>: 'list object' has no attribute 'iteritems'
+        [Thu Jul 16 15:11:41.717325 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] URL: http://ckan.metagrid.co.uk/dataset/test-dataset/resource_data/d6a3cc6b-d7b3-4614-baf6-6cd31b3f0770
+        [Thu Jul 16 15:11:41.717426 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/weberror/errormiddleware.py', line 162 in __call__
+        [Thu Jul 16 15:11:41.717671 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   app_iter = self.application(environ, sr_checker)
+        [Thu Jul 16 15:11:41.717902 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/webob/dec.py', line 147 in __call__
+        [Thu Jul 16 15:11:41.718136 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   resp = self.call_func(req, *args, **self.kwargs)
+        [Thu Jul 16 15:11:41.718367 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/webob/dec.py', line 208 in call_func
+        [Thu Jul 16 15:11:41.718576 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   return self.func(req, *args, **kwargs)
+        [Thu Jul 16 15:11:41.718820 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/fanstatic/publisher.py', line 234 in __call__
+        [Thu Jul 16 15:11:41.719032 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   return request.get_response(self.app)
+        [Thu Jul 16 15:11:41.719248 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/webob/request.py', line 1053 in get_response
+        [Thu Jul 16 15:11:41.719450 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   application, catch_exc_info=False)
+        [Thu Jul 16 15:11:41.719680 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/webob/request.py', line 1022 in call_application
+        [Thu Jul 16 15:11:41.719864 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   app_iter = application(self.environ, start_response)
+        [Thu Jul 16 15:11:41.720099 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/webob/dec.py', line 147 in __call__
+        [Thu Jul 16 15:11:41.720261 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   resp = self.call_func(req, *args, **self.kwargs)
+        [Thu Jul 16 15:11:41.720523 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/webob/dec.py', line 208 in call_func
+        [Thu Jul 16 15:11:41.720787 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   return self.func(req, *args, **kwargs)
+        [Thu Jul 16 15:11:41.721131 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/fanstatic/injector.py', line 54 in __call__
+        [Thu Jul 16 15:11:41.721445 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   response = request.get_response(self.app)
+        [Thu Jul 16 15:11:41.721741 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/webob/request.py', line 1053 in get_response
+        [Thu Jul 16 15:11:41.722045 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   application, catch_exc_info=False)
+        [Thu Jul 16 15:11:41.722331 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/webob/request.py', line 1022 in call_application
+        [Thu Jul 16 15:11:41.722616 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   app_iter = application(self.environ, start_response)
+        [Thu Jul 16 15:11:41.722899 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/beaker/middleware.py', line 73 in __call__
+        [Thu Jul 16 15:11:41.723188 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   return self.app(environ, start_response)
+        [Thu Jul 16 15:11:41.723474 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/beaker/middleware.py', line 155 in __call__
+        [Thu Jul 16 15:11:41.723753 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   return self.wrap_app(environ, session_start_response)
+        [Thu Jul 16 15:11:41.724019 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/routes/middleware.py', line 131 in __call__
+        [Thu Jul 16 15:11:41.724286 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   response = self.app(environ, start_response)
+        [Thu Jul 16 15:11:41.724565 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/pylons/wsgiapp.py', line 125 in __call__
+        [Thu Jul 16 15:11:41.724751 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   response = self.dispatch(controller, environ, start_response)
+        [Thu Jul 16 15:11:41.725055 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/pylons/wsgiapp.py', line 324 in dispatch
+        [Thu Jul 16 15:11:41.725306 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   return controller(environ, start_response)
+        [Thu Jul 16 15:11:41.725548 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/lib/base.py', line 338 in __call__
+        [Thu Jul 16 15:11:41.725816 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   res = WSGIController.__call__(self, environ, start_response)
+        [Thu Jul 16 15:11:41.726069 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/pylons/controllers/core.py', line 221 in __call__
+        [Thu Jul 16 15:11:41.726344 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   response = self._dispatch_call()
+        [Thu Jul 16 15:11:41.726612 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/pylons/controllers/core.py', line 172 in _dispatch_call
+        [Thu Jul 16 15:11:41.726887 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   response = self._inspect_call(func)
+        [Thu Jul 16 15:11:41.727146 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/pylons/controllers/core.py', line 107 in _inspect_call
+        [Thu Jul 16 15:11:41.727400 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   result = self._perform_call(func, args)
+        [Thu Jul 16 15:11:41.727556 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/pylons/controllers/core.py', line 60 in _perform_call
+        [Thu Jul 16 15:11:41.727724 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   return func(**args)
+        [Thu Jul 16 15:11:41.727918 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckanext/datapusher/plugin.py', line 70 in resource_data
+        [Thu Jul 16 15:11:41.728068 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   extra_vars={'status': datapusher_status})
+        [Thu Jul 16 15:11:41.728233 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/lib/base.py', line 217 in render
+        [Thu Jul 16 15:11:41.728397 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   loader_class=loader_class)
+        [Thu Jul 16 15:11:41.728572 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/pylons/templating.py', line 249 in cached_template
+        [Thu Jul 16 15:11:41.728737 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   return render_func()
+        [Thu Jul 16 15:11:41.728912 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/lib/base.py', line 155 in render_template
+        [Thu Jul 16 15:11:41.729193 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   return render_jinja2(template_name, globs)
+        [Thu Jul 16 15:11:41.729346 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/lib/base.py', line 104 in render_jinja2
+        [Thu Jul 16 15:11:41.729534 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   return template.render(**extra_vars)
+        [Thu Jul 16 15:11:41.729682 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/jinja2/environment.py', line 894 in render
+        [Thu Jul 16 15:11:41.729856 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   return self.environment.handle_exception(exc_info, True)
+        [Thu Jul 16 15:11:41.730025 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/templates/package/resource_data.html', line 1 in top-level template code
+        [Thu Jul 16 15:11:41.730192 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   {% extends "package/resource_edit_base.html" %}
+        [Thu Jul 16 15:11:41.730364 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/templates/package/resource_edit_base.html', line 4 in top-level template code
+        [Thu Jul 16 15:11:41.730558 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   {% set res = c.resource %}
+        [Thu Jul 16 15:11:41.730706 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/templates/package/base.html', line 3 in top-level template code
+        [Thu Jul 16 15:11:41.730875 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   {% set pkg = c.pkg_dict or pkg_dict %}
+        [Thu Jul 16 15:11:41.731125 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/templates/page.html', line 1 in top-level template code
+        [Thu Jul 16 15:11:41.731288 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   {% extends "base.html" %}
+        [Thu Jul 16 15:11:41.731454 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/templates/base.html', line 103 in top-level template code
+        [Thu Jul 16 15:11:41.731622 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   {%- block page %}{% endblock -%}
+        [Thu Jul 16 15:11:41.731786 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/templates/page.html', line 19 in block "page"
+        [Thu Jul 16 15:11:41.731966 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   {%- block content %}
+        [Thu Jul 16 15:11:41.732201 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/templates/page.html', line 22 in block "content"
+        [Thu Jul 16 15:11:41.732366 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   {% block main_content %}
+        [Thu Jul 16 15:11:41.732532 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/templates/page.html', line 57 in block "main_content"
+        [Thu Jul 16 15:11:41.732696 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   {% block primary %}
+        [Thu Jul 16 15:11:41.732897 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/templates/page.html', line 70 in block "primary"
+        [Thu Jul 16 15:11:41.733042 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   {% block primary_content %}
+        [Thu Jul 16 15:11:41.733208 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/templates/page.html', line 90 in block "primary_content"
+        [Thu Jul 16 15:11:41.733374 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   {% block primary_content_inner %}
+        [Thu Jul 16 15:11:41.733591 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/templates/package/resource_data.html', line 28 in block "primary_content_inner"
+        [Thu Jul 16 15:11:41.733777 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   {% for error_key, error_value in status.task_info.error.iteritems() %}
+        [Thu Jul 16 15:11:41.733943 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] UndefinedError: 'list object' has no attribute 'iteritems'
+
+    Middle section looks 'interesting'
+
+        [Thu Jul 16 15:11:41.725548 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/lib/base.py', line 338 in __call__
+        [Thu Jul 16 15:11:41.725816 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   res = WSGIController.__call__(self, environ, start_response)
+
+        [Thu Jul 16 15:11:41.726069 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/pylons/controllers/core.py', line 221 in __call__
+        [Thu Jul 16 15:11:41.726344 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   response = self._dispatch_call()
+        [Thu Jul 16 15:11:41.726612 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/pylons/controllers/core.py', line 172 in _dispatch_call
+        [Thu Jul 16 15:11:41.726887 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   response = self._inspect_call(func)
+        [Thu Jul 16 15:11:41.727146 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/pylons/controllers/core.py', line 107 in _inspect_call
+        [Thu Jul 16 15:11:41.727400 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   result = self._perform_call(func, args)
+        [Thu Jul 16 15:11:41.727556 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/pylons/controllers/core.py', line 60 in _perform_call
+        [Thu Jul 16 15:11:41.727724 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   return func(**args)
+
+        [Thu Jul 16 15:11:41.727918 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckanext/datapusher/plugin.py', line 70 in resource_data
+        [Thu Jul 16 15:11:41.728068 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   extra_vars={'status': datapusher_status})
+
+        [Thu Jul 16 15:11:41.728233 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/lib/base.py', line 217 in render
+        [Thu Jul 16 15:11:41.728397 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   loader_class=loader_class)
+
+        [Thu Jul 16 15:11:41.728572 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/pylons/templating.py', line 249 in cached_template
+        [Thu Jul 16 15:11:41.728737 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   return render_func()
+
+        [Thu Jul 16 15:11:41.728912 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/lib/base.py', line 155 in render_template
+        [Thu Jul 16 15:11:41.729193 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   return render_jinja2(template_name, globs)
+        [Thu Jul 16 15:11:41.729346 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/lib/base.py', line 104 in render_jinja2
+        [Thu Jul 16 15:11:41.729534 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   return template.render(**extra_vars)
+
+        [Thu Jul 16 15:11:41.729682 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/python2.7/site-packages/jinja2/environment.py', line 894 in render
+        [Thu Jul 16 15:11:41.729856 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   return self.environment.handle_exception(exc_info, True)
+
+        [Thu Jul 16 15:11:41.730025 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/templates/package/resource_data.html', line 1 in top-level template code
+        [Thu Jul 16 15:11:41.730192 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   {% extends "package/resource_edit_base.html" %}
+        [Thu Jul 16 15:11:41.730364 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/templates/package/resource_edit_base.html', line 4 in top-level template code
+        [Thu Jul 16 15:11:41.730558 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   {% set res = c.resource %}
+        [Thu Jul 16 15:11:41.730706 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckan/templates/package/base.html', line 3 in top-level template code
+        [Thu Jul 16 15:11:41.730875 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   {% set pkg = c.pkg_dict or pkg_dict %}
+
+    Functions above and below look like either '/usr/lib/python2.7/'
+    library calls or html template functions.
+
+    This bit looks like a probable cause
+
+        [Thu Jul 16 15:11:41.727918 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92] File '/usr/lib/ckan/src/ckan/ckanext/datapusher/plugin.py', line 70 in resource_data
+        [Thu Jul 16 15:11:41.728068 2015] [wsgi:error] [pid 15] [remote 172.17.42.1:92]   extra_vars={'status': datapusher_status})
+
+    Remove 'datapusher' from the list of plugins, restart the container, and the page displays ok.
+    So something wrong with DataPusher.
+
+    The DataPusher container is visible from inside the CKAN container.
+
+        docker exec -it "${ckanname:?}" \
+            curl http://pushlink:80/
+
+            {
+            "help": "\n
+                Get help at:\n
+                http://ckan-service-provider.readthedocs.org/.
+                "
+            }
+
+    Which corresponds to a GET in the DataPusher container logs
+
+        docker exec -it "${pushname:?}" \
+            tail /var/log/httpd/push.metagrid.co.uk.access.log
+
+    Refreshing the DataStore page for our resource
+    
+        http://ckan.metagrid.co.uk/dataset/test-dataset/resource_data/d6a3cc6b-d7b3-4614-baf6-6cd31b3f0770
+
+    Triggers a GET from CKAN to the DataPusher
+
+        172.17.0.220 - - [16/Jul/2015:16:16:48 +0000] "GET /job/b8d81016-9d48-4ba8-b0cf-3e05f03656d3 HTTP/1.1" 200 2189 "-" "python-requests/2.3.0 CPython/2.7.10 Linux/4.1.0-x86_64-linode59"
+
+    Trying the same GET using curl .. returns a permission error
+    
+        docker exec -it "${ckanname:?}" \
+            curl http://pushlink:80/job/b8d81016-9d48-4ba8-b0cf-3e05f03656d3
+
+            {
+            "error": "not authorized"
+            }
+
+    Two requests in the DataPusher logs
+
+        172.17.0.220 - - [16/Jul/2015:16:18:12 +0000] "GET /job/b8d81016-9d48-4ba8-b0cf-3e05f03656d3 HTTP/1.1" 200 2189 "-" "python-requests/2.3.0 CPython/2.7.10 Linux/4.1.0-x86_64-linode59"
+        172.17.0.220 - - [16/Jul/2015:16:19:08 +0000] "GET /job/b8d81016-9d48-4ba8-b0cf-3e05f03656d3 HTTP/1.1" 403 27 "-" "curl/7.40.0"
+
+    The first os the request from CKAN, the second is from curl.
+
+    This indicates that : 
+
+        a) CKAN has a 'secret cookie' that is sends
+        b) The CKAN request works ok, and gets some data
+        c) curl request is missing the 'secret cookie'
+
+    -----------------------------------------------------
+
+    Uploading a new (small) excel sheet, triggers an error in the DataPusher.
+
+        [Thu Jul 16 16:45:07.439502 2015] [wsgi:error] [pid 14] Fetching from: http://ckan.metagrid.co.uk/dataset/49f65544-47fd-417f-b949-1abd516b2bc7/resource/3c7d22b9-b9bf-4eb7-817c-856649033afe/download/jenifer.006.xlsx
+        [Thu Jul 16 16:45:07.786592 2015] [wsgi:error] [pid 14] Job "push_to_datastore (trigger: RunTriggerNow, run = True, next run at: None)" raised an exception
+        [Thu Jul 16 16:45:07.786814 2015] [wsgi:error] [pid 14] Traceback (most recent call last):
+        [Thu Jul 16 16:45:07.787273 2015] [wsgi:error] [pid 14]   File "/usr/lib/python2.7/site-packages/apscheduler/scheduler.py", line 512, in _run_job
+        [Thu Jul 16 16:45:07.787517 2015] [wsgi:error] [pid 14]     retval = job.func(*job.args, **job.kwargs)
+        [Thu Jul 16 16:45:07.787807 2015] [wsgi:error] [pid 14]   File "/usr/lib/ckan/datapusher/datapusher/jobs.py", line 268, in push_to_datastore
+        [Thu Jul 16 16:45:07.788067 2015] [wsgi:error] [pid 14]     table_set = messytables.any_tableset(f, mimetype=ct, extension=ct)
+        [Thu Jul 16 16:45:07.788347 2015] [wsgi:error] [pid 14]   File "/usr/lib/python2.7/site-packages/messytables/any.py", line 136, in any_tableset
+        [Thu Jul 16 16:45:07.788596 2015] [wsgi:error] [pid 14]     return parsers[attempt](fileobj)
+        [Thu Jul 16 16:45:07.788851 2015] [wsgi:error] [pid 14]   File "/usr/lib/python2.7/site-packages/messytables/excel.py", line 83, in __init__
+        [Thu Jul 16 16:45:07.789124 2015] [wsgi:error] [pid 14]     self.workbook = get_workbook()
+        [Thu Jul 16 16:45:07.789375 2015] [wsgi:error] [pid 14]   File "/usr/lib/python2.7/site-packages/messytables/excel.py", line 46, in get_workbook
+        [Thu Jul 16 16:45:07.789578 2015] [wsgi:error] [pid 14]     formatting_info=with_formatting_info)
+        [Thu Jul 16 16:45:07.789876 2015] [wsgi:error] [pid 14]   File "/usr/lib/python2.7/site-packages/xlrd/__init__.py", line 422, in open_workbook
+        [Thu Jul 16 16:45:07.790055 2015] [wsgi:error] [pid 14]     ragged_rows=ragged_rows,
+        [Thu Jul 16 16:45:07.790284 2015] [wsgi:error] [pid 14]   File "/usr/lib/python2.7/site-packages/xlrd/xlsx.py", line 794, in open_workbook_2007_xml
+        [Thu Jul 16 16:45:07.790570 2015] [wsgi:error] [pid 14]     x12sheet.process_stream(zflo, heading)
+        [Thu Jul 16 16:45:07.790759 2015] [wsgi:error] [pid 14]   File "/usr/lib/python2.7/site-packages/xlrd/xlsx.py", line 534, in own_process_stream
+        [Thu Jul 16 16:45:07.790931 2015] [wsgi:error] [pid 14]     self.do_dimension(elem)
+        [Thu Jul 16 16:45:07.791520 2015] [wsgi:error] [pid 14]   File "/usr/lib/python2.7/site-packages/xlrd/xlsx.py", line 568, in do_dimension
+        [Thu Jul 16 16:45:07.792257 2015] [wsgi:error] [pid 14]     rowx, colx = cell_name_to_rowx_colx(last_cell_ref)
+        [Thu Jul 16 16:45:07.792503 2015] [wsgi:error] [pid 14]   File "/usr/lib/python2.7/site-packages/xlrd/xlsx.py", line 91, in cell_name_to_rowx_colx
+        [Thu Jul 16 16:45:07.792799 2015] [wsgi:error] [pid 14]     assert 0 <= colx < X12_MAX_COLS
+        [Thu Jul 16 16:45:07.793069 2015] [wsgi:error] [pid 14] AssertionError
+
+    Which is related to this bug in the Python library for reading Microsoft Excel (tm) spreadsheets.
+        
+        https://github.com/python-excel/xlrd/issues/127
+        https://github.com/python-excel/xlrd
+        http://www.python-excel.org/
+
+    When a data upload triggers this error, then the DataStore page fails for a resource.
+
+
+
+
+
+
+
+
+
