@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-FROM astrotrop/fedora
+FROM astrotrop/fedora-apache
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
@@ -23,14 +23,6 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 ENV ckanconf /etc/ckan
 ENV ckanroot /usr/lib/ckan
 ENV ckandata /var/lib/ckan
-
-#
-# Install Apache.
-RUN dnf -y install httpd
-
-#
-# Install mod_wsgi.
-RUN dnf -y install mod_wsgi
 
 #
 # Install the Python tools.
@@ -79,16 +71,4 @@ COPY datapusher.wsgi ${ckanconf}/datapusher.wsgi
 #
 # Install our Apache config.
 COPY datapusher.conf /etc/httpd/conf.d/datapusher.conf
-
-#
-# Install Apache foreground script.
-# https://github.com/docker-library/httpd/tree/master/2.4
-COPY httpd-foreground /usr/local/bin/
-RUN chmod a+x /usr/local/bin/httpd-foreground
-
-EXPOSE 80
-
-#
-# Run Apache in the foreground.
-CMD ["httpd-foreground"]
 

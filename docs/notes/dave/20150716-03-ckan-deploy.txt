@@ -58,6 +58,10 @@ TODO mount ckain.ini as an external volume
                 --tag astrotrop/fedora \
                 base/fedora
 
+            docker build \
+                --tag astrotrop/fedora-apache \
+                base/fedora-apache
+
         popd
     popd
 
@@ -363,9 +367,11 @@ EOF
     docker exec -it "${ckanname:?}" bash
 
         chown -R apache /var/lib/ckan/
+        chgrp -R apache /var/lib/ckan/
         chmod -R o=rwxs /var/lib/ckan/
         chmod -R g=wrxs /var/lib/ckan/
 
+        exit
 
 # -----------------------------------------------------
 # Create our CKAN database.
@@ -378,7 +384,6 @@ EOF
         paster --plugin ckan db init \
             -c "${ckanconf:?}/ckan.ini"
         exit
-
 
 # -----------------------------------------------------
 # Tail the SOLR logs
@@ -416,7 +421,7 @@ EOF
     docker exec -it "${ckanname:?}" bash
 
         vi "${ckanconf:?}/ckan.ini"
-
+        exit
 
 # -----------------------------------------------------
 # Configure our admin user
@@ -435,12 +440,37 @@ EOF
 
         exit
 
+# -----------------------------------------------------
+# Disable the external DataProxy
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${ckanname:?}" bash
+
+        pushd "${ckanroot:?}"
+
+            vi src/ckan/ckanext/reclineview/theme/public/recline_view.js
 
 
+            +   /*
+            +    *
+                 if (!resourceData.datastore_active) {
+                      recline.Backend.DataProxy.timeout = 10000;
+                      resourceData.backend =  'dataproxy';
+                 } else {
+                      resourceData.backend =  'ckan';
+                      resourceData.endpoint = jQuery('body').data('site-root') + 'api';
+                 }
+            +    *
+            +    */
+            +
+            +    resourceData.backend =  'ckan';
+            +    resourceData.endpoint = jQuery('body').data('site-root') + 'api';
 
 
-
-
+        popd
+        exit
 
 
 
