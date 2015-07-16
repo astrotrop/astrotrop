@@ -20,6 +20,10 @@
 #
 #
 
+TODO mount ckain.ini as an external volume
+
+    docker rm $(docker stop $(docker ps -aq))
+
 # -----------------------------------------------------
 # Configure our build.
 #[user@desktop]
@@ -72,6 +76,20 @@
     popd
 
 # -----------------------------------------------------
+# Build our DataPusher container.
+#[user@desktop]
+
+    pushd ${project:?}/github
+        pushd src/docker/ckan
+
+            docker build \
+                --tag astrotrop/push \
+                push
+
+        popd
+    popd
+
+# -----------------------------------------------------
 # Run our SOLR container.
 #[user@desktop]
 
@@ -93,15 +111,6 @@ EOF
         --volume "${solrtemp:?}:/temp" \
         --volume "${solrdata:?}:/opt/solr/example/solr/ckan/data" \
         astrotrop/solr
-
-# -----------------------------------------------------
-# Tail the SOLR logs
-#[user@desktop]
-
-    source "${HOME:?}/astrotrop.conf"
-
-    docker exec -it "${solrname:?}" \
-        tail -f /opt/solr/example/logs/solr.log
 
 # -----------------------------------------------------
 # Run our PostgreSQL container.
@@ -129,10 +138,8 @@ EOF
         --env POSTGRES_PASSWORD=${postpass:?} \
         astrotrop/postgres
 
-    docker logs postname
-
 # -----------------------------------------------------
-# Configure our PostgreSQL container.
+# Create our (empty) CKAN database.
 #[user@desktop]
 
     cat >> "${HOME:?}/astrotrop.conf" << EOF
@@ -154,120 +161,20 @@ EOF
             LOGIN
             ;
 
-        CREATE DATABASE ${ckanbase:?} WITH
+        CREATE DATABASE ${ckandatabase:?} WITH
             OWNER = ${ckanrole:?}
             ;
 EOF
 
+    sleep 30
+    
     docker exec -it "${postname:?}" psql postgres postgres
 
         \i /temp/ckan-init.sh
         \q
 
 # -----------------------------------------------------
-# Build our DataPusher container.
-#[user@desktop]
-
-    pushd ${project:?}/github
-        pushd src/docker/ckan
-
-            docker build \
-                --tag astrotrop/push \
-                push
-
-        popd
-    popd
-
-# -----------------------------------------------------
-# Run our DataPusher container.
-#[user@desktop]
-
-    cat >> "${HOME:?}/astrotrop.conf" << EOF
-
-        pushname=pushname
-        pushlink=pushlink
-        pushtemp=${tempdir:?}/push
-
-EOF
-
-    source "${HOME:?}/astrotrop.conf"
-
-    docker run \
-        --detach \
-        --name "${pushname:?}" \
-        --volume "${pushtemp:?}:/temp" \
-        astrotrop/push
-
-# -----------------------------------------------------
-# Tail the DataPusher logs
-#[user@desktop]
-
-    source "${HOME:?}/astrotrop.conf"
-
-    docker exec -it "${pushname:?}" \
-        tail -f /var/log/httpd/push.metagrid.co.uk.error.log
-
-# -----------------------------------------------------
-# Run our CKAN container.
-#[user@desktop]
-
-    cat >> "${HOME:?}/astrotrop.conf" << EOF
-
-        ckanname=ckanname
-        ckanlink=ckanlink
-
-        ckandata=${datadir:?}/ckan
-        ckantemp=${tempdir:?}/ckan
-EOF
-
-    source "${HOME:?}/astrotrop.conf"
-
-    docker run \
-        --detach \
-        --publish 80:80 \
-        --name "${ckanname:?}" \
-        --link ${postname:?}:${postlink:?} \
-        --link ${solrname:?}:${solrlink:?} \
-        --link ${pushname:?}:${pushlink:?} \
-        --volume "${ckantemp:?}:/temp" \
-        --volume "${ckandata:?}:/var/lib/ckan" \
-        astrotrop/ckan
-
-# -----------------------------------------------------
-# Tail the CKAN logs
-#[user@desktop]
-
-    source "${HOME:?}/astrotrop.conf"
-
-    docker exec -it "${ckanname:?}" \
-        tail -f /var/log/httpd/ckan.metagrid.co.uk.error.log
-
-
-# -----------------------------------------------------
-# Create our CKAN database.
-#[user@desktop]
-
-    source "${HOME:?}/astrotrop.conf"
-
-    docker exec -it "${ckanname:?}" bash
-
-        pushd "${ckanroot:?}/src/ckan"
-            paster --plugin ckan db init -c "${ckanconf:?}/ckan.ini"
-        popd
-
-# -----------------------------------------------------
-# Configure the admin user
-#[user@desktop]
-
-    source "${HOME:?}/astrotrop.conf"
-
-    docker exec -it "${ckanname:?}" bash
-
-        paster --plugin ckan sysadmin add zarquan \
-            -c "${ckanconf:?}/ckan.ini"
-
-# -----------------------------------------------------
-# Configure our DataStore database.
+# Create our DataStore database.
 # http://docs.ckan.org/en/master/datastore-setup.html
 #[user@desktop]
 
@@ -374,6 +281,102 @@ EOF
         \q
 
 # -----------------------------------------------------
+# Run our DataPusher container.
+#[user@desktop]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        pushname=pushname
+        pushlink=pushlink
+        pushtemp=${tempdir:?}/push
+
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker run \
+        --detach \
+        --name "${pushname:?}" \
+        --volume "${pushtemp:?}:/temp" \
+        astrotrop/push
+
+# -----------------------------------------------------
+# Run our CKAN container.
+#[user@desktop]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        ckanname=ckanname
+        ckanlink=ckanlink
+
+        ckandata=${datadir:?}/ckan
+        ckantemp=${tempdir:?}/ckan
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker run \
+        --detach \
+        --publish 80:80 \
+        --name "${ckanname:?}" \
+        --link ${postname:?}:${postlink:?} \
+        --link ${solrname:?}:${solrlink:?} \
+        --link ${pushname:?}:${pushlink:?} \
+        --volume "${ckantemp:?}:/temp" \
+        --volume "${ckandata:?}:/var/lib/ckan" \
+        astrotrop/ckan
+
+# -----------------------------------------------------
+# Create our CKAN database.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${ckanname:?}" bash
+
+        pushd "${ckanroot:?}/src/ckan"
+            paster --plugin ckan db init -c "${ckanconf:?}/ckan.ini"
+        popd
+
+# -----------------------------------------------------
+# Configure the admin user
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${ckanname:?}" bash
+
+        paster --plugin ckan sysadmin add zarquan \
+            -c "${ckanconf:?}/ckan.ini"
+
+# -----------------------------------------------------
+# Tail the SOLR logs
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${solrname:?}" \
+        tail -f /opt/solr/example/logs/solr.log
+
+# -----------------------------------------------------
+# Tail the DataPusher logs
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${pushname:?}" \
+        tail -f /var/log/httpd/push.metagrid.co.uk.error.log
+
+# -----------------------------------------------------
+# Tail the CKAN logs
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${ckanname:?}" \
+        tail -f /var/log/httpd/ckan.metagrid.co.uk.error.log
+
+# -----------------------------------------------------
 # Test our DataStore.
 #[user@desktop]
 
@@ -394,5 +397,15 @@ EOF
                 {"a": 2, "b": "zzz"}
                 ]
             }'
+
+
+
+
+
+
+
+
+
+
 
 
