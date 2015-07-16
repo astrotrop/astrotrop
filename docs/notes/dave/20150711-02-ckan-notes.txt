@@ -177,8 +177,3 @@
 
 
 
-
-
-
-https://lists.okfn.org/pipermail/ckan-dev/2015-April/008920.html    
-

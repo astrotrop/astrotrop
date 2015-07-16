@@ -1,0 +1,145 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Access control.
+    http://docs.ckan.org/en/latest/maintaining/authorization.html#organizations
+
+    #
+    # Spatial database
+    https://ckanext-spatial.readthedocs.org/en/latest/install.html
+
+    #
+    # GeoView
+    https://github.com/ckan/ckanext-geoview
+
+    #
+    # Error - Geojson files to datastore.
+    https://lists.okfn.org/pipermail/ckan-dev/2015-April/008920.html
+
+        Q
+        I have installed a ckan instance and while the datastore works fine
+        with other file formats, when I try to upload a geojson file I get
+        a 409 error, even when I use geojson files from other working ckan
+        instances from the web.
+
+        A
+        Its not possible to upload non-tabular data to the datastore. You may want to look at the MapStore
+        https://github.com/geosolutions-it/ckanext-mapstore
+
+
+
+
+
+
+    #
+    # Harvester
+    https://github.com/ckan/ckanext-harvest
+
+    #
+    # Detailed description of real-world harvesting
+    # To Harvest and be Harvested – Experiences with GovData.de-Harvesting
+    http://open-data.fokus.fraunhofer.de/en/ernten-und-geerntet-werden-erfahrungen-beim-govdata-de-harvesting/
+
+        One of the main goals of the GovData.de prototype is to unite as many
+        open data sets from Germany as possible in a single catalogue. Thspre
+        biggest part is automatically imported by so-called harvesters. In
+        this article we provide you with an overview on which tools have
+        been used and how useful they have proven.
+
+        ....
+
+        In conclusion, it can be said that harvesting accounts for a key part
+        of the work at GovData.de and clearly offers a corresponding added
+        value. To grow continuously better in this area, a lot of small scale
+        work is necessary. The cooperation between the providers and catalogue
+        operators should ideally lead to a subsequent standardization of
+        the metadata structure and the catalogue interfaces.
+
+
+    #
+    # Data Catalog Interoperability Protocol
+    http://spec.dataportals.org/
+
+        With the emergence of Open Data initiatives around the world, the
+        need to share metadata across different catalogs has became more
+        evident. Sites like http://publicdata.eu aggregate datasets from
+        different portals, and there has been a growing demand to provide
+        a clear and standard interface to allow incorporating metadata into
+        them automatically.
+
+        There is growing consensus around DCAT being the right way forward,
+        but an actual implementation is needed. In designing the following
+        guidelines, the main requirement has been in all cases to keep
+        it extremely simple, making as easy as possible for catalogs to
+        implement them, both in terms of exposing its metadata and consuming
+        metadata from other catalogs.
+
+
+    #
+    # W3C Data Catalog Vocabulary (DCAT)
+    http://www.w3.org/TR/vocab-dcat/
+
+        DCAT is an RDF vocabulary designed to facilitate interoperability
+        between data catalogs published on the Web.
+
+
+    #
+    # ArcGIS Open Data
+    http://doc.arcgis.com/en/open-data/
+    http://doc.arcgis.com/en/open-data/provider/federating-with-ckan.htm
+
+        Open Data allows organizations to use the ArcGIS platform to provide
+        the public with open access to their authoritative data. Organizations
+        configure a website with their own look and feel and specify Open
+        Data groups to share specific items. The general public can use
+        Open Data sites to search by topic or location, download data in
+        multiple formats, and view data on an interactive map and in a table.
+
+
+    #
+    # GeoNode
+    http://docs.geonode.org/en/latest/index.html
+
+        GeoNode is an Open Source, Content Management System (CMS) for
+        geospatial data. It is a web-based application and platform for
+        developing geospatial information systems (GIS) and for deploying
+        spatial data infrastructures (SDI).
+
+    #
+    # ckanext-mapstore
+    # CKAN Extension for MapStore Preview and GeoStore Harvesting
+    https://github.com/geosolutions-it/ckanext-mapstore
+
+        CKAN Extension for MapStore Preview and GeoStore Harvesting
+
+    #
+    # A CKAN extension that adds temporal facets
+    https://github.com/geosolutions-it/ckanext-datesearch
+
+        A CKAN extension that adds temporal facets (limit dataset search
+        results to between two dates)
+
+
+
+
+

@@ -51,13 +51,12 @@ EOF
 
     docker run \
         --detach \
-        --publish 80:80 \
         --name "${pushname:?}" \
         --volume "${pushtemp:?}:/temp" \
         astrotrop/push
 
 # -----------------------------------------------------
-# Tail the CKAN Apache logs
+# Tail the DataPusher logs
 #[user@desktop]
 
     source "${HOME:?}/astrotrop.conf"
@@ -65,6 +64,39 @@ EOF
     docker exec -it "${pushname:?}" \
         tail -f /var/log/httpd/push.metagrid.co.uk.error.log
 
+# -----------------------------------------------------
+# Run our CKAN container.
+#[user@desktop]
 
-        --link ${ckanname:?}:${ckanlink:?} \
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        ckanname=ckanname
+        ckanlink=ckanlink
+
+        ckandata=${datadir:?}/ckan
+        ckantemp=${tempdir:?}/ckan
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker run \
+        --detach \
+        --publish 80:80 \
+        --name "${ckanname:?}" \
+        --link ${postname:?}:${postlink:?} \
+        --link ${solrname:?}:${solrlink:?} \
+        --link ${pushname:?}:${pushlink:?} \
+        --volume "${ckantemp:?}:/temp" \
+        --volume "${ckandata:?}:/var/lib/ckan" \
+        astrotrop/ckan
+
+# -----------------------------------------------------
+# Tail the CKAN logs
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${ckanname:?}" \
+        tail -f /var/log/httpd/ckan.metagrid.co.uk.error.log
+
 

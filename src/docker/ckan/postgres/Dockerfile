@@ -15,7 +15,9 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-FROM postgres
+#FROM postgres
+FROM mdillon/postgis/
+
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #

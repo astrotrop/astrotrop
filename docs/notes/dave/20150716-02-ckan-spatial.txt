@@ -1,0 +1,56 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    https://github.com/ckan/ckanext-spatial
+
+    http://docs.ckan.org/projects/ckanext-spatial/en/latest/
+
+    #
+    # docker-postgis
+    # Docker container running Postgres 9 with PostGIS 2.1 installed
+    https://github.com/appropriate/docker-postgis
+    https://registry.hub.docker.com/u/mdillon/postgis/
+
+
+
+# -----------------------------------------------------
+# Enable PostGIS  support.
+#[user@desktop]
+
+    Create the spatial tables and functions.
+
+sudo -u postgres psql -d ckan_default -f /usr/share/postgresql/9.3/contrib/postgis-2.1/postgis.sql
+sudo -u postgres psql -d ckan_default -f /usr/share/postgresql/9.3/contrib/postgis-2.1/spatial_ref_sys.sql
+
+    Update the spatial table owner.
+
+sudo -u postgres psql -d ckan_default -c 'ALTER VIEW geometry_columns OWNER TO ckan_default;'
+sudo -u postgres psql -d ckan_default -c 'ALTER TABLE spatial_ref_sys OWNER TO ckan_default;'
+
+    Check PostGIS was properly installed.
+
+sudo -u postgres psql -d ckan_default -c "SELECT postgis_full_version()"
+
+
+
+
+
