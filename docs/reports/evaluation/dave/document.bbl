@@ -45,7 +45,7 @@
   \endverb
 \endentry
 
-\entry{trop}{online}{}
+\entry{atrop}{online}{}
   \field{sortinit}{A}
   \field{title}{AstroTrop}
   \verb{url}
@@ -418,14 +418,6 @@
   \verb https://knb.ecoinformatics.org/#view/doi:10.5063/AA/mdietze.3.2
   \endverb
   \field{year}{2004}
-\endentry
-
-\entry{usgs-explorer}{online}{}
-  \field{sortinit}{E}
-  \field{title}{Earth Explorer}
-  \verb{url}
-  \verb https://lta.cr.usgs.gov/earth_explorer
-  \endverb
 \endentry
 
 \entry{eml}{online}{}
@@ -957,15 +949,6 @@
   \endverb
 \endentry
 
-\entry{usgs-glovis}{online}{}
-  \field{sortinit}{G}
-  \field{shorttitle}{GloVis}
-  \field{title}{Global Visualization Viewer}
-  \verb{url}
-  \verb https://lta.cr.usgs.gov/glovis
-  \endverb
-\endentry
-
 \entry{ivoa-moc}{online}{}
   \keyw{ivoa, moc, healpix}
   \field{sortinit}{H}
@@ -1065,15 +1048,6 @@
   \field{title}{Landsat Program}
   \verb{url}
   \verb http://landsat.gsfc.nasa.gov/
-  \endverb
-\endentry
-
-\entry{usgs-lta}{online}{}
-  \field{sortinit}{L}
-  \field{shorttitle}{LTA}
-  \field{title}{Long Term Archive}
-  \verb{url}
-  \verb https://lta.cr.usgs.gov/about
   \endverb
 \endentry
 
@@ -2201,7 +2175,7 @@
   \endverb
   \field{issue}{24}
   \field{pages}{265–274}
-  \field{title}{The Brazilian Program for Biodiversity Research (PPBio)
+  \field{title}{The Brazilian Programme for Biodiversity Research (PPBio)
   Information System}
   \verb{url}
   \verb http://www.biodiversity-plants.de/biodivers_ecol/article_meta.php?DOI=1
@@ -2349,20 +2323,19 @@
   \endverb
 \endentry
 
+\entry{tropo}{online}{}
+  \field{sortinit}{T}
+  \field{title}{TROPOGLOBE}
+  \verb{url}
+  \verb http://www.astrotrop.org/
+  \endverb
+\endentry
+
 \entry{bris}{online}{}
   \field{sortinit}{U}
   \field{title}{University of Bristol}
   \verb{url}
   \verb http://www.bris.ac.uk/
-  \endverb
-\endentry
-
-\entry{usgs}{online}{}
-  \field{sortinit}{U}
-  \field{shorttitle}{USGS}
-  \field{title}{U.S. Geological Survey}
-  \verb{url}
-  \verb http://www.usgs.gov/
   \endverb
 \endentry
 
@@ -2373,15 +2346,6 @@
   \field{title}{Virtual Observatory}
   \verb{url}
   \verb http://www.ivoa.net/
-  \endverb
-\endentry
-
-\entry{weld}{online}{}
-  \field{sortinit}{W}
-  \field{shorttitle}{WELD}
-  \field{title}{Web-enabled Landsat data}
-  \verb{url}
-  \verb http://landsat.usgs.gov/WELD.php
   \endverb
 \endentry
 

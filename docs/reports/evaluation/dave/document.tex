@@ -51,18 +51,22 @@ University of Edinburgh}
 
 Two key objectives of the ASTROTROP project are to:
 \begin{itemize}
-    \item Evaluate the potential to use or adapt the AstroGrid and later VO software to create an operational virtual pan-tropical forest observatory.
-    \item Demonstrate the feasibility of key functions of a pan-tropical forest observatory.
+    \item Evaluate the potential to use or adapt the AstroGrid and later VO
+    software to create an operational virtual pan-tropical forest observatory.
+    \item Demonstrate the feasibility of key functions of a pan-tropical
+    forest observatory.
 \end{itemize}
 
-This evaluation report draws on the knowledge and experience gained from
-development of the \cite{astro} and \cite{ivoa} virtual observatory systems
-to explore these objectives and to answer the following related questions:
+As a step towards addressing these objectives, and in particular to
+evaluate what is feasible and what is not, we have drawn on the knowledge
+and experience gained from development of the \cite{astro} and \cite{ivoa}
+virtual observatory systems to explore these objectives and to answer the
+following related questions:
 
 \begin{itemize}
     \item What would be required to implement a virtual observatory system
     for the TROPGLOBE research community, capable of supporting the science
-    use-cases outlined on the \cite{trop} website.
+    use-cases outlined on the \cite{atrop} website.
     \item What components from the \cite{astro} and \cite{ivoa} projects
     would be appropriate to use in developing a virtual observatory system
     for the TROPGLOBE research community.
@@ -90,9 +94,9 @@ and data access services deployed at each of the participating institutes.
 These components work together to present a uniform mechanism for discovering
 and accessing data, irrespective of where it is physically located.
 
-The \cite{vo} architecture and data discovery processes are very similar
-to the \textit{'interconnected metadata collections'} approach described
-in \citetitle{jones-2006} (\cite{jones-2006}):
+The \cite{vo} architecture and data discovery processes are very similar to
+the \textit{'interconnected metadata collections'} approach to bioinformatics
+described in \citetitle{jones-2006} (\cite{jones-2006}):
 \begin{quote}
 ``.... a loosely structured collection of project-specific data sets
 accompanied by structured metadata about each of the data sets."
@@ -144,7 +148,7 @@ registry, it is automatically propagated up to the next level and replicated
 between the global registries.
 
 This makes it possible to access the metadata for all of the services
-and datasets published in the \cite{vo} by querying any one of the global
+and datasets published in the \cite{vo} by querying one of the global
 registries.
 
 The first step in fulfilling our example use case is to identify services that
@@ -227,91 +231,54 @@ very similar to the stages described in \cite{jones-2006}:
 
 \section{Tropical forest science}
 
-\subsection{Carbon density comparison}
+\subsection{Carbon Density Comparison}
 
 We can compare the \cite{vo} data discovery process for astronomy data with
-an example use case based on a recent study \citetitle*{mitchard-2014}
-(\cite{mitchard-2014}), comparing remote sensing data from satellites with
-ground plot data collected in the field.
-
-The study compares two sets of remote sensing data,
-from \citetitle*{nasa-jpl-carbon} (\cite{nasa-jpl-carbon})
-\citetitle{saatchi-2011} (\cite{saatchi-2011}), and the \citetitle*{whrc}
-(\cite{whrc}) \citetitle{baccini-2012} (\cite{baccini-2012}), with four
-sets of ground plot data from the following sources:
-
-\begin{itemize}
-    \item\citetitle*{rainfor} (\cite{rainfor}) (\cite{peacock-2007})
-    (\cite{malhi-2009}).
-    \item\citetitle*{atdn} (\cite{atdn}).
-    \item\citetitle*{team} (\cite{team}).
-    \item\citetitle*{ppbio} (\cite{ppbio}) (\cite{pezzini-2012}).
-\end{itemize}
+an example use case based on a recent study
+(\cite{mitchard-2014})
+which compares two maps based on satellite remote sensing data
+(\cite{saatchi-2011}; \cite{baccini-2012}),
+with four studies based of ground plot data from
+\citetitle*{rainfor} (\cite{rainfor}) (\cite{peacock-2007}; \cite{malhi-2009})
+the
+\citetitle*{atdn} (\cite{atdn});
+\citetitle*{team} (\cite{team});
+and the
+\citetitle*{ppbio} (\cite{ppbio}) (\cite{pezzini-2012})
 
 \subsubsection{Remote sensing source data}
 
-The paper does not give details of the data discovery and data access
-methods used to access the primary remote sensing source data.
-However, there are a number of data discovery tools available that enable
-researchers to search for remote sensing data products such as satellite
-images and radar scans.
+The paper does not give details of the data discovery and data access methods
+used to access the primary remote sensing source data. However, there are a
+number of data discovery tools available that enable researchers to search
+for forest area maps resulting from the processing of remote sensing data
+products such as satellite or radar images.
+Because the sharing of such digial maps is still relatively new, these search
+procedures have been custom-designed for individual sources. For example:
 
-Good examples of this type of tool are the \cite{usgs-explorer} and
-\cite{usgs-glovis} tools provided by the \citetitle*{usgs} (\cite{usgs}).
+\begin{enumerate}
+    \item The Terra-i system, hosted by the International Center for
+    Tropical Agriculture, the CGIAR Programme on Forestry, Trees and
+    Agroforestry, the Nature Conservancy, the School of Business and
+    Engineering (Vaud), and King’s College London, uses 250 m resolution
+    MODIS 16 day mosaics. Registered users of the Terra-i website
+    (http://www.terra-i.org) select the 10 degree x 10 degree "tile" for
+    which they require data. They are then able to download maps showing
+    various types of change between specified years since 2004 in RASTER ARC
+    ASCII format at 250 m resolution. Registered and unregistered users can
+    also use visualization software on the website to examine the spatial
+    data and to calculate rates of change by country, ecoregion, protected
+    area or for areas that the user defines on the map.
 
-\begin{quote}
-``The USGS EarthExplorer ... provides users the ability to query, search,
-and order satellite images, aerial photographs, and cartographic products
-from several sources."
-\end{quote}
-
-\begin{quote}
-``In addition to data from the Landsat missions and a variety of other data
-providers, EE now provides access to MODIS land data products from the NASA
-Terra and Aqua missions, and ASTER level-1B data products over the U.S. and
-Territories from the NASA ASTER mission."
-\end{quote}
-
-\begin{quote}
-``The USGS Global Visualization Viewer (GloVis) is an online search and order
-tool for selected satellite data. The viewer allows access to all available
-browse images from the Landsat 7 ETM+, Landsat 4/5 TM, Landsat 1-5 MSS,
-EO-1 ALI, EO-1 Hyperion, MRLC, and Tri-Decadal data sets, as well as Aster
-TIR, Aster VNIR and MODIS browse images from the DAAC inventory."
-\end{quote}
-
-The \cite{usgs} also provides large area composited mosaics generated from
-\cite{landsat} data via the \cite{weld} project.
-
-\begin{quote}
-``The WELD data products are processed so users do not need to apply the
-equations, spectral calibration coefficients, and solar information, needed
-to convert Landsat digital numbers to reflectance and brightness temperature.
-They are defined in the same coordinate system and align precisely, making
-them simple to use for multi-temporal applications.
-The products provide consistent data that can be used to derive higher-level
-land cover as well as geo-physical and biophysical products for assessment
-of surface dynamics and to study Earth system functioning."
-\end{quote}
-
-The \cite{usgs} also maintains a \citetitle*{usgs-lta} (\cite{usgs-lta})
-of historical remote sensing data:
-
-\begin{quote}
-``The U.S. Geological Survey's (USGS) Long Term Archive (LTA) at the National
-Center for Earth Resource Observations and Science (EROS) in Sioux Falls,
-SD is one of the largest civilian remote sensing data archives."
-\end{quote}
-
-\begin{quote}
-``Time series images are a valuable resource for scientists, disaster
-managers, engineers, educators, and the general public. USGS EROS has
-archived, managed, and preserved land remote sensing data for more than 35
-years and is a leader in preserving land remote sensing imagery."
-\end{quote}
-
-However, all of these interfaces are based around human interaction. There
-do not apper to be any machine readable data discovery services for this type of remote sensing data.
+    \item The Global Forest Change system, managed by the
+    University of Maryland but hosted by Google Earth Engine
+    (http://earthenginepartners. appspot.com/science-2013-global-forest),
+    provides access to maps of global forest cover change between 2000
+    and 2013, derived from 30 m resolution Landsat images. The dataset
+    is also divided into 10 degree x 10 degree "tiles" for downloads in
+    .TIF format. The maps may also be analysed online using visualization
+    software on Google Earth Engine.
+\end{enumerate}
 
 \subsubsection{Carbon density maps}
 
@@ -333,7 +300,6 @@ format.
 The carbon density dataset itself is available as \cite{format-geotiff}
 files, with associated \cite{format-world} metadata, for download from the
 \cite{nasa-jpl-carbon-ftp} site.
-
 
 A detailed description of the dataset produced by the \citetitle*{whrc}
 (\cite{whrc}) is available in the associated paper (\cite{baccini-2012}).
@@ -431,55 +397,59 @@ The \cite{term-agb} data derived from two remote-sensing-derived maps,
 \cite{saatchi-2011} and \cite{baccini-2012} are not available in the
 supporting information for the paper.
 
-\section{\cite{trop} requirements}
+\section{\cite{tropo} Requirements}
 
-Based on the \cite{trop} use cases we have studied so far it is clear that
-data discovery forms a significant part of the requirements for \cite{trop}.
+Based on the tropical use cases we have studied so far it is clear that
+data discovery forms a significant part of the requirements for \cite{tropo}.
 
-\subsection{External data}
+\subsection{External Data}
 
 In many of the use cases a significant part of the source material for
-the use case has come from outside the \cite{trop} community.
+the use case has come from outside the \cite{tropo} network.
 
-For example, both the \cite{saatchi-2011} and \cite{baccini-2012} datasets
-used in the \cite{mitchard-2014} use case came from external data sources,
+For example, both the \cite{saatchi-2011} and \cite{baccini-2012}
+datasets used in the \cite{mitchard-2014} use case came from external
+data sources, hosted at the lead author's organizations, i.e. the
 \citetitle*{nasa-jpl-carbon} and \citetitle*{whrc} respectively.
 
 In the short-term, in order to make this type of external data available
-as part of the \cite{trop} data discovery process, it will be necessary
-for a member of the \cite{trop} community to register and curate the
-\cite{trop} metadata describing the external data.
+as part of the \cite{tropo} data discovery process, it will be necessary
+for a member of the \cite{tropo} network to register and curate the
+metadata describing the external data.
 
-In the longer-term, the ideal solution would be to encourage external data
-providers like \citetitle*{nasa-jpl-carbon} and \citetitle*{whrc} to join
-the \cite{trop} community and participate in the development of the standards
-and \cite{web-service} interfaces for data sharing and discovery.
+In the longer-term, the ideal solution would be to encourage authors such
+as Saatchi and Baccini to join the \cite{tropo} network and participate in
+developing the standards and \cite{web-service} interfaces for data sharing
+and discovery.
 
-It is worth noting that a number of \cite{nasa} projects are active members
-of the \cite{ivoa}, participating in the working groups and conferences
-and contributing towards developing the \cite{ivoa} standards.
+Note that a number of cooperative international links of this kind have
+already been established through the World Forest Observatory network.
 
-In order to promote this, it may be beneficial for \cite{trop} members to
+Also, it is worth noting that a number of \cite{nasa} projects are active
+members of the \cite{ivoa}, participating in the working groups and
+conferences and contributing towards developing the \cite{ivoa} standards.
+
+In order to promote this, it may be beneficial for \cite{atrop} members to
 establish links with, and become members of,
 existing international standardization efforts within the
 relevant communities.
  
-\subsection{Internal data}
+\subsection{Internal Data}
 
-A number of the \cite{trop} use cases require access to data provided by
-members of the \cite{trop} community. Promoting and facilitating this kind
-of data sharing and re-use of results within the \cite{trop} community is
-one of the key goals of the \cite{trop} project.
+A number of the tropical use cases require access to data provided by
+members of the \cite{tropo} network. Promoting and facilitating this kind
+of data sharing and re-use of results within the \cite{tropo} network is
+one of the key goals of the \cite{atrop} project.
 
-In order to support this activity, the \cite{trop} system needs to enable
-individual members of the \cite{trop} community to publish metadata describing
-their datasets in the \cite{trop} system.
+In order to support this activity, the \cite{atrop} system needs to enable
+individual members of the \cite{tropo} network to publish metadata describing
+their datasets in the \cite{atrop} system.
 
-Once this metadata is available within the \cite{trop} system, it enables
-other members of the \cite{trop} community to discover and use the data as
+Once these metadata are available within the \cite{atrop} system, it enables
+other members of the \cite{tropo} network to discover and use the data as
 source material for their own research.
 
-\section{\cite{ivoa} software}
+\section{\cite{ivoa} Software}
 
 In both cases, the requirements for the data discovery process are that the
 users are able to specify an area of interest and the type of data they are
@@ -488,44 +458,44 @@ the data discovery results until they find the most suitable data
 for their purposes.
 
 Based on this outline we can begin to evaluate how well the \cite{ivoa}
-and \cite{astro} software meets the \cite{trop} requirements and compare
+and \cite{astro} software meets the \cite{atrop} requirements and compare
 this with equivalent \citetitle*{gis} (\cite{gis}) software available.
 
-At first glance, the \cite{ivoa} and \cite{trop} data discovery processes
+At first glance, the \cite{ivoa} and \cite{atrop} data discovery processes
 are very similar. Suggesting that the \cite{ivoa} and \cite{astro} software
-should be a good fit for the \cite{trop} requirements.
+should be a good fit for the \cite{atrop} requirements.
 
 However, there are a number of issues that may mean that the \cite{ivoa} and
-\cite{astro} software are not the best solution for meeting the \cite{trop}
+\cite{astro} software are not the best solution for meeting the \cite{atrop}
 requirements.
 
-\subsection{Data models}
+\subsection{Data Models}
 
 One issue is that a significant part of the \cite{ivoa} metadata structure
 include a number of domain specific astronomy concepts and terms, making
 it an imperfect match for a different domain.
 
-Although it would be possible to remove the domain specific concepts and
-terms from the \cite{ivoa} data model and replace them with something more suited to the \cite{trop} domain.
-Doing this piece at a time, gradually evolving a new metadata data model
-for the \cite{trop} project would be a non-trivial undertaking involving
-a significant commitment of time and resources.
-
-It is worth noting that the \cite{ivoa} \cite{ivoa-obscore} data model that
+It would be possible to remove the domain specific concepts and terms from
+the \cite{ivoa} data model and replace them with something more suited to
+the \cite{atrop} domain.
+However, doing this piece at a time, gradually evolving a new metadata
+data model for the \cite{atrop} project would be a non-trivial undertaking
+involving a significant commitment of time and resources.
+The \cite{ivoa} \cite{ivoa-obscore} data model that
 forms the basis of the \cite{ivoa} data discovery process is the result
 of 10 years' work by the \cite{ivoa} working groups to define a common data
 model for astronomy observations.
-It would be likely to take a similar length of time for the \cite{trop}
-community to develop an equivalent data model from scratch.
+It would be likely to take a similar length of time for the \cite{tropo}
+network to develop an equivalent data model from scratch.
 
-With this in mind, it may be more practical to base the \cite{trop}
+With this in mind, it may be more practical to base the \cite{atrop}
 metadata on existing data models and data description techniques that are
-already in use within the \cite{trop} community or that has been developed
-for domains closley related to to the \cite{trop} community.
+already in use within the \cite{tropo} network or that has been developed
+for domains closley related to to the \cite{tropo} network.
 
-There are a number of such data models are available.
-Two examples of these are the \citetitle*{format-world} and \citetitle*{eml}
-(\cite{eml}) metadata formats.
+There are a number of such data models available. They include the
+\citetitle*{format-world} and the \citetitle*{eml} (\cite{eml}) metadata
+formats.
 
 \subsubsection{\citetitle*{format-world}}
 
@@ -544,21 +514,21 @@ community for linking \cite{gis} metadata to datasets or maps.
 
 \subsubsection{\citetitle*{eml}}
 
-\cite{eml} is a detailed set of
-specifications for metadata describing ecological datasets, based on
-work done by the Ecological Society of America and associated efforts
-\citetitle*{michener-1997} (\cite{michener-1997}).
+\citetitle*{eml} (\cite{eml}) is a detailed set of specifications for metadata
+describing ecological datasets, based on work done by the Ecological
+Society of America and associated efforts \citetitle*{michener-1997}
+(\cite{michener-1997}).
 
 These are just two examples of metadata data models and data description
-techniques that are already in use within the \cite{gis} and Ecology domains.
+techniques that are already in use within the \cite{gis} and ecology domains.
 
-This highlights a significant opportunity for the \cite{trop} community to
+This highlights a significant opportunity for the \cite{tropo} network to
 identify the existing metadata datamodels and data description techniques
-already in use by members of the \cite{trop} community and to work together
+already in use by members of the \cite{tropo} network and to work together
 to define a common set of interoperable models and techniques that best
-describe the data used by the \cite{trop} community.
+describe the data used by the \cite{tropo} network.
 
-\subsection{Data owners}
+\subsection{Data Owners}
 
 A second issue with the \cite{ivoa} and \cite{astro} metadata \cite{ivoa-reg}
 and data discovery tools concerns the allocation of roles and responsibilities
@@ -573,15 +543,14 @@ Many of these represent large scale data providers responsible for
 publishing and curating primary science archives for telescope surveys or
 satellite missions.
 
-In the \cite{trop} domain these are equivalent to the upstream data
-providers who publish the original satellite remote sensing data, such as the
-\cite{landsat} data archive or the \citetitle*{usgs-lta} (\cite{usgs-lta})
-of remote sensing data published by by the \cite{usgs}.
+In the \cite{tropo} domain these are equivalent to the upstream remote sensing
+scientists who process the original satellite remote sensing data, such as the
+\cite{landsat} data and publish the resulting forest area maps.
 
 This has influenced the way that the \cite{ivoa} and \cite{astro} software
 and services have been developed. In particular, the priority has been
-to concentrate on providing tools and
-services for publishing the large primary source datasets.
+to concentrate on providing tools and services for publishing the large
+primary source datasets.
 
 This emphasis on the larger data providers has meant that the curation of the
 dataset metadata was seen as a system administrator role. As a result, many
@@ -589,7 +558,7 @@ of the current tools for managing and curating datasets are designed around a
 single system administrator role managing the metadata for an entire service,
 rather that individual researchers managing the metadata for their own data.
 
-In contrast, in the \cite{trop} use cases the hope is that a significant
+In contrast, in the \cite{atrop} use cases the hope is that a significant
 portion of the data in the system will be provided by and curated by
 individual researchers or small research groups.
 For example, the results and supplementary data for the (\cite{mitchard-2014})
@@ -600,20 +569,20 @@ As a result, the structure of the data models and access control systems
 and the design of the user interfaces of the \cite{ivoa} and \cite{astro}
 software and services would need significant work to adapt them to support the new use cases. 
 
-\section{Alternative software}
+\section{Alternative Software}
 
-The design issues identified with the \cite{ivoa} software would not prevent
-using it as the basis for developing the \cite{trop} system.
+The issues identified with the \cite{ivoa} software would not prevent it
+from being used as the basis for developing the \cite{atrop} system.
 
-It should be possible to gradually replace the \cite{ivoa-obscore} data model
-in the \cite{ivoa} software with a new data model designed for \cite{trop},
-and it should be possible to develop a new user interface and permission
+It would be possible to gradually replace the \cite{ivoa-obscore} data model
+in the \cite{ivoa} software with a new data model designed for \cite{atrop},
+and it would be possible to develop a new user interface and permission
 infrastructure to enable individual users to publish and curate their
 own data.
 
-On the other hand, there are a significant number of existing software applications
-and systems which have been specifically designed for handling geographical and
-ecological data.
+On the other hand, there are a significant number of existing software
+applications and systems which have been specifically designed for handling
+geographical and ecological data.
 
 Many of these systems may be capable of providing an equivalent level
 of functionality as the \cite{ivoa} and \cite{astro} software and it
@@ -636,9 +605,9 @@ system:
     \item \texttt{[GIVD:00-00-002]}\footnote{\url{http://www.givd.info/ID/00-00-002}} \cite{team}.
 \end{itemize}
 
-In \citetitle*{dengler-2011} (\cite{dengler-2011}) the \cite{givd} project
-team describe the system architecture and some plans for the future to
-aggregate different types of data from external sources.
+The \cite{givd} project team describe the system architecture and some plans
+for the future to aggregate different types of data from external sources
+(\cite{dengler-2011}).
 
 \begin{quote}
 ``Our longer-term vision is to develop GIVD in ways similar to Metacat
@@ -650,9 +619,9 @@ databases, with GIVD acting as the central node."
 
 This is broadly similar to the \cite{vo} architecture of distributed datasets
 and to the \textit{`interconnected metadata collections approach'} described
-in \citetitle{jones-2006} (\cite{jones-2006}).
+in (\cite{jones-2006}).
 
-However, the current emphasis is focussed on providing a human interactive
+However, the current emphasis is on providing a human interactive
 search facility, with the \cite{givd} system acting as the central node.
 The current plans do not include providing a machine readable interface
 to enable the \cite{givd} system itself to be used as a component in a
@@ -660,9 +629,9 @@ larger distributed system.
 
 \subsection{\cite{ppbio} Information System}
 
-In \citetitle*{pezzini-2012} (\cite{pezzini-2012}) the \cite{ppbio} team
-describe the role of the data manager and the metadata collection processes
-developed as part of the \cite{ppbio} Information System.
+The \cite{ppbio} team describe the role of the data manager and the metadata
+collection processes developed as part of the \cite{ppbio} Information System
+(\cite{pezzini-2012}).
 
 They also describe the transition from an initial flat file data storage
 system, to a new system based on \cite{metacat}.
@@ -721,38 +690,37 @@ data itself, e.g.
 \citetitle*{dietze-2004}\footnote{\url{https://knb.ecoinformatics.org/#view/doi:10.5063/AA/mdietze.3.2}}.
 
 In other cases the \cite{metacat} system only stores the metadata, referring
-to data that is stored elsewhere, e.g.
-\citetitle*{dietze-2004}\footnote{\url{https://knb.ecoinformatics.org/#view/doi:10.5063/AA/mdietze.3.2}}.
+to data that is stored elsewhere.
 
-This would be a good match for the \cite{trop} requirements and use cases.
+This would be a good match for the \cite{tropo} requirements and use cases.
 
-In some cases, the \cite{trop} system needs to store both the data and the
+In some cases, the \cite{atrop} system needs to store both the data and the
 metadata, e.g the results and supplementary data for (\cite{mitchard-2014}).
 
 In this example, a member of the team working on (\cite{mitchard-2014})
-would store the results and supplementary data in the \cite{trop} system
+would store the results and supplementary data in the \cite{atrop} system
 together with the metadata describing their data.
 
-In other cases, the \cite{trop} system would only store the metadata,
+In other cases, the \cite{atrop} system would only store the metadata,
 along with a refence to the data stored in an external system, e.g. the
 (\cite{saatchi-2011}) and (\cite{baccini-2012}) source material datasets
 used by (\cite{mitchard-2014}).
 
 In this example, a member of the team working on (\cite{mitchard-2014})
 would enter the metadata details of the (\cite{saatchi-2011}) and
-(\cite{baccini-2012}) datasets into the \cite{trop} system, but
-the actual datasets would remain with their original publishers,
-\citetitle*{nasa-jpl-carbon} and \citetitle*{whrc} respectively.
+(\cite{baccini-2012}) datasets into the \cite{atrop} system, but the actual
+datasets would remain with on the websites of the lead authors' organizations,
+i.e. \citetitle*{nasa-jpl-carbon} and \citetitle*{whrc} respectively.
 
 All three datasets would appear to be within the same (virtual)
-system, enabling \cite{trop} users to discover the (\cite{saatchi-2011})
+system, enabling \cite{tropo} users to discover the (\cite{saatchi-2011})
 and (\cite{baccini-2012}) remote sensing datasets alongside the results
 and all of the supplementary data for the (\cite{mitchard-2014}) paper.
 
 \subsection{\citetitle*{data-one}}
 
-\cite{metacat} and the \cite{knb} project is part of the \citetitle*{data-one} (\cite{data-one})
-project.
+\cite{metacat} and the \cite{knb} project are part of the
+\citetitle*{data-one} (\cite{data-one}) project.
 
 The \cite{data-one} project is part of the \citetitle*{nsf} (\cite{nsf})
 funded \citetitle*{data-net} (\cite{data-net}) programme to build an
@@ -799,7 +767,7 @@ local, Tribal, and regional partners."
 
 The \cite{fgdc-geo} system brings together metadata standards, software
 and services that provide a set of features which are similar to those that
-the \cite{trop} aims to provide.
+the \cite{atrop} aims to provide.
 
 \begin{itemize}
     \item Map Viewer.
@@ -835,7 +803,7 @@ along with the metadata describing it, or just store the metadata about
 a data resource held in an external system.
 
 This matches the two use cases described above, where members of a research
-team would store their results and supplementary data in the \cite{trop}
+team would store their results and supplementary data in the \cite{atrop}
 system together with the metadata describing the data, or they would enter
 the metadata for an external dataset stored in remote repository.
 
@@ -850,10 +818,10 @@ is similar to the \cite{ivoa} and \cite{astro} architecture and the
 
 \section{Conclusion}
 
-\subsection{Core software}
+\subsection{Core Software}
 
 Although the \cite{astro} software could in theory be modified to meet
-the \cite{trop} requirements, the results of this evaluation indicate
+the \cite{tropo} requirements, the results of this evaluation indicate
 that the changes required would be non-trivial.
 
 A number of factors contribute to this, including the differences
@@ -863,15 +831,15 @@ expectations have changed since the core \cite{astro}
 systems were developed.
 
 Conversely, a number of systems already exist in domains adjacent to
-\cite{trop} which are based on similar ideas and provide broadly
+\cite{atrop} which are based on similar ideas and provide broadly
 similar functionality.
 
 The \cite{metacat} and \cite{ckan} systems are two examples that make
 use of the latest technical standards and technologies and are perhaps
-better suited to handling the \cite{trop} use cases and data models.
+better suited to handling the \cite{atrop} use cases and data models.
 
-With this in mind, we recomend that future work on the \cite{trop}
-project looks at basing the \cite{trop} system on the \cite{metacat}
+With this in mind, we recomend that future work on the \cite{atrop}
+project looks at basing the \cite{atrop} system on the \cite{metacat}
 or \cite{ckan} systems.
 
 This enables us to build on the considerable geospatial functionality and
@@ -883,54 +851,50 @@ knowledge gained from our involment in developing the \cite{astro} and
 
 Both \cite{metacat} and \cite{ckan} already provide support for the \cite{gis}
 and \cite{eml} metadata models. In addition, both projects are actively
-involved in large scale cross disciplinary data management projects.
-
-\begin{itemize}
-    \item \cite{metacat} is part of the \cite{data-one} project, which is
-    specifically aimed at building the infrastructure for earth observational
-    data.
-    \item \cite{ckan} is used in a number of national \cite{data-gov}
-    projects, in particular the \cite{fgdc} \cite{fgdc-geo} system which
-    is specifically aimed at handling geospatial data.
-\end{itemize}
-
-A number of the \cite{trop} science cases are based on primary remote
-sensing data from sources such as \cite{landsat} and on processed data
-products from groups such as \cite{nasa-jpl-carbon} and \cite{whrc}.
-Ideally, in the long term, the best way to support the \cite{trop}
+involved in large scale cross disciplinary data management projects:
+\cite{metacat} is part of the \cite{data-one} project, which is specifically
+aimed at building the infrastructure for earth observational data; and
+\cite{ckan} is used in a number of national \cite{data-gov} projects, in
+particular the \cite{fgdc} \cite{fgdc-geo} system which is specifically
+aimed at handling geospatial data.
+    
+A number of the \cite{atrop} science cases are based on remote sensing
+data from sources such as \cite{landsat} and on processed data products
+from groups such as those based at \cite{nasa-jpl-carbon} and \cite{whrc}.
+Ideally, in the long term, the best way to support the tropical
 science cases would be to encourage the external data providers to join
-the \cite{trop} community and adopt the same metadata and service standards.
+the \cite{tropo} network and adopt the same metadata and service standards.
 
-Basing the \cite{trop} system on software that is already being used by cross
+Basing the \cite{atrop} system on software that is already being used by cross
 disciplinary projects that handle earth observational and geospatial data
 using the established \cite{gis} and \cite{eml} metadata models is likely
 to make it easier encourage data providers such as \cite{nasa-jpl-carbon}
 and \cite{whrc} to participate.
 
-The best way to start this process is for the \cite{trop} community to work
+The best way to start this process is for the \cite{tropo} network to work
 together to identify metadata datamodels and data description techniques
 already in use and to work together to define a common set of interoperable
-models and techniques that best describe the data used by the \cite{trop}
-community.
+models and techniques that best describe the data used by the \cite{tropo}
+network.
 
-In addition, where the \cite{trop} community relies on existing and established
-standards, representative members of the \cite{trop} community should join
+In addition, where the \cite{tropo} network relies on existing and established
+standards, representative members of the \cite{atrop} community should join
 the relevant external groups responsible for developing these standards.
 
-\subsection{Project structure}
+\subsection{Project Structure}
 
 The \cite{astro} project succeded in its goal of delivering a \cite{vo}
 system for the UK astronomy community, and as one of the founding members
 of the \cite{ivoa} played a significant part in establishing the \cite{ivoa}
 structure and processes.
 
-The fact that over 10 years after it was first established the the \cite{ivoa}
+The fact that over 10 years since it was first established the the \cite{ivoa}
 is still an active community of scientists and engineers busy working on
 developing the next generation of services and specifications is due to the
 organizational structures and processes put in place early in the
 \cite{astro} and \cite{ivoa} projects.
 
-We would recomend that the \cite{trop} project adopts a similar
+We would recommend that the \cite{atrop} project adopts a similar
 organizational structure and development processes.
 
 An important lesson learned from the \cite{astro} and \cite{ivoa}
