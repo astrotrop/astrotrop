@@ -186,7 +186,7 @@ EOF
 
     source "${HOME:?}/astrotrop.conf"
 
-    cat > ${posttemp:?}/ckan-init.sh << EOF
+    cat > ${posttemp:?}/ckan-init.sql << EOF
 
         CREATE ROLE ${ckanrole:?} WITH 
             PASSWORD '${ckanpass:?}'
@@ -203,7 +203,7 @@ EOF
     
     docker exec -it "${postname:?}" psql postgres postgres
 
-        \i /temp/ckan-init.sh
+        \i /temp/ckan-init.sql
         \q
 
 # -----------------------------------------------------
@@ -228,7 +228,7 @@ EOF
 
     source "${HOME:?}/astrotrop.conf"
 
-    cat > ${posttemp:?}/store-init.sh << EOF
+    cat > ${posttemp:?}/store-init.sql << EOF
 
         --
         -- Create our database roles.
@@ -266,7 +266,7 @@ EOF
 
 EOF
 
-    cat > ${posttemp:?}/store-grant.sh << EOF
+    cat > ${posttemp:?}/store-grant.sql << EOF
 
         --
         -- Revoke permissions for the public role.
@@ -305,12 +305,12 @@ EOF
 
     docker exec -it "${postname:?}" psql postgres postgres
 
-        \i /temp/store-init.sh
+        \i /temp/store-init.sql
         \q
 
     docker exec -it "${postname:?}" psql "${storedatabase:?}" postgres
 
-        \i /temp/store-grant.sh
+        \i /temp/store-grant.sql
         \q
 
 # -----------------------------------------------------

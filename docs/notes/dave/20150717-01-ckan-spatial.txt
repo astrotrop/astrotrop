@@ -1,0 +1,309 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    https://github.com/ckan/ckanext-spatial
+    http://docs.ckan.org/projects/ckanext-spatial/en/latest/
+
+# -----------------------------------------------------
+# Configure the PostGIS database extensions.
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/install.html#install-postgis-and-system-packages
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    #
+    # Create the spatial tables and functions.
+    docker exec -it "${postname:?}" psql \
+        --dbname "${ckandatabase:?}" \
+        --username "postgres" \
+        --file /usr/share/postgresql/9.4/contrib/postgis-2.1/postgis.sql
+
+    docker exec -it "${postname:?}" psql \
+        --dbname "${ckandatabase:?}" \
+        --username "postgres" \
+        --file /usr/share/postgresql/9.4/contrib/postgis-2.1/spatial_ref_sys.sql
+
+    docker exec -it "${postname:?}" psql \
+        --dbname "${ckandatabase:?}" \
+        --username "postgres" \
+        --file /usr/share/postgresql/9.4/contrib/postgis-2.1/rtpostgis.sql
+
+    docker exec -it "${postname:?}" psql \
+        --dbname "${ckandatabase:?}" \
+        --username "postgres" \
+        --file /usr/share/postgresql/9.4/contrib/postgis-2.1/topology.sql
+
+    #
+    # Update the spatial table owner.
+    docker exec -it "${postname:?}" psql \
+        --dbname "${ckandatabase:?}" \
+        --username "postgres" \
+        --command "ALTER VIEW geometry_columns OWNER TO ${ckanrole:?}"
+
+    docker exec -it "${postname:?}" psql \
+        --dbname "${ckandatabase:?}" \
+        --username "postgres" \
+        --command "ALTER TABLE spatial_ref_sys OWNER TO ${ckanrole:?}"
+
+    #
+    # Check to see if PostGIS is healthy.
+    docker exec -it "${postname:?}" psql \
+        --dbname "${ckandatabase:?}" \
+        --username "${ckanrole:?}" \
+        --command "SELECT postgis_full_version()"
+
+    #
+    # Expected POSTGIS="2.1.2 r12389" GEOS="3.4.2-CAPI-1.8.2 r3921" PROJ="Rel. 4.8.0, 6 March 2012" GDAL="GDAL 1.10.1, released 2013/08/26" LIBXML="2.9.1" LIBJSON="UNKNOWN" RASTER
+    # Actual   POSTGIS="2.1.7 r13414" GEOS="3.4.2-CAPI-1.8.2 r3921" PROJ="Rel. 4.8.0, 6 March 2012" GDAL="GDAL 1.10.1, released 2013/08/26" LIBXML="2.9.1" LIBJSON="UNKNOWN" RASTER
+
+# -----------------------------------------------------
+# Install the CKAN spatial extension
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/install.html#install-the-extension
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${ckanname:?}" bash
+
+        #
+        # Install the depoendencies.
+        # https://stackoverflow.com/questions/6504810/how-to-install-lxml-on-ubuntu
+        # https://stackoverflow.com/questions/15759150/src-lxml-etree-defs-h931-fatal-error-libxml-xmlversion-h-no-such-file-or-di
+
+        dnf -y install python-devel
+        dnf -y install libxml-devel
+        dnf -y install libxml2-devel
+        dnf -y install libxslt-devel
+        dnf -y install geos
+
+        pushd "${ckanroot:?}"
+
+            pip install -e "git+https://github.com/okfn/ckanext-spatial.git#egg=ckanext-spatial"
+            pip install -r src/ckanext-spatial/pip-requirements.txt
+
+        popd
+
+        #
+        # Warning - gcc may run out of memory duirng the build.
+        # Needed to stop the other docker containers to enable this to complete.
+        # Error: open CFI at the end of file; missing .cfi_endproc directive
+        #
+
+        # Note - To use the Spatial Harvesters, you will need to install and
+        # configure the harvester extension: ckanext-harvest. Follow the install
+        # instructions on its documentation for details on how to set it up.
+
+    exit
+
+# -----------------------------------------------------
+# Create the dataset extent table
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/install.html#configuration
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+        pushd "${ckanroot:?}"
+
+            paster --plugin=ckanext-spatial spatial initdb \
+                -c "${ckanconf:?}/ckan.ini"
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Enable the spatial plugins.
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/install.html#configuration
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+        vi "${ckanconf:?}/ckan.ini"
+
+        -   ckan.plugins = stats text_view image_view recline_view datastore datapusher
+        +   ckan.plugins = stats text_view image_view recline_view datastore datapusher spatial_metadata spatial_query
+
+        +   # Spatial metadata EPSG code
+        +   # http://docs.ckan.org/projects/ckanext-spatial/en/latest/install.html#configuration
+        +   # ckan.spatial.srid = 4326
+
+        +   # Spatial search backend
+        +   # http://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#choosing-a-backend-for-the-spatial-search
+        +   ckanext.spatial.search_backend = solr
+
+    exit
+
+# -----------------------------------------------------
+# Update our SOLR schema.
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#choosing-a-backend-for-the-spatial-search
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${solrname:?}" bash
+
+        vi /opt/solr/example/solr/ckan/conf/schema.xml
+
+        +       <field name="bbox_area" type="float" indexed="true" stored="true" />
+        +       <field name="maxx" type="float" indexed="true" stored="true" />
+        +       <field name="maxy" type="float" indexed="true" stored="true" />
+        +       <field name="minx" type="float" indexed="true" stored="true" />
+        +       <field name="miny" type="float" indexed="true" stored="true" />
+            </fields>
+
+    exit
+
+# -----------------------------------------------------
+# Restart our containers.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker stop "${ckanname:?}"
+    docker stop "${solrname:?}"
+    docker stop "${pushname:?}"
+    docker stop "${postname:?}"
+
+    docker start "${solrname:?}"
+    docker start "${pushname:?}"
+    docker start "${postname:?}"
+    docker start "${ckanname:?}"
+
+# -----------------------------------------------------
+# Tail the SOLR logs
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${solrname:?}" \
+        tail -f /opt/solr/example/logs/solr.log
+
+# -----------------------------------------------------
+# Tail the CKAN logs
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${ckanname:?}" \
+        tail -f /var/log/httpd/ckan.metagrid.co.uk.error.log
+
+# -----------------------------------------------------
+# Add a spatial field to a dataaset
+#[user@desktop]
+
+    spatial
+    {"type": "Polygon", "coordinates":[[[-4.15, 50.00],[-4.15, 51.00],[-1.75, 51.00],[-1.75, 50.00],[-4.15, 50.00]]]}
+
+    #
+    # GeoJSON verifier
+    # http://geojson.io/
+
+# -----------------------------------------------------
+# Add the spatial search widget.
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#spatial-search-widget
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+    vi "${ckanroot:?}/src/ckan/ckan/templates/package/search.html"
+
+        {% block secondary_content %}
+    +
+    +       {% snippet "spatial/snippets/spatial_query.html" %}
+    +
+    
+        {% endblock %}    
+
+
+        {% block secondary_content %}
+
+            {% snippet "spatial/snippets/spatial_query.html" %}
+
+# -----------------------------------------------------
+# Add the data extent map.
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#dataset-extent-map
+#[user@desktop]
+
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+    vi "${ckanroot:?}/src/ckan/ckan/templates/package/read_base.html"
+
+
+    {% set dataset_extent = h.get_pkg_dict_extra(c.pkg_dict, 'spatial', '') %}
+    {% if dataset_extent %}
+        {% snippet "spatial/snippets/dataset_map_sidebar.html", extent=dataset_extent %}
+    {% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+https://en.wikipedia.org/wiki/Geospatial_metadata
+
+
+GIS Inventory is a free web-based tool that provides a very simple interface
+to create geospatial metadata. Participants create a profile and document
+their data layers through a survey-style interface. The GIS Inventory
+produces metadata that is compliant with the Federal Content Standard for
+Digital Geospatial Metadata (CSDGM). The GIS Inventory is also capably
+of ingesting already completed metadata through document upload and web
+server connectivity. Through the GIS Inventory web services, metadata are
+automatically shared with US Federal agencies.
+
+GeoNetwork opensource is a comprehensive Free and Open Source Software
+solution to manage and publish geospatial metadata and services based on
+international metadata and catalog standards. The software is part of the
+Open Source Geospatial Foundation's software stack.
+
+GeoCat Bridge allows to edit, validate and directly publish metadata from
+ArcGIS Desktop to GeoNetwork (and generic CSW catalogs) and publishes data
+as map services on GeoServer. Several metadata profiles are supported.
+
+pycsw is an OGC CSW server implementation written in Python. pycsw fully
+implements the OpenGIS Catalogue Service Implementation Specification
+(Catalogue Service for the Web). The project is certified OGC Compliant,
+and is an OGC Reference Implementation.
+
+
