@@ -38,7 +38,6 @@ TODO mount ckain.ini as an external volume
     rm -f "${HOME:?}/astrotrop.conf"
 
     docker rm  $(docker stop $(docker ps -aq))
-    docker rmi $(docker images -q)
 
     pushd ${project:?}/github
         git pull
@@ -46,6 +45,8 @@ TODO mount ckain.ini as an external volume
 
     rm -rf ${tempdir:?}
     rm -rf ${datadir:?}
+
+    docker rmi $(docker images -q)
 
 # -----------------------------------------------------
 # Build our base containers.
@@ -368,13 +369,13 @@ EOF
 
 # Need to update this after the run, because the directory is mounted as a volume ?
 
+        mkdir --parent "${ckandata:?}/storage"
+        mkdir --parent "${ckandata:?}/resources"
+
         chown -R apache "${ckandata:?}"
         chgrp -R apache "${ckandata:?}"
         chmod -R o=rwxs "${ckandata:?}"
         chmod -R g=wrxs "${ckandata:?}"
-
-        mkdir --parent "${ckandata:?}/storage"
-        mkdir --parent "${ckandata:?}/resources"
 
         exit
 
@@ -457,21 +458,8 @@ EOF
 
             vi src/ckan/ckanext/reclineview/theme/public/recline_view.js
 
-
-            +   /*
-            +    *
-                 if (!resourceData.datastore_active) {
-                      recline.Backend.DataProxy.timeout = 10000;
-                      resourceData.backend =  'dataproxy';
-                 } else {
-                      resourceData.backend =  'ckan';
-                      resourceData.endpoint = jQuery('body').data('site-root') + 'api';
-                 }
-            +    *
-            +    */
-            +
-            +    resourceData.backend =  'ckan';
-            +    resourceData.endpoint = jQuery('body').data('site-root') + 'api';
+            -   if (!resourceData.datastore_active) {
+            +   if (false) {
 
 
         popd
