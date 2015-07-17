@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.3)  7 JUL 2015 06:30
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.3.3)  17 JUL 2015 05:02
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -702,12 +702,12 @@ Package biblatex Info: ... file 'document.bbl' found.
 (./document.bbl)
 Package biblatex Info: Reference section=0 on input line 46.
 Package biblatex Info: Reference segment=0 on input line 46.
-LaTeX Font Info:    Try loading font information for OMS+cmr on input line 57.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 54.
  (/usr/share/texlive/texmf-dist/tex/latex/base/omscmr.fd
 File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 57.
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 54.
 
 [1
 
@@ -715,7 +715,7 @@ LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
 [3] [4] [5] [6] [7] [8] [9] [10] [11] [12] [13] [14
 
 ]
-Overfull \hbox (17.29208pt too wide) in paragraph at lines 968--968
+Overfull \hbox (17.29208pt too wide) in paragraph at lines 974--974
 [][]\OT1/cmr/m/it/10 GIS\OT1/cmr/m/n/10 . \OT1/cmr/m/it/10 Ge-o-graphic In-for-
 ma-tion Sys-tem\OT1/cmr/m/n/10 . \OT1/cmr/m/sc/10 url\OT1/cmr/m/n/10 : $\OT1/cm
 tt/m/n/10 http : / / en . wikipedia . org / wiki / Geographic _ information _
@@ -724,22 +724,18 @@ tt/m/n/10 http : / / en . wikipedia . org / wiki / Geographic _ information _
 [15
 
 ] [16] (./document.aux)
-
-Package biblatex Warning: Please rerun LaTeX.
-(biblatex)                Page breaks have changed.
-
 Package logreq Info: Writing requests to 'document.run.xml'.
 \openout1 = `document.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 8826 strings out of 495025
- 139316 string characters out of 6181516
- 328268 words of memory out of 5000000
- 11920 multiletter control sequences out of 15000+600000
+ 9227 strings out of 495025
+ 144042 string characters out of 6181516
+ 330048 words of memory out of 5000000
+ 12321 multiletter control sequences out of 15000+600000
  11083 words of font info for 40 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 51i,8n,51p,793b,1401s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 51i,8n,51p,793b,1799s stack positions out of 5000i,500n,10000p,200000b,80000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbxti10.pfb></usr/share/te
@@ -754,7 +750,7 @@ fonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm
 pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmti10.pfb></
 usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/sh
 are/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt8.pfb>
-Output written on document.pdf (16 pages, 242005 bytes).
+Output written on document.pdf (16 pages, 242126 bytes).
 PDF statistics:
  116 PDF objects out of 1000 (max. 8388607)
  82 compressed objects within 1 object stream
