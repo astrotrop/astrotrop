@@ -40,7 +40,7 @@
 # Build and run our container.
 #[user@desktop]
 
-    pushd /var/local/projects/edinburgh/astrotrop/googlecode
+    pushd /var/local/projects/edinburgh/astrotrop/github
 
         pushd docs/reports/evaluation/dave
 
