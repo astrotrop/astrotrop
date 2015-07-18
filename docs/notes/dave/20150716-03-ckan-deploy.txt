@@ -180,6 +180,25 @@ EOF
     sleep 20
 
 # -----------------------------------------------------
+# Run our Redis container.
+#[user@desktop]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        redislink=redislink
+        redisname=redisname
+EOF
+
+    #
+    #
+    #
+
+    #
+    #   --link ${redisname:?}:${redislink:?} \
+    #
+
+
+# -----------------------------------------------------
 # Create our (empty) CKAN database.
 #[user@desktop]
 

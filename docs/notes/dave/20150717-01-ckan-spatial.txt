@@ -85,7 +85,7 @@
     docker exec -it "${ckanname:?}" bash
 
         #
-        # Install the depoendencies.
+        # Install the dependencies.
         # https://stackoverflow.com/questions/6504810/how-to-install-lxml-on-ubuntu
         # https://stackoverflow.com/questions/15759150/src-lxml-etree-defs-h931-fatal-error-libxml-xmlversion-h-no-such-file-or-di
 

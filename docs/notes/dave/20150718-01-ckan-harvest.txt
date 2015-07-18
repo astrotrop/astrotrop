@@ -36,5 +36,270 @@
         popd
     popd
 
+# -----------------------------------------------------
+# Run our Redis container.
+#[user@desktop]
 
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        redisname=redisname
+        redislink=redislink
+
+        redisdata=${datadir:?}/redis
+        redistemp=${tempdir:?}/redis
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker run \
+        --detach \
+        --expose 8983 \
+        --name   "${redisname:?}" \
+        --volume "${redistemp:?}:/temp" \
+        astrotrop/redis
+
+# -----------------------------------------------------
+# Install the CKAN harvest extension
+# https://github.com/ckan/ckanext-harvest
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${ckanname:?}" bash
+
+        pushd "${ckanroot:?}"
+
+            pip install -e git+https://github.com/ckan/ckanext-harvest.git#egg=ckanext-harvest
+            pip install -r src/ckanext-harvest/pip-requirements.txt
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Configure the harvest plugins.
+# https://github.com/ckan/ckanext-harvest
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+        vi "${ckanconf:?}/ckan.ini"
+
+            ## Plugins Settings
+        -   ckan.plugins = ....
+        +   ckan.plugins = .... harvest ckan_harvester
+
+        +   ## Harvester settings
+        +   # Set the harvester type.
+        +   ckan.harvest.mq.type = redis
+        +
+        +   # Configure the Redis connection.
+        +   ckan.harvest.mq.hostname=redislink
+        +   ckan.harvest.mq.port=6379
+        +   ckan.harvest.mq.redis_db=0
+
+    exit
+
+# -----------------------------------------------------
+# Create the database tables.
+# https://github.com/ckan/ckanext-harvest
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+        pushd "${ckanroot:?}"
+
+            paster --plugin=ckanext-harvest harvester initdb \
+                -c "${ckanconf:?}/ckan.ini"
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Restart our CKAN container.
+#[user@desktop]
+
+    docker stop  ckanname    
+    docker start ckanname    
+
+    #
+    # Check the harvester page.
+    # http://ckan.metagrid.co.uk/harvest
+
+# -----------------------------------------------------
+# Temp fix to add the Redis hostname.
+#[user@desktop]
+
+    #
+    # docker-ips
+    # https://github.com/ajohnstone/dot-files/blob/master/bash.d/bash/docker
+
+    docker-ips
+
+        172.17.1.24 .... redisname
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+        echo '172.17.1.24     redislink' >> /etc/hosts
+
+
+# -----------------------------------------------------
+# Start the harvester processes.
+# https://github.com/ckan/ckanext-harvest
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+        pushd "${ckanroot:?}"
+
+            #
+            # List our harvest sources
+            paster --plugin=ckanext-harvest harvester sources \
+                -c "${ckanconf:?}/ckan.ini"
+
+        popd
+    exit
+
+
+    #
+    # Start the gather consumer
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+        pushd "${ckanroot:?}"
+
+            #
+            # Start the gather consumer
+            paster --plugin=ckanext-harvest harvester gather_consumer \
+                -c "${ckanconf:?}/ckan.ini"
+
+                ...
+                2015-07-18 12:05:27,095 DEBUG [ckanext.harvest.queue] Gather queue consumer regis
+
+        popd
+    exit
+
+    #
+    # Start the fetch consumer
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+        pushd "${ckanroot:?}"
+
+            #
+            # Start the fetch consumer
+            paster --plugin=ckanext-harvest harvester fetch_consumer \
+                -c "${ckanconf:?}/ckan.ini"
+
+                ...
+                2015-07-18 12:06:11,571 DEBUG [ckanext.harvest.queue] Fetch queue consumer registered
+
+        popd
+    exit
+
+    #
+    # Run the harvest jobs
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+        pushd "${ckanroot:?}"
+
+            #
+            # List our harvest jobs
+            paster --plugin=ckanext-harvest harvester jobs \
+                -c "${ckanconf:?}/ckan.ini"
+
+            #
+            # Run our harvest jobs
+            paster --plugin=ckanext-harvest harvester run \
+                -c "${ckanconf:?}/ckan.ini"
+
+        popd
+    exit
+
+
+# -----------------------------------------------------
+# Configure the spatial harvest plugins.
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/harvesters.html
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+        vi "${ckanconf:?}/ckan.ini"
+
+            ## Plugins Settings
+        -   ckan.plugins = ....
+        +   ckan.plugins = .... csw_harvester waf_harvester doc_harvester
+
+# -----------------------------------------------------
+# Restart our CKAN container.
+#[user@desktop]
+
+    docker stop  ckanname    
+    docker start ckanname    
+
+    #
+    # Check the harvester page.
+    # http://ckan.metagrid.co.uk/harvest
+
+        # 680+
+        # Bristol University
+        http://data.bris.ac.uk/data/
+
+        # +++
+        # CKAN demo service - junk
+        http://demo.ckan.org/
+
+        #
+        # CKAN REST API calls
+        http://data.metagrid.co.uk/astrotrop/test/test-002.json/api/2/rest/package
+
+
+    #
+    # Data.Gov harvest sources
+    http://catalog.data.gov/harvest
+
+        #
+        # USGS Geo Data Portal
+        # A metadata catalog that serves the USGS Geo Data Portal processing service. 
+        http://catalog.data.gov/harvest/about/geo-data-portal
+
+            #
+            # OpenDAP resource
+            # http://www.opendap.org/about
+
+        #
+        # State of California Geoportal
+        http://portal.gis.ca.gov/geoportal/csw/discovery
+
+        #
+        # geoportal
+        # NGDC - STP - SEM - iso
+        http://www.ngdc.noaa.gov/metadata/published/NOAA/NESDIS/NGDC/STP/SEM/iso/xml
+
+    #
+    # Manually create a resource document.
+
+        #
+        # OpenGov.UK dataset editor
+        # https://locationmde.data.gov.uk/editor/edit/dataset
+
+        #
+        # My Test dataset
+        # http://ckan.metagrid.co.uk/dataset/my-first-dataset
+
+    #
+    # Web Accessible Folder
+    # https://geo-ide.noaa.gov/wiki/index.php?title=Web_Accessible_Folder
+
+
+
+
+
+
+
+    JSON harvest (todo)
+    https://github.com/GSA/ckanext-datajson
+
+    GeoData harvest (todo)
+    https://github.com/GSA/ckanext-geodatagov
 
