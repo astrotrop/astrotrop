@@ -2313,6 +2313,14 @@
   \endverb
 \endentry
 
+\entry{tropo}{online}{}
+  \field{sortinit}{T}
+  \field{title}{TROPGLOBE}
+  \verb{url}
+  \verb http://www.astrotrop.org/
+  \endverb
+\endentry
+
 \entry{team}{online}{}
   \keyw{team}
   \field{sortinit}{T}
@@ -2320,14 +2328,6 @@
   \field{title}{Tropical Ecology Assessment and Monitoring}
   \verb{url}
   \verb http://www.teamnetwork.org/
-  \endverb
-\endentry
-
-\entry{tropo}{online}{}
-  \field{sortinit}{T}
-  \field{title}{TROPOGLOBE}
-  \verb{url}
-  \verb http://www.astrotrop.org/
   \endverb
 \endentry
 
