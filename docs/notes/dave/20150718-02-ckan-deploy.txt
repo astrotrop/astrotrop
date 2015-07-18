@@ -777,6 +777,30 @@ EOF
         +   ckan.plugins = .... csw_harvester waf_harvester doc_harvester
 
 # -----------------------------------------------------
+# MOVE TO DOCKER
+# Install the GeoNetwork harvester.
+# https://github.com/geosolutions-it/ckanext-geonetwork
+# http://demo.geo-solutions.it/share/linea_comune/doc/online/install/install_ckan_otherext.html
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+        pushd src
+            git clone https://github.com/geosolutions-it/ckanext-geonetwork.git
+
+            pushd ckanext-geonetwork
+           
+                python setup.py develop
+            popd
+
+        vi "${ckanconf:?}/ckan.ini"
+
+            ## Plugins Settings
+        -   ckan.plugins = ....
+        +   ckan.plugins = .... geonetwork_harvester
+
+# -----------------------------------------------------
 # Restart our containers.
 #[user@desktop]
 
@@ -798,6 +822,7 @@ EOF
 
     Converted xls file
     https://github.com/astrotrop/astrotrop/raw/master/src/docker/ckan/test/data/jenifer.001.xls
+    https://github.com/astrotrop/astrotrop/raw/master/docs/papers/carbon-density/Amazon_forest_biomass_Dataset_From_Mitchard_et_al_2014.xls
 
     #
     # GeoJSON verifier
@@ -837,8 +862,116 @@ EOF
 # Import our example data
 #[user@desktop]
 
+    astrotrop/protected/data/leicester/AstroTrop/Forest_Non-Forest_Congo
+    astrotrop/protected/data/leicester/AstroTrop/Forest_Non-Forest_Congo/Forest_Cover_Congo.tif
+    astrotrop/protected/data/leicester/AstroTrop/Forest_Non-Forest_Congo/Forest_Cover_Congo.hdr
+    
+    ESRI BIL Header File
+    http://fileinfo.com/extension/hdr
 
+        ENVI
+        description = {
+          Majority Analysis Result [Thu Mar 06 15:50:21 2014]}
+        samples = 11250
+        lines   = 11250
+        bands   = 1
+        header offset = 0
+        file type = ENVI Classification
+        data type = 1
+        interleave = bsq
+        sensor type = Unknown
+        classes = 3
+        class lookup = {
+           0,   0,   0,   0, 139,   0, 255, 255, 255}
+        class names = {
+         Unclassified, Forest, 
+         Non-Forest}
+        byte order = 0
+        map info = {Geographic Lat/Lon, 1.0000, 1.0000, 15.00000000, 5.00000000, 4.4444000000e-004, 4.4444000000e-004, WGS-84, units=Degrees}
+        coordinate system string = {GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]}
+        wavelength units = Unknown
+        band names = {
+         Majority Analysis (N05E15_10_lstack_noratio_ALL_cal_points_SVM.dat)}
 
+    spatial
+        {
+        "type": "Polygon",
+        "coordinates":
+            [
+                [
+                    [
+                      16.962890625,
+                      -9.44906182688142
+                    ],
+                    [
+                      16.962890625,
+                      3.6888551431470478
+                    ],
+                    [
+                      31.201171875,
+                      3.6888551431470478
+                    ],
+                    [
+                      31.201171875,
+                      -9.44906182688142
+                    ],
+                    [
+                      16.962890625,
+                      -9.44906182688142
+                    ]
+                ]
+            ]
+        }
+
+    astrotrop/protected/data/leicester/AstroTrop/Forest_Non-Forest_Mexico
+    astrotrop/protected/data/leicester/AstroTrop/Forest_Non-Forest_Mexico/Forest_Cover_Mexico.tif
+    astrotrop/protected/data/leicester/AstroTrop/Forest_Non-Forest_Mexico/Forest_Cover_Mexico.tfw
+
+    World File for TIFF
+    http://fileinfo.com/extension/tfw
+
+        250.0000000000
+        0.0000000000
+        0.0000000000
+        -250.0000000000
+        -1590706.8019999999
+        3791463.8270000000
+
+    spatial
+        {
+        "type": "Polygon",
+        "coordinates":
+            [
+                [
+                    [
+                      16.962890625,
+                      -9.44906182688142
+                    ],
+                    [
+                      16.962890625,
+                      3.6888551431470478
+                    ],
+                    [
+                      31.201171875,
+                      3.6888551431470478
+                    ],
+                    [
+                      31.201171875,
+                      -9.44906182688142
+                    ],
+                    [
+                      16.962890625,
+                      -9.44906182688142
+                    ]
+                ]
+            ]
+        }
+
+# -----------------------------------------------------
+
+    #
+    # GeoJASON converter
+    http://ogre.adc4gis.com/
 
 
 # -----------------------------------------------------
@@ -848,7 +981,6 @@ EOF
     #
     # Data.Gov harvest sources
     http://catalog.data.gov/harvest
-
 
         CSW
 
@@ -899,6 +1031,18 @@ EOF
             # Bristol University
             # http://data.bris.ac.uk/data/
 
+
+        WAF
+
+            # INSPIRE metadata - Environment Agency
+            # https://dcsu059g9fk65.cloudfront.net/
+
+            Problem
+                Element '{http://www.opengis.net/gml/3.2}TimePeriod': not expected.
+            Solution
+                https://github.com/geosolutions-it/ckanext-geonetwork
+
+
 # -----------------------------------------------------
 # Start the harvester processes.
 # https://github.com/ckan/ckanext-harvest
@@ -933,6 +1077,14 @@ EOF
 
 
 
+todo
+
+    Geospatial viewer
+    https://github.com/ckan/ckanext-geoview
 
 
+todo
+
+    FITS file parser
+    https://github.com/joetsoi/ckanext-astro
 
