@@ -760,6 +760,22 @@ EOF
         ....    
         {% endblock %}    
 
+
+# -----------------------------------------------------
+# MOVE TO DOCKER
+# Configure the spatial harvest plugins.
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/harvesters.html
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+        vi "${ckanconf:?}/ckan.ini"
+
+            ## Plugins Settings
+        -   ckan.plugins = ....
+        +   ckan.plugins = .... csw_harvester waf_harvester doc_harvester
+
 # -----------------------------------------------------
 # Restart our containers.
 #[user@desktop]
@@ -776,93 +792,142 @@ EOF
     docker start "${postname:?}"
     docker start "${ckanname:?}"
 
-
-
 # -----------------------------------------------------
-# Upload our example data
+# Import our example data
 #[user@desktop]
 
-
-    spatial
-    {"type": "Polygon", "coordinates":[[[-4.15, 50.00],[-4.15, 51.00],[-1.75, 51.00],[-1.75, 50.00],[-4.15, 50.00]]]}
+    Converted xls file
+    https://github.com/astrotrop/astrotrop/raw/master/src/docker/ckan/test/data/jenifer.001.xls
 
     #
     # GeoJSON verifier
     # http://geojson.io/
 
+    spatial
+        {
+        "type": "Polygon",
+        "coordinates":
+            [
+                [
+                    [
+                    -81.2109375,
+                    -16.63619187839765
+                    ],
+                    [
+                    -81.2109375,
+                    13.581920900545844
+                    ],
+                    [
+                    -33.046875,
+                    13.581920900545844
+                    ],
+                    [
+                    -33.046875,
+                    -16.63619187839765
+                    ],
+                    [
+                    -81.2109375,
+                    -16.63619187839765
+                    ]
+                ]
+            ]
+        }
+
+# -----------------------------------------------------
+# Import our example data
+#[user@desktop]
 
 
 
+
+
+# -----------------------------------------------------
+# Add some harvest sources
+#[user@desktop]
+
+    #
+    # Data.Gov harvest sources
+    http://catalog.data.gov/harvest
+
+
+        CSW
+
+            # +1
+            # USGS Geo Data Portal
+            # A metadata catalog that serves the USGS Geo Data Portal processing service.
+            # http://catalog.data.gov/harvest/about/geo-data-portal 
+            # http://cida.usgs.gov/geonetwork/srv/en/csw?request=GetCapabilities&service=CSW&version=2.0.2
+
+            Problem
+                Element '{http://www.opengis.net/gml/3.2}TimePeriod': not expected.
+            Solution
+                https://github.com/geosolutions-it/ckanext-geonetwork
+
+            # 0
+            # North Dakota GIS Hub Data Portal
+            # The NDGIS Hub Data Portal can be used to find downloadable GIS data, GIS web services, and GIS applications 
+            # http://catalog.data.gov/harvest/about/north-dakota-gis-hub-data-portal
+            # https://apps.nd.gov/hubdataportal/srv/en/csw?SERVICE=CSW&VERSION=2.0.2&REQUEST=GetCapabilities
+
+            # 0
+            # AASG geothermal data CSW
+            # http://catalog.data.gov/harvest/about/aasg-geothermal-data-csw
+            # http://catalog.stategeothermaldata.org/geoportal/csw?request=GetCapabilities&service=CSW
+            # HTTP Bad gateway
+
+            # 0
+            # GeoNode State CSW
+            # http://catalog.data.gov/harvest/about/geonode-state-csw
+            # http://geonode.state.gov/catalogue/csw?service=CSW&version=2.0.2&request=GetRecords&typenames=csw:Record&elementsetname=brief
+            # [ckanext.harvest.harvesters.base] Validation Error: {'Id': 'Missing value', 'Name': 'Missing value'}
+    
+            # +6
+            # State of California Geoportal
+            # http://catalog.data.gov/harvest/about/state-of-california-geoportal
+            # http://portal.gis.ca.gov/geoportal/csw/discovery
+
+
+        DOC
+
+            #
+            # Static XML harvest source
+            # http://data.metagrid.co.uk/astrotrop/test/test-001.xml
+
+        CKAN    
+
+            # +942
+            # Bristol University
+            # http://data.bris.ac.uk/data/
 
 # -----------------------------------------------------
 # Start the harvester processes.
 # https://github.com/ckan/ckanext-harvest
 #[user@desktop]
 
-    source "${HOME:?}/astrotrop.conf"
-    docker exec -it "${ckanname:?}" bash
-        pushd "${ckanroot:?}"
-
-            #
-            # List our harvest sources
-            paster --plugin=ckanext-harvest harvester sources \
-                -c "${ckanconf:?}/ckan.ini"
-
-        popd
-    exit
-
     #
     # Start the gather consumer
     source "${HOME:?}/astrotrop.conf"
     docker exec -it "${ckanname:?}" bash
-        pushd "${ckanroot:?}"
 
-            #
-            # Start the gather consumer
-            paster --plugin=ckanext-harvest harvester gather_consumer \
-                -c "${ckanconf:?}/ckan.ini"
-
-                ...
-                2015-07-18 12:05:27,095 DEBUG [ckanext.harvest.queue] Gather queue consumer regis
-
-        popd
-    exit
+        paster --plugin=ckanext-harvest harvester gather_consumer \
+            -c "${ckanconf:?}/ckan.ini"
 
     #
     # Start the fetch consumer
     source "${HOME:?}/astrotrop.conf"
     docker exec -it "${ckanname:?}" bash
-        pushd "${ckanroot:?}"
 
-            #
-            # Start the fetch consumer
-            paster --plugin=ckanext-harvest harvester fetch_consumer \
-                -c "${ckanconf:?}/ckan.ini"
-
-                ...
-                2015-07-18 12:06:11,571 DEBUG [ckanext.harvest.queue] Fetch queue consumer registered
-
-        popd
-    exit
+        paster --plugin=ckanext-harvest harvester fetch_consumer \
+            -c "${ckanconf:?}/ckan.ini"
 
     #
-    # Run the harvest jobs
+    # Run pending harvest jobs
     source "${HOME:?}/astrotrop.conf"
     docker exec -it "${ckanname:?}" bash
-        pushd "${ckanroot:?}"
 
-            #
-            # List our harvest jobs
-            paster --plugin=ckanext-harvest harvester jobs \
-                -c "${ckanconf:?}/ckan.ini"
+        paster --plugin=ckanext-harvest harvester run \
+            -c "${ckanconf:?}/ckan.ini"
 
-            #
-            # Run our harvest jobs
-            paster --plugin=ckanext-harvest harvester run \
-                -c "${ckanconf:?}/ckan.ini"
-
-        popd
-    exit
 
 
 

@@ -285,7 +285,7 @@ EOF
 
         #
         # My Test dataset
-        # http://ckan.metagrid.co.uk/dataset/my-first-dataset
+        # http://data.metagrid.co.uk/astrotrop/test/test-001.xml
 
     #
     # Web Accessible Folder
