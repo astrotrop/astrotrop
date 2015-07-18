@@ -23,15 +23,6 @@
 TODO mount ckain.ini as an external volume
 
 # -----------------------------------------------------
-# Configure our build.
-#[user@desktop]
-
-    project=/var/local/projects/astrotrop
-
-    tempdir=${project:?}/temp
-    datadir=${project:?}/data
-
-# -----------------------------------------------------
 # Start from clean.
 #[user@desktop]
 
@@ -47,6 +38,21 @@ TODO mount ckain.ini as an external volume
     rm -rf ${datadir:?}
 
     docker rmi $(docker images -q)
+
+# -----------------------------------------------------
+# Configure our build.
+#[user@desktop]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        #
+        # Local settings
+        project=/var/local/projects/astrotrop
+        tempdir=\${project:?}/temp
+        datadir=\${project:?}/data
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
 
 # -----------------------------------------------------
 # Build our base containers.
