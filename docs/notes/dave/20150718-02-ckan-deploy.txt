@@ -187,6 +187,45 @@ EOF
     popd
 
 # -----------------------------------------------------
+# Publish our Docker images.
+#[root@virtual]
+
+
+    docker tag -f "astrotrop/fedora:latest"         "astrotrop/fedora:22.1"
+    docker tag -f "astrotrop/fedora-apache:latest"  "astrotrop/fedora-apache:22.1"
+
+    docker tag -f "astrotrop/ckan:latest"       "astrotrop/ckan:1.0"
+    docker tag -f "astrotrop/push:latest"       "astrotrop/push:1.0"
+    docker tag -f "astrotrop/solr:latest"       "astrotrop/solr:1.0"
+    docker tag -f "astrotrop/redis:latest"      "astrotrop/redis:1.0"
+
+    docker tag -f "astrotrop/postgres:latest"   "astrotrop/postgres:1.0"
+    docker tag -f "astrotrop/postgres:latest"   "astrotrop/postgis:1.0"
+    docker tag -f "astrotrop/postgres:latest"   "astrotrop/postgis:latest"
+
+    docker push astrotrop/fedora:latest
+    docker push astrotrop/fedora-apache:latest
+
+    docker push astrotrop/ckan:latest
+    docker push astrotrop/push:latest
+    docker push astrotrop/solr:latest
+    docker push astrotrop/redis:latest
+    docker push astrotrop/postgis:latest
+    docker push astrotrop/postgres:latest
+
+    docker push astrotrop/fedora:22.1
+    docker push astrotrop/fedora-apache:22.1
+
+    docker push astrotrop/ckan:1.0
+    docker push astrotrop/push:1.0
+    docker push astrotrop/solr:1.0
+    docker push astrotrop/redis:1.0
+    docker push astrotrop/postgis:1.0
+    docker push astrotrop/postgres:1.0
+
+
+
+# -----------------------------------------------------
 # Run our SOLR container.
 #[user@desktop]
 
@@ -968,6 +1007,59 @@ EOF
         }
 
 # -----------------------------------------------------
+# PantropicBiomass
+#
+
+    Pantropical National Level Carbon Stock Dataset
+    http://www.whrc.org/mapping/pantropical/carbon_dataset.html
+
+    ArcGIS
+    https://www.arcgis.com/home/item.html?id=2332b43bc5454127bfde21e894c89a51
+    http://tiles.arcgis.com/tiles/tWF28TdwCm3ZaV7m/arcgis/rest/services/PantropicBiomassFull/MapServer
+
+    spatial
+        {
+        "type": "Polygon",
+        "coordinates":
+            [
+                [
+                    [
+                      -202.5,
+                      -27.68352808378776
+                    ],
+                    [
+                      -202.5,
+                      27.68352808378776
+                    ],
+                    [
+                      199.68749999999997,
+                      27.68352808378776
+                    ],
+                    [
+                      199.68749999999997,
+                      -27.68352808378776
+                    ],
+                    [
+                      -202.5,
+                      -27.68352808378776
+                    ]
+                ]
+            ]
+        }
+
+# -----------------------------------------------------
+# ForestCarbonStocks
+#
+
+    #
+    # Benchmark map of forest carbon stocks in tropical regions across three continents
+    http://carbon.jpl.nasa.gov/
+    http://carbon.jpl.nasa.gov/PNAS-2011-Saatchi-1019576108.pdf
+    
+    http://carbon.jpl.nasa.gov/data/dataMain.cfm
+
+
+# -----------------------------------------------------
 
     #
     # GeoJASON converter
@@ -1037,10 +1129,10 @@ EOF
             # INSPIRE metadata - Environment Agency
             # https://dcsu059g9fk65.cloudfront.net/
 
-            Problem
-                Element '{http://www.opengis.net/gml/3.2}TimePeriod': not expected.
-            Solution
-                https://github.com/geosolutions-it/ckanext-geonetwork
+            # Natural England
+            # https://www.gov.uk/government/organisations/natural-england
+            # Published Metadata Records for b1472b4f-b8c8-4ac2-9701-76995445f99b
+            # https://locationmde.data.gov.uk/metadata-harvesting/b1472b4f-b8c8-4ac2-9701-76995445f99b/
 
 
 # -----------------------------------------------------
@@ -1049,28 +1141,48 @@ EOF
 #[user@desktop]
 
     #
-    # Start the gather consumer
+    # Create our harvest scripts
     source "${HOME:?}/astrotrop.conf"
     docker exec -it "${ckanname:?}" bash
 
-        paster --plugin=ckanext-harvest harvester gather_consumer \
-            -c "${ckanconf:?}/ckan.ini"
+        mkdir -p bin
+        cat >> bin/gather.sh << 'EOF'
+#!/bin/bash -eu
+paster --plugin=ckanext-harvest harvester gather_consumer \
+    -c "${ckanconf:?}/ckan.ini"
+EOF
+
+        cat >> bin/fetch.sh << 'EOF'
+#!/bin/bash -eu
+paster --plugin=ckanext-harvest harvester fetch_consumer \
+    -c "${ckanconf:?}/ckan.ini"
+EOF
+
+        cat >> bin/harvest.sh << 'EOF'
+#!/bin/bash -eu
+paster --plugin=ckanext-harvest harvester fetch_consumer \
+    -c "${ckanconf:?}/ckan.ini"
+EOF
+
+        chmod a+x bin/*.sh
+    exit
+    
+
+    #
+    # Start the gather consumer
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bin/gather.sh
 
     #
     # Start the fetch consumer
     source "${HOME:?}/astrotrop.conf"
-    docker exec -it "${ckanname:?}" bash
-
-        paster --plugin=ckanext-harvest harvester fetch_consumer \
-            -c "${ckanconf:?}/ckan.ini"
+    docker exec -it "${ckanname:?}" bin/fetch.sh
 
     #
     # Run pending harvest jobs
     source "${HOME:?}/astrotrop.conf"
-    docker exec -it "${ckanname:?}" bash
+    docker exec -it "${ckanname:?}" harvest.sh
 
-        paster --plugin=ckanext-harvest harvester run \
-            -c "${ckanconf:?}/ckan.ini"
 
 
 
