@@ -22,13 +22,13 @@
 
 
     GeoNode
+    http://geonode.org/
     built on top of
     
     GeoServer
     http://docs.geoserver.org/stable/en/user/
     
-    Combining different layers
-    
+    Combining layers
     http://docs.geoserver.org/stable/en/user/data/vector/index.html
     http://docs.geoserver.org/stable/en/user/data/raster/index.html
     
@@ -42,3 +42,11 @@
         http://extensions.ckan.org/extension/ckanext-geoserver/
 
 
+    June interop
+    http://wiki.ivoa.net/twiki/bin/view/IVOA/InterOpJune2015
+
+    June interop Apps
+    http://wiki.ivoa.net/twiki/bin/view/IVOA/InterOpJune2015Apps
+
+    Igor & Ivan's paper
+    http://arxiv.org/abs/1504.06990
