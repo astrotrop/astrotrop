@@ -20,29 +20,44 @@
 #
 #
 
+    GitHub
+    https://github.com/astrotrop/astrotrop
+
+    CKAN
+    http://ckan-001.metagrid.co.uk/
+
+    ------------------------------------
+    
+    QGIS desktop viewer
+    http://www.qgis.org/en/site/
+    http://suite.opengeo.org/opengeo-docs/qgis/index.html
+    
+    GeoServer and QGIS
+    http://suite.opengeo.org/opengeo-docs/qgis/index.html
+    http://boundlessgeo.com/2013/11/opengeo-suite-and-qgis/
+        "OpenGeo Explorer will convert it automatically to a format suitable for GeoServer."
 
     GeoNode
     http://geonode.org/
-    built on top of
-    
     GeoServer
     http://docs.geoserver.org/stable/en/user/
     
-    Combining layers
-    http://docs.geoserver.org/stable/en/user/data/vector/index.html
-    http://docs.geoserver.org/stable/en/user/data/raster/index.html
-    
-        INSPIRE compatible
+        INSPIRE output
         http://docs.geoserver.org/stable/en/user/extensions/inspire/index.html
 
-        CSW compatible
+        CSW output
         http://docs.geoserver.org/stable/en/user/extensions/csw/index.html
         
-        CKAN compatible
+        CKAN import
         http://extensions.ckan.org/extension/ckanext-geoserver/
 
+        Combining layers
+        http://docs.geoserver.org/stable/en/user/data/vector/index.html
+        http://docs.geoserver.org/stable/en/user/data/raster/index.html
 
-    June interop
+    ------------------------------------
+
+    IVOA interop
     http://wiki.ivoa.net/twiki/bin/view/IVOA/InterOpJune2015
 
     June interop Apps
@@ -50,3 +65,5 @@
 
     Igor & Ivan's paper
     http://arxiv.org/abs/1504.06990
+    
+
