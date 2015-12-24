@@ -1,0 +1,359 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (C) 2015 by Wizzard Solutions Ltd, ischnura@metagrid.co.uk
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create our virtual machine.
+#[user@desktop]
+
+    ischnura-createvm
+
+        INFO : Node name [theta]
+        INFO : Base name [fedora-21-16G-20150407.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-21-16G-20150407.qcow]
+        INFO : Disc name [theta.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------
+# Install admin tools.
+#[root@virtual]
+
+    yum -y install htop
+    yum -y install pwgen
+    
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy generator.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@virtual]
+
+    yum install -y haveged
+    systemctl enable haveged.service
+    systemctl start  haveged.service
+
+# -----------------------------------------------------
+# Install and run Docker.
+#[root@virtual]
+
+    #
+    # Install a specific version to avoid problems with updated storage driver.
+    yum -y install https://kojipkgs.fedoraproject.org//packages/docker-io/1.6.2/3.gitc3ca5bb.fc21/x86_64/docker-io-1.6.2-3.gitc3ca5bb.fc21.x86_64.rpm
+    systemctl enable docker.service
+    systemctl start  docker.service
+    systemctl status docker.service
+
+# -----------------------------------------------------
+# Install the selinux-dockersock SELinux policy.
+# https://github.com/dpw/selinux-dockersock
+#[root@virtual]
+#
+#   # Test if present
+#   # semodule -l | grep dockersock
+#
+#   yum install -y git
+#   yum install -y make
+#   yum install -y checkpolicy
+#   yum install -y policycoreutils policycoreutils-python
+#    
+#   pushd /var/local/projects
+#
+#       git clone https://github.com/dpw/selinux-dockersock
+#
+#       pushd selinux-dockersock
+#
+#           make dockersock.pp
+#
+#           semodule -i dockersock.pp
+#
+#       popd
+#   popd
+#
+# -----------------------------------------------------
+# Configure our build.
+#[root@virtual]
+
+    cat > "${HOME:?}/astrotrop.conf" << EOF
+
+        #
+        # Local settings
+        project=/var/local/projects/astrotrop
+        tempdir=\${project:?}/temp
+        datadir=\${project:?}/data
+EOF
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        opengeoname=opengeoname
+        opengeolink=opengeolink
+
+        opengeodata=${datadir:?}/opengeo
+        opengeotemp=${tempdir:?}/opengeo
+EOF
+
+# -----------------------------------------------------
+# Create our data directories.
+#[root@virtual]
+
+    mkdata()
+        {
+        local path=${1:?}
+        if [ ! -e "${path}" ]
+        then
+            mkdir --parents "${path}"
+        fi
+        }
+
+    rmdata()
+        {
+        local path=${1:?}
+        if [ -e "${path}" ]
+        then
+            rm -rf "${path}"
+        fi
+        }
+
+    rmdata "${opengeotemp:?}"
+    rmdata "${opengeodata:?}"
+
+    mkdata "${opengeotemp:?}"
+    mkdata "${opengeodata:?}/data"
+    mkdata "${opengeodata:?}/wars"
+    mkdata "${opengeodata:?}/pgsql"
+
+# -----------------------------------------------------
+# Allow access to Docker containers.
+#[root@virtual]
+
+    chcon -t svirt_sandbox_file_t "${opengeotemp:?}"
+    chcon -t svirt_sandbox_file_t "${opengeodata:?}" 
+
+# -----------------------------------------------------
+# Run a CentOS-6 container.
+#[root@virtual]
+
+#   --volume "${opengeodata:?}/data:/var/lib/opengeo" \
+#   --volume "${opengeodata:?}/wars:/usr/share/opengeo" \
+#   --volume "${opengeodata:?}/pgsql:/var/lib/postgresql/data" \
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker run \
+        -it \
+        --name "opengeo-all" \
+        --publish 8080:8080 \
+        --volume "${opengeotemp:?}:/temp" \
+        --volume "${opengeodata:?}:/data" \
+        centos:6 \
+        bash
+
+# -----------------------------------------------------
+# Install the YUM repository.
+# http://yum.boundlessgeo.com/suite/latest/centos/6/x86_64/
+#[root@container]
+
+        #
+        # Install wget
+        
+        if [ -z "$(which wget 2>/dev/null)" ]
+        then
+            yum -y install wget
+        fi
+
+#
+#       #
+#       # Download the keys
+#       wget https://yum.boundlessgeo.com/RPM-GPG-KEY-OpenGeo_Suite
+#       wget https://getfedora.org/static/0608B895.txt
+#
+#       #
+#       # Verify the OpenGeo key
+#       gpg --quiet --with-fingerprint ./RPM-GPG-KEY-OpenGeo_Suite
+#
+#           pub  2048R/E2DD3C77 2015-06-05 OpenGeo Suite <contact@boundlessgeo.com>
+#                 Key fingerprint = DEF2 E3C7 75C7 5037 97F5  9111 6E26 79DC E2DD 3C77
+#           sub  2048R/D8FEF4BF 2015-06-05
+#
+#       #
+#       # Verify the EPEL key
+#       gpg --quiet --with-fingerprint ./0608B895.txt
+#
+#           pub  4096R/0608B895 2010-04-23 EPEL (6) <epel@fedoraproject.org>
+#                 Key fingerprint = 8C3B E96A F230 9184 DA5C  0DAE 3B49 DF2A 0608 B895
+#
+#       #
+#       # Import the keys
+#       rpm --import ./RPM-GPG-KEY-OpenGeo_Suite
+#       rpm --import ./0608B895.txt
+#
+        #
+        # Create the yum repo config.
+        cat > "/etc/yum.repos.d/opengeo.repo" << EOF
+[opengeo]
+name=opengeo
+baseurl=https://yum.boundlessgeo.com/suite/latest/centos/\$releasever/\$basearch
+#baseurl=https://yum.boundlessgeo.com/suite/latest/centos/6/x86_64
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.boundlessgeo.com/RPM-GPG-KEY-OpenGeo_Suite,https://getfedora.org/static/0608B895.txt
+EOF
+
+        #
+        # Check for OpenGeo packages.
+        yum search opengeo
+
+            opengeo.x86_64 : OpenGeo Suite.
+            opengeo-client.x86_64 : OpenGeo Suite client components.
+            opengeo-dashboard.x86_64 : Dashboard for OpenGeo Suite.
+            opengeo-docs.x86_64 : Documentation for the OpenGeo Suite.
+            opengeo-server.x86_64 : OpenGeo Suite server components.
+            opengeo-tomcat.x86_64 : OpenGeo web applications for Tomcat.
+            opengeo-webapp-sdk.x86_64 : OpenGeo Suite Web Application SDK
+            opengeo-jai.x86_64 : A set of Java toolkits to provide enhanced image rendering abilities.
+
+
+
+
+# -----------------------------------------------------
+# Install Tomcat and Java.
+#[root@container]
+
+        yum -y install \
+            java-1.7.0-openjdk \
+            tomcat
+
+# -----------------------------------------------------
+# Install Java image tools.
+#[root@container]
+
+        yum -y install \
+            opengeo-jai
+
+# -----------------------------------------------------
+# Install PostgreSQL and PostGIS.
+#[root@container]
+
+        yum -y install \
+            postgis21 \
+            postgis21-postgresql93 \
+            postgresql93-server
+
+# -----------------------------------------------------
+# Install OpenGeo server.
+#[root@container]
+        
+        yum -y install \
+            opengeo-server
+
+# After installing opengeo-server - Tomcat is running.
+# Which may cause issues if we want to run this in a Docker build
+
+        #
+        # Restart tomcat.
+        service tomcat status
+        service tomcat restart
+
+        #
+        # Initialize and start the database.
+        service postgresql-9.3 initdb
+        service postgresql-9.3 start
+
+#       #
+#       # Webapps are installed here
+#       ls -1 /usr/share/opengeo/
+#
+#           dashboard
+#           docs
+#           geoexplorer
+#           geoserver
+#           geowebcache
+#
+#       #
+#       # Tomcat options have been extended here ..
+#       vi /etc/sysconfig/tomcat 
+#
+#       +   OPENGEO_OPTS="-Djava.awt.headless=true -Xms256m -Xmx768m -Xrs -XX:PerfDataSamplingInterval=500 -XX:MaxPermSize=256m -Dorg.geotools.referencing.forceXY=true -DGEOEXPLORER_DATA=/var/lib/opengeo/geoexplorer"
+#       +   JAVA_OPTS="$JAVA_OPTS $OPENGEO_OPTS"
+#
+#       #
+#       # Default data directory is here.
+#       ls /var/lib/opengeo/geoserver
+#
+#           composer
+#           controlflow.properties.example
+#           demo
+#           global.xml
+#           gwc
+#           gwc-gs.xml
+#           gwc-layers
+#           logging.xml
+#           logs
+#           printing
+#           proxy
+#           security
+#           styles
+#           user_projections
+#           version.ini
+#           wcs.xml
+#           wfs.xml
+#           wms.xml
+#           workspaces
+#
+
+    #
+    # Test ....
+    http://theta.virtual.metagrid.co.uk:8080/dashboard/
+    http://theta.virtual.metagrid.co.uk:8080/geoserver/web/
+
+    http://theta.virtual.metagrid.co.uk:8080/geoserver/rest
+    http://theta.virtual.metagrid.co.uk:8080/geoserver/wfs
+
+    http://theta.virtual.metagrid.co.uk:8080/geoexplorer/
+
+
+    #
+    # Default security settings.
+    ${somewhere}/security/users.properties
+
+    #
+    # Medford test data.
+    http://data.opengeo.org/medford.zip
+
+    /var/lib/opengeo/geoserver
+    pushd temp
+
+        wget http://data.opengeo.org/medford.zip
+
+    popd
+
+
+
+    #
+    # TODO 
+    http://suite.opengeo.org/opengeo-docs/index.html
+    http://suite.opengeo.org/opengeo-docs/intro/sampledata.html
+
+    #
+    # GeoRSS + GoogleMaps
+    http://theta.virtual.metagrid.co.uk:8080/opengeo-docs/geoserver/tutorials/georss/georss.html#google-maps
+
+
+

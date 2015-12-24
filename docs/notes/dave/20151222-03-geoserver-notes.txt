@@ -1,0 +1,53 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # BoundlessGeo yum repository.
+    https://yum.boundlessgeo.com/suite/latest/centos/6/x86_64/
+
+    #
+    # BoundlessGeo GitHub account.
+    https://github.com/boundlessgeo
+
+    #
+    # BoundlessGeo documentation.
+    http://boundlessgeo.com/products/documentation/
+
+
+    #
+    # GeoServer user manual
+    http://suite.opengeo.org/opengeo-docs/geoserver/index.html
+
+
+    #
+    # Adding layers using the REST API
+    http://boundlessgeo.com/2012/10/adding-layers-to-geoserver-using-the-rest-api/
+
+    #
+    # Making an On-line Map (Your Data + Data from the MassGIS Web Services)
+    https://wiki.state.ma.us/confluence/display/massgis/GeoServer+-+Demo+1
+
+
+
+
+    https://github.com/geoserver/geoserver/tree/master/src/community/csw
+    

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sld:StyledLayerDescriptor
+    xmlns="http://www.opengis.net/sld"
+    xmlns:sld="http://www.opengis.net/sld"
+    xmlns:ogc="http://www.opengis.net/ogc"
+    xmlns:gml="http://www.opengis.net/gml"
+    version="1.0.0"
+    >
+  <sld:NamedLayer>
+    <sld:Name>style-001</sld:Name>
+    <sld:UserStyle>
+      <sld:Name>style-001</sld:Name>
+      <sld:FeatureTypeStyle>
+        <sld:Name>name</sld:Name>
+        <sld:Rule>
+          <sld:RasterSymbolizer>
+            <sld:ColorMap>
+              <sld:ColorMapEntry color="#000000" quantity="0.0"  opacity="0"/>
+              <sld:ColorMapEntry color="#ffffb2" quantity="1.0"/>
+              <sld:ColorMapEntry color="#fecc5c" quantity="92.0"/>
+              <sld:ColorMapEntry color="#fd8d3c" quantity="183.0"/>
+              <sld:ColorMapEntry color="#f03b20" quantity="274.0"/>
+              <sld:ColorMapEntry color="#bd0026" quantity="365.0"/>
+            </sld:ColorMap>
+          </sld:RasterSymbolizer>
+        </sld:Rule>
+      </sld:FeatureTypeStyle>
+    </sld:UserStyle>
+  </sld:NamedLayer>
+</sld:StyledLayerDescriptor>
+

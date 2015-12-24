@@ -1,0 +1,311 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    Trying to find out what restarts Tomcat duting the GeoServer install ...
+
+    Found their GitHub account .. 
+
+        https://github.com/boundlessgeo
+        https://github.com/boundlessgeo/geoserver
+
+    Can't find the source code for the OpenGeo RPM files ..
+
+
+    Try to fingure it out ...
+
+
+    yum info opengeo-server
+
+        Loaded plugins: fastestmirror
+        Loading mirror speeds from cached hostfile
+         * base: mirror.econdc.com
+         * extras: mirrors.clouvider.net
+         * updates: centos.mirroring.pulsant.co.uk
+        Available Packages
+        Name        : opengeo-server
+        Arch        : x86_64
+        Version     : 4.7.1
+        Release     : 1
+        Size        : 8.1 k
+        Repo        : opengeo
+        Summary     : OpenGeo Suite server components.
+        License     : GPLv2
+        Description : OpenGeo Suite is the complete, OGC standards-compliant web mapping platform
+                    : built on powerful, cutting-edge, open source geospatial components. This
+                    : package includes PostGIS, GeoServer, GeoWebCache, and GeoExplorer.
+
+    yum install opengeo-server
+
+        Installing for dependencies:
+
+            geoexplorer                                     x86_64                               4.7.1-1                                    opengeo                               7.6 M
+            geoserver                                       x86_64                               2.7.3-1                                    opengeo                               127 M
+            geowebcache                                     x86_64                               1.7.1-1                                    opengeo                                29 M
+            opengeo-dashboard                               x86_64                               4.7.1-1                                    opengeo                               1.4 M
+            opengeo-docs                                    x86_64                               4.7.1-1                                    opengeo                                86 M
+            opengeo-tomcat                                  x86_64                               4.7.1-1.el6                                opengeo                                17 k
+            unzip                                           x86_64                               6.0-2.el6_6                                base                                  149 k
+
+
+
+
+
+    package=opengeo-server-4.7.1-1.x86_64.rpm
+
+    #
+    # Download the package.
+    wget "https://yum.boundlessgeo.com/suite/latest/centos/6/x86_64/${package:?}"
+
+    #
+    # List the dependencies
+    rpm --query --requires --package "${package:?}"
+
+        bash  
+        geoexplorer >= 4.7.1
+        geoserver >= 2.7.3
+        geowebcache >= 1.7.1
+        opengeo-dashboard >= 4.7.1
+        opengeo-docs >= 4.7.1
+        opengeo-tomcat >= 4.7.1
+        postgis21-postgresql93 >= 2.1.7
+        rpmlib(CompressedFileNames) <= 3.0.4-1
+        rpmlib(FileDigests) <= 4.6.0-1
+        rpmlib(PayloadFilesHavePrefix) <= 4.0-1
+        rpmlib(PayloadIsXz) <= 5.2-1
+
+    #
+    # List the files
+    rpm --query --list --package "${package:?}"
+
+        /usr/share/doc/opengeo-server-4.7.1
+        /usr/share/doc/opengeo-server-4.7.1/EULA
+        /usr/share/opengeo/.opengeo-server
+
+    #
+    # List the scripts
+    rpm --query --scripts --package "${package:?}"
+
+
+
+
+    package=opengeo-tomcat-4.7.1-1.el6.x86_64.rpm
+
+    #
+    # Download the package.
+    wget "https://yum.boundlessgeo.com/suite/latest/centos/6/x86_64/${package:?}"
+
+        2015-12-21 16:44:36 (1.70 MB/s) - `opengeo-tomcat-4.7.1-1.el6.x86_64.rpm' saved [17000/17000]
+
+
+    #
+    # List the dependencies
+    rpm --query --requires --package "${package:?}"
+
+        bash
+        unzip  
+        tomcat  
+        java-1.7.0-openjdk  
+        rpmlib(PayloadIsXz) <= 5.2-1
+        rpmlib(CompressedFileNames) <= 3.0.4-1
+        rpmlib(FileDigests) <= 4.6.0-1
+        rpmlib(PayloadFilesHavePrefix) <= 4.0-1
+
+
+    #
+    # List the files
+    rpm --query --list --package "${package:?}"
+
+        /usr/share/doc/opengeo-tomcat-4.7.1
+        /usr/share/doc/opengeo-tomcat-4.7.1/EULA
+
+    #
+    # List the scripts
+    rpm -query --scripts --package "${package:?}"
+
+        preinstall scriptlet (using /bin/sh):
+
+            # cleanly shutdown tomcat 6 if installed before doing anything
+            if [ -e /etc/init.d/tomcat6 ]; then
+              sleep 5
+              /etc/init.d/tomcat6 stop
+              sleep 5
+            fi
+
+        postinstall scriptlet (using /bin/sh):
+
+            GXP_DATA_DIR=/var/lib/opengeo/geoexplorer
+            OPENGEO_OPTS="-Djava.awt.headless=true -Xms256m -Xmx768m -Xrs -XX:PerfDataSamplingInterval=500 -XX:MaxPermSize=256m -Dorg.geotools.referencing.forceXY=true -DGEOEXPLORER_DATA=$GXP_DATA_DIR"
+            WEBAPPS="geoserver geowebcache geoexplorer dashboard opengeo-docs recipes apps"
+            for webapp in $WEBAPPS; do
+              # Cleanup - we do this to prevent conflicts with older suite 3.x installs
+              if [ -d /var/lib/tomcat/webapps/$webapp ]; then
+                rm -rf /var/lib/tomcat/webapps/$webapp
+              fi
+              if [ -e /var/lib/tomcat/webapps/$webapp.war ]; then
+                rm /var/lib/tomcat/webapps/$webapp.war
+              fi
+            done
+
+            # update tomcat settings
+            if [ ! -e /var/lib/tomcat/tomcat.original-settings ]; then
+              tc_config=/etc/sysconfig/tomcat
+              if [ "$(grep ^OPENGEO_OPTS $tc_config)" == "" ]; then
+                cp  $tc_config /var/lib/tomcat/tomcat.original-settings
+                echo "OPENGEO_OPTS=\"$OPENGEO_OPTS\"" >> $tc_config
+                echo "JAVA_OPTS=\"\$JAVA_OPTS \$OPENGEO_OPTS\"" >> $tc_config
+              fi
+            fi
+
+            # Make sure context.xmls don't get lost on upgrade
+            WEBAPPS="geoserver geowebcache geoexplorer dashboard opengeo-docs recipes apps wpsbuilder"
+            for APP in $WEBAPPS; do
+            if [ -d /usr/share/opengeo/${APP} ]; then
+              if [ "tomcat" == "tomcat5" ]; then # Tomcat 5 and 7 have different context dirs
+                CTX=/var/lib/tomcat/conf/${APP}.xml
+              else
+                CTX=/etc/tomcat/Catalina/localhost/${APP}.xml
+              fi
+              if [ ! -e $CTX ]; then
+                 echo "<Context displayName=\"${APP}\" docBase=\"/usr/share/opengeo/${APP}\" path=\"/${APP}\"/>" > $CTX
+              fi
+            fi
+            done
+
+            chkconfig tomcat on
+            service tomcat restart
+
+        preuninstall scriptlet (using /bin/sh):
+
+            WEBAPPS="geoserver geowebcache geoexplorer dashboard opengeo-docs recipes apps wpsbuilder"
+            for app in $WEBAPPS; do
+            if [ "tomcat" == "tomcat5" ]; then # Tomcat 5 and 7 have different context dirs
+              CTX=/var/lib/tomcat/conf/${APP}.xml
+            else
+              CTX=/etc/tomcat/Catalina/localhost/${APP}.xml
+            fi
+            if [ -e $CTX ]; then
+               rm $CTX
+            fi
+            done
+
+        postuninstall scriptlet (using /bin/sh):
+
+            # remove files
+            # remove users
+
+
+
+    package=geoserver-2.7.3-1.x86_64.rpm
+
+    #
+    # Download the package.
+    wget "https://yum.boundlessgeo.com/suite/latest/centos/6/x86_64/${package:?}"
+
+    #
+    # List the dependencies
+    rpm --query --requires --package "${package:?}"
+
+        bash  
+        unzip  
+        /bin/sh  
+        rpmlib(FileDigests) <= 4.6.0-1
+        rpmlib(PayloadFilesHavePrefix) <= 4.0-1
+        rpmlib(CompressedFileNames) <= 3.0.4-1
+        rpmlib(PayloadIsXz) <= 5.2-1
+
+    #
+    # List the files
+    rpm --query --list --package "${package:?}"
+
+        /usr/share/doc/geoserver-2.7.3
+        /usr/share/doc/geoserver-2.7.3/BSD
+        /usr/share/doc/geoserver-2.7.3/EULA
+        /usr/share/doc/geoserver-2.7.3/GPL
+        /usr/share/opengeo/geoserver
+        /usr/share/opengeo/geoserver/META-INF
+        /usr/share/opengeo/geoserver/META-INF/....
+        /usr/share/opengeo/geoserver/WEB-INF
+        /usr/share/opengeo/geoserver/WEB-INF/....
+        /usr/share/opengeo/geoserver/data
+        /usr/share/opengeo/geoserver/data/....
+        /usr/share/opengeo/geoserver/index.html
+
+    #
+    # List the scripts
+    rpm --query --scripts --package "${package:?}"
+
+        preinstall scriptlet (using /bin/sh):
+           APP=/usr/share/opengeo/geoserver
+           TMP=/tmp/opengeo/geoserver
+           
+           if [ ! -d $TMP ]; then
+              mkdir -p /tmp/opengeo
+           fi
+
+           #if [ -d $APP ]; then
+             # upgrade, perserve the old web.xml
+             #mkdir $TMP
+             #cp $APP/WEB-INF/web.xml $TMP
+
+             #rm -rf $APP
+           #fi
+
+        postinstall scriptlet (using /bin/sh):
+           APP=/usr/share/opengeo/geoserver
+           DATA_DIR=/var/lib/opengeo/geoserver
+           TMP=/tmp/opengeo/geoserver
+
+           # post configure geoserver data directory and web.xml
+           if [ ! -d $DATA_DIR ]; then
+             # data directory does not exist, copy from webapp
+             mkdir -p $DATA_DIR
+             cp -R $APP/data/* $DATA_DIR
+
+             # generate random admin password
+             #USER_PROPS=$DATA_DIR/security/users.properties
+             #if [ -e $USER_PROPS ]; then
+             #  PASSWD=`cat /dev/urandom | tr -dc _A-Z-a-z-0-9 | head -c${1:-32}`
+             #  sed -i "s/%PASSWORD%/$PASSWD/g" $USER_PROPS
+             #fi
+           fi
+
+           # restore existing web.xml
+           #if [ -e $TMP/web.xml ]; then
+           #  if [ "$1" == "2" ]; then
+                # upgrade, copy over old web.xml
+                #cp $TMP/web.xml $APP/WEB-INF
+           #  fi
+           #  rm -rf $TMP
+           #fi
+
+        preuninstall program: /bin/sh
+
+        postuninstall scriptlet (using /bin/sh):
+
+
+    #
+    # RPM pre and post scripts do some minor tweaks to the data directories.
+    # The opengeo-tomcat package installs the OS version of Tomcat and runs it.
+
+
+
+    

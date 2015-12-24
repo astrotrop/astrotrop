@@ -1,0 +1,108 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # OGC specification
+    http://www.opengeospatial.org/standards/cat
+
+    #
+    # Easy Catalogue Services for the Web (CSW) howto 
+    http://www.ogcnetwork.net/node/630
+
+
+
+    #
+    # QGIS meta search plugin, to interact with CSW metadata catalogue services.
+    https://plugins.qgis.org/plugins/MetaSearch/
+    https://hub.qgis.org/wiki/quantum-gis/MetaSearch_Discovery_Workflow
+
+    #
+    # CKAN CSW support
+    http://docs.ckan.org/projects/ckanext-spatial/en/latest/csw.html
+    http://ckanext-spatial.readthedocs.org/en/latest/csw.html
+    
+    # CKAN geospatial capabilites
+    http://docs.ckan.org/en/ckan-1.7.1/geospatial.html
+
+    # CKAN harvest frameworkm (includes CSW)
+    https://github.com/ckan/ckanext-harvest
+    
+    # ckanext-inspire deprecated, replaced by ckanext-spatial
+    https://github.com/okfn/ckanext-inspire
+    https://github.com/ckan/ckanext-spatial
+
+    # ckanext-csw deprecated, replaced by ckanext-spatial
+    https://github.com/okfn/ckanext-csw
+    https://github.com/okfn/ckanext-spatial
+
+    #
+    # GeoServer CSW howto.
+    http://docs.geoserver.org/latest/en/user/extensions/csw/index.html
+    http://docs.geoserver.org/latest/en/user/extensions/csw/installing.html
+    http://docs.geoserver.org/latest/en/user/extensions/csw/tutorial.html
+    
+
+        Geographic MetaData (GMD) extensible markup language is a component of the XML Schema Implementation
+        of Geographic Information Metadata documented in ISO/TS 19139:2007.
+        
+        GMD includes all the definitions of http://www.isotc211.org/2005/gmd namespace.
+        
+        The root document of this namespace is the file gmd.xsd.
+        This identification.xsd schema implements the UML conceptual schema defined in A.2.2 of ISO 19115:2003.
+        It contains the implementation of the following classes:
+            MD_Identification,
+            MD_BrowseGraphic,
+            MD_DataIdentification,
+            MD_ServiceIdentification,
+            MD_RepresentativeFraction,
+            MD_Usage,
+            MD_Keywords,
+            DS_Association,
+            MD_AggregateInformation,
+            MD_CharacterSetCode,
+            MD_SpatialRepresentationTypeCode,
+            MD_TopicCategoryCode,
+            MD_ProgressCode,
+            MD_KeywordTypeCode,
+            DS_AssociationTypeCode,
+            DS_InitiativeTypeCode,
+            MD_ResolutionType
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

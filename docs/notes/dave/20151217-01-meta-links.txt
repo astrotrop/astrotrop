@@ -1,0 +1,140 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    #
+    # CKAN extensions
+    http://extensions.ckan.org/
+
+    # **
+    # Geospatial searches (U.K. Natural History Museum)
+    http://extensions.ckan.org/extension/dataspatial
+    https://github.com/NaturalHistoryMuseum/ckanext-dataspatial
+
+    #
+    # Natural History Museum GitHub account.
+    https://github.com/NaturalHistoryMuseum
+
+    #
+    # Natural History Museum data
+    http://data.nhm.ac.uk/
+
+    #
+    # (CKAN) REST API    
+    http://data.nhm.ac.uk/api/3
+
+
+
+    #
+    # GeoServer extension (ngds)
+    http://extensions.ckan.org/extension/geoserver/
+    https://github.com/ngds/ckanext-geoserver
+
+    #
+    # National Geothermal Data System
+    http://geothermaldata.org/
+    http://search.geothermaldata.org/dataset
+    
+
+    #
+    # Docker deploy for CKAN
+    # http://docs.datacats.com/docker.html#throw-away-containers
+
+
+
+
+
+
+    #
+    # Data file from Natural History Museum
+
+
+
+    #
+    # Table field for LifeStage
+    <field index="18" term="http://rs.tdwg.org/dwc/terms/lifeStage"/>
+
+    #
+    # Metadata for lifeStage
+    http://tdwg.github.io/dwc/terms/index.htm#lifeStage
+    http://tdwg.github.io/dwc/terms/history/index.htm#lifeStage-2009-04-24
+    
+    https://github.com/tdwg/dwc
+    ".. a glossary of terms intended to facilitate the sharing of information about biological diversity by providing reference definitions, examples, and commentaries."
+
+
+    #
+    # GBIF resources
+    http://rs.gbif.org/
+
+
+
+
+
+    #
+    # Eclipse config
+    http://rs.gbif.org/conventions/    
+    
+    
+    
+    #
+    # GeoPackage
+    # "GeoPackage is an open, standards-based, platform-independent, portable, self-describing, compact format for transferring geospatial information"
+    # Based on SQLite
+    http://www.geopackage.org/
+    http://theta.virtual.metagrid.co.uk:8080/opengeo-docs/dataadmin/geopackage/index.html
+
+
+
+    #
+    # Land Information New Zealand
+    http://www.linz.govt.nz/
+    http://www.linz.govt.nz/data/linz-data-service/guides-and-documentation
+    
+    
+    
+    #
+    # Open Source Geospatial Foundation
+    http://www.osgeo.org/
+    
+    
+    #
+    # Main GeoServer site
+    http://geoserver.org/
+    http://docs.geoserver.org/latest/en/user/gettingstarted/shapefile-quickstart/index.html#getting-started
+    http://blog.geoserver.org/
+
+
+
+    
+    
+    #
+    # Maven repo (hoted by boundlessgeo)
+    https://repo.boundlessgeo.com/main/
+    
+    
+    #
+    # OpenGIS Web Map Service Interface Standard (WMS)
+    http://www.opengeospatial.org/standards/wms
+    
+    
+    

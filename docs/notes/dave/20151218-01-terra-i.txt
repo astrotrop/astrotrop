@@ -1,0 +1,118 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    #
+    # Looking for the Terra-i map server ..
+
+
+    #
+    # Broken link in the PDF file.
+    http://www.microsofttranslator.com/bv.aspx?from=es&to=en&a=http%3A%2F%2Fwww.terra-i.org%2Fes%2Fterra-i%2Fdata.html
+
+    http://www.terra-i.org/es/terra-i/data.html
+    http://www.terra-i.org/terra-i/data.html
+        
+    http://www.terra-i.org/terraiData/data/tiles/h10v08/cumulative_detections/h10v08_decrease_2004-1_2004-353.asc.gz/h10v08_decrease_2004-1_2004-353.asc.gz
+    http://www.terra-i.org/terraiData/data/tiles/h10v08/cumulative_detections/h10v08_decrease_2004-1_2004-353.asc.gz/bogus.asc.gz
+    
+
+    
+    http://www.terra-i.org/terraiData/data/tiles/h10v08/cumulative_detections/h10v08_all_2004-1_2004-353.asc.gz/h10v08_all_2004-1_2004-353.asc.gz
+
+
+    http://www.terra-i.org/terraiData/data/tiles/h10v08/cumulative_detections/h10v08_decrease_2004-1_2004-353.asc.gz/h10v08_decrease_2004-1_2004-353.asc.gz
+
+
+    h10v08_decrease_2005-1_2005-353.asc.gz
+    h10v08_decrease_2006-1_2006-353.asc.gz
+    h10v08_decrease_2007-1_2007-353.asc.gz
+    h10v08_decrease_2008-1_2008-353.asc.gz
+    h10v08_decrease_2009-1_2009-353.asc.gz
+    h10v08_decrease_2010-1_2010-353.asc.gz
+    h10v08_decrease_2011-1_2011-353.asc.gz
+    h10v08_decrease_2012-1_2012-353.asc.gz
+    h10v08_decrease_2013-1_2013-353.asc.gz
+    h10v08_decrease_2014-1_2014-353.asc.gz
+    h10v08_decrease_2015-1_2015-161.asc.gz
+
+
+    http://www.terra-i.org/terraiData/data/tiles/h10v08/cumulative_detections/h10v08_decrease_2004-1_2014-353.asc.gz/h10v08_decrease_2004-1_2014-353.asc.gz
+
+
+    h10v08
+    h11v08
+    h12v08
+    h13v08
+
+    h10v09
+    h11v09
+    h12v09
+    h13v09
+    h14v09
+
+    h10v10
+    h11v10
+    h12v10
+    h13v10
+    h14v10
+
+    h10v11
+    h11v11
+    h12v11
+    h13v11
+    h14v11
+
+    h11v12
+    h12v12
+    h13v12
+    h14v12
+
+    h11v12
+    h12v13
+    h13v13
+    h14v13
+
+
+    for i in {10..14}
+        do
+        for j in {8..13}
+            do
+
+            tile=$(printf 'h%02dv%02d' $i $j)
+
+            for year in {2004..2014}
+                do
+                    echo ""
+                    echo "Tile [${tile}]"
+                    echo "Year [${year}]"
+                    name=${tile}_decrease_${year}-1_${year}-353.asc.gz
+                    echo "Name [${name}]"
+
+                    wget "http://www.terra-i.org/terraiData/data/tiles/${tile}/cumulative_detections/${name}/${name}"
+                done
+            done
+        done
+
+
+
+
