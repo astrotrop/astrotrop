@@ -34,3 +34,61 @@
     
     # GeoNetwork - another distributed resource browser  !!
     # http://geonetwork-opensource.org/
+
+    #
+    # GeoWebCache
+    http://geowebcache.org/
+    http://geowebcache.org/docs/current/introduction/whatis.html
+    
+    
+    #
+    # Publically available data.
+    # University of Maryland, Global Forest Change 2000–2014
+    # Source: Hansen/UMD/Google/USGS/NASA
+    http://earthenginepartners.appspot.com/science-2013-global-forest/download_v1.2.html
+
+    #
+    # Linked from Duncan's blog
+    https://duncanjg.wordpress.com/
+    https://duncanjg.wordpress.com/2013/11/19/quick-analysis-of-forest-fragmentation-using-the-new-global-deforestation-map/
+
+    #
+    # Duncan's ResearchGate page
+    https://www.researchgate.net/profile/Duncan_Golicher
+
+    #
+    # BoundlessGeo tutorial - US census data
+    http://workshops.boundlessgeo.com/tutorial-censusmap/
+
+    #
+    # Duncan's tutorial - Mexican census data
+    https://duncanjg.wordpress.com/2013/12/24/adapting-the-census-mapping-application-to-use-inegis-data-for-mexico/
+
+    #
+    # Duncan's tutorial - Mexican census data
+    # ODBC link from RStudio to PostGIS.
+    https://rpubs.com/dgolicher/6373
+
+
+
+    #
+    # PostGIS raster data management
+    http://postgis.net/docs/manual-2.2/using_postgis_dbmanagement.html
+    http://postgis.net/docs/manual-2.2/using_raster_dataman.html
+
+    #
+    # PosGIS vs pgsphere
+    https://forums.manning.com/posts/list/21366.page
+
+
+
+
+
+
+https://www.google.co.uk/search?q=Duncan+Golicher
+http://staffprofiles.bournemouth.ac.uk/display/journal-article/194645
+http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0131388
+https://duncanjg.wordpress.com/
+http://geospatialelucubrations.blogspot.co.uk/2012/12/duncan-golichers-series-of-article-on.html
+https://duncanjg.wordpress.com/2012/10/31/vector-raster-overlays-in-postgis-2/
+

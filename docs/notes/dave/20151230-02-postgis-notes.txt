@@ -1,0 +1,186 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Install PostGIS in a Docker container.
+#[root@virtual]
+    
+    #
+    # PostGIS install instructions
+    http://postgis.net/install/
+
+        "The best place to get the latest binaries for both PostgreSQL and PostGIS is the PostgreSQL Yum repository"
+
+    #
+    # PostgreSQL Yum repository
+    http://yum.postgresql.org/news-fedora23-packages-released.php
+
+    #
+    # List of packages built by the PostgreSQL RPM Buildfarm
+    http://yum.postgresql.org/rpmchart.php
+    
+    #
+    # Latest beta-test versions (9.5)
+    http://yum.postgresql.org/9.5/fedora/fedora-23-x86_64/repoview/
+
+    #
+    # Columnar store extension ??
+    https://github.com/citusdata/cstore_fdw
+    
+    #
+    # Scale-out PostgreSQL
+    https://www.citusdata.com/
+
+# -----------------------------------------------------
+# Install and run PostGIS in a Fedora container.
+#[root@virtual]
+
+    #
+    # Try Fedora 23
+    docker run \
+        -it --rm \
+        fedora:23 \
+        bash
+
+        dnf -y install http://yum.postgresql.org/9.4/fedora/fedora-23-x86_64/pgdg-fedora94-9.4-4.noarch.rpm
+        dnf -y install http://yum.postgresql.org/9.5/fedora/fedora-23-x86_64/pgdg-fedora95-9.5-3.noarch.rpm
+
+        dnf info postgis postgis2_94 postgis2_95
+
+            postgis         2.1.8
+            postgis2_95     2.2.0
+
+        dnf info postgresql postgresql94 postgresql95
+
+            postgresql      9.4.5
+            postgresql94    9.4.5
+            postgresql95    9.5
+
+        dnf info grass
+
+            grass           6.4.4
+
+    #
+    # Try Fedora 22
+    docker run \
+        -it --rm \
+        fedora:22 \
+        bash
+
+        dnf -y install http://yum.postgresql.org/9.4/fedora/fedora-22-x86_64/pgdg-fedora94-9.4-4.noarch.rpm
+
+        dnf info postgis postgis2_94 postgis2_95
+
+            postgis         2.1.7
+            postgis2_94     2.1.8
+
+        dnf info postgresql postgresql94 postgresql95
+
+            postgresql      9.4.5    
+            postgresql94    9.4.5
+
+        dnf info grass
+
+            grass           6.4.4
+
+    #
+    # Try Fedora 23, with OS packages
+    docker run \
+        -it --rm \
+        --name "postgis" \
+        --publish 5432:5432 \
+        fedora:23 \
+        bash
+
+        dnf install postgresql-server
+
+            ....
+            Install 3 Packages
+            Total download size: 5.4 M
+            Installed size: 22 M
+            ....
+
+        dnf install postgis
+
+            ....
+            Install 127 Packages
+            Total download size: 63 M
+            Installed size: 259 M
+            ....
+
+
+    #
+    # Try Fedora 23, with 95 packages
+    docker run \
+        -it --rm \
+        --name "postgis" \
+        --publish 5432:5432 \
+        fedora:23 \
+        bash
+
+        #
+        # Install the postgres yum repository.
+        dnf -y install http://yum.postgresql.org/9.5/fedora/fedora-23-x86_64/pgdg-fedora95-9.5-3.noarch.rpm
+
+        #
+        # Install postgres.
+        dnf -y install postgresql95-server
+
+            Install 3 Packages
+            Total download size: 5.6 M
+            Installed size: 24 M
+
+        #
+        # Install postgis.
+        dnf -y install postgis2_95
+
+            Install 95 Packages
+            Total download size: 60 M
+            Installed size: 252 M
+
+        #
+        # We end up replication much of the standard postgresql docker file
+        # or ...
+        # We end up adding script code to undo many of the default settings
+        # database, username, password
+        #
+
+
+
+
+
+
+    #
+    # Alternative 2D and 3D functions.
+    # SFCGAL is a C++ wrapper library around CGAL that provides advanced 2D and 3D functions.
+    http://postgis.net/docs/reference.html#reference_sfcgal
+    http://www.sfcgal.org/
+
+
+
+
+
+
+
+
+

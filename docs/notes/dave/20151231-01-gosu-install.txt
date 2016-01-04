@@ -1,0 +1,49 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Installing gosu in Fedora
+# https://github.com/tianon/gosu
+#[root@container]
+
+    #
+    # Install wget and gnupg
+    dnf -y install wget
+    dnf -y install gnupg
+
+    #
+    # Download gosu
+    wget -O gosu 'https://github.com/tianon/gosu/releases/download/1.7/gosu-amd64'
+    wget -O gosu.asc 'https://github.com/tianon/gosu/releases/download/1.7/gosu-amd64.asc'
+
+    #
+    # Verify gosu
+    gpg --keyserver pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4
+    gpg --verify gosu.asc gosu
+    rm gosu.asc
+
+    #
+    # Install gosu
+    mv gosu /usr/local/bin/gosu
+    chmod a+x /usr/local/bin/gosu
+
+

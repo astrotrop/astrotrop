@@ -1,0 +1,86 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    Email addresses from Alan's email 
+
+        "kjt7@leicester.ac.uk" <kjt7@leicester.ac.uk>
+        "ANewton@bournemouth.ac.uk" <ANewton@bournemouth.ac.uk>,
+        "yadvinder.malhi@ouce.ox.ac.uk" <yadvinder.malhi@ouce.ox.ac.uk>,
+        "s.quegan@sheffield.ac.uk" <s.quegan@sheffield.ac.uk>,
+        "jgrace@ed.ac.uk" <jgrace@ed.ac.uk>,
+        "T.Pennington@rbge.ac.uk" <T.Pennington@rbge.ac.uk>,
+        "josbarlow@gmail.com" <josbarlow@gmail.com>,
+        "d.burslem@abdn.ac.uk" <d.burslem@abdn.ac.uk>,
+        "mark.mulligan@kcl.ac.uk" <mark.mulligan@kcl.ac.uk>,
+        "jiom@ceh.ac.uk" <jiom@ceh.ac.uk>,
+        "i.h.woodhouse@ed.ac.uk" <i.h.woodhouse@ed.ac.uk>,
+        "s.l.lewis@ucl.ac.uk" <s.l.lewis@ucl.ac.uk>,
+        "genevieve.patenaude@ed.ac.uk" <genevieve.patenaude@ed.ac.uk>,
+        "t.sarkinen@rbge.ac.uk" <t.sarkinen@rbge.ac.uk>,
+        "edward.mitchard@ed.ac.uk" <edward.mitchard@ed.ac.uk>,
+        "lindsay.banin@gmail.com" <lindsay.banin@gmail.com>,
+        "daisy.h.dent@googlemail.com" <daisy.h.dent@googlemail.com>,
+        "n.chappell@lancaster.ac.uk" <n.chappell@lancaster.ac.uk>,
+        "n.vissa@dundee.ac.uk" <n.vissa@dundee.ac.uk>,
+        "s.morse@surrey.ac.uk" <s.morse@surrey.ac.uk>,
+        "eric.sofen@york.ac.uk" <eric.sofen@york.ac.uk>,
+        "thomas.smith@kcl.ac.uk" <thomas.smith@kcl.ac.uk>,
+        "drmarkmulligan@googlemail.com" <drmarkmulligan@googlemail.com>,
+        "royr@comp.leeds.ac.uk" <royr@comp.leeds.ac.uk>,
+        "Pru.Foster@bristol.ac.uk" <Pru.Foster@bristol.ac.uk>,
+        "evt1@cam.ac.uk" <evt1@cam.ac.uk>,
+        "David.Coomes@plantsci.cam.ac.uk" <David.Coomes@plantsci.cam.ac.uk>,
+        "fmt24@cam.ac.uk" <fmt24@cam.ac.uk>,
+        "Robin.Matthews@hutton.ac.uk" <Robin.Matthews@hutton.ac.uk>,
+        "dgolicher@bournemouth.ac.uk" <dgolicher@bournemouth.ac.uk>,
+        "j.lynch@surrey.ac.uk" <j.lynch@surrey.ac.uk>,
+        "j.healey@bangor.ac.uk" <j.healey@bangor.ac.uk>,
+        "Giles.Foody@nottingham.ac.uk" <Giles.Foody@nottingham.ac.uk>,
+        "rhill@bournemouth.ac.uk" <rhill@bournemouth.ac.uk>,
+        "s.a.queenborough@sheffield.ac.uk" <s.a.queenborough@sheffield.ac.uk>,
+        "chris.thomas@york.ac.uk" <chris.thomas@york.ac.uk>,
+        "r.ewers@imperial.ac.uk" <r.ewers@imperial.ac.uk>,
+        "ally.lewis@york.ac.uk" <ally.lewis@york.ac.uk>,
+        "nrh1000@cam.ac.uk" <nrh1000@cam.ac.uk>,
+        "A.Paton@kew.org" <A.Paton@kew.org>,
+        "L.Aragao@exeter.ac.uk" <L.Aragao@exeter.ac.uk>
+        Andy Lawrence <al@roe.ac.uk>,
+        Keith Noddle <ktn@roe.ac.uk>,
+        Dave Morris <dmr@roe.ac.uk>,
+        "p.r.j.north@swansea.ac.uk" <p.r.j.north@swansea.ac.uk>
+
+
+
+    Original data from Ed Mitchard, plus any new data available.
+
+    "Kevin Tansey outlined the various digital map information sets which he is analysing
+    or producing himself. They include three global forest carbon maps, from Saatchi et
+    al. (2011), Baccini et al. (2012), and Santoro et al. (2013); four forest biomass maps
+    for Mexico; and a beta version of a forest carbon map for the Congo Basin. By the
+    end of the year Leicester will have produced a biomass map of Mexico for 2010 as
+    part of the ESA GlobBiomass project. It was noted that there would also be a biomass
+    map of Indonesia as part of the same project."
+
+
+
+
+

@@ -1,0 +1,154 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    #
+    # Working with PostGIS from R
+    # -- Duncan
+    https://rpubs.com/dgolicher/6373
+
+    #
+    # PostgreSQL Docker
+    https://github.com/docker-library/postgres/blob/d74474439c5ce1b0d7a2e17a310e53ae975e519b/9.4/Dockerfile
+    https://github.com/docker-library/postgres/blob/d74474439c5ce1b0d7a2e17a310e53ae975e519b/9.4/docker-entrypoint.sh
+
+    #
+    # PostGIS spatial extension for PostgreSQL 
+    http://postgis.net/
+    http://postgis.net/install/
+
+    #
+    # Equivalent PostGIS Docker container (found afterwards)
+    https://github.com/appropriate/docker-postgis/tree/master/9.4-2.1
+
+    #
+    # R Procedural Language for PostgreSQL 
+    http://www.joeconway.com/plr/
+    http://www.joeconway.com/plr/doc/plr-install.html
+
+
+
+# -----------------------------------------------------
+# Build a PostGIS container.
+#[root@virtual]
+
+    mkdir docker
+    mkdir docker/postgis
+
+    #
+    # Create our PostGIS init script
+    cat > docker/postgis/postgis-init.sql << EOF
+-- Enable PostGIS (includes raster)
+CREATE EXTENSION postgis;
+-- Enable Topology
+CREATE EXTENSION postgis_topology;
+-- Enable PostGIS Advanced 3D 
+-- and other geoprocessing algorithms
+--CREATE EXTENSION postgis_sfcgal;
+-- fuzzy matching needed for Tiger
+--CREATE EXTENSION fuzzystrmatch;
+-- rule based standardizer
+--CREATE EXTENSION address_standardizer;
+-- example rule data set
+--CREATE EXTENSION address_standardizer_data_us;
+-- Enable US Tiger Geocoder
+--CREATE EXTENSION postgis_tiger_geocoder;
+EOF
+
+    #
+    # Create our PLR init script
+    cat > docker/postgis/plr-init.sql << EOF
+-- Enable PLR
+CREATE EXTENSION plr;
+EOF
+
+    #
+    # Create our main Dockerfile
+    cat > docker/postgis/Dockerfile << 'EOF'
+
+FROM postgres:9.4
+
+#
+# Set the PostGIS version
+ENV POSTGIS_MAJOR=2.1
+ENV POSTGIS_VERSION=2.1.4+dfsg-3
+
+#
+# Set the PLR version
+ENV PLR_VERSION=1:8.3.0.15-4
+
+#
+# Install the PostGIS package
+RUN apt-get update \
+    && apt-get install -y \
+        postgis=$POSTGIS_VERSION \
+        postgresql-$PG_MAJOR-postgis-$POSTGIS_MAJOR=$POSTGIS_VERSION \
+    && rm -rf /var/lib/apt/lists/*
+
+#
+# Add our PostGIS init script
+ADD postgis-init.sql /docker-entrypoint-initdb.d/postgis-init.sql
+
+#
+# Install the PLR package
+RUN apt-get update \
+    && apt-get install -y \
+        postgresql-$PG_MAJOR-plr=$PLR_VERSION \
+    && rm -rf /var/lib/apt/lists/*
+
+#
+# Add our PLR init script
+ADD plr-init.sql /docker-entrypoint-initdb.d/plr-init.sql
+
+EOF
+
+    #
+    # Build our image.
+    docker build \
+        --tag astrotrop:postgis \
+        docker/postgis
+
+# -----------------------------------------------------
+# Run our PostGIS container.
+#[root@virtual]
+
+    settings=$(mktemp)
+
+    cat > "${settings:?}" << EOF
+PGDATA=/pgdata
+POSTGRES_DB=mydatabase
+POSTGRES_USER=myusername
+POSTGRES_PASSWORD=mypassword
+EOF
+
+    docker run \
+        -it \
+        --env-file "${settings:?}" \
+        --volume /root/pgdata:/pgdata \
+        astrotrop:postgis
+
+
+
+
+
+
+
