@@ -23,10 +23,6 @@ ENV GEOSERVER_ZIPFILE=geoserver-${GEOSERVER_VERSION}-war.zip
 ENV GEOSERVER_WARFILE=geoserver.war
 
 #
-# Install unzip to extract the archive.
-RUN yum -y install unzip
-
-#
 # Download the zip file(s).
 ADD http://downloads.sourceforge.net/project/geoserver/GeoServer/${GEOSERVER_VERSION}/${GEOSERVER_ZIPFILE} /tmp/
 
@@ -41,10 +37,13 @@ RUN rm    /tmp/${GEOSERVER_WARFILE}
 # Changes to the webapp config ...
 # Changing the data directory outside the webapp is recomended.
 # If we mapped it onto a voulme, then it would need to be populated with data from webapp.
+# http://docs.geoserver.org/latest/en/user/datadirectory/data-dir-setting.html#data-dir-setting
 # 
 
 #
-# Useful to have 'pre' and 'post' scripts in the tomcat container.
+# Useful to have 'pre' and 'post' scripts in our tomcat container ?
+# Fairly easy to add pre scripts.
+# Post scripts could be done using docker exec.
 
 
 

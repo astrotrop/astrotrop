@@ -80,8 +80,24 @@
     yum -y install git
 
 # -----------------------------------------------------
+# Configure our build.
+#[root@virtual]
+
+    cat > "${HOME:?}/astrotrop.conf" << EOF
+
+        #
+        # Local settings
+        project=/var/local/astrotrop
+        tempdir=\${project:?}/temp
+        datadir=\${project:?}/data
+
+EOF
+
+# -----------------------------------------------------
 # Clone our source code.
 #[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
     
     if [ ! -e "${project:?}/github" ]
     then
@@ -99,8 +115,10 @@
 # Build our base containers.
 #[root@virtual]
 
+    source "${HOME:?}/astrotrop.conf"
+
     pushd "${project:?}/github"
-        pushd src/docker/base
+        pushd src/docker
 
             docker build \
                 --tag astrotrop/fedora:22.1 \
@@ -129,6 +147,8 @@
 # Build our GeoServer containers.
 #[root@virtual]
 
+    source "${HOME:?}/astrotrop.conf"
+
     pushd "${project:?}/github"
         pushd src/docker/ckan
 
@@ -147,6 +167,8 @@
 # Build our CKAN containers.
 #[root@virtual]
 
+    source "${HOME:?}/astrotrop.conf"
+
     pushd "${project:?}/github"
         pushd src/docker/ckan
 
@@ -158,6 +180,7 @@
                 --tag astrotrop/solr:1.0 \
                 solr
 
+            ########
             docker build \
                 --tag astrotrop/postgres:1.0 \
                 postgres
@@ -174,22 +197,10 @@
     popd
 
 # -----------------------------------------------------
-# Configure our build.
-#[root@virtual]
-
-    cat > "${HOME:?}/astrotrop.conf" << EOF
-
-        #
-        # Local settings
-        rootdir=/var/local/astrotrop
-        tempdir=\${rootdir:?}/temp
-        datadir=\${rootdir:?}/data
-
-EOF
-
-# -----------------------------------------------------
 # Create our data directories.
 #[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
 
     mkdata()
         {
@@ -262,7 +273,7 @@ EOF
         -it \
         --env-file "${postgiscfg:?}" \
         --volume "${postgisdata:?}:${postgisvol:?}" \
-        astrotrop:postgis
+        astrotrop/postgis:2.1
 
 # -----------------------------------------------------
 # Configure our RStudio container.
@@ -307,15 +318,14 @@ EOF
         --env-file "${rstudiocfg:?}" \
         --volume "${rstudiotemp:?}:/temp" \
         --volume "${rstudiodata:?}:/data" \
-        rocker/rstudio
-
-
+        astrotrop/rstudio:1.0
 
     #
     # Connect using web browser
     http://kappa.virtual.metagrid.co.uk:8787/
 
-
+    #
+    # Create a connection to PostGIS database.
 
 
 

@@ -28,12 +28,8 @@ ENV TOMCAT_ROOT /var/local/tomcat
 EXPOSE :8080
 
 #
-# Install tar to extract the archive.
-RUN yum -y install tar
-
-#
 # Install the Tomcat Native Library
-# RUN yum -y install tomcat-native
+# RUN dnf -y install tomcat-native
 
 #
 # Create the Tomcat user.
