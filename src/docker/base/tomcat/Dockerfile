@@ -36,10 +36,6 @@ EXPOSE :8080
 RUN useradd --system --home "$TOMCAT_ROOT" "$TOMCAT_USER"
 
 #
-# Set the working directory.
-WORKDIR /tmp
-
-#
 # Download the tar file
 ENV TOMCAT_TARFILE apache-tomcat-${TOMCAT_VERSION}.tar.gz
 ADD https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOMCAT_TARFILE}     /tmp/
@@ -47,17 +43,17 @@ ADD https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOM
 
 #
 # Check the checksum.
-RUN md5sum -c "${TOMCAT_TARFILE}.md5"
+RUN md5sum -c /tmp/${TOMCAT_TARFILE}.md5
+RUN rm /tmp/${TOMCAT_TARFILE}.md5
 
 #
 # Unpack the tar file.
-RUN tar -zxf  ${TOMCAT_TARFILE}
-RUN rm ${TOMCAT_TARFILE}
-RUN rm ${TOMCAT_TARFILE}.md5
+RUN tar -zxf  /tmp/${TOMCAT_TARFILE}
+RUN rm /tmp/${TOMCAT_TARFILE}${TOMCAT_TARFILE}
 
 #
 # Relocate the unpacked directory
-RUN mv apache-tomcat-${TOMCAT_VERSION} ${TOMCAT_ROOT}
+RUN mv /tmp/apache-tomcat-${TOMCAT_VERSION} ${TOMCAT_ROOT}
 
 #
 # Remove the default webapps.

@@ -150,15 +150,15 @@ EOF
     source "${HOME:?}/astrotrop.conf"
 
     pushd "${project:?}/github"
-        pushd src/docker/ckan
+        pushd src/docker
 
             docker build \
                 --tag astrotrop/geoserver:1.0 \
-                base/geoserver
+                geo/geoserver
 
             docker build \
                 --tag astrotrop/geoexplorer:1.0 \
-                base/geoexplorer
+                geo/geoexplorer
 
         popd
     popd
