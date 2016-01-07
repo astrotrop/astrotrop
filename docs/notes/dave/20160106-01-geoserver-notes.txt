@@ -144,6 +144,22 @@ EOF
     popd
 
 # -----------------------------------------------------
+# Build our R containers.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    pushd "${project:?}/github"
+        pushd src/docker
+
+            docker build \
+                --tag astrotrop/rstudio:1.0 \
+                R/rstudio
+
+        popd
+    popd
+
+# -----------------------------------------------------
 # Build our GeoServer containers.
 #[root@virtual]
 
@@ -336,6 +352,11 @@ EOF
 # -----------------------------------------------------
 # Run our GeoServer container.
 #[root@virtual]
+
+# -----------------------------------------------------
+# Run our GeoExplorer container.
+#[root@virtual]
+
 
 # -----------------------------------------------------
 # Run our CKAN-PostGIS container.

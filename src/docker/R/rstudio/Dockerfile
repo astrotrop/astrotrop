@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM astrotrop/tomcat:8.30
+FROM rocker/rstudio
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 
