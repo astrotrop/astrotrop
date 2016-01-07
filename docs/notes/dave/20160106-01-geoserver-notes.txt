@@ -1,0 +1,356 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Create our virtual machine.
+#[user@desktop]
+
+    ischnura-createvm
+
+        INFO : Node name [kappa]
+        INFO : Base name [fedora-21-16G-20150407.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-21-16G-20150407.qcow]
+        INFO : Disc name [kappa.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------
+# Install admin tools.
+#[root@virtual]
+
+    yum -y install htop
+    yum -y install pwgen
+    
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy generator.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@virtual]
+
+    yum install -y haveged
+    systemctl enable haveged.service
+    systemctl start  haveged.service
+
+# -----------------------------------------------------
+# Install and run Docker.
+#[root@virtual]
+
+    #
+    # Install a specific version to avoid problems with updated storage driver.
+    yum -y install https://kojipkgs.fedoraproject.org//packages/docker-io/1.6.2/3.gitc3ca5bb.fc21/x86_64/docker-io-1.6.2-3.gitc3ca5bb.fc21.x86_64.rpm
+    systemctl enable docker.service
+    systemctl start  docker.service
+    systemctl status docker.service
+
+# -----------------------------------------------------
+# Disable SELinux.
+# chown: changing ownership of ‘/var/lib/postgresql/data’: Permission denied
+#[root@virtual]
+
+    setenforce permissive
+
+    sed -i '
+        s/^SELINUX=.*$/SELINUX=permissive/
+        ' /etc/selinux/config
+
+# -----------------------------------------
+# Install source control tools.
+#[root@virtual]
+
+    yum -y install git
+
+# -----------------------------------------------------
+# Clone our source code.
+#[root@virtual]
+    
+    if [ ! -e "${project:?}/github" ]
+    then
+        mkdir --parent "${project:?}"
+        pushd "${project:?}"
+            git clone https://github.com/astrotrop/astrotrop.git github
+        popd
+    else
+        pushd "${project:?}/github"
+            git pull
+        popd
+    fi
+
+# -----------------------------------------------------
+# Build our base containers.
+#[root@virtual]
+
+    pushd "${project:?}/github"
+        pushd src/docker/base
+
+            docker build \
+                --tag astrotrop/fedora:22.1 \
+                base/fedora
+
+            docker build \
+                --tag astrotrop/apache:1.0 \
+                base/apache
+
+            docker build \
+                --tag astrotrop/postgis:2.1 \
+                base/postgis
+
+            docker build \
+                --tag astrotrop/java:8.1 \
+                base/java
+
+            docker build \
+                --tag astrotrop/tomcat:8.30 \
+                base/tomcat
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Build our GeoServer containers.
+#[root@virtual]
+
+    pushd "${project:?}/github"
+        pushd src/docker/ckan
+
+            docker build \
+                --tag astrotrop/geoserver:1.0 \
+                base/geoserver
+
+            docker build \
+                --tag astrotrop/geoexplorer:1.0 \
+                base/geoexplorer
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Build our CKAN containers.
+#[root@virtual]
+
+    pushd "${project:?}/github"
+        pushd src/docker/ckan
+
+            docker build \
+                --tag astrotrop/redis:1.0 \
+                redis
+
+            docker build \
+                --tag astrotrop/solr:1.0 \
+                solr
+
+            docker build \
+                --tag astrotrop/postgres:1.0 \
+                postgres
+
+            docker build \
+                --tag astrotrop/push:1.0 \
+                push
+
+            docker build \
+                --tag astrotrop/ckan:1.0 \
+                ckan
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Configure our build.
+#[root@virtual]
+
+    cat > "${HOME:?}/astrotrop.conf" << EOF
+
+        #
+        # Local settings
+        rootdir=/var/local/astrotrop
+        tempdir=\${rootdir:?}/temp
+        datadir=\${rootdir:?}/data
+
+EOF
+
+# -----------------------------------------------------
+# Create our data directories.
+#[root@virtual]
+
+    mkdata()
+        {
+        local path=${1:?}
+        if [ ! -e "${path}" ]
+        then
+            mkdir --parents "${path}"
+        fi
+        chcon -t svirt_sandbox_file_t "${path}"
+        }
+
+    rmdata()
+        {
+        local path=${1:?}
+        if [ -e "${path}" ]
+        then
+            rm -rf "${path}"
+        fi
+        }
+
+    rmdata "${tempdir:?}"
+    rmdata "${datadir:?}"
+
+    mkdata "${tempdir:?}"
+    mkdata "${datadir:?}"
+
+# -----------------------------------------------------
+# Configure our PostGIS container.
+#[root@virtual]
+
+    cat >> "${HOME:?}/astrotrop.conf" <<- EOF
+
+        postgisdata=\${datadir:?}/postgis
+        postgistemp=\${tempdir:?}/postgis
+
+        postgisvol=/postgis
+        postgisname=postgisdata
+        postgisuser=postgisuser
+        postgispass=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Create our PostGIS data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${postgisdata:?}"
+    rmdata "${postgistemp:?}"
+
+    mkdata "${postgisdata:?}"
+    mkdata "${postgistemp:?}"
+
+# -----------------------------------------------------
+# Run our PostGIS container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    postgiscfg=$(mktemp)
+    cat > "${postgiscfg:?}" <<- EOF
+PGDATA=${postgisvol:?}
+POSTGRES_DB=${postgisname:?}
+POSTGRES_USER=${postgisuser:?}
+POSTGRES_PASSWORD=${postgispass:?}
+EOF
+
+    docker run \
+        -it \
+        --env-file "${postgiscfg:?}" \
+        --volume "${postgisdata:?}:${postgisvol:?}" \
+        astrotrop:postgis
+
+# -----------------------------------------------------
+# Configure our RStudio container.
+#[root@virtual]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        rstudioname=rstudioname
+        rstudiolink=rstudiolink
+
+        rstudiodata=\${datadir:?}/rstudio
+        rstudiotemp=\${tempdir:?}/rstudio
+
+EOF
+
+# -----------------------------------------------------
+# Create our RStudio data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${rstudiotemp:?}"
+    rmdata "${rstudiodata:?}"
+
+    mkdata "${rstudiotemp:?}"
+    mkdata "${rstudiodata:?}"
+
+# -----------------------------------------------------
+# Run our RStudio container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    rstudiocfg=$(mktemp)
+    cat > "${rstudiocfg:?}" <<- EOF
+EOF
+
+    docker run \
+        --detach \
+        --name "rstudio" \
+        --publish 8787:8787 \
+        --env-file "${rstudiocfg:?}" \
+        --volume "${rstudiotemp:?}:/temp" \
+        --volume "${rstudiodata:?}:/data" \
+        rocker/rstudio
+
+
+
+    #
+    # Connect using web browser
+    http://kappa.virtual.metagrid.co.uk:8787/
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Run our GeoServer container.
+#[root@virtual]
+
+# -----------------------------------------------------
+# Run our CKAN-PostGIS container.
+#[root@virtual]
+
+    #
+    # Is this the same DB as GeoServer/RStudio ? 
+    #
+
+# -----------------------------------------------------
+# Run our CKAN-Redis container.
+#[root@virtual]
+
+# -----------------------------------------------------
+# Run our CKAN-Solr container.
+#[root@virtual]
+
+# -----------------------------------------------------
+# Run our CKAN-push container.
+#[root@virtual]
+
+# -----------------------------------------------------
+# Run our CKAN container.
+#[root@virtual]
+
+
+
+

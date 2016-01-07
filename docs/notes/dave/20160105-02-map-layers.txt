@@ -1,0 +1,283 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Congo forest cover (Leicester)
+    astrotrop/protected/data/leicester/AstroTrop/Forest_Non-Forest_Congo/Forest_Cover_Congo.tif
+    astrotrop/protected/data/leicester/AstroTrop/Forest_Non-Forest_Congo/Forest_Cover_Congo.hdr
+    astrotrop/git/src/qgis/styles/congo-forest.qml
+
+        class lookup = {
+            0,0,0,
+            0,139,0,
+            255,255,255
+            }
+        class names = {
+            Unclassified,
+            Forest, 
+            Non-Forest
+            }
+
+    #
+    # Mexico forest cover (Leicester)
+    astrotrop/protected/data/leicester/AstroTrop/Forest_Non-Forest_Mexico/Forest_Cover_Mexico.tif
+    astrotrop/git/src/qgis/styles/mexico-forest.qml
+
+    #
+    # Mitchard source data
+    # Saatchi et al. PNAS 2011
+    astrotrop/protected/data/mitchard/Astrotrop/Saatchi et al. PNAS 2011/america_agb_1km_original.tif    
+    astrotrop/git/src/qgis/styles/saatchi-america-2011-agb.qml
+
+    #
+    # PRODES
+    # Systematic monitoring of deforestation in the Amazon using remote sensing imagery and
+    # Digital Image Processing techniques.
+    astrotrop/protected/data/prodes/Prodes2014_AMZ_60m.tif
+    astrotrop/git/src/qgis/styles/prodes-palett.qml
+
+        http://www.obt.inpe.br/prodes/index.php
+        
+            * GoogleTranslate
+
+            PRODES project carries out the monitoring by satellite of deforestation by shallow
+            cut in the Amazon and produces, since 1988, the annual rates of deforestation in the
+            region, which are used by the Brazilian government for the establishment of public
+            policies. The annual rates are estimated from the increments of deforestation
+            identified in each satellite image that covers the Amazon. The first presentation of
+            the data is performed to December of each year, as estimated. The consolidated data
+            is displayed in the first half of next year.
+
+            PRODES uses satellite images from Landsat class (20 to 30 meter spatial resolution
+            and revisit rate of 16 days) in a combination that seeks to minimize the problem of
+            cloud cover and ensure interoperability criteria. TM images, Landsat-5 satellite of
+            the US, have historically been the most used by the project, but the CCD images CBERS-2
+            and CBERS-2B, the satellite Sino-Brazilian program for remote sensing, were quite used.
+            PRODES also made ​​use of LISS-3 images, the ResourceSat-1 Indian satellite images and
+            English satellite UK-DMC2. With these images, the minimum area mapped by PRODES is 6.25
+            hectares.
+        
+        http://www.dpi.inpe.br/prodesdigital/prodes.php
+        http://www.dpi.inpe.br/prodesdigital/estados.php?&ano=2014&ESTADO=AMZ
+
+            * GoogleTranslate
+
+            (1) This Geotiff this file format, in Lat Long - Datum SAD69 and contains :.
+
+            Thematic image classified according to PRODES Digital project caption in the matrix representation
+            (resolution 60m x 60m (*) expressed in decimal degrees).
+            This was given made from the union of all individual classified scenes that make up the state of
+            the AMZ in a single thematic map
+
+            (*) For 2007 Prodes the mosaics are with resolution of 120 x 120 m
+
+            Relationship Class x RGB palete
+            http://www.dpi.inpe.br/prodesdigital/dadosn/mosaicos/class_rgb.txt
+
+            (2) This file is in Regular grid format, compatible with Spring in Lat Long, Datum SAD69 and contains:
+
+            Theme given classified according PRODES Digital project legend in matrix representaçã / grid
+            (60m x 60m resolution (*) expressed in decimal degrees).
+            This was given made from the union of all individual classified scenes that make up the state of the AMZ
+            in a single thematic map
+
+            (*) For 2007 Prodes the mosaics are with a resolution of 120 x 120 m for 2010 at 90m x 90 m. 
+
+            (3) This file is in ArcView / Shape format, in Lat / Long and Datum SAD69, and contains:
+
+            Theme given classified according to legend of the Digital PRODES project in representation
+            & vector atildeo (polygons with attributes). 
+
+            (4) Due to the amount of polygons, the shape of the PRODES for Legal Amazon, only contains
+            the deforestation data mapped in the year.
+            To access the full base - containing the polygons of deforestation in previous years, forest,
+            hydrography and not forest - download state by state. 
+
+
+    #
+    # RAINFOR KML map data
+    http://www.rainfor.org/en/map
+    https://www.google.com/fusiontables/DataSource?docid=1lAss8gmnPZXFFZ2T94sDUW-y_kD7Tq8n8tG7vBaO#map:id=3
+    astrotrop/protected/data/RAINFOR/Rainfor_Map26June2015.kml
+
+    #
+    # ForestPlots KML map data
+    http://www.forestplots.net/
+    https://www.google.com/fusiontables/DataSource?docid=1fjXC01U80BmE-c85uu3BrdYElEPBaCk4wdVBpph3#map:id=3    
+
+    #
+    # Leeds workshop minutes
+
+        Proposals for Demonstration Projects
+
+            "Partners described the information sets which they can share and these were matched
+            with one another through discussion.
+
+            Available Information Sets
+
+                Leicester:
+                    Mexico - Biomass map
+
+                Bournemouth:
+                    Mexico - Plot data
+                    Mexico - Forest area change maps for > 60 forest types
+
+                Bristol:
+                    Global ecosystem models of leaf area index, photosynthesis, respiration,
+                    carbon flux, biomass and burn area, run for 1950-2002 (with possible extensions to
+                    1850 and 2015) for key biomes and 10 plant functional types with 50 km grid squares.
+
+                Leeds:
+                    Carbon change in forest plots in Amazonia, Africa + Southeast Asia.
+
+                Sheffield:
+                    Mozambique and Guinea-Bissau - carbon
+                    Southeast Asia - carbon
+
+                Edinburgh (Royal Botanical Garden):
+                    Latin America - tree species in dry forest (point data and plot data)
+                    Modelled biomes
+
+                King's College, London:
+                    Latin America - forest area change map (Terra-i)
+
+
+        Presentations on Information Sets
+
+            "Two of the information sets were the subjects of extended presentations.
+
+                Leicester
+
+                    Kevin Tansey outlined the various digital map information sets which he is analysing
+                    or producing himself. They include three global forest carbon maps, from Saatchi et
+                    al. (2011), Baccini et al. (2012), and Santoro et al. (2013); four forest biomass maps
+                    for Mexico; and a beta version of a forest carbon map for the Congo Basin. By the
+                    end of the year Leicester will have produced a biomass map of Mexico for 2010 as
+                    part of the ESA GlobBiomass project. It was noted that there would also be a biomass
+                    map of Indonesia as part of the same project.
+
+                RAINFOR
+
+                    Gabriela Lopez Gonzalez explained that RAINFOR started 20 years ago with 50 plots
+                    in Latin America; this has now risen to about 2,000 plots. RAINFOR is a network of
+                    friends working together and is expanding in scope to include dry forest data. Its
+                    companion AfriTRON network covers forests in Africa, where lianes are especially
+                    important. It has also initiated a global wood density database, called DRYAD.
+
+
+        Mutually Agreed Sharing Possibilities
+
+            "The following preliminary set of possibilities for sharing information in
+            demonstration projects was assembled, together with the key science question:
+
+            i. Amazonia carbon density (Leeds) - - Forest area change (King's)
+            Q: Is there any relationship between areas of forest cleared and carbon density?
+
+            ii. Mexico Biomass (Leicester) -- Forest area change (Bournemouth)
+            Q: What is the rate of carbon emissions from deforestation in Mexico?
+
+            iii. Amazonia Actual tree growth (Leeds) -- Tree species (Edinburgh)
+            Q: Is tree growth species dependent?
+
+            iv. Amazonia Actual tree growth (Leeds) -- Modelled tree growth (Bristol)
+
+            v.
+            Congo tree growth (Leicester) -- Modelled tree growth (Bristol)
+            Q: Can measured tree growth validate modelled tree growth?
+
+            vi. Mexico Dry forest species (Edinburgh) -- Tree Species (Bournemouth)
+            Q: What is the coincidence between the two species databases?    
+
+
+        Available Information Sets
+
+            Leicester:
+
+                Kevin Tansey outlined the various digital map information sets which he is analysing
+                or producing himself. They include three global forest carbon maps, from
+                
+                Saatchi et al. (2011)
+                Baccini et al. (2012)
+                Santoro et al. (2013)
+
+                Mexico - Biomass map
+                four forest biomass maps for Mexico
+                and a beta version of a forest carbon map for the Congo Basin
+
+                By the end of the year Leicester will have produced a biomass map of Mexico for 2010 as part of the ESA GlobBiomass project.
+                It was noted that there would also be a biomass map of Indonesia as part of the same project.
+
+                Shares:
+                Mexico Biomass (Leicester) -- Forest area change (Bournemouth)
+                Congo tree growth (Leicester) -- Modelled tree growth (Bristol)
+
+
+            Bournemouth:
+                Mexico - Plot data
+                Mexico - Forest area change maps for > 60 forest types
+
+                Shares:
+                Mexico Biomass (Leicester) -- Forest area change (Bournemouth)
+                Mexico Dry forest species (Edinburgh) -- Tree Species (Bournemouth)
+
+            Bristol:
+                Global ecosystem models of leaf area index, photosynthesis, respiration,
+                carbon flux, biomass and burn area
+
+                Shares:
+                Amazonia Actual tree growth (Leeds) -- Modelled tree growth (Bristol)
+                Congo tree growth (Leicester) -- Modelled tree growth (Bristol)
+
+            Leeds:
+                Carbon change in forest plots in Amazonia, Africa + Southeast Asia.
+
+                Shares:
+                Amazonia carbon density (Leeds) - - Forest area change (King's)
+                Amazonia Actual tree growth (Leeds) -- Tree species (Edinburgh)
+
+
+            Sheffield:
+                Mozambique and Guinea-Bissau - carbon
+                Southeast Asia - carbon
+
+            Edinburgh (Royal Botanical Garden):
+                Latin America - tree species in dry forest (point data and plot data)
+                Modelled biomes
+
+                Shares:
+                Amazonia Actual tree growth (Leeds) -- Tree species (Edinburgh)
+                Amazonia Actual tree growth (Leeds) -- Modelled tree growth (Bristol)
+                Mexico Dry forest species (Edinburgh) -- Tree Species (Bournemouth)
+
+
+            King's College, London:
+                Latin America - forest area change map (Terra-i)
+
+                Shares:
+                Amazonia carbon density (Leeds) - - Forest area change (King's)
+
+
+
+
+
+
+

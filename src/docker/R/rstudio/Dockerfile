@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2015, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -14,27 +14,8 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-FROM astrotrop/fedora
+
+FROM astrotrop/tomcat:8.30
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-#
-# Install Apache.
-RUN dnf -y install httpd
-
-#
-# Install mod_wsgi.
-RUN dnf -y install mod_wsgi
-
-#
-# Install Apache foreground script.
-# https://github.com/docker-library/httpd/tree/master/2.4
-COPY httpd-foreground /usr/local/bin/
-RUN chmod a+x /usr/local/bin/httpd-foreground
-
-EXPOSE 80
-
-#
-# Run Apache in the foreground.
-CMD ["httpd-foreground"]
 
