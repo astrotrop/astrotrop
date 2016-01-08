@@ -24,12 +24,12 @@ ENV GEOSERVER_WARFILE=geoserver.war
 
 #
 # Download the zip file(s).
-ADD http://downloads.sourceforge.net/project/geoserver/GeoServer/${GEOSERVER_VERSION}/${GEOSERVER_ZIPFILE} /tmp/
+ADD http://netcologne.dl.sourceforge.net/project/geoserver/GeoServer/${GEOSERVER_VERSION}/${GEOSERVER_ZIPFILE} /tmp/
 
 #
 # Extract the webapp from the war file.
-RUN unzip /tmp/${GEOSERVER_ZIPFILE} geoserver.war -d /tmp
-RUN unzip /tmp/${GEOSERVER_WARFILE} -d ${TOMCAT_ROOT}/webapps
+RUN pushd /tmp ; unzip ${GEOSERVER_ZIPFILE} geoserver.war ; popd
+RUN pushd /tmp ; unzip ${GEOSERVER_WARFILE}  ; popd
 RUN rm    /tmp/${GEOSERVER_ZIPFILE}
 RUN rm    /tmp/${GEOSERVER_WARFILE}
 
