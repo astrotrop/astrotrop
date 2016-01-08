@@ -43,13 +43,13 @@ ADD https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/${TOM
 
 #
 # Check the checksum.
-RUN md5sum -c /tmp/${TOMCAT_TARFILE}.md5
+RUN pushd /tmp ; md5sum -c ${TOMCAT_TARFILE}.md5 ; popd
 RUN rm /tmp/${TOMCAT_TARFILE}.md5
 
 #
 # Unpack the tar file.
-RUN tar -zxf  /tmp/${TOMCAT_TARFILE}
-RUN rm /tmp/${TOMCAT_TARFILE}${TOMCAT_TARFILE}
+RUN pushd /tmp ; tar -zxf  ${TOMCAT_TARFILE} ; popd
+RUN rm /tmp/${TOMCAT_TARFILE}
 
 #
 # Relocate the unpacked directory
