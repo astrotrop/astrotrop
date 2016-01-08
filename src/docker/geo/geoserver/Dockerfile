@@ -22,21 +22,25 @@ ENV GEOSERVER_VERSION=2.8.1
 ENV GEOSERVER_ZIPFILE=geoserver-${GEOSERVER_VERSION}-war.zip
 ENV GEOSERVER_WARFILE=geoserver.war
 
+USER root
+
 #
 # Download the zip file(s).
 ADD http://netcologne.dl.sourceforge.net/project/geoserver/GeoServer/${GEOSERVER_VERSION}/${GEOSERVER_ZIPFILE} /tmp/
 
 #
-# Extract the webapp from the war file.
+# Extract the warfile from the zipfile.
 RUN pushd /tmp ; unzip ${GEOSERVER_ZIPFILE} geoserver.war ; popd
-RUN pushd /tmp ; unzip ${GEOSERVER_WARFILE}  ; popd
-RUN rm    /tmp/${GEOSERVER_ZIPFILE}
-RUN rm    /tmp/${GEOSERVER_WARFILE}
+RUN rm /tmp/${GEOSERVER_ZIPFILE}
+
+#
+# Install the warfile in Tomcat.
+RUN mv /tmp/${GEOSERVER_WARFILE} ${TOMCAT_ROOT}/webapps/
 
 #
 # Changes to the webapp config ...
 # Changing the data directory outside the webapp is recomended.
-# If we mapped it onto a voulme, then it would need to be populated with data from webapp.
+# If we mapped it onto a volume, then it would need to be populated with data from webapp.
 # http://docs.geoserver.org/latest/en/user/datadirectory/data-dir-setting.html#data-dir-setting
 # 
 
@@ -46,4 +50,4 @@ RUN rm    /tmp/${GEOSERVER_WARFILE}
 # Post scripts could be done using docker exec.
 
 
-
+USER tomcat
