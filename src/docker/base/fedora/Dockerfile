@@ -24,8 +24,8 @@ VOLUME /var/cache/yum/
 
 #
 # Update the OS.
-RUN dnf -y update
-RUN dnf -y clean all
+#RUN dnf -y update
+#RUN dnf -y clean all
 
 #
 # Install tar and zip to extract archives.
