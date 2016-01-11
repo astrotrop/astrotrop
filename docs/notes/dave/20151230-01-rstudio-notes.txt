@@ -159,6 +159,7 @@ EOF
 https://github.com/rocker-org/rocker/wiki/Using-the-RStudio-image
 https://github.com/rocker-org/rocker/blob/master/rstudio/Dockerfile
 https://github.com/rocker-org/rocker/wiki/Sharing-files-with-host-machine
-
+https://hub.docker.com/r/rocker/rstudio/
+https://hub.docker.com/r/rocker/rstudio/~/dockerfile/
 
 

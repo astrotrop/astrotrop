@@ -1,0 +1,39 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # OSGeo-Live
+    http://cameronshorter.blogspot.com.au/2015/09/osgeo-live-90-released.html
+
+    OSGeo-Live is a self-contained bootable DVD, USB flash drive and Virtual Machine, pre-installed with robust open source geospatial software, which can be trialled without installing anything. It includes:
+
+    Over 50 quality geospatial Open Source applications installed and pre-configured
+
+        * Free world maps and sample datasets
+        * Project Overview and step-by-step Quickstart for each application
+        * Lightning presentation of all applications, along with speaker's script
+        * Overviews of key OGC standards
+        * Translations to multiple languages
+
+    Homepage: http://live.osgeo.org
+    Download details: http://live.osgeo.org/en/download.html
+

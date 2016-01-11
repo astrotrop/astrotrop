@@ -1,0 +1,53 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # GeoService API - not totally open
+
+    It looks like significant parts of the GFW Open data portal are based on an ArcGIS system.
+    http://data.globalforestwatch.org/
+
+    Many of the dataset pages display an 'Open in ArcGIS' quick link at the top.
+
+
+    
+    ArcGIS is a suite of GIS tools produced by Esri
+
+        https://www.arcgis.com/
+        http://www.esri.com/software/arcgis
+        https://en.wikipedia.org/wiki/ArcGIS
+
+    Many of the dataset pages include a link to a GeoService service to access the data in the API dropdown list.
+
+    The GeoService REST API is developed and published by Esri
+    http://www.esri.com/library/whitepapers/pdfs/geoservices-rest-spec.pdf
+
+    The GeoService REST API was proposed for adoptiona as an OGC approved standard.
+    http://www.opengeospatial.org/projects/groups/gservrestswg
+    
+    However, a number of concerns were raised by members of the community and the standard was not adopted.
+    http://wiki.osgeo.org/wiki/Geoservices_REST_API
+    http://wiki.osgeo.org/wiki/Geoservices_REST_API_critique
+    http://cameronshorter.blogspot.com.au/2013/05/ogc-heed-community-pressure-regarding.html
+
+
+

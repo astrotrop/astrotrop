@@ -160,7 +160,7 @@ EOF
     popd
 
 # -----------------------------------------------------
-# Build our GeoServer containers.
+# Build our GeoServer container.
 #[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"
@@ -172,12 +172,18 @@ EOF
                 --tag astrotrop/geoserver:1.0 \
                 geo/geoserver
 
-            docker build \
-                --tag astrotrop/geoexplorer:1.0 \
-                geo/geoexplorer
-
         popd
     popd
+
+# -----------------------------------------------------
+# Build our GeoExplorer container.
+#[root@virtual]
+
+    #
+    # Uses firethorn Maven container to build source code.
+    # Uses Maven Docker plugin to create container.
+    #
+
 
 # -----------------------------------------------------
 # Build our CKAN containers.
@@ -186,28 +192,28 @@ EOF
     source "${HOME:?}/astrotrop.conf"
 
     pushd "${project:?}/github"
-        pushd src/docker/ckan
+        pushd src/docker
 
             docker build \
                 --tag astrotrop/redis:1.0 \
-                redis
+                ckan/redis
 
             docker build \
                 --tag astrotrop/solr:1.0 \
-                solr
+                ckan/solr
 
             ########
             docker build \
                 --tag astrotrop/postgres:1.0 \
-                postgres
+                ckan/postgres
 
             docker build \
                 --tag astrotrop/push:1.0 \
-                push
+                ckan/push
 
             docker build \
                 --tag astrotrop/ckan:1.0 \
-                ckan
+                ckan/ckan
 
         popd
     popd
@@ -382,6 +388,12 @@ EOF
 # Run our CKAN container.
 #[root@virtual]
 
+
+
+
+    #
+    # Setting the GeoServer data directory
+    http://docs.geoserver.org/latest/en/user/datadirectory/data-dir-setting.html#data-dir-setting
 
 
 

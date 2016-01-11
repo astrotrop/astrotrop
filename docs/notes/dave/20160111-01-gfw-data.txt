@@ -1,0 +1,177 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Email from Alan
+
+    I have kicked off the year right from the start with a visit to 
+    Washington DC to consult with key players here on the 
+    methods they already use to disseminate global forest area
+    data, what they think of our plan for the prototype forest 
+    observatory, and their preferences for future international 
+    standards.
+
+    The two teams that currently map world forest area regularly
+    using Landsat are both in DC, as is the World Resources 
+    Institute, whose Global Forest Watch also hosts one of these
+    team's datasets as well as its own. 
+
+    The agreement of these teams is crucial if our other
+    carbon and biodiversity partners are to have global 
+    area data with which to combine their data.
+
+    Reactions so far have been very positive and constructive.
+
+
+    #
+    # Refers to several data providers, but only names one.
+
+    World Resources Institute ... Global Forest Watch
+    
+    
+    #
+    # Website
+    http://www.globalforestwatch.org/
+    
+    #
+    # Open data portal
+    http://data.globalforestwatch.org/
+    
+        #
+        # Above ground biomass
+        http://data.globalforestwatch.org/datasets/d87217b5732347ab8a04ef8ffacff1fd_8
+
+            # GeoJSON
+            http://data.globalforestwatch.org/datasets/d87217b5732347ab8a04ef8ffacff1fd_8
+            # GeoService
+            http://gis-gfw.wri.org/arcgis/rest/services/conservation/MapServer/8/query?outFields=*&where=1%3D1
+            # OGC WMS
+            http://gis-gfw.wri.org/arcgis/services/conservation/MapServer/WMSServer?request=GetCapabilities&service=WMS
+        
+        #
+        # Democratic Republic of the Congo primary forests (2000)
+        http://data.globalforestwatch.org/datasets/ea569ecbb42f4b12bbe95a9f3d1b2c87_0/features/1
+
+            # GeoJSON
+            http://data.globalforestwatch.org/datasets/ea569ecbb42f4b12bbe95a9f3d1b2c87_0.geojson
+            # GeoService
+            https://services2.arcgis.com/g8WusZB13b9OegfU/arcgis/rest/services/Democratic_Republic_of_the_Congo_primary_forests_(2000)/FeatureServer/0/query?outFields=*&where=1%3D1
+
+        #
+        # Humid tropics FORMA alerts (WRI/CGD)
+        http://data.globalforestwatch.org/datasets/550bd7fc2c5d45418e5e515ce170da22_3
+
+            # GeoJSON
+            http://data.globalforestwatch.org/datasets/550bd7fc2c5d45418e5e515ce170da22_3.geojson
+            # GeoService
+            http://gis-gfw.wri.org/arcgis/rest/services/forest_change/MapServer/3/query?outFields=*&where=1%3D1
+            # OGC WMS
+            http://gis-gfw.wri.org/arcgis/services/forest_change/MapServer/WMSServer?request=GetCapabilities&service=WMS
+
+        #
+        # Intact Forest Landscapes (2013)
+        
+            # GeoJSON
+            http://data.globalforestwatch.org/datasets/7dc2af9bf4e2404393f673e603aa9351_4.geojson
+            # GeoService
+            http://gis-gfw.wri.org/arcgis/rest/services/forest_cover/MapServer/4/query?outFields=*&where=1%3D1
+            # OGC WMS
+            http://gis-gfw.wri.org/arcgis/services/forest_cover/MapServer/WMSServer?request=GetCapabilities&service=WMS
+        
+        #
+        # Guatemala Forest Change 2006-2010
+        http://data.globalforestwatch.org/datasets/e9fc601e873d4e4795aab57d4f5e0c8d
+        https://www.arcgis.com/home/item.html?id=e9fc601e873d4e4795aab57d4f5e0c8d
+        http://gfw2-data.s3.amazonaws.com/country/gtm/zip/gtm_forest_change_06_10.zip
+
+
+    #
+    # Global Forest watch Fires
+    http://fires.globalforestwatch.org/
+
+        #
+        # Data sources
+        http://fires.globalforestwatch.org/#v=data&x=115&y=0&l=5&lyrs=Active_Fires
+
+        #
+        # NASA 
+        # Fire Information for Resource Management System (FIRMS)
+        https://earthdata.nasa.gov/data/near-real-time-data/firms    
+
+        https://earthdata.nasa.gov/earth-observation-data/near-real-time/firms/active-fire-data
+
+    
+        #
+        # Web services
+        https://firms.modaps.eosdis.nasa.gov/web-services/
+
+            FIRMS fire-based maps (images) are offered through Open GIS Consortium (OGC) Web Map Service (WMS)
+            and WMS with time support (WMS-T). These services enable users to access the FIRMS active fire data
+            using a local (desktop) or web GIS client. For more information regarding the Open Geospatial
+            Consortium (OGC) WMS standards, read http://www.opengeospatial.org/standards/.         
+    
+            # GET CAPABILITIES (WMS)
+            https://firms.modaps.eosdis.nasa.gov/wms/?SERVICE=WMS&VERSION=1.1.1&REQUEST=GETCAPABILITIES
+    
+            # GET CAPABILITIES (WMS-T)
+            https://firms.modaps.eosdis.nasa.gov/wms-t/?SERVICE=WMS&VERSION=1.1.1&REQUEST=GETCAPABILITIES
+
+    
+            #
+            # Data for last 24 and 48 hrs
+            # Need to select tiff format (jpeg doen't display)
+            # Not ben able to make the background transparent.
+
+
+
+
+
+
+
+
+
+
+    #
+    # ... and another one ..
+    
+        
+        #
+        #  Earth Observing System Data and Information System
+        https://earthdata.nasa.gov/
+        
+            The Earth Observing System Data and Information System is a key core capability in NASA’s
+            Earth Science Data Systems Program. It provides end-to-end capabilities for managing
+            NASA’s Earth science data from various sources—satellites, aircraft, field measurements,
+            and various other programs.        
+
+
+        https://earthdata.nasa.gov/earth-observation-data
+
+        EOSDIS Distributed Active Archive Centers (DAACs)
+        https://earthdata.nasa.gov/about/daacs
+
+        CMR Client and Developer Information
+        https://earthdata.nasa.gov/about/science-system-description/eosdis-components/common-metadata-repository/cmr-client-and-developer-information
+
+
+
+
