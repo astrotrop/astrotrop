@@ -85,8 +85,6 @@
 
     cat > "${HOME:?}/astrotrop.conf" << EOF
 
-        #
-        # Local settings
         project=/var/local/astrotrop
         tempdir=\${project:?}/temp
         datadir=\${project:?}/data
@@ -142,9 +140,9 @@ EOF
 
         popd
     popd
-
+    
 # -----------------------------------------------------
-# Build our R containers.
+# Build our R container.
 #[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"
@@ -255,11 +253,14 @@ EOF
 
     cat >> "${HOME:?}/astrotrop.conf" <<- EOF
 
+        postgisname=postgis
+        postgislink=postgis
+
         postgisdata=\${datadir:?}/postgis
         postgistemp=\${tempdir:?}/postgis
 
         postgisvol=/postgis
-        postgisname=postgisdata
+        postgisdb=postgisdb
         postgisuser=postgisuser
         postgispass=$(pwgen 20 1)
 
@@ -286,13 +287,14 @@ EOF
     postgiscfg=$(mktemp)
     cat > "${postgiscfg:?}" <<- EOF
 PGDATA=${postgisvol:?}
-POSTGRES_DB=${postgisname:?}
+POSTGRES_DB=${postgisdb:?}
 POSTGRES_USER=${postgisuser:?}
 POSTGRES_PASSWORD=${postgispass:?}
 EOF
 
     docker run \
-        -it \
+        --detach \
+        --name "${postgisname:?}" \
         --env-file "${postgiscfg:?}" \
         --volume "${postgisdata:?}:${postgisvol:?}" \
         astrotrop/postgis:2.1
@@ -301,10 +303,11 @@ EOF
 # Configure our RStudio container.
 #[root@virtual]
 
+    source "${HOME:?}/astrotrop.conf"
     cat >> "${HOME:?}/astrotrop.conf" << EOF
 
-        rstudioname=rstudioname
-        rstudiolink=rstudiolink
+        rstudioname=rstudio
+        rstudiolink=rstudio
 
         rstudiodata=\${datadir:?}/rstudio
         rstudiotemp=\${tempdir:?}/rstudio
@@ -335,8 +338,8 @@ EOF
 
     docker run \
         --detach \
-        --name "rstudio" \
         --publish 8787:8787 \
+        --name "${rstudioname:?}" \
         --env-file "${rstudiocfg:?}" \
         --volume "${rstudiotemp:?}:/temp" \
         --volume "${rstudiodata:?}:/data" \
@@ -345,6 +348,7 @@ EOF
     #
     # Connect using web browser
     http://kappa.virtual.metagrid.co.uk:8787/
+    http://eta.virtual.metagrid.co.uk:8787/
 
     #
     # Create a connection to PostGIS database.
