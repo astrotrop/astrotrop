@@ -142,7 +142,7 @@ EOF
     popd
     
 # -----------------------------------------------------
-# Build our R container.
+# Build our RStudio container.
 #[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"

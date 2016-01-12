@@ -29,7 +29,7 @@ RUN apt-get update \
 # Add the gdal package .
 RUN apt-get update \ 
 	&& apt-get install -y --no-install-recommends \
-        libgdal1h \
+        libgdal1i \
 	&& rm -rf /var/lib/apt/lists/
 
 
