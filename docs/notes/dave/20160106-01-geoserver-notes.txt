@@ -353,6 +353,8 @@ EOF
     #
     # Create a connection to PostGIS database.
 
+library(RODBC)
+library(rgdal)
 
 
 

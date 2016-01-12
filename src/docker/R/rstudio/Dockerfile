@@ -25,4 +25,12 @@ RUN apt-get update \
         r-cran-rodbc \
 	&& rm -rf /var/lib/apt/lists/
 
+#
+# Add the gdal package .
+RUN apt-get update \ 
+	&& apt-get install -y --no-install-recommends \
+        libgdal1h \
+	&& rm -rf /var/lib/apt/lists/
+
+
 
