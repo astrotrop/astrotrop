@@ -27,9 +27,12 @@ RUN apt-get update \
 
 #
 # Add the gdal package .
+#       r-cran-rgdal \
 RUN apt-get update \ 
 	&& apt-get install -y --no-install-recommends \
         libgdal1i \
+        libproj-dev \
+        libgdal-dev \
 	&& rm -rf /var/lib/apt/lists/
 
 

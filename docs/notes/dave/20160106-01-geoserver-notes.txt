@@ -336,11 +336,25 @@ EOF
     cat > "${rstudiocfg:?}" <<- EOF
 EOF
 
+    odbcini=$(mktemp)
+    cat > "${odbcini:?}" <<- EOF
+
+[${postgisdb:?}]
+Driver = /usr/lib/x86_64-linux-gnu/odbc/libodbcpsqlS.so
+Database = ${postgisdb:?}
+Servername = ${postgislink:?}
+Username = ${postgisuser:?}
+Password = ${postgispass:?}
+ReadOnly = 0
+
+EOF
+
     docker run \
         --detach \
         --publish 8787:8787 \
         --name "${rstudioname:?}" \
         --env-file "${rstudiocfg:?}" \
+        --volume "${odbcini:?}:/etc/odbc.ini" \
         --volume "${rstudiotemp:?}:/temp" \
         --volume "${rstudiodata:?}:/data" \
         astrotrop/rstudio:1.0
@@ -355,6 +369,7 @@ EOF
 
 library(RODBC)
 library(rgdal)
+
 
 
 
