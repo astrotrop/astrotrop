@@ -21,7 +21,10 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 ENV GEOSERVER_VERSION=2.8.1
 ENV GEOSERVER_ZIPFILE=geoserver-${GEOSERVER_VERSION}-war.zip
 ENV GEOSERVER_WARFILE=geoserver.war
+ENV GEOSERVER_CONTEXT=geoserver
 
+#
+# Swap back to root account.
 USER root
 
 #
@@ -35,13 +38,15 @@ RUN rm /tmp/${GEOSERVER_ZIPFILE}
 
 #
 # Unpack the warfile in Tomcat.
-RUN unzip /tmp/${GEOSERVER_WARFILE} -d ${TOMCAT_ROOT}/webapps/
+RUN unzip /tmp/${GEOSERVER_WARFILE} -d ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}
 RUN rm /tmp/${GEOSERVER_WARFILE}
+#RUN ls -al ${TOMCAT_ROOT}/webapps/
+#RUN ls -al ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}
 
 #
 # Changes to the webapp config ...
-# Changing the data directory outside the webapp is recomended.
-# If we mapped it onto a volume, then it would need to be populated with data from webapp.
+# Moving the data directory outside the webapp is recomended.
+# If we move it into a volume, then it would need to be populated with data from webapp.
 # http://docs.geoserver.org/latest/en/user/datadirectory/data-dir-setting.html#data-dir-setting
 # 
 
@@ -50,5 +55,5 @@ RUN rm /tmp/${GEOSERVER_WARFILE}
 # Fairly easy to add pre scripts.
 # Post scripts could be done using docker exec.
 
-
 USER tomcat
+

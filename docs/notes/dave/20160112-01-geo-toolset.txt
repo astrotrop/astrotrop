@@ -96,7 +96,6 @@ EOF
 #[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"
-    
     if [ ! -e "${project:?}/github" ]
     then
         mkdir --parent "${project:?}"
@@ -114,7 +113,6 @@ EOF
 #[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"
-
     pushd "${project:?}/github"
         pushd src/docker
 
@@ -146,7 +144,6 @@ EOF
 #[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"
-
     pushd "${project:?}/github"
         pushd src/docker
 
@@ -162,7 +159,6 @@ EOF
 #[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"
-
     pushd "${project:?}/github"
         pushd src/docker
 
@@ -187,7 +183,6 @@ EOF
 #[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"
-
     pushd "${project:?}/github"
         pushd src/docker
 
@@ -476,8 +471,54 @@ EOF
     ....
 
 # -----------------------------------------------------
+# Configure our GeoServer container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        geoservername=geoserver
+        geoserverlink=geoserver
+
+        geoserverdata=\${datadir:?}/geoserver
+        geoservertemp=\${tempdir:?}/geoserver
+
+EOF
+
+# -----------------------------------------------------
+# Create our GeoServer data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${geoservertemp:?}"
+    rmdata "${geoserverdata:?}"
+
+    mkdata "${geoservertemp:?}"
+    mkdata "${geoserverdata:?}"
+
+# -----------------------------------------------------
 # Run our GeoServer container.
 #[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+#   geoserverenv=$(mktemp)
+#   cat > "${geoserverenv:?}" <<- EOF
+#EOF
+#   --env-file "${geoserverenv:?}" \
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --name "${geoserverame:?}" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        --volume "${geoservertemp:?}:/temp" \
+        --volume "${geoserverdata:?}:/data" \
+        astrotrop/geoserver:1.0
+
+
+
 
 
 
