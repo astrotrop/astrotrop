@@ -34,8 +34,9 @@ RUN pushd /tmp ; unzip ${GEOSERVER_ZIPFILE} geoserver.war ; popd
 RUN rm /tmp/${GEOSERVER_ZIPFILE}
 
 #
-# Install the warfile in Tomcat.
-RUN mv /tmp/${GEOSERVER_WARFILE} ${TOMCAT_ROOT}/webapps/
+# Unpack the warfile in Tomcat.
+RUN unzip /tmp/${GEOSERVER_WARFILE} -d ${TOMCAT_ROOT}/webapps/
+RUN rm /tmp/${GEOSERVER_WARFILE}
 
 #
 # Changes to the webapp config ...

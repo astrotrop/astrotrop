@@ -178,10 +178,9 @@ EOF
 #[root@virtual]
 
     #
-    # Uses firethorn Maven container to build source code.
-    # Uses Maven Docker plugin to create container.
+    # Use firethorn Maven container to build source code.
+    # Use Maven Docker plugin to create container.
     #
-
 
 # -----------------------------------------------------
 # Build our CKAN containers.
@@ -366,22 +365,6 @@ EOF
 #EOF
 #   --env-file "${rstudioenv:?}" \
 
-
-#   odbcini=$(mktemp)
-#   cat > "${odbcini:?}" <<- EOF
-#
-#[${postgisdb:?}]
-#Driver = /usr/lib/x86_64-linux-gnu/odbc/libodbcpsqlS.so
-#Database = ${postgisdb:?}
-#Servername = ${postgislink:?}
-#Username = ${postgisuser:?}
-#Password = ${postgispass:?}
-#Protocol = 8.2.5
-#ReadOnly = 0
-#
-#EOF
-#   --volume "${odbcini:?}:/etc/odbc.ini" \
-
     docker run \
         --detach \
         --publish 8787:8787 \
@@ -390,10 +373,6 @@ EOF
         --volume "${rstudiotemp:?}:/temp" \
         --volume "${rstudiodata:?}:/data" \
         astrotrop/rstudio:1.0
-
-
-
-
 
 # -----------------------------------------------------
 # Test our RStudio container.
@@ -499,6 +478,9 @@ EOF
 # -----------------------------------------------------
 # Run our GeoServer container.
 #[root@virtual]
+
+
+
 
 # -----------------------------------------------------
 # Run our GeoExplorer container.
