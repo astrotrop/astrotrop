@@ -44,11 +44,14 @@ RUN rm /tmp/${GEOSERVER_WARFILE}
 #RUN ls -al ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}
 
 #
-# Changes to the webapp config ...
 # Moving the data directory outside the webapp is recomended.
 # If we move it into a volume, then it would need to be populated with data from webapp.
 # http://docs.geoserver.org/latest/en/user/datadirectory/data-dir-setting.html#data-dir-setting
-# 
+
+#
+# Make the data directory writeable
+RUN chown tomcat:tomcat ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/data
+RUN chmod -R u+rw ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/data
 
 #
 # Useful to have 'pre' and 'post' scripts in our tomcat container ?

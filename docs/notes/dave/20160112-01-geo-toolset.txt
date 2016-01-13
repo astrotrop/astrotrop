@@ -511,7 +511,7 @@ EOF
     docker run \
         --detach \
         --publish 8080:8080 \
-        --name "${geoserverame:?}" \
+        --name "${geoservername:?}" \
         --link "${postgisname:?}:${postgislink:?}" \
         --volume "${geoservertemp:?}:/temp" \
         --volume "${geoserverdata:?}:/data" \
