@@ -50,7 +50,7 @@ RUN rm /tmp/${GEOSERVER_WARFILE}
 
 #
 # Make the data directory writeable
-RUN chown tomcat:tomcat ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/data
+RUN chown -R tomcat:tomcat ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/data
 RUN chmod -R u+rw ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/data
 
 #
