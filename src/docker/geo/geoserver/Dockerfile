@@ -22,6 +22,7 @@ ENV GEOSERVER_VERSION=2.8.1
 ENV GEOSERVER_ZIPFILE=geoserver-${GEOSERVER_VERSION}-war.zip
 ENV GEOSERVER_WARFILE=geoserver.war
 ENV GEOSERVER_CONTEXT=geoserver
+ENV GEOSERVER_DATA=${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/data
 
 #
 # Swap back to root account.
@@ -40,18 +41,17 @@ RUN rm /tmp/${GEOSERVER_ZIPFILE}
 # Unpack the warfile in Tomcat.
 RUN unzip /tmp/${GEOSERVER_WARFILE} -d ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}
 RUN rm /tmp/${GEOSERVER_WARFILE}
-#RUN ls -al ${TOMCAT_ROOT}/webapps/
-#RUN ls -al ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}
 
 #
-# Moving the data directory outside the webapp is recomended.
-# If we move it into a volume, then it would need to be populated with data from webapp.
-# http://docs.geoserver.org/latest/en/user/datadirectory/data-dir-setting.html#data-dir-setting
-
-#
-# Make the data directory writeable
+# Make the webapp data directory writeable
 RUN chown -R tomcat:tomcat ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/data
 RUN chmod -R u+rw ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/data
+
+#
+# Move the data directory outside the webapp.
+# http://docs.geoserver.org/latest/en/user/datadirectory/data-dir-setting.html#data-dir-setting
+ENV GEOSERVER_DATA_DIR=/data
+VOLUME /data
 
 #
 # Useful to have 'pre' and 'post' scripts in our tomcat container ?
