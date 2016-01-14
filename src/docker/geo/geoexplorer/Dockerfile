@@ -19,7 +19,7 @@ FROM astrotrop/tomcat:8.30
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 ENV GEOEXPLORER_VERSION=2.0
-ENV GEOEXPLORER_ZIPFILE=geoexplorer.zip
+ENV GEOEXPLORER_WARFILE=geoexplorer.war
 ENV GEOEXPLORER_CONTEXT=geoexplorer
 
 #
@@ -27,8 +27,13 @@ ENV GEOEXPLORER_CONTEXT=geoexplorer
 USER root
 
 #
-# Add the geoexplorer webapp (unzipped)
-ADD ${GEOEXPLORER_ZIPFILE} ${TOMCAT_ROOT}/webapps/${GEOEXPLORER_CONTEXT}
+# Add the geoexplorer war file
+ADD ${GEOEXPLORER_WARFILE} /tmp/${GEOEXPLORER_WARFILE}
+
+#
+# Unzip the geoexplorer webapp
+RUN unzip /tmp/${GEOEXPLORER_WARFILE} -d ${TOMCAT_ROOT}/webapps/${GEOEXPLORER_CONTEXT}
+RUN rm /tmp/${GEOEXPLORER_WARFILE}
 
 #
 # Create the /data directory.

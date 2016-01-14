@@ -65,26 +65,19 @@
 
         pushd suite
 
-#
-# Remove broken reference
-sed -i '
-    /^\[submodule "geoserver/webapp/composer"\]/ {
-        d
-        d
-        d
-        }
-    ' .gitmodules 
+            #
+            # Remove reference to a broken sub-module.
+            sed -i '
+                /^\[submodule "geoserver\/webapp\/composer"\]/ {
+                    N
+                    N
+                    d
+                    }
+                ' .gitmodules 
 
-
-
-[submodule "geoserver/webapp/composer"]
-        path = geoserver/webapp/composer
-        url = git@github.com:boundlessgeo/composer.git
-
-
-
+            #
+            # Update the sub-modules
             git submodule init
-
             git submodule update
 
         popd
@@ -114,7 +107,7 @@ sed -i '
 
     cp -r \
         /opengeo/suite/geoexplorer/target/geoexplorer.war \
-        /target/geoexplorer.zip
+        /target/geoexplorer.war
 
 # -----------------------------------------------------
 # Exit our build container.
@@ -122,6 +115,10 @@ sed -i '
 #[root@builder]
 
     exit
+
+popd
+popd
+popd
 
 # -----------------------------------------------------
 # Build our GeoExplorer container.
@@ -137,5 +134,8 @@ sed -i '
 
         popd
     popd
+
+
+
 
 
