@@ -22,7 +22,6 @@ ENV GEOSERVER_VERSION=2.8.1
 ENV GEOSERVER_ZIPFILE=geoserver-${GEOSERVER_VERSION}-war.zip
 ENV GEOSERVER_WARFILE=geoserver.war
 ENV GEOSERVER_CONTEXT=geoserver
-ENV GEOSERVER_DATA=${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/data
 
 #
 # Swap back to root account.
@@ -43,15 +42,21 @@ RUN unzip /tmp/${GEOSERVER_WARFILE} -d ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEX
 RUN rm /tmp/${GEOSERVER_WARFILE}
 
 #
-# Make the webapp data directory writeable
+# Make the existing data directory writeable.
 RUN chown -R tomcat:tomcat ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/data
 RUN chmod -R u+rw ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/data
 
 #
 # Move the data directory outside the webapp.
+# Note - VOLUME needs to be done AFTER any chown and chmod
 # http://docs.geoserver.org/latest/en/user/datadirectory/data-dir-setting.html#data-dir-setting
-ENV GEOSERVER_DATA_DIR=/data
+# TODO Move /data and /temp volumes to base image.
+RUN mkdir /data
+RUN chown tomcat:tomcat /data
+RUN chmod u=rwx,g=rwx,o=rx /data
 VOLUME /data
+
+ENV GEOSERVER_DATA_DIR=/data
 
 #
 # Useful to have 'pre' and 'post' scripts in our tomcat container ?

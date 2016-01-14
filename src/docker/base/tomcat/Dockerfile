@@ -87,7 +87,7 @@ RUN chown ${TOMCAT_USER}:${TOMCAT_USER} ${TOMCAT_ROOT}/temp
 #
 # Define our working directories as volumes.
 # BUG -- ENV variable not resolved
-# BUG -- VOLUME needs to be done AFTER any chown and chmod
+# Note - VOLUME needs to be done AFTER any chown and chmod
 # http://container-solutions.com/understanding-volumes-docker/#permissions-and-ownership
 VOLUME /var/local/tomcat/logs
 VOLUME /var/local/tomcat/work
