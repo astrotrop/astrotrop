@@ -55,7 +55,7 @@
 
 # -----------------------------------------------------
 # Clone the source code.
-# TODO Move to a build script.
+# TODO Move the git clone to the VM not the builder.
 #[root@builder]
 
     mkdir /opengeo
@@ -64,6 +64,24 @@
         git clone git://github.com/opengeo/suite.git
 
         pushd suite
+
+#
+# Remove broken reference
+sed -i '
+    /^\[submodule "geoserver/webapp/composer"\]/ {
+        d
+        d
+        d
+        }
+    ' .gitmodules 
+
+
+
+[submodule "geoserver/webapp/composer"]
+        path = geoserver/webapp/composer
+        url = git@github.com:boundlessgeo/composer.git
+
+
 
             git submodule init
 
