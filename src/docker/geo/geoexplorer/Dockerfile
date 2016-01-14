@@ -18,6 +18,32 @@
 FROM astrotrop/tomcat:8.30
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
+ENV GEOEXPLORER_VERSION=2.0
+ENV GEOEXPLORER_ZIPFILE=geoexplorer.zip
+ENV GEOEXPLORER_CONTEXT=geoexplorer
+
 #
-# Download and unpack the war file.
+# Swap back to root account.
+USER root
+
+#
+# Add the geoexplorer webapp (unzipped)
+ADD ${GEOEXPLORER_ZIPFILE} ${TOMCAT_ROOT}/webapps/${GEOEXPLORER_CONTEXT}
+
+#
+# Create the /data directory.
+# Note - VOLUME needs to be done AFTER any chown and chmod
+# TODO Move /data and /temp volumes to base image.
+RUN mkdir /data
+RUN chown tomcat:tomcat /data
+RUN chmod u=rwx,g=rwx,o=rx /data
+VOLUME /data
+
+#
+# Set the data directory.
+ENV GEOEXPLORER_DATA=/data
+
+#
+# Swap back to the Tomcat user.
+USER tomcat
 

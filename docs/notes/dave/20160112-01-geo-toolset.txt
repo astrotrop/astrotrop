@@ -89,6 +89,8 @@
         tempdir=\${project:?}/temp
         datadir=\${project:?}/data
 
+        tomcatuid=995:994
+
 EOF
 
 # -----------------------------------------------------
@@ -493,8 +495,8 @@ EOF
     rmdata "${geoservertemp:?}"
     rmdata "${geoserverdata:?}"
 
-    mkdata "${geoservertemp:?}" "995:994"
-    mkdata "${geoserverdata:?}" "995:994"
+    mkdata "${geoservertemp:?}" "${tomcatuid:?}"
+    mkdata "${geoserverdata:?}" "${tomcatuid:?}"
 
     #
     # TODO add gosu/notroot to our Tomcat container
@@ -552,7 +554,7 @@ EOF
 
         workspace : AstroTROP
 
-        name : PostGIS
+        name : PostGIS database
         text : PostGIS database
 
         dbtype : postgis (default)
@@ -571,8 +573,8 @@ EOF
 
    Edit layer
    
-        name : MexicanStates
-        text : Oultines of Mexican states
+        name  : MexicanStates   <-- no space
+        title : Mexican States  <-- space ok
 
         Native Bounding Box
         (compute from data)
@@ -660,7 +662,7 @@ EOF
                                 |
                                 +-- ....
                                 +-- ....
-                                +-- Outlines of Mexican states
+                                +-- Mexican States
                                       |
                                       +-- ....
                                       +-- Add to current QGIS project
@@ -687,24 +689,19 @@ EOF
     rmdata "${geoservertemp:?}"
     rmdata "${geoserverdata:?}"
 
-    mkdata "${geoservertemp:?}"
-    mkdata "${geoserverdata:?}"
-
-    chown -R 995:994 "${geoservertemp:?}"
-    chown -R 995:994 "${geoserverdata:?}"
+    mkdata "${geoservertemp:?}" "${tomcatuid:?}"
+    mkdata "${geoserverdata:?}" "${tomcatuid:?}"
 
     docker run \
         --detach \
         --publish 8080:8080 \
         --name "${geoservername:?}" \
-        --env-file "${geoserverenv:?}" \
         --link "${postgisname:?}:${postgislink:?}" \
         --volume "${geoservertemp:?}:/temp" \
         --volume "${geoserverdata:?}:/data" \
         astrotrop/geoserver:1.0
 
     docker logs -f "${geoservername:?}"
-
 
 # -----------------------------------------------------
 # Run our GeoExplorer container.

@@ -1,0 +1,123 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # GeoExplorer has been moved to BoundlessGeo suite.
+    # https://github.com/boundlessgeo/suite
+
+# -----------------------------------------------------
+# Run our build container.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    pushd "${project:?}/github"
+        pushd src/docker
+            pushd geo/geoexplorer
+
+                docker run -it --rm \
+                    --volume "$(pwd):/target" \
+                    astrotrop/java:8.1 \
+                    bash
+
+            popd
+        popd
+    popd
+
+# -----------------------------------------------------
+# Install our build tools.
+# TODO Move to a geo-builder container.
+#[root@builder]
+
+    dnf -y install maven
+    dnf -y install ant
+    dnf -y install ivy
+
+    dnf -y install git
+
+# -----------------------------------------------------
+# Clone the source code.
+# TODO Move to a build script.
+#[root@builder]
+
+    mkdir /opengeo
+    pushd /opengeo
+
+        git clone git://github.com/opengeo/suite.git
+
+        pushd suite
+
+            git submodule init
+
+            git submodule update
+
+        popd
+    popd
+
+# TODO skip/remove geoserver/webapp/composer
+
+# -----------------------------------------------------
+# Build the source code.
+# TODO Move to a build script.
+#[root@builder]
+
+    pushd /opengeo/suite
+        pushd geoexplorer
+
+            mvn clean install
+
+            ant build
+                
+        popd
+    popd
+
+# -----------------------------------------------------
+# Transfer the war file to our Docker build.
+# TODO Move to a build script.
+#[root@builder]
+
+    cp -r \
+        /opengeo/suite/geoexplorer/target/geoexplorer.war \
+        /target/geoexplorer.zip
+
+# -----------------------------------------------------
+# Exit our build container.
+# TODO Move to a build script.
+#[root@builder]
+
+    exit
+
+# -----------------------------------------------------
+# Build our GeoExplorer container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    pushd "${project:?}/github"
+        pushd src/docker
+
+            docker build \
+                --tag astrotrop/geoexplorer:1.0 \
+                geo/geoexplorer
+
+        popd
+    popd
+
+

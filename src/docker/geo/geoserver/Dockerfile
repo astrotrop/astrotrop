@@ -47,15 +47,17 @@ RUN chown -R tomcat:tomcat ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/data
 RUN chmod -R u+rw ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/data
 
 #
-# Move the data directory outside the webapp.
+# Create the /data directory.
 # Note - VOLUME needs to be done AFTER any chown and chmod
-# http://docs.geoserver.org/latest/en/user/datadirectory/data-dir-setting.html#data-dir-setting
 # TODO Move /data and /temp volumes to base image.
 RUN mkdir /data
 RUN chown tomcat:tomcat /data
 RUN chmod u=rwx,g=rwx,o=rx /data
 VOLUME /data
 
+#
+# Set the data directory.
+# http://docs.geoserver.org/latest/en/user/datadirectory/data-dir-setting.html#data-dir-setting
 ENV GEOSERVER_DATA_DIR=/data
 
 #
@@ -63,5 +65,7 @@ ENV GEOSERVER_DATA_DIR=/data
 # Fairly easy to add pre scripts.
 # Post scripts could be done using docker exec.
 
+#
+# Swap back to the Tomcat user.
 USER tomcat
 
