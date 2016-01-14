@@ -27,10 +27,10 @@
 
     ischnura-createvm
 
-        INFO : Node name [kappa]
+        INFO : Node name [eta]
         INFO : Base name [fedora-21-16G-20150407.qcow]
         INFO : Base path [/var/lib/libvirt/images/base/fedora-21-16G-20150407.qcow]
-        INFO : Disc name [kappa.qcow]
+        INFO : Disc name [eta.qcow]
         INFO : Disc size [16GiB]
 
 # -----------------------------------------

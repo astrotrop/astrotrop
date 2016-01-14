@@ -1,0 +1,67 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Stop/start our GeoServer container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker stop  "${geoservername:?}"
+    docker rm -v "${geoservername:?}"
+
+    pushd "${project:?}/github" ; git pull ; popd
+
+    pushd "${project:?}/github"
+        pushd src/docker
+            docker build \
+                --tag astrotrop/geoserver:1.0 \
+                geo/geoserver
+        popd
+    popd
+
+    rmdata "${geoservertemp:?}"
+    rmdata "${geoserverdata:?}"
+
+    mkdata "${geoservertemp:?}" "${tomcatuid:?}"
+    mkdata "${geoserverdata:?}" "${tomcatuid:?}"
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --name "${geoservername:?}" \
+        --env-file "${geoserverenv:?}" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        --volume "${geoservertemp:?}:/temp" \
+        --volume "${geoserverdata:?}:/data" \
+        astrotrop/geoserver:1.0
+
+    docker logs -f "${geoservername:?}"
+
+
+
+
+    http://eta.virtual.metagrid.co.uk:8080/geoserver/web/
+
+
+
+
