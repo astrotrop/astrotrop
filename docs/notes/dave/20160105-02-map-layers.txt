@@ -200,8 +200,7 @@
 
             iv. Amazonia Actual tree growth (Leeds) -- Modelled tree growth (Bristol)
 
-            v.
-            Congo tree growth (Leicester) -- Modelled tree growth (Bristol)
+            v. Congo tree growth (Leicester) -- Modelled tree growth (Bristol)
             Q: Can measured tree growth validate modelled tree growth?
 
             vi. Mexico Dry forest species (Edinburgh) -- Tree Species (Bournemouth)

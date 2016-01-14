@@ -216,16 +216,6 @@ EOF
 
     source "${HOME:?}/astrotrop.conf"
 
-    mkdata()
-        {
-        local path=${1:?}
-        if [ ! -e "${path}" ]
-        then
-            mkdir --parents "${path}"
-        fi
-        chcon -t svirt_sandbox_file_t "${path}"
-        }
-
     rmdata()
         {
         local path=${1:?}
@@ -233,6 +223,21 @@ EOF
         then
             rm -rf "${path}"
         fi
+        }
+
+    mkdata()
+        {
+        local path=${1:?}
+        local user=${2:-}
+        if [ ! -e "${path}" ]
+        then
+            mkdir --parents "${path:?}"
+        fi
+        if [ -n "${user:-}" ]
+        then
+            chown -R "${user:?}" "${path:?}"
+        fi
+        chcon -t svirt_sandbox_file_t "${path:?}"
         }
 
     rmdata "${tempdir:?}"
@@ -295,7 +300,6 @@ EOF
         --volume "${postgisdata:?}:${postgisvol:?}" \
         astrotrop/postgis:2.1
 
-
 #
 # We might need this ?
 # GRANT ALL PRIVILEGES ON DATABASE postgisdb TO postgisuser;
@@ -334,19 +338,14 @@ EOF
 
     source "${HOME:?}/astrotrop.conf"
     pushd "${rstudiodata:?}"
-
         if [ ! -e geostats ]
         then
-
             if [ ! -e geostats.zip ]
             then
                 wget https://dl.dropboxusercontent.com/u/2703650/Courses/geostats/geostats.zip
             fi
-
             unzip geostats.zip
         fi
-
-
     popd
 
 # -----------------------------------------------------
@@ -380,7 +379,7 @@ EOF
 # -----------------------------------------------------
 # Install the PostgreSQL drivers.
 # https://code.google.com/p/rpostgresql/
-#[user@rstudio]
+#[RStudio]
 
     #
     # Debian package is only available in testing (stretch) and unstable (sid).
@@ -401,7 +400,7 @@ EOF
     # *username and password should come from env settings.
 
     drv <- dbDriver("PostgreSQL")
-    con <- dbConnect(drv, dbname="postgisdb", host="postgis.5678", user="postgisuser", password="AhJour2eo7Hohnaxei7E")
+    con <- dbConnect(drv, dbname="postgisdb", host="postgis.5678", user="########", password="########")
 
     data <- dbGetQuery(con, "SELECT postgis_full_version()")
     View(data)
@@ -411,7 +410,7 @@ EOF
 
 # -----------------------------------------------------
 # Install the GDAL tools.
-#[user@rstudio]
+#[RStudio]
 
     #
     # Debian package is available in jessie, wheezy and squeeze.
@@ -432,7 +431,7 @@ EOF
 # -----------------------------------------------------
 # Loading vector data into PostGIS from R.
 # https://rpubs.com/dgolicher/6373
-#[user@rstudio]
+#[RStudio]
  
     #
     # Import the test shapefiles.
@@ -456,7 +455,7 @@ EOF
     # *username and password should come from env settings.
     writeOGR(
         states,
-        "PG:dbname='postgisdb' host='postgis' user='postgisuser' password='AhJour2eo7Hohnaxei7E'",
+        "PG:dbname='postgisdb' host='postgis' user='########' password='########'",
         layer_options = "geometry_name=geom",
         "states",
         "PostgreSQL"
@@ -494,8 +493,12 @@ EOF
     rmdata "${geoservertemp:?}"
     rmdata "${geoserverdata:?}"
 
-    mkdata "${geoservertemp:?}"
-    mkdata "${geoserverdata:?}"
+    mkdata "${geoservertemp:?}" "995:994"
+    mkdata "${geoserverdata:?}" "995:994"
+
+    #
+    # TODO add gosu/notroot to our Tomcat container
+    #
 
 # -----------------------------------------------------
 # Run our GeoServer container.
@@ -503,24 +506,204 @@ EOF
 
     source "${HOME:?}/astrotrop.conf"
 
-#   geoserverenv=$(mktemp)
-#   cat > "${geoserverenv:?}" <<- EOF
-#EOF
-#   --env-file "${geoserverenv:?}" \
+    geoserverenv=$(mktemp)
+    cat > "${geoserverenv:?}" <<- EOF
+GEOSERVER_DATA_DIR=/data
+EOF
+
+# TODO GeoServer admin user and pass
+# TODO PostGIS host, user and pass
 
     docker run \
         --detach \
         --publish 8080:8080 \
         --name "${geoservername:?}" \
+        --env-file "${geoserverenv:?}" \
         --link "${postgisname:?}:${postgislink:?}" \
         --volume "${geoservertemp:?}:/temp" \
         --volume "${geoserverdata:?}:/data" \
         astrotrop/geoserver:1.0
 
+    docker logs -f "${geoservername:?}"
 
+# -----------------------------------------------------
+# Test our GeoServer container.
+#[user@desktop]
 
+    #
+    # Connect using web browser
+    firefox 'http://eta.virtual.metagrid.co.uk:8080/geoserver/' &
 
+    # The default username and password is admin and geoserver.
+    # These can be changed by editing the security/users.properties
+    # file in the GeoServer Data Directory.
 
+# -----------------------------------------------------
+# Create a GeoServer layer from our PostGIS data.
+#[GeoServer]
+
+    New workspace
+
+        name : AstroTROP
+        namespace : http://www.astrotrop.org/
+        default : true
+
+    New (vector) data store
+
+        workspace : AstroTROP
+
+        name : PostGIS
+        text : PostGIS database
+
+        dbtype : postgis (default)
+        host : postgis.5678 (from the Docker link name) 
+        port : 5432
+        database : postgisdb 
+        schema : public
+        user : ######## (from the Docker config) 
+        pass : ########### (from the Docker config) 
+
+    New (layer) resource
+    
+        from : AstroTROP:PostGIS
+        layer : states
+        action : publish
+
+   Edit layer
+   
+        name : MexicanStates
+        text : Oultines of Mexican states
+
+        Native Bounding Box
+        (compute from data)
+
+        Lat/Lon Bounding Box
+        (compute from data)
+
+# -----------------------------------------------------
+# Add a background layer to QGIS.
+#[QGIS]
+
+    Web
+     |
+     +-- OpenLayers plugin
+           |
+           +-- OpenStreetMap
+                 |
+                 +-- OCM Landscape
+    
+
+# -----------------------------------------------------
+# Display the PostGIS layer in QGIS.
+#[QGIS]
+        
+    OpenGeo
+        |
+        +-- OpenGeo Explorer
+              |
+              +-- PostGIS connections
+                    |
+                    +-- ....
+                    +-- ....
+                    +-- New PostGIS connection
+
+                          name : AstroTROP PostGIS server
+                          host : eta.virtual.metagrid.co.uk
+                          port : 5432
+                          database : postgisdb
+                          username : ########
+                          password : ########
+
+                    |
+                    +-- ....
+                    +-- ....
+                    +-- AstroTROP PostGIS server
+                          |
+                          +-- ....
+                          +-- ....
+                          +-- public
+                                |
+                                +-- ....
+                                +-- ....
+                                +-- states
+                                      |
+                                      +-- ....
+                                      +-- Add to current QGIS project
+
+# -----------------------------------------------------
+# Display the GeoServer layer in QGIS.
+#[QGIS]
+        
+    OpenGeo
+        |
+        +-- OpenGeo Explorer
+              |
+              +-- GeoServer catalogs
+                    |
+                    +-- ....
+                    +-- ....
+                    +-- New catalog
+
+                          name : AstroTROP GeoServer
+                          url  : http://eta.virtual.metagrid.co.uk:8080/geoserver
+                          user : ########
+                          pass : ########
+
+                    |
+                    +-- ....
+                    +-- ....
+                    +-- AstroTROP GeoServer
+                          |
+                          +-- ....
+                          +-- ....
+                          +-- GeoServer layers
+                                |
+                                +-- ....
+                                +-- ....
+                                +-- Outlines of Mexican states
+                                      |
+                                      +-- ....
+                                      +-- Add to current QGIS project
+
+# -----------------------------------------------------
+# Stop/start our GeoServer container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker stop  "${geoservername:?}"
+    docker rm -v "${geoservername:?}"
+
+    pushd "${project:?}/github" ; git pull ; popd
+
+    pushd "${project:?}/github"
+        pushd src/docker
+            docker build \
+                --tag astrotrop/geoserver:1.0 \
+                geo/geoserver
+        popd
+    popd
+
+    rmdata "${geoservertemp:?}"
+    rmdata "${geoserverdata:?}"
+
+    mkdata "${geoservertemp:?}"
+    mkdata "${geoserverdata:?}"
+
+    chown -R 995:994 "${geoservertemp:?}"
+    chown -R 995:994 "${geoserverdata:?}"
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --name "${geoservername:?}" \
+        --env-file "${geoserverenv:?}" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        --volume "${geoservertemp:?}:/temp" \
+        --volume "${geoserverdata:?}:/data" \
+        astrotrop/geoserver:1.0
+
+    docker logs -f "${geoservername:?}"
 
 
 # -----------------------------------------------------
