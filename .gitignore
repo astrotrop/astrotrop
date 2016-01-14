@@ -42,3 +42,8 @@ docs/reports/evaluation/dave/document.blg
 docs/reports/evaluation/dave/document.log
 docs/reports/evaluation/dave/document.run.xml
 
+#
+# GeoExplorer webapp
+src/docker/geo/geoexplorer/geoexplorer
+src/docker/geo/geoexplorer/geoexplorer.zip
+src/docker/geo/geoexplorer/geoexplorer.war
