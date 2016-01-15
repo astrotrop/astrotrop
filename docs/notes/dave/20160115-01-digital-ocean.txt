@@ -20,22 +20,163 @@
 #
 #
 
+# -----------------------------------------------------
+# Create our SSH key.
+#[user@desktop]
+
+    pushd "${HOME:?}/.ssh"
+
+        ssh-keygen \
+            -t rsa -b 2048 \
+            -C "zrq.digitalocean.com.rsa" \
+            -f 'zrq.digitalocean.com.rsa'
+
+    popd
+
+# -----------------------------------------------------
+# Create our virtual machines.
+#[user@desktop]
+
+    name : astrotrop-01
+    type : Fedora-23
+    size : 1CPU / 1GB Memory / 30GB Disk / LON1
+    IPv4 : 178.62.65.66
+    IPv6 : 2a03:b0c0:1:d0::f0:c001
+
+    name : astrotrop-02
+    type : Fedora-23
+    size : 1CPU / 1GB Memory / 30GB Disk / LON1
+    IPv4 : 46.101.84.247
+    IPv6 : 2a03:b0c0:1:a1::11:a001
+
+# -----------------------------------------------------
+# Update our local DNS records.
+#[admin@network]
+
+    vi /etc/named.localnet
+
+    +   zone "astrotrop.metagrid.xyz" {
+    +       type master;
+    +       file  "data/astrotrop.metagrid.xyz.zone";
+    +       };
+
+    vi /var/named/data/astrotrop.metagrid.xyz.zone
+
+    +   ;
+    +   ; Zone authority
+    +   $TTL 1d
+    +   $ORIGIN astrotrop.metagrid.xyz.
+    +   @ IN  SOA dns-one.metagrid.co.uk. dns-admin.metagrid.co.uk. (
+    +       20160115 ; Serial number (YYYYMMdd)
+    +       2h       ; Refresh time
+    +       5m       ; Retry time
+    +       2d       ; Expire time
+    +       1d       ; Default TTL (bind 8 ignores this, bind 9 needs it)
+    +       )
+    +   ;
+    +   ; Name server address
+    +   @ IN  NS dns-one.metagrid.co.uk.
+    +   @ IN  NS dns-two.metagrid.co.uk.
+    +
+    +   ;
+    +   ; DigitalOcean machines.
+    +   astrotrop-01    A       178.62.65.66
+    +   astrotrop-01    AAAA    2a03:b0c0:1:d0::f0:c001
+    +
+    +   astrotrop-02    A       46.101.84.247
+    +   astrotrop-02    AAAA    2a03:b0c0:1:a1::11:a001
+
+# -----------------------------------------------------
+# Update our local SSH records.
+#[user@desktop]
+
+    gedit "${HOME:?}/.ssh/config" &
+
+    +   Host astrotrop-01 astrotrop-02
+    +       User root
+    +       HostName %h.astrotrop.metagrid.xyz 
+    +       IdentityFile ~/.ssh/zrq.digitalocean.com.rsa
+    +       Protocol 2
+    +       Compression yes
+    +       PasswordAuthentication no
+
+
+# -----------------------------------------
+# Install admin tools.
+#[root@virtual]
+
+    dnf -y install htop
+    dnf -y install pwgen
+    
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy generator.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@virtual]
+
+    dnf install -y haveged
+    systemctl enable haveged.service
+    systemctl start  haveged.service
+
+# -----------------------------------------------------
+# Install and run Docker.
+#[root@virtual]
 
     #
-    # astrotrop-01
-    # Fedora-23
-    # IPv4 46.101.84.247
-    # IPv6 2a03:b0c0:1:a1::11:a001/64 
-    # 2CPU / 2GB Memory / 40GB Disk / LON1
+    # Install a specific version to avoid problems with updated storage driver.
+    # yum -y install https://kojipkgs.fedoraproject.org//packages/docker-io/1.6.2/3.gitc3ca5bb.fc21/x86_64/docker-io-1.6.2-3.gitc3ca5bb.fc21.x86_64.rpm
 
-    #
-    # astrotrop-02
-    # Fedora-23
-    # IPv4 178.62.67.35
-    # IPv6 2a03:b0c0:1:d0::10:1/64
-    # 2CPU / 2GB Memory / 40GB Disk / LON1
+    dnf -y install docker-io
+    systemctl enable docker.service
+    systemctl start  docker.service
+    systemctl status docker.service
 
+# -----------------------------------------------------
+# Disable SELinux.
+# chown: changing ownership of ‘/var/lib/postgresql/data’: Permission denied
+#[root@virtual]
 
+    setenforce permissive
 
+    sed -i '
+        s/^SELINUX=.*$/SELINUX=permissive/
+        ' /etc/selinux/config
 
+# -----------------------------------------
+# Install source control tools.
+#[root@virtual]
+
+    dnf -y install git
+
+# -----------------------------------------------------
+# Configure our build.
+#[root@virtual]
+
+    cat > "${HOME:?}/astrotrop.conf" << EOF
+
+        project=/var/local/astrotrop
+        tempdir=\${project:?}/temp
+        datadir=\${project:?}/data
+
+        tomcatuid=995:994
+
+EOF
+
+# -----------------------------------------------------
+# Clone our source code.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    if [ ! -e "${project:?}/github" ]
+    then
+        mkdir --parent "${project:?}"
+        pushd "${project:?}"
+            git clone https://github.com/astrotrop/astrotrop.git github
+        popd
+    else
+        pushd "${project:?}/github"
+            git pull
+        popd
+    fi
 
