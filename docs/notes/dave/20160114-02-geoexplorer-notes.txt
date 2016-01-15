@@ -88,6 +88,8 @@
         tempdir=\${project:?}/temp
         datadir=\${project:?}/data
 
+        tomcatuid=995:994
+
 EOF
 
 # -----------------------------------------------------
@@ -148,7 +150,6 @@ EOF
         popd
     popd
 
-
 # -----------------------------------------------------
 # Build the GeoExplorer webapp.
 #[user@desktop]
@@ -159,10 +160,11 @@ EOF
             pushd geo/geoexplorer
 
                 docker run -it --rm \
-                    --volume "build.sh:/build.sh" \
                     --volume "$(pwd):/target" \
                     astrotrop/java:8.1 \
-                    build.sh
+                    bash
+                    
+                        source /target/build.sh
 
             popd
         popd
@@ -224,12 +226,12 @@ EOF
     cat > "${geoexplorerenv:?}" <<- EOF
 EOF
 
+
     docker run \
         --detach \
-        --publish 8081:8080 \
+        --publish 8080:8080 \
         --name "${geoexplorername:?}" \
         --env-file "${geoexplorerenv:?}" \
-        --link "${geoservername:?}: ${geoserverlink:?}" \
         --volume "${geoexplorertemp:?}:/temp" \
         --volume "${geoexplorerdata:?}:/data" \
         astrotrop/geoexplorer:1.0
@@ -242,7 +244,7 @@ EOF
 
     #
     # Connect using web browser
-    firefox 'http://eta.virtual.metagrid.co.uk:8081/geoexplorer/' &
+    firefox 'http://eta.virtual.metagrid.co.uk:8080/geoexplorer/' &
 
     #
     # Problem - internal and external DBNS names are different.
@@ -257,4 +259,4 @@ EOF
     
 
 
-
+http://theta.virtual.metagrid.co.uk:8080/geoexplorer/composer/#maps/1

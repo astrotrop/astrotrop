@@ -33,6 +33,7 @@
 
 # -----------------------------------------------------
 # Clone the source code.
+# TODO this probably lives outside the container
 #[root@builder]
 
     mkdir /opengeo
