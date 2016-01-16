@@ -73,12 +73,6 @@
         s/^SELINUX=.*$/SELINUX=permissive/
         ' /etc/selinux/config
 
-# -----------------------------------------
-# Install source control tools.
-#[root@virtual]
-
-    yum -y install git
-
 # -----------------------------------------------------
 # Configure our build.
 #[root@virtual]
@@ -92,6 +86,12 @@
         tomcatuid=995:994
 
 EOF
+
+# -----------------------------------------
+# Install source control tools.
+#[root@virtual]
+
+    yum -y install git
 
 # -----------------------------------------------------
 # Clone our source code.

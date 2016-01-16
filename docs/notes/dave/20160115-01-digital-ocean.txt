@@ -142,13 +142,6 @@
     sed -i '
         s/^SELINUX=.*$/SELINUX=permissive/
         ' /etc/selinux/config
-
-# -----------------------------------------
-# Install source control tools.
-#[root@virtual]
-
-    dnf -y install git
-
 # -----------------------------------------------------
 # Configure our build.
 #[root@virtual]
@@ -162,6 +155,12 @@
         tomcatuid=995:994
 
 EOF
+
+# -----------------------------------------
+# Install source control tools.
+#[root@virtual]
+
+    dnf -y install git
 
 # -----------------------------------------------------
 # Clone our source code.
@@ -179,4 +178,229 @@ EOF
             git pull
         popd
     fi
+
+# -----------------------------------------------------
+# Build our base containers.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    pushd "${project:?}/github"
+        pushd src/docker
+
+            docker build \
+                --tag astrotrop/fedora:22.1 \
+                base/fedora
+
+            docker build \
+                --tag astrotrop/apache:1.0 \
+                base/apache
+
+            docker build \
+                --tag astrotrop/postgis:2.1 \
+                base/postgis
+
+            docker build \
+                --tag astrotrop/java:8.1 \
+                base/java
+
+            docker build \
+                --tag astrotrop/tomcat:8.30 \
+                base/tomcat
+
+        popd
+    popd
+    
+# -----------------------------------------------------
+# Build our RStudio container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    pushd "${project:?}/github"
+        pushd src/docker
+
+            docker build \
+                --tag astrotrop/rstudio:1.0 \
+                R/rstudio
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Build our GeoServer container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    pushd "${project:?}/github"
+        pushd src/docker
+
+            docker build \
+                --tag astrotrop/geoserver:1.0 \
+                geo/geoserver
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Create our data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    rmdata()
+        {
+        local path=${1:?}
+        if [ -e "${path}" ]
+        then
+            rm -rf "${path}"
+        fi
+        }
+
+    mkdata()
+        {
+        local path=${1:?}
+        local user=${2:-}
+        if [ ! -e "${path}" ]
+        then
+            mkdir --parents "${path:?}"
+        fi
+        if [ -n "${user:-}" ]
+        then
+            chown -R "${user:?}" "${path:?}"
+        fi
+        chcon -t svirt_sandbox_file_t "${path:?}"
+        }
+
+    rmdata "${tempdir:?}"
+    rmdata "${datadir:?}"
+
+    mkdata "${tempdir:?}"
+    mkdata "${datadir:?}"
+
+# -----------------------------------------------------
+# Configure our PostGIS container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" <<- EOF
+
+        postgisname=postgis.1234
+        postgislink=postgis.5678
+
+        postgisdata=\${datadir:?}/postgis
+        postgistemp=\${tempdir:?}/postgis
+
+        postgisvol=/postgis
+        postgisdb=postgisdb
+        postgisuser=postgisuser
+        postgispass=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Create our PostGIS data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${postgisdata:?}"
+    rmdata "${postgistemp:?}"
+
+    mkdata "${postgisdata:?}"
+    mkdata "${postgistemp:?}"
+
+# -----------------------------------------------------
+# Run our PostGIS container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    postgisenv=$(mktemp)
+    cat > "${postgisenv:?}" <<- EOF
+PGDATA=${postgisvol:?}
+POSTGRES_DB=${postgisdb:?}
+POSTGRES_USER=${postgisuser:?}
+POSTGRES_PASSWORD=${postgispass:?}
+EOF
+
+    docker run \
+        --detach \
+        --publish 5432:5432 \
+        --name "${postgisname:?}" \
+        --env-file "${postgisenv:?}" \
+        --volume "${postgisdata:?}:${postgisvol:?}" \
+        astrotrop/postgis:2.1
+
+# -----------------------------------------------------
+# Configure our RStudio container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        rstudioname=rstudio
+        rstudiolink=rstudio
+
+        rstudiodata=\${datadir:?}/rstudio
+        rstudiotemp=\${tempdir:?}/rstudio
+
+EOF
+
+# -----------------------------------------------------
+# Create our RStudio data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${rstudiotemp:?}"
+    rmdata "${rstudiodata:?}"
+
+    mkdata "${rstudiotemp:?}"
+    mkdata "${rstudiodata:?}"
+
+# -----------------------------------------------------
+# Download our RStudio test data.
+#[root@virtual]
+
+    dnf -y install wget
+    dnf -y install unzip
+
+    source "${HOME:?}/astrotrop.conf"
+    pushd "${rstudiodata:?}"
+        if [ ! -e geostats ]
+        then
+            if [ ! -e geostats.zip ]
+            then
+                wget https://dl.dropboxusercontent.com/u/2703650/Courses/geostats/geostats.zip
+            fi
+            unzip geostats.zip
+        fi
+    popd
+
+# -----------------------------------------------------
+# Run our RStudio container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+#   rstudioenv=$(mktemp)
+#   cat > "${rstudioenv:?}" <<- EOF
+#EOF
+#   --env-file "${rstudioenv:?}" \
+
+    docker run \
+        --detach \
+        --publish 8787:8787 \
+        --name "${rstudioname:?}" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        --volume "${rstudiotemp:?}:/temp" \
+        --volume "${rstudiodata:?}:/data" \
+        astrotrop/rstudio:1.0
+
+# -----------------------------------------------------
+# Test our RStudio container.
+#[user@desktop]
+
+    #
+    # Connect using web browser
+    firefox 'http://eta.virtual.metagrid.co.uk:8787/' &
 

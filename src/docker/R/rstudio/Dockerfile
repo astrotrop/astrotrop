@@ -20,7 +20,7 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
 # Add the R ODBC package to connect to PostGIS.
-RUN apt-get update \ 
+RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
         r-cran-rodbc \
 	&& rm -rf /var/lib/apt/lists/
