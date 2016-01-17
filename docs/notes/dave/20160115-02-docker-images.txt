@@ -37,10 +37,11 @@
 
     docker push "astrotrop/postgis:2.1"
 
+    docker push "astrotrop/rstudio:1.0"
+
     docker push "astrotrop/geoexplorer:1.0"
     docker push "astrotrop/geoserver:1.0"
 
-    docker push "astrotrop/rstudio:1.0"
 
     docker push "astrotrop/ckan:1.0"
     docker push "astrotrop/push:1.0"

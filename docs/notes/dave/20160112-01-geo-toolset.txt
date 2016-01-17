@@ -437,7 +437,7 @@ EOF
  
     #
     # Import the test shapefiles.
-    states<-readOGR('//data/geostats/shapefiles','mex_states')
+    states<-readOGR('/data/geostats/shapefiles','mex_states')
 
         OGR data source with driver: ESRI Shapefile 
         Source: "//data/geostats/shapefiles", layer: "mex_states"
@@ -457,7 +457,7 @@ EOF
     # *username and password should come from env settings.
     writeOGR(
         states,
-        "PG:dbname='postgisdb' host='postgis' user='########' password='########'",
+        "PG:dbname='postgisdb' host='postgis.5678' user='########' password='########'",
         layer_options = "geometry_name=geom",
         "states",
         "PostgreSQL"
@@ -532,7 +532,7 @@ EOF
 
     #
     # Connect using web browser
-    firefox 'http://eta.virtual.metagrid.co.uk:8080/geoserver/' &
+    firefox 'http://astrotrop-01.astrotrop.metagrid.xyz:8080/geoserver/' &
 
     # The default username and password is admin and geoserver.
     # These can be changed by editing the security/users.properties
@@ -645,7 +645,7 @@ EOF
                     +-- New catalog
 
                           name : AstroTROP GeoServer
-                          url  : http://eta.virtual.metagrid.co.uk:8080/geoserver
+                          url  : http://astrotrop-01.astrotrop.metagrid.xyz:8080/geoserver
                           user : ########
                           pass : ########
 
