@@ -1,0 +1,315 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Configure our build.
+#[root@virtual]
+
+    cat > "${HOME:?}/astrotrop.conf" << EOF
+
+        project=/var/local/projects/edinburgh/astrotrop
+        tempdir=\${project:?}/temp
+        datadir=\${project:?}/data
+
+        imageset=1.1
+
+EOF
+
+# -----------------------------------------------------
+# Clone our source code.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    if [ ! -e "${project:?}/github" ]
+    then
+        mkdir --parent "${project:?}"
+        pushd "${project:?}"
+            git clone https://github.com/astrotrop/astrotrop.git github
+        popd
+    else
+        pushd "${project:?}/github"
+            git pull
+        popd
+    fi
+
+# -----------------------------------------------------
+# Build our Fedora containers.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    pushd "${project:?}/github"
+        pushd src/docker
+
+            docker build \
+                --tag "astrotrop/fedora:22-${imageset:?}" \
+                base/fedora
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Build our Apache containers.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    pushd "${project:?}/github"
+        pushd src/docker
+
+            docker build \
+                --tag "astrotrop/apache-base:${imageset:?}" \
+                base/apache/base
+
+            docker build \
+                --tag "astrotrop/apache-wsgi:${imageset:?}" \
+                base/apache/wsgi
+
+            docker build \
+                --tag "astrotrop/apache-proxy:${imageset:?}" \
+                base/apache/proxy
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Build our PostGIS container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    pushd "${project:?}/github"
+        pushd src/docker
+
+            docker build \
+                --tag "astrotrop/postgis:2-${imageset:?}" \
+                base/postgis
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Build our RStudio container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    pushd "${project:?}/github"
+        pushd src/docker
+
+            docker build \
+                --tag "astrotrop/rstudio:${imageset:?}" \
+                R/rstudio
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Build our Java containers.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    pushd "${project:?}/github"
+        pushd src/docker
+
+            docker build \
+                --tag "astrotrop/java:8-${imageset:?}" \
+                base/java
+
+            docker build \
+                --tag "astrotrop/tomcat:8-${imageset:?}" \
+                base/tomcat
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Build our GeoServer container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    pushd "${project:?}/github"
+        pushd src/docker
+
+            docker build \
+                --tag "astrotrop/geoserver:${imageset:?}" \
+                geo/geoserver
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Build our GeoExplorer container.
+# Build our CKAN containers.
+# -----------------------------------------------------
+
+
+# -----------------------------------------------------
+# Push our Docker images.
+#[user@laptop]
+
+    docker login
+
+        Username: xxxx
+        Password: yyyy
+        Email:    zzzz
+        Login Succeeded
+
+    docker push "astrotrop/fedora:22-${imageset:?}"
+
+    docker push "astrotrop/java:8-${imageset:?}"
+    docker push "astrotrop/tomcat:8-${imageset:?}"
+
+    docker push "astrotrop/postgis:2-${imageset:?}"
+
+    docker push "astrotrop/apache-base:${imageset:?}"
+    docker push "astrotrop/apache-wsgi:${imageset:?}"
+    docker push "astrotrop/apache-proxy:${imageset:?}"
+
+    docker push "astrotrop/geoserver:${imageset:?}"
+
+    docker push "astrotrop/rstudio:${imageset:?}"
+
+
+# -----------------------------------------------------
+# Problems pushing data to docker repo
+#
+
+    #
+    # Docker-1.9.1 (Fedora 23) fails
+
+    docker push astrotrop/java:8.1
+
+        The push refers to a repository [docker.io/astrotrop/java] (len: 1)
+        357388b6651a: Image already exists 
+        ....
+        ....
+        ....
+        ....
+
+    cat ~/.docker/config.json 
+        {
+        "auths": {
+            "docker.io": {
+                "auth": "eXJ2YWZob206UzZsSThrTkZ6MHFORDBId1A5Ulg=",
+                "email": "docker.com@metagrid.co.uk"
+                }
+            }
+        }
+
+
+    docker version
+
+        Client:
+
+            Version:         1.9.1-fc23
+            API version:     1.21
+            Package version: docker-1.9.1-4.git6ec29ef.fc23.x86_64
+            Go version:      go1.5.1
+            Git commit:      110aed2-dirty
+            Built:           Wed Dec  9 09:09:16 UTC 2015
+            OS/Arch:         linux/amd64
+
+        Server:
+
+            Version:         1.9.1-fc23
+            API version:     1.21
+            Package version: docker-1.9.1-4.git6ec29ef.fc23.x86_64
+            Go version:      go1.5.1
+            Git commit:      110aed2-dirty
+            Built:           Wed Dec  9 09:09:16 UTC 2015
+            OS/Arch:         linux/amd64
+
+    #
+    # Docker-1.6.2 (Fedora 21 (pinned)) works
+    docker push astrotrop/java:8.2
+
+        The push refers to a repository [docker.io/astrotrop/java] (len: 1)
+        87cbd0aa0224: Preparing 
+        unauthorized: access to the requested resource is not authorized
+
+    
+    cat ~/.dockercfg 
+        {
+        "https://index.docker.io/v1/": {
+	        "auth": "eXJ2YWZob206UzZsSThrTkZ6MHFORDBId1A5Ulg=",
+		    "email": "docker.com@metagrid.co.uk"
+	        }
+        }
+
+    docker version
+
+        Client version: 1.6.2.fc21
+        Client API version: 1.18
+        Go version (client): go1.4.2
+        Git commit (client): c3ca5bb/1.6.2
+        OS/Arch (client): linux/amd64
+        Server version: 1.6.2.fc21
+        Server API version: 1.18
+        Go version (server): go1.4.2
+        Git commit (server): c3ca5bb/1.6.2
+        OS/Arch (server): linux/amd64
+
+
+    #
+    # Docker-1.9.1 (Docker) works
+    # https://forums.docker.com/t/unable-to-push-image-to-docker-hub/4944/8
+    # "Was due to the version of docker that comes with Fedora"
+    # removed fedora docker-io, installed docker-engine 
+
+    cat ~/.docker/config.json 
+        {
+        "auths": {
+            "docker.io": {
+                "auth": "eXJ2YWZob206UzZsSThrTkZ6MHFORDBId1A5Ulg=",
+                "email": "docker.com@metagrid.co.uk"
+                },
+            "https://index.docker.io/v1/": {
+                "auth": "eXJ2YWZob206UzZsSThrTkZ6MHFORDBId1A5Ulg=",
+                "email": "docker.com@metagrid.co.uk"
+                }
+            }
+        }
+
+    docker version
+
+        Client:
+
+            Version:      1.9.1
+            API version:  1.21
+            Go version:   go1.4.2
+            Git commit:   a34a1d5
+            Built:        Thu Jan 14 04:39:21 UTC 2016
+            OS/Arch:      linux/amd64
+
+        Server:
+
+            Version:      1.9.1
+            API version:  1.21
+            Go version:   go1.4.2
+            Git commit:   a34a1d5
+            Built:        Thu Jan 14 04:39:21 UTC 2016
+            OS/Arch:      linux/amd64
+
+
+

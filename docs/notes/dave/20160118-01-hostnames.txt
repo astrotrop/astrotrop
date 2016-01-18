@@ -1,0 +1,98 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Separate domain for the project.
+
+        astrotrop.metagrid.xyz
+
+    #
+    # Separate domains for each group.
+
+        edinburgh
+        leeds
+        leicester
+        bournmouth
+
+    #
+    # Separate names for each service.
+
+        geoserver
+        rstudio
+
+    #
+    # Separate names for each service.
+
+        geoserver-01
+        rstudio-01
+
+    #
+    # Abreviate the names ?
+    
+        edi     edinburgh
+        lee     leeds
+        lei     leicester
+        bou     bournmouth
+
+        astrop  astrotrop
+
+        gs-01.edi.astrop.metagrid.xyz
+        rs-01.edi.astrop.metagrid.xyz
+
+    #
+    # Use name virtual hosts and http reverse proxy
+    
+        http://rstudio-01.edi.trop.metagrid.xyz
+        http://geoserv-01.edi.trop.metagrid.xyz
+        http://postgis-01.edi.trop.metagrid.xyz
+        http://geoexpo-01.edi.trop.metagrid.xyz
+
+        http://ckan-01.edi.trop.metagrid.xyz
+
+        http://geoserv-01.edi.astrotrop.metagrid.xyz
+        http://geoserv-01.edi.astrotrop.metagrid.xyz
+
+    #
+    # Skip the location part
+
+        http://geoserv-01.astrotrop.metagrid.xyz
+        http://geoserv-02.astrotrop.metagrid.xyz
+
+        http://rstudio-01.astrotrop.metagrid.xyz
+        http://rstudio-02.astrotrop.metagrid.xyz
+
+        http://postgis-01.astrotrop.metagrid.xyz
+        http://postgis-02.astrotrop.metagrid.xyz
+
+
+
+
+
+
+
+
+    
+    
+    
+    
+    
+    

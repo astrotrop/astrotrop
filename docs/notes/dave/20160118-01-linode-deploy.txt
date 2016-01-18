@@ -1,0 +1,96 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Create our virtual machines.
+#[user@desktop]
+
+       1 CPU 
+      1G memory
+     24G disk space
+
+          8G system     /dev/sda
+        128M swap       /dev/sdb
+         16G data       /dev/sdc
+
+    ipv4 : 176.58.103.119
+    ipv6 : 2a01:7e00::f03c:91ff:fef1:62e8
+
+# -----------------------------------------------------
+# Update our DNS records.
+#[admin@network]
+
+        $ORIGIN metagrid.co.uk
+
+        ;
+        ; Linode machines.
+    +   astrotrop-03.linode    A       176.58.103.119
+    +   astrotrop-03.linode    AAAA    2a01:7e00::f03c:91ff:fef1:62e8
+
+        $ORIGIN metagrid.xyz
+
+    +   geoserv-03  CNAME  astrotrop-03.linode.metagrid.co.uk.
+    +   rstudio-03  CNAME  astrotrop-03.linode.metagrid.co.uk.
+    +   postgis-03  CNAME  astrotrop-03.linode.metagrid.co.uk.
+
+
+# -----------------------------------------------------
+# Check our DNS records.
+#[user@desktop]
+
+    host geoserv-03.metagrid.xyz
+
+        geoserv-03.metagrid.xyz is an alias for astrotrop-03.linode.metagrid.co.uk.
+        astrotrop-03.linode.metagrid.co.uk has address 176.58.103.119
+        astrotrop-03.linode.metagrid.co.uk has IPv6 address 2a01:7e00::f03c:91ff:fedf:f8
+
+    host rstudio-03.metagrid.xyz
+
+        rstudio-03.metagrid.xyz is an alias for astrotrop-03.linode.metagrid.co.uk.
+        astrotrop-03.linode.metagrid.co.uk has address 176.58.103.119
+        astrotrop-03.linode.metagrid.co.uk has IPv6 address 2a01:7e00::f03c:91ff:fedf:f8b
+
+    host postgis-03.metagrid.xyz
+
+        postgis-03.metagrid.xyz is an alias for astrotrop-03.linode.metagrid.co.uk.
+        astrotrop-03.linode.metagrid.co.uk has address 176.58.103.119
+        astrotrop-03.linode.metagrid.co.uk has IPv6 address 2a01:7e00::f03c:91ff:fedf:f8b
+
+# -----------------------------------------------------
+# Update our SSH config.
+#[user@desktop]
+
+    gedit "${HOME:?}/.ssh/config" &
+
+    +   Host astrotrop-03
+    +       User root
+    +       HostName %h.metagrid.xyz 
+    +       IdentityFile ~/.ssh/zrq.metagrid.co.uk.rsa
+    +       Protocol 2
+    +       Compression yes
+    +       PasswordAuthentication no
+
+
+
+
+
