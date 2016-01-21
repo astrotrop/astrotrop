@@ -313,3 +313,31 @@ EOF
 
 
 
+
+
+    docker run -it rocker/rstudio bash
+
+
+        apt-get update
+
+        apt-get install r-cran-rodbc
+
+        #FAILS
+        apt-get install r-cran-rgdal
+        
+        apt-get install libgdal1i
+        apt-get install libproj-dev
+
+        #FAILS
+        apt-get install libgdal-dev
+
+
+        vi /etc/apt/sources.list
+
+            deb http://httpredir.debian.org/debian unstable main
+            deb http://httpredir.debian.org/debian unstable-updates main
+            deb http://security.debian.org testing/updates main
+
+        #works
+        apt-get install libgdal-dev
+
