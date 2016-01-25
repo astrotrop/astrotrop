@@ -187,8 +187,8 @@ EOF
     source "${HOME:?}/astrotrop.conf"
     cat >> "${HOME:?}/astrotrop.conf" <<- EOF
 
-        postgisname=postgisname
-        postgislink=postgislink
+        postgisname=postgis
+        postgislink=postgis
 
         postgisdatadir=\${datadir:?}/postgis
         postgistempdir=\${tempdir:?}/postgis
@@ -234,7 +234,6 @@ EOF
         --volume "${postgistempdir:?}:/temp" \
         "astrotrop/postgis:2-${dockerset:?}"
 
-
 # -----------------------------------------------------
 # Configure our RStudio container.
 #[root@virtual]
@@ -242,8 +241,11 @@ EOF
     source "${HOME:?}/astrotrop.conf"
     cat >> "${HOME:?}/astrotrop.conf" << EOF
 
-        rstudioname=rstudioname
-        rstudiolink=rstudiolink
+        rstudiouser=astrotrop
+        rstudiopass=$(pwgen 20 1)
+
+        rstudioname=rstudio
+        rstudiolink=rstudio
 
         rstudiodatadir=\${datadir:?}/rstudio
         rstudiotempdir=\${tempdir:?}/rstudio
@@ -297,7 +299,6 @@ POSTGRES_HOSTNAME=${postgislink:?}
 POSTGRES_USERNAME=${postgisusername:?}
 POSTGRES_PASSWORD=${postgispassword:?}
 EOF
-
 
     docker run \
         --detach \
@@ -384,7 +385,6 @@ EOF
             dbpass
             )
         )
-
 
 # -----------------------------------------------------
 # Install the GDAL tools.
@@ -510,9 +510,20 @@ EOF
     # Connect using web browser
     firefox 'http://geoserv-04.metagrid.xyz:8080/geoserver/' &
 
-    # The default username and password is admin and geoserver.
-    # These can be changed by editing the security/users.properties
-    # file in the GeoServer Data Directory.
+    # The default username and password can be changed by editing the
+    # security/users.properties file in the GeoServer Data Directory.
+
+
+    cat /data/security/usergroup/default/users.xml  
+
+        <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+        <userRegistry xmlns="http://www.geoserver.org/security/users" version="1.0">
+            <users>
+                <user enabled="true" name="astrotrop" password="crypt1:3P0YuQQKSvaF2KgKU+w1AeYHnYhtnSslj+LQJkgO+AM="/>
+            </users>
+            <groups/>
+        </userRegistry>
+
 
 # -----------------------------------------------------
 # Create a GeoServer layer from our PostGIS data.
@@ -722,20 +733,6 @@ EOF
                                               |
                                               +-- ....
                                               +-- Add to current QGIS project
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # -----------------------------------------------------
 # Add the PostgreSQL client to the host virtual machine.
