@@ -312,6 +312,10 @@ EOF
 # Run our PostGIS container.
 #[root@virtual]
 
+# No external socket
+#   --publish 5432:5432 \
+
+
     source "${HOME:?}/astrotrop.conf"
 
     postgisenv=$(mktemp)
@@ -324,7 +328,6 @@ EOF
 
     docker run \
         --detach \
-        --publish 5432:5432 \
         --name "${postgisname:?}" \
         --env-file "${postgisenv:?}" \
         --volume "${postgisdata:?}:${postgisvol:?}" \
