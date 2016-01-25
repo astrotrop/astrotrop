@@ -14,17 +14,25 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-FROM astrotrop/java:8-1.1
+#
+FROM astrotrop/fedora:22-1.1
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# Install the build tools.
-RUN dnf -y install maven
-RUN dnf -y install ant
-RUN dnf -y install ivy
-RUN dnf -y install git
+# Install Apache.
+RUN dnf -y install httpd
 
+#
+# Install the Apache foreground script.
+# https://github.com/docker-library/httpd/tree/master/2.4
+COPY httpd-foreground /usr/local/bin/
+RUN chmod a+x /usr/local/bin/httpd-foreground
 
+#
+# Expose port 80.
+EXPOSE 80
 
+#
+# Run Apache in the foreground.
+CMD ["httpd-foreground"]
 

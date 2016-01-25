@@ -1,0 +1,838 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Create our virtual machines.
+#[user@desktop]
+
+       1 CPU 
+      1G memory
+     24G disk space
+
+          8G system     /dev/sda
+        128M swap       /dev/sdb
+         16G data       /dev/sdc
+
+    ipv4 : 176.58.103.119
+    ipv6 : 2a01:7e00::f03c:91ff:fef1:62e8
+
+# -----------------------------------------------------
+# Update our DNS records.
+#[admin@network]
+
+        $ORIGIN metagrid.co.uk
+
+        ;
+        ; Linode machines.
+    +   astrotrop-03.linode    A       176.58.103.119
+    +   astrotrop-03.linode    AAAA    2a01:7e00::f03c:91ff:fef1:62e8
+
+        $ORIGIN metagrid.xyz
+
+    +   geoserv-03  CNAME  astrotrop-03.linode.metagrid.co.uk.
+    +   rstudio-03  CNAME  astrotrop-03.linode.metagrid.co.uk.
+    +   postgis-03  CNAME  astrotrop-03.linode.metagrid.co.uk.
+
+
+# -----------------------------------------------------
+# Check our DNS records.
+#[user@desktop]
+
+    host geoserv-03.metagrid.xyz
+
+        geoserv-03.metagrid.xyz is an alias for astrotrop-03.linode.metagrid.co.uk.
+        astrotrop-03.linode.metagrid.co.uk has address 176.58.103.119
+        astrotrop-03.linode.metagrid.co.uk has IPv6 address 2a01:7e00::f03c:91ff:fedf:f8
+
+    host rstudio-03.metagrid.xyz
+
+        rstudio-03.metagrid.xyz is an alias for astrotrop-03.linode.metagrid.co.uk.
+        astrotrop-03.linode.metagrid.co.uk has address 176.58.103.119
+        astrotrop-03.linode.metagrid.co.uk has IPv6 address 2a01:7e00::f03c:91ff:fedf:f8b
+
+    host postgis-03.metagrid.xyz
+
+        postgis-03.metagrid.xyz is an alias for astrotrop-03.linode.metagrid.co.uk.
+        astrotrop-03.linode.metagrid.co.uk has address 176.58.103.119
+        astrotrop-03.linode.metagrid.co.uk has IPv6 address 2a01:7e00::f03c:91ff:fedf:f8b
+
+# -----------------------------------------------------
+# Update our SSH config.
+#[user@desktop]
+
+    gedit "${HOME:?}/.ssh/config" &
+
+    +   Host astrotrop-03
+    +       User root
+    +       HostName %h.metagrid.xyz 
+    +       IdentityFile ~/.ssh/zrq.metagrid.co.uk.rsa
+    +       Protocol 2
+    +       Compression yes
+    +       PasswordAuthentication no
+
+# -----------------------------------------
+# SSH login to the server.
+#[user@desktop]
+
+    ssh astrotrop-03
+
+# -----------------------------------------
+# Install admin tools.
+#[root@virtual]
+
+    dnf -y install htop
+    dnf -y install pwgen
+    
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy generator.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@virtual]
+
+    dnf install -y haveged
+    systemctl enable haveged.service
+    systemctl start  haveged.service
+
+# -----------------------------------------------------
+# Install and run LVM service.
+#[root@virtual]
+
+    #
+    # Install lvmetad
+    dnf -y install lvm2
+
+    #
+    # Start LVM service
+    # http://northernmost.org/blog/lvm-thinpool-for-docker-storage-on-fedora-22/index.html
+    systemctl enable lvm2-lvmetad
+    systemctl start  lvm2-lvmetad
+    systemctl status lvm2-lvmetad
+
+        * lvm2-lvmetad.service - LVM2 metadata daemon
+            Loaded: loaded (/usr/lib/systemd/system/lvm2-lvmetad.service; disabled; vendor preset: enabled)
+            Active: active (running) since Tue 2016-01-19 15:09:19 EST; 5s ago
+                Docs: man:lvmetad(8)
+        Main PID: 3381 (lvmetad)
+            CGroup: /system.slice/lvm2-lvmetad.service
+                   └─3381 /usr/sbin/lvmetad -f
+
+        Jan 19 15:09:19 li453-119.members.linode.com systemd[1]: Started LVM2 metadata daemon.
+        Jan 19 15:09:19 li453-119.members.linode.com systemd[1]: Starting LVM2 metadata daemon...
+
+
+# -----------------------------------------------------
+# Install and run Docker.
+#[root@virtual]
+
+    #
+    # Install latest Docker from Docker
+    tee /etc/yum.repos.d/docker.repo <<-'EOF'
+[dockerrepo]
+name=Docker Repository
+baseurl=https://yum.dockerproject.org/repo/main/fedora/$releasever/
+enabled=1
+gpgcheck=1
+gpgkey=https://yum.dockerproject.org/gpg
+EOF
+
+    #
+    # Install Docker.
+    dnf -y install docker-engine
+
+    #
+    # Install storage-setup
+    dnf -y install docker-storage-setup
+
+    #
+    # Configure storage setup to use block device 
+    tee /etc/sysconfig/docker-storage-setup <<-'EOF'
+DEVS="/dev/sdc"
+VG="docker-data"
+EOF
+
+    #
+    # Run the storage setup tool
+    docker-storage-setup
+
+        Volume group "docker-data" not found
+        Cannot process volume group docker-data
+        Volume group "root" not found
+        Cannot process volume group root
+
+        Checking that no-one is using this disk right now ... OK
+
+        Disk /dev/sdc: 15.9 GiB, 17045651456 bytes, 33292288 sectors
+        Units: sectors of 1 * 512 = 512 bytes
+        Sector size (logical/physical): 512 bytes / 512 bytes
+        I/O size (minimum/optimal): 512 bytes / 512 bytes
+
+        >>> Script header accepted.
+        >>> Created a new DOS disklabel with disk identifier 0x43ce3451.
+        Created a new partition 1 of type 'Linux LVM' and of size 15.9 GiB.
+        /dev/sdc2: 
+        New situation:
+
+        Device     Boot Start      End  Sectors  Size Id Type
+        /dev/sdc1        2048 33292287 33290240 15.9G 8e Linux LVM
+
+        The partition table has been altered.
+        Calling ioctl() to re-read partition table.
+        Syncing disks.
+
+        Physical volume "/dev/sdc1" successfully created
+        Volume group "docker-data" successfully created
+        Rounding up size to full physical extent 20.00 MiB
+        Logical volume "docker-meta" created.
+        Logical volume "docker-data" created.
+
+
+    #
+    # Check the volumes created
+    lvs
+
+        LV          VG          Attr       LSize  Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert
+        docker-data docker-data -wi-a----- 15.53g                                                    
+        docker-meta docker-data -wi-a----- 20.00m                                                    
+
+
+
+        #
+        # Verify that the script wrote the docker-storage file
+        cat /etc/sysconfig/docker-storage
+
+            DOCKER_STORAGE_OPTIONS=
+                --storage-driver devicemapper
+                --storage-opt dm.fs=xfs
+                --storage-opt dm.thinpooldev=/dev/mapper/docker--data-docker--pool
+                --storage-opt dm.use_deferred_removal=true
+
+        #
+        # Not what we see :-(
+        cat /etc/sysconfig/docker-storage
+
+            DOCKER_STORAGE_OPTIONS=
+                --storage-opt dm.fs=xfs
+                --storage-opt dm.datadev=/dev/docker-data/docker-data
+                --storage-opt dm.metadatadev=/dev/docker-data/docker-meta
+
+DOCKER_STORAGE_OPTIONS=--storage-driver devicemapper --storage-opt dm.fs=xfs --storage-opt dm.thinpooldev=/dev/mapper/docker--data-docker--data --storage-opt dm.use_deferred_removal=true
+
+
+        ls -al /dev/mapper/
+        total 0
+        drwxr-xr-x  2 root root     120 Jan 19 15:31 .
+        drwxr-xr-x 14 root root   13780 Jan 19 15:31 ..
+        crw-------  1 root root 10, 236 Jan 19 14:41 control
+        lrwxrwxrwx  1 root root       7 Jan 19 15:31 docker-8:0-111344-pool -> ../dm-2
+        lrwxrwxrwx  1 root root       7 Jan 19 15:13 docker--data-docker--data -> ../dm-1
+        lrwxrwxrwx  1 root root       7 Jan 19 15:13 docker--data-docker--meta -> ../dm-0
+
+
+dmsetup ls
+docker--data-docker--data	(251:1)
+docker--data-docker--meta	(251:0)
+docker-8:0-111344-pool	(251:2)
+
+
+
+BROKEN MESS
+
+Hints ?
+https://jpetazzo.github.io/assets/2015-03-03-not-so-deep-dive-into-docker-storage-drivers.html#44
+
+
+
+
+    #
+    # Start the Docker service
+    systemctl enable docker.service
+    systemctl start  docker.service
+    systemctl status docker.service
+
+        * docker.service - Docker Application Container Engine
+            Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled; vendor preset: disabled)
+            Active: active (running) since Tue 2016-01-19 15:14:40 EST; 4s ago
+                Docs: https://docs.docker.com
+        Main PID: 3505 (docker)
+            CGroup: /system.slice/docker.service
+                   └─3505 /usr/bin/docker daemon -H fd://
+
+    #
+    # Check Docker status - not what we want to see
+    docker info
+
+        Server Version: 1.9.1
+        Storage Driver: devicemapper
+
+        Data file: /dev/loop0
+        Metadata file: /dev/loop1
+
+        Data loop file: /var/lib/docker/devicemapper/devicemapper/data
+
+        Metadata loop file: /var/lib/docker/devicemapper/devicemapper/metadata
+
+
+
+
+
+
+
+        #
+        # Create an LVM physical volume (PV)
+
+            pvcreate /dev/xvdf
+
+        #
+        # Create a new volume group (VG) 
+
+            vgcreate vg-docker /dev/xvdf
+
+        #
+        # Create logical volumes (LV) in the vg-docker volume group.
+
+            lvcreate -L 90G -n data vg-docker
+
+            lvcreate -L  4G -n metadata vg-docker
+
+        #
+        # Start the Docker service
+
+            docker daemon \
+                --storage-driver devicemapper \
+                --storage-opt dm.datadev /dev/vg-docker/data \
+                --storage-opt dm.metadatadev /dev/vg-docker/metadata &
+ 
+
+
+
+
+
+
+
+        docker daemon \
+            ---storage-driver devicemapper \
+            --storage-opt dm.datadev=/dev/sdb1 \
+            --storage-opt dm.metadatadev=/dev/sdc1
+
+
+
+
+
+
+
+
+    
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Disable SELinux.
+# chown: changing ownership of ‘/var/lib/postgresql/data’: Permission denied
+#[root@virtual]
+
+    setenforce permissive
+
+    sed -i '
+        s/^SELINUX=.*$/SELINUX=permissive/
+        ' /etc/selinux/config
+
+# -----------------------------------------------------
+# Configure our build.
+#[root@virtual]
+
+    cat > "${HOME:?}/astrotrop.conf" << EOF
+
+        project=/var/local/astrotrop
+        tempdir=\${project:?}/temp
+        datadir=\${project:?}/data
+
+        imageset=1.1
+
+        tomcatuid=995:994
+
+EOF
+
+# -----------------------------------------------------
+# Create our data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    rmdata()
+        {
+        local path=${1:?}
+        if [ -e "${path}" ]
+        then
+            rm -rf "${path}"
+        fi
+        }
+
+    mkdata()
+        {
+        local path=${1:?}
+        local user=${2:-}
+        if [ ! -e "${path}" ]
+        then
+            mkdir --parents "${path:?}"
+        fi
+        if [ -n "${user:-}" ]
+        then
+            chown -R "${user:?}" "${path:?}"
+        fi
+        chcon -t svirt_sandbox_file_t "${path:?}"
+        }
+
+    rmdata "${tempdir:?}"
+    rmdata "${datadir:?}"
+
+    mkdata "${tempdir:?}"
+    mkdata "${datadir:?}"
+
+# -----------------------------------------------------
+# Configure our PostGIS container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" <<- EOF
+
+        postgisname=postgis.1234
+        postgislink=postgis.5678
+
+        postgisdata=\${datadir:?}/postgis
+        postgistemp=\${tempdir:?}/postgis
+
+        postgisvol=/postgis
+        postgisdb=postgisdb
+        postgisuser=postgisuser
+        postgispass=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Create our PostGIS data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${postgisdata:?}"
+    rmdata "${postgistemp:?}"
+
+    mkdata "${postgisdata:?}"
+    mkdata "${postgistemp:?}"
+
+# -----------------------------------------------------
+# Run our PostGIS container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    postgisenv=$(mktemp)
+    cat > "${postgisenv:?}" <<- EOF
+PGDATA=${postgisvol:?}
+POSTGRES_DB=${postgisdb:?}
+POSTGRES_USER=${postgisuser:?}
+POSTGRES_PASSWORD=${postgispass:?}
+EOF
+
+    docker run \
+        --detach \
+        --publish 5432:5432 \
+        --name "${postgisname:?}" \
+        --env-file "${postgisenv:?}" \
+        --volume "${postgisdata:?}:${postgisvol:?}" \
+        astrotrop/postgis:2.1
+
+# -----------------------------------------------------
+# Configure our RStudio container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        rstudioname=rstudio
+        rstudiolink=rstudio
+
+        rstudiodata=\${datadir:?}/rstudio
+        rstudiotemp=\${tempdir:?}/rstudio
+
+EOF
+
+# -----------------------------------------------------
+# Create our RStudio data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${rstudiotemp:?}"
+    rmdata "${rstudiodata:?}"
+
+    mkdata "${rstudiotemp:?}"
+    mkdata "${rstudiodata:?}"
+
+# -----------------------------------------------------
+# Download our RStudio test data.
+#[root@virtual]
+
+    dnf -y install wget
+    dnf -y install unzip
+
+    source "${HOME:?}/astrotrop.conf"
+    pushd "${rstudiodata:?}"
+        if [ ! -e geostats ]
+        then
+            if [ ! -e geostats.zip ]
+            then
+                wget https://dl.dropboxusercontent.com/u/2703650/Courses/geostats/geostats.zip
+            fi
+            unzip geostats.zip
+        fi
+    popd
+
+# -----------------------------------------------------
+# Run our RStudio container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+#   rstudioenv=$(mktemp)
+#   cat > "${rstudioenv:?}" <<- EOF
+#EOF
+#   --env-file "${rstudioenv:?}" \
+
+    docker run \
+        --detach \
+        --publish 8787:8787 \
+        --name "${rstudioname:?}" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        --volume "${rstudiotemp:?}:/temp" \
+        --volume "${rstudiodata:?}:/data" \
+        astrotrop/rstudio:1.0
+
+# -----------------------------------------------------
+# Test our RStudio container.
+#[user@desktop]
+
+    #
+    # Connect using web browser
+    firefox 'http://astrotrop-01.astrotrop.metagrid.xyz:8787/' &
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Install the PostgreSQL drivers.
+# https://code.google.com/p/rpostgresql/
+#[RStudio]
+
+    #
+    # Debian package is only available in testing (stretch) and unstable (sid).
+    # https://packages.debian.org/sid/r-cran-rpostgresql
+
+    install.packages("RPostgreSQL")
+
+        Installing package into ‘/usr/local/lib/R/site-library’
+        ....
+
+    library(RPostgreSQL)
+
+        Loading required package: DBI
+        ....
+
+    #
+    # Check we can connect to PostgreSQL.
+    # *username and password should come from env settings.
+
+    drv <- dbDriver("PostgreSQL")
+    con <- dbConnect(drv, dbname="postgisdb", host="postgis.5678", user="########", password="########")
+
+    data <- dbGetQuery(con, "SELECT postgis_full_version()")
+    View(data)
+
+        POSTGIS="2.1.4 r12966" GEOS="3.4.2-CAPI-1.8.2 r3921" ....
+
+
+# -----------------------------------------------------
+# Install the GDAL tools.
+#[RStudio]
+
+    #
+    # Debian package is available in jessie, wheezy and squeeze.
+    # https://packages.debian.org/jessie/r-cran-sp
+
+    install.packages("rgdal")
+
+        Installing package into ‘/usr/local/lib/R/site-library’
+        ....
+
+    library(rgdal)
+
+        Loading required package: sp
+        rgdal: version: 1.1-3, (SVN revision 594)
+        Geospatial Data Abstraction Library extensions to R successfully loaded]
+        ....
+
+# -----------------------------------------------------
+# Loading vector data into PostGIS from R.
+# https://rpubs.com/dgolicher/6373
+#[RStudio]
+ 
+    #
+    # Import the test shapefiles.
+    states<-readOGR('/data/geostats/shapefiles','mex_states')
+
+        OGR data source with driver: ESRI Shapefile 
+        Source: "//data/geostats/shapefiles", layer: "mex_states"
+        with 51 features
+        It has 15 fields
+
+    #
+    # Plot the test data.
+    plot(states)
+    box()
+    axis(1)
+    axis(2)
+    grid()
+
+    #
+    # Export the test data to our database.
+    # *username and password should come from env settings.
+    writeOGR(
+        states,
+        "PG:dbname='postgisdb' host='postgis.5678' user='########' password='########'",
+        layer_options = "geometry_name=geom",
+        "states",
+        "PostgreSQL"
+        )
+
+    #
+    # Try loading from QGIS.
+    # dbname='postgisdb' host=eta.virtual.metagrid.co.uk port=5432 sslmode=disable key='ogc_fid' srid=4326 type=Polygon table="public"."states" (geom) sql=
+
+    ....
+    ....
+    ....
+
+# -----------------------------------------------------
+# Configure our GeoServer container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        geoservername=geoserver
+        geoserverlink=geoserver
+
+        geoserverdata=\${datadir:?}/geoserver
+        geoservertemp=\${tempdir:?}/geoserver
+
+EOF
+
+# -----------------------------------------------------
+# Create our GeoServer data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${geoservertemp:?}"
+    rmdata "${geoserverdata:?}"
+
+    mkdata "${geoservertemp:?}" "${tomcatuid:?}"
+    mkdata "${geoserverdata:?}" "${tomcatuid:?}"
+
+    #
+    # TODO add gosu/notroot to our Tomcat container
+    #
+
+# -----------------------------------------------------
+# Run our GeoServer container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    geoserverenv=$(mktemp)
+    cat > "${geoserverenv:?}" <<- EOF
+EOF
+# TODO GeoServer admin user and pass
+# TODO PostGIS host, user and pass
+
+    docker run \
+        --detach \
+        --publish 8080:8080 \
+        --name "${geoservername:?}" \
+        --env-file "${geoserverenv:?}" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        --volume "${geoservertemp:?}:/temp" \
+        --volume "${geoserverdata:?}:/data" \
+        astrotrop/geoserver:1.0
+
+    docker logs -f "${geoservername:?}"
+
+# -----------------------------------------------------
+# Test our GeoServer container.
+#[user@desktop]
+
+    #
+    # Connect using web browser
+    firefox 'http://astrotrop-01.astrotrop.metagrid.xyz:8080/geoserver/' &
+
+    # The default username and password is admin and geoserver.
+    # These can be changed by editing the security/users.properties
+    # file in the GeoServer Data Directory.
+
+# -----------------------------------------------------
+# Create a GeoServer layer from our PostGIS data.
+#[GeoServer]
+
+    New workspace
+
+        name : AstroTROP
+        namespace : http://www.astrotrop.org/
+        default : true
+
+    New (vector) data store
+
+        workspace : AstroTROP
+
+        name : PostGIS database
+        text : PostGIS database
+
+        dbtype : postgis (default)
+        host : postgis.5678 (from the Docker link name) 
+        port : 5432
+        database : postgisdb 
+        schema : public
+        user : ######## (from the Docker config) 
+        pass : ########### (from the Docker config) 
+
+    New (layer) resource
+    
+        from : AstroTROP:PostGIS
+        layer : states
+        action : publish
+
+   Edit layer
+   
+        name  : MexicanStates   <-- no space
+        title : Mexican States  <-- space ok
+
+        Native Bounding Box
+        (compute from data)
+
+        Lat/Lon Bounding Box
+        (compute from data)
+
+# -----------------------------------------------------
+# Add a background layer to QGIS.
+#[QGIS]
+
+    Web
+     |
+     +-- OpenLayers plugin
+           |
+           +-- OpenStreetMap
+                 |
+                 +-- OCM Landscape
+    
+
+# -----------------------------------------------------
+# Display the PostGIS layer in QGIS.
+#[QGIS]
+        
+    OpenGeo
+        |
+        +-- OpenGeo Explorer
+              |
+              +-- PostGIS connections
+                    |
+                    +-- ....
+                    +-- ....
+                    +-- New PostGIS connection
+
+                          name : AstroTROP PostGIS server
+                          host : eta.virtual.metagrid.co.uk
+                          port : 5432
+                          database : postgisdb
+                          username : ########
+                          password : ########
+
+                    |
+                    +-- ....
+                    +-- ....
+                    +-- AstroTROP PostGIS server
+                          |
+                          +-- ....
+                          +-- ....
+                          +-- public
+                                |
+                                +-- ....
+                                +-- ....
+                                +-- states
+                                      |
+                                      +-- ....
+                                      +-- Add to current QGIS project
+
+# -----------------------------------------------------
+# Display the GeoServer layer in QGIS.
+#[QGIS]
+        
+    OpenGeo
+        |
+        +-- OpenGeo Explorer
+              |
+              +-- GeoServer catalogs
+                    |
+                    +-- ....
+                    +-- ....
+                    +-- New catalog
+
+                          name : AstroTROP GeoServer
+                          url  : http://astrotrop-01.astrotrop.metagrid.xyz:8080/geoserver
+                          user : ########
+                          pass : ########
+
+                    |
+                    +-- ....
+                    +-- ....
+                    +-- AstroTROP GeoServer
+                          |
+                          +-- ....
+                          +-- ....
+                          +-- GeoServer layers
+                                |
+                                +-- ....
+                                +-- ....
+                                +-- Mexican States
+                                      |
+                                      +-- ....
+                                      +-- Add to current QGIS project
+
+

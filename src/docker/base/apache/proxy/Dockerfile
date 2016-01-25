@@ -14,17 +14,12 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-FROM astrotrop/java:8-1.1
+#
+FROM astrotrop/apache-base:1.1
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# Install the build tools.
-RUN dnf -y install maven
-RUN dnf -y install ant
-RUN dnf -y install ivy
-RUN dnf -y install git
-
-
+# Install mod_proxy.
+#RUN dnf -y install mod_proxy
 
 

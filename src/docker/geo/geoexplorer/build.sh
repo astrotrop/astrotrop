@@ -22,16 +22,6 @@
 #
 
 # -----------------------------------------------------
-# Install our build tools.
-#[root@builder]
-
-    dnf -y install maven
-    dnf -y install ant
-    dnf -y install ivy
-
-    dnf -y install git
-
-# -----------------------------------------------------
 # Clone the source code.
 # TODO this probably lives outside the container
 #[root@builder]

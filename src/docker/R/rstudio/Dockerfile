@@ -26,6 +26,10 @@ RUN apt-get update \
 	&& rm -rf /var/lib/apt/lists/
 
 #
+# Enable to the latest (unstable) packages
+ADD unstable.txt /etc/apt/sources.list
+
+#
 # Add the gdal package .
 #       r-cran-rgdal \
 RUN apt-get update \ 

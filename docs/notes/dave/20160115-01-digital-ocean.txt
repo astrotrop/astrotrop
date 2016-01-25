@@ -87,7 +87,7 @@
     +   astrotrop-02    AAAA    2a03:b0c0:1:a1::11:a001
 
 # -----------------------------------------------------
-# Update our local SSH records.
+# Update our SSH config.
 #[user@desktop]
 
     gedit "${HOME:?}/.ssh/config" &
@@ -142,6 +142,7 @@
     sed -i '
         s/^SELINUX=.*$/SELINUX=permissive/
         ' /etc/selinux/config
+
 # -----------------------------------------------------
 # Configure our build.
 #[root@virtual]
