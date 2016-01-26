@@ -1,0 +1,175 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Update our hosts file.
+# Need to do this whenever the virtual machine is restarted.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    postgishost=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${postgisname:?})
+    rstudiohost=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${rstudioname:?})
+    geoservhost=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${geoservname:?})
+
+    cat >> /etc/hosts << EOF
+
+#
+# Docker container addresses
+${postgishost:?} ${postgisname:?}
+${rstudiohost:?} ${rstudioname:?}
+${geoservhost:?} ${geoservname:?}
+
+EOF
+
+# -----------------------------------------------------
+# Install the PostgreSQL client.
+#[root@virtual]
+
+    apt-get install postgresql-client
+
+# -----------------------------------------------------
+# Create our user account.
+#[root@virtual]
+
+    username=Xyz
+
+    useradd \
+        --create-home \
+        --shell '/bin/bash' \
+        "${username:?}"
+
+    su - "${username:?}"
+
+        pushd "${HOME:?}"
+        
+            if [ ! -e '.ssh' ]
+            then
+                mkdir '.ssh'
+            fi
+
+            chown "$(id -u)"  '.ssh'
+            chgrp "$(id -g)"  '.ssh'
+            chmod g=,o=,u=rwx '.ssh'
+
+            pushd '.ssh'
+
+                if [ ! -e 'keys' ]
+                then
+                    mkdir 'keys'
+                fi
+
+                chown "$(id -u)"  'keys'
+                chgrp "$(id -g)"  'keys'
+                chmod g=,o=,u=rwx 'keys'
+
+                pushd 'keys'
+
+                    wget 'http://example.com/keys/xyz.pub'
+                    wget 'http://example.com/keys/xyz.pub'
+
+                popd
+
+                for key in $(find 'keys' -name '*.pub')
+                do
+                    echo "${key:?}" 
+                    echo "#" >> 'authorized_keys'
+                    cat  "${key:?}" >> 'authorized_keys'
+                done
+
+                chown "$(id -u)"   'authorized_keys'
+                chgrp "$(id -g)"   'authorized_keys'
+                chmod g=r,o=r,u=rw 'authorized_keys'                
+    
+            popd
+        popd
+    exit
+
+# -----------------------------------------------------
+# Check we can login via SSH.
+#[user@desktop]
+
+    ssh Duncan@postgis-04.metagrid.xyz
+
+# -----------------------------------------------------
+# Check we can access our PostgreSQL database from the host virtual machine.
+#[user@virtual]
+    
+    #
+    # Configure our PostGIS client.
+    source "${HOME:?}/astrotrop.conf"
+    cat >  "${HOME:?}/.pgpass" << EOF
+${postgisname:?}:5432:${postgisdatabase:?}:${postgisusername:?}:${postgispassword:?}
+EOF
+    chmod u=rw,g=,o= "${HOME:?}/.pgpass"
+
+    #
+    # Login to our PostGIS database.
+    source "${HOME:?}/astrotrop.conf"
+    psql \
+        --host "${postgisname:?}" \
+        --username "${postgisusername:?}" \
+        "${postgisdatabase:?}"
+
+        \l
+        \dt
+        \q
+
+# -----------------------------------------------------
+# Create the SSH tunnel config.
+#[user@desktop]
+
+    gedit "${HOME:?}/.ssh/config" &
+
+    +   Host astrotrop-postgis-tunnel
+    +       User Zarquan
+    +       HostName postgis-04.metagrid.xyz
+    +       IdentityFile ~/.ssh/zrq.digitalocean.com.rsa
+    +       Protocol 2
+    +       Compression yes
+    +       PasswordAuthentication no
+    +       LocalForward 5432 postgis:5432
+
+
+# -----------------------------------------------------
+# Check we can access our PostgreSQL database from our local machine.
+#[user@desktop]
+
+    ssh astrotrop-postgis-tunnel
+
+    psql \
+        --host localhost \
+        --username "postgisuser" \
+        "postgisdata"
+
+
+
+
+
+
+
+
+
+
+
+
+

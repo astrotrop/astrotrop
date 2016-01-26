@@ -81,7 +81,6 @@
 
         postgisname=postgis
         postgislink=postgis
-        postgishost=172.17.0.2
 
         postgistempdir=\${tempdir:?}/postgis
         postgisdatadir=\${datadir:?}/postgis
@@ -93,7 +92,6 @@
 
         rstudioname=rstudio
         rstudiolink=rstudio
-        rstudiohost=172.17.0.3
 
         rstudiousername=astrotrop
         rstudiopassword=$(pwgen 20 1)
@@ -104,28 +102,12 @@
 
         geoservername=geoserver
         geoserverlink=geoserver
-        geoserverhost=172.17.0.4
 
         geoserverusername=astrotrop
         geoserverpassword=$(pwgen 20 1)
 
         geoservertemp=\${tempdir:?}/geoserver
         geoserverdata=\${datadir:?}/geoserver
-
-EOF
-
-# -----------------------------------------------------
-# Update our local DNS.
-#[root@virtual]
-
-    source "${HOME:?}/astrotrop.conf"
-    cat >> /etc/hosts << EOF
-
-#
-# Docker container addresses
-${postgishost:?} ${postgisname:?}
-${rstudiohost:?} ${rstudioname:?}
-${geoserverhost:?} ${geoservername:?}
 
 EOF
 
@@ -428,30 +410,6 @@ EOF
         )
 
 # -----------------------------------------------------
-# Check we can access our PostgreSQL database from the host virtual machine.
-#[root@virtual]
-
-    #
-    # Configure our PostGIS client.
-    source "${HOME:?}/astrotrop.conf"
-    cat >  "${HOME:?}/.pgpass" << EOF
-${postgishost:?}:5432:${postgisdatabase:?}:${postgisusername:?}:${postgispassword:?}
-EOF
-    chmod u=rw,g=,o= "${HOME:?}/.pgpass"
-
-    #
-    # Login to our PostGIS database.
-    source "${HOME:?}/astrotrop.conf"
-    psql \
-        --host postgishost \
-        --username "${postgisusername:?}" \
-        "${postgisdatabase:?}"
-
-        \l
-        \dt
-        \q
-
-# -----------------------------------------------------
 # Test our GeoServer container.
 #[user@desktop]
 
@@ -500,4 +458,47 @@ EOF
 
         Lat/Lon Bounding Box
         (compute from data)
+
+# -----------------------------------------------------
+# Update our local hosts file.
+#[root@virtual]
+
+    postgishost=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${postgisname:?})
+    rstudiohost=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${rstudioname:?})
+    geoserverhost=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${geoservername:?})
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> /etc/hosts << EOF
+
+#
+# Docker container addresses
+${postgishost:?} ${postgisname:?}
+${rstudiohost:?} ${rstudioname:?}
+${geoserverhost:?} ${geoservername:?}
+
+EOF
+
+# -----------------------------------------------------
+# Check we can access our PostgreSQL database from the host virtual machine.
+#[root@virtual]
+
+    #
+    # Configure our PostGIS client.
+    source "${HOME:?}/astrotrop.conf"
+    cat >  "${HOME:?}/.pgpass" << EOF
+${postgishost:?}:5432:${postgisdatabase:?}:${postgisusername:?}:${postgispassword:?}
+EOF
+    chmod u=rw,g=,o= "${HOME:?}/.pgpass"
+
+    #
+    # Login to our PostGIS database.
+    source "${HOME:?}/astrotrop.conf"
+    psql \
+        --host postgishost \
+        --username "${postgisusername:?}" \
+        "${postgisdatabase:?}"
+
+        \l
+        \dt
+        \q
 
