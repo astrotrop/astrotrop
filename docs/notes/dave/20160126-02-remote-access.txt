@@ -51,7 +51,7 @@ EOF
 # Create our user account.
 #[root@virtual]
 
-    username=Xyz
+    username=USERNAME
 
     useradd \
         --create-home \
@@ -84,8 +84,8 @@ EOF
 
                 pushd 'keys'
 
-                    wget 'http://example.com/keys/xyz.pub'
-                    wget 'http://example.com/keys/xyz.pub'
+                    wget 'http://example.com/keys/public-key.pub'
+                    wget 'http://example.com/keys/public-key.pub'
 
                 popd
 
@@ -108,7 +108,7 @@ EOF
 # Check we can login via SSH.
 #[user@desktop]
 
-    ssh Duncan@postgis-04.metagrid.xyz
+    ssh USERNAME@postgis-04.metagrid.xyz
 
 # -----------------------------------------------------
 # Check we can access our PostgreSQL database from the host virtual machine.
@@ -141,12 +141,10 @@ EOF
     gedit "${HOME:?}/.ssh/config" &
 
     +   Host astrotrop-postgis-tunnel
-    +       User Zarquan
-    +       HostName postgis-04.metagrid.xyz
-    +       IdentityFile ~/.ssh/zrq.digitalocean.com.rsa
-    +       Protocol 2
-    +       Compression yes
+    +       User USERNAME
     +       PasswordAuthentication no
+    +       HostName postgis-04.metagrid.xyz
+    +       IdentityFile ~/.ssh/PRIVATE-KEY
     +       LocalForward 5432 postgis:5432
 
 
