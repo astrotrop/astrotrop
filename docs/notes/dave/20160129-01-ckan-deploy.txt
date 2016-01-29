@@ -881,6 +881,12 @@ EOF
     exit
 
 # -----------------------------------------------------
+# Test our site
+#[user@desktop]
+
+    firefox "http://eta.virtual.metagrid.co.uk/" &
+
+# -----------------------------------------------------
 # Import our example data
 #[user@desktop]
 
