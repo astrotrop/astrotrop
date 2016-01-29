@@ -200,7 +200,7 @@ EOF
         --env-file "${postgisenv:?}" \
         --volume "${postgisdatadir:?}:/data" \
         --volume "${postgistempdir:?}:/temp" \
-        "astrotrop/postgis:2-${dockerset:?}"
+        "astrotrop/postgis:${dockerset:?}"
 
 
 # -----------------------------------------------------

@@ -1,0 +1,1052 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create our virtual machine.
+#[user@desktop]
+
+    ischnura-createvm
+
+        INFO : Node name [eta]
+        INFO : Base name [fedora-21-16G-20150407.qcow]
+
+# -----------------------------------------
+# Install admin tools.
+#[root@virtual]
+
+    yum -y install htop
+    yum -y install pwgen
+    
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy generator.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@virtual]
+
+    yum install -y haveged
+    systemctl enable haveged.service
+    systemctl start  haveged.service
+
+# -----------------------------------------------------
+# Install and run Docker.
+#[root@virtual]
+
+    #
+    # Install a specific version to avoid problems with updated storage driver.
+    yum -y install https://kojipkgs.fedoraproject.org//packages/docker-io/1.6.2/3.gitc3ca5bb.fc21/x86_64/docker-io-1.6.2-3.gitc3ca5bb.fc21.x86_64.rpm
+    systemctl enable docker.service
+    systemctl start  docker.service
+    systemctl status docker.service
+
+# -----------------------------------------------------
+# Configure our build.
+#[root@virtual]
+
+    cat > "${HOME:?}/astrotrop.conf" << EOF
+
+        dockerset=1.0
+
+        project=/var/local/astrotrop
+        tempdir=\${project:?}/temp
+        datadir=\${project:?}/data
+
+        tomcatuid=995:994
+
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
+
+# -----------------------------------------------------
+# Create our data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    rmdata()
+        {
+        local path=${1:?}
+        if [ -e "${path}" ]
+        then
+            rm -rf "${path}"
+        fi
+        }
+
+    mkdata()
+        {
+        local path=${1:?}
+        local user=${2:-}
+        if [ ! -e "${path}" ]
+        then
+            mkdir --parents "${path:?}"
+        fi
+        if [ -n "${user:-}" ]
+        then
+            chown -R "${user:?}" "${path:?}"
+        fi
+
+        # Only if SELinux enabled        
+        chcon -t svirt_sandbox_file_t "${path:?}"
+
+        }
+
+    rmdata "${tempdir:?}"
+    rmdata "${datadir:?}"
+
+    mkdata "${tempdir:?}"
+    mkdata "${datadir:?}"
+
+# -----------------------------------------------------
+# Configure our SOLR container.
+#[root@virtual]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        solrname=solrname
+        solrlink=solrlink
+
+        solrtempdir=${tempdir:?}/solr
+        solrdatadir=${datadir:?}/solr
+
+EOF
+
+# -----------------------------------------------------
+# Create our SOLR data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${solrtempdir:?}"
+    rmdata "${solrdatadir:?}"
+
+    mkdata "${solrtempdir:?}"
+    mkdata "${solrdatadir:?}"
+
+# -----------------------------------------------------
+# Run our SOLR container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker run \
+        --detach \
+        --expose 8983 \
+        --name   "${solrname:?}" \
+        --volume "${solrtempdir:?}:/temp" \
+        --volume "${solrdatadir:?}:/opt/solr/example/solr/ckan/data" \
+        astrotrop/solr:${dockerset:?}
+
+# -----------------------------------------------------
+# Configure our Redis container.
+#[root@virtual]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        redislink=redislink
+        redisname=redisname
+
+        redistempdir=${tempdir:?}/redis
+        redisdatadir=${datadir:?}/redis
+
+EOF
+
+# -----------------------------------------------------
+# Create our Redis data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${redistempdir:?}"
+    rmdata "${redisdatadir:?}"
+
+    mkdata "${redistempdir:?}"
+    mkdata "${redisdatadir:?}"
+
+# -----------------------------------------------------
+# Run our Redis container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker run \
+        --detach \
+        --expose 8983 \
+        --name   "${redisname:?}" \
+        --volume "${redistempdir:?}:/temp" \
+        --volume "${redisdatadir:?}:/data" \
+        astrotrop/redis:${dockerset:?}
+
+# -----------------------------------------------------
+# Configure our DataPusher container.
+#[root@virtual]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        pushname=pushname
+        pushlink=pushlink
+
+        pushtempdir=${tempdir:?}/push
+        pushdatadir=${datadir:?}/push
+
+EOF
+
+# -----------------------------------------------------
+# Create our DataPusher directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${pushtempdir:?}"
+    rmdata "${pushdatadir:?}"
+
+    mkdata "${pushtempdir:?}"
+    mkdata "${pushdatadir:?}"
+
+# -----------------------------------------------------
+# Run our DataPusher container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker run \
+        --detach \
+        --name "${pushname:?}" \
+        --volume "${pushtempdir:?}:/temp" \
+        --volume "${pushdatadir:?}:/data" \
+        astrotrop/push:${dockerset:?}
+
+# -----------------------------------------------------
+# Configure our PostgreSQL container.
+#[root@virtual]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        postname=postname
+        postlink=postlink
+
+        postdatadir=${datadir:?}/postgres
+        posttempdir=${tempdir:?}/postgres
+
+        postdatabase=postdata
+        postusername=postuser
+        postpassword=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Create our PostgreSQL data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${postdatadir:?}"
+    rmdata "${posttempdir:?}"
+
+    mkdata "${postdatadir:?}"
+    mkdata "${posttempdir:?}"
+
+# -----------------------------------------------------
+# Run our PostgreSQL container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    postenv=$(mktemp)
+    cat > "${postenv:?}" <<- EOF
+PGDATA=/data
+POSTGRES_DB=${postdatabase:?}
+POSTGRES_USER=${postusername:?}
+POSTGRES_PASSWORD=${postpassword:?}
+EOF
+
+    docker run \
+        --detach \
+        --expose 5432 \
+        --name     "${postname:?}" \
+        --env-file "${postenv:?}" \
+        --volume "${posttempdir:?}:/temp" \
+        --volume "${postdatadir:?}:/data" \
+        astrotrop/postgres:${dockerset:?}
+
+    sleep 10    
+
+# -----------------------------------------------------
+# Create our CKAN database.
+#[root@virtual]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        ckandatabase=ckandata
+        ckanusername=ckanrole
+        ckanpassword=$(pwgen 20 1)
+
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
+
+    cat > ${posttempdir:?}/ckan-init.sql << EOF
+
+        CREATE ROLE ${ckanusername:?} WITH 
+            PASSWORD '${ckanpassword:?}'
+            NOSUPERUSER
+            NOCREATEDB
+            NOCREATEROLE
+            LOGIN
+            ;
+
+        CREATE DATABASE ${ckandatabase:?} WITH
+            OWNER = ${ckanusername:?}
+            ;
+EOF
+
+    docker exec -it "${postname:?}" psql postgres postgres
+
+        \i /temp/ckan-init.sql
+        \q
+
+# -----------------------------------------------------
+# Create our DataStore database.
+# http://docs.ckan.org/en/master/datastore-setup.html
+#[root@virtual]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        storedatabase=storedata
+
+        storeownername=storeowner
+        storeownerpass=$(pwgen 20 1)
+
+        storereadername=storereader
+        storereaderpass=$(pwgen 20 1)
+
+        storewritername=storewriter
+        storewriterpass=$(pwgen 20 1)
+
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
+
+    cat > ${posttempdir:?}/store-init.sql << EOF
+
+        --
+        -- Create our database roles.
+        CREATE ROLE ${storeownername:?} WITH 
+            PASSWORD '${storeownerpass:?}'
+            NOSUPERUSER
+            NOCREATEDB
+            NOCREATEROLE
+            NOLOGIN
+            ;
+
+        CREATE ROLE ${storereadername:?} WITH 
+            PASSWORD '${storereaderpass:?}'
+            NOSUPERUSER
+            NOCREATEDB
+            NOCREATEROLE
+            LOGIN
+            ;
+
+        CREATE ROLE ${storewritername:?} WITH 
+            PASSWORD '${storewriterpass:?}'
+            NOSUPERUSER
+            NOCREATEDB
+            NOCREATEROLE
+            LOGIN
+            ;
+
+        --
+        -- Create our database.
+        CREATE DATABASE ${storedatabase:?} WITH
+            OWNER = ${storeownername:?}
+            TEMPLATE = template0
+            ENCODING = 'UTF-8'
+            ;
+
+EOF
+
+    cat > ${posttempdir:?}/store-grant.sql << EOF
+
+        --
+        -- Revoke permissions for the public role.
+        REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+        REVOKE USAGE  ON SCHEMA public FROM PUBLIC;
+
+        --
+        -- Grant permissions for the ckanuser role.
+        GRANT CREATE ON SCHEMA public TO "${ckanusername:?}";
+        GRANT USAGE  ON SCHEMA public TO "${ckanusername:?}";
+
+        --
+        -- Grant permissions for the storewriter role.
+        GRANT CREATE ON SCHEMA public TO "${storewritername:?}";
+        GRANT USAGE  ON SCHEMA public TO "${storewritername:?}";
+
+        --
+        -- Prevent storereader connecting to the ckan database.  
+        REVOKE CONNECT ON DATABASE "${ckandatabase:?}" FROM "${storereadername:?}";
+
+        --
+        -- Grant connect and select permissions to the storereader role.
+        GRANT CONNECT ON DATABASE "${storedatabase:?}" TO "${storereadername:?}";
+        GRANT USAGE   ON SCHEMA public TO "${storereadername:?}";
+
+        --
+        -- Grant access to all the tables to the storereader role.
+        GRANT SELECT ON ALL TABLES IN SCHEMA public TO "${storereadername:?}";
+
+        --
+        -- Grant access to storereader to any new tables created by storewriter.
+        ALTER DEFAULT PRIVILEGES FOR USER "${storewritername:?}" IN SCHEMA public
+            GRANT SELECT ON TABLES TO "${storereadername:?}";
+
+EOF
+
+    docker exec -it "${postname:?}" psql postgres postgres
+
+        \i /temp/store-init.sql
+        \i /temp/store-grant.sql
+        \q
+
+# -----------------------------------------------------
+# Configure the PostGIS database extensions.
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/install.html#install-postgis-and-system-packages
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    #
+    # Create the spatial tables and functions.
+    docker exec -it "${postname:?}" psql \
+        --dbname   "${ckandatabase:?}" \
+        --username "postgres" \
+        --file /usr/share/postgresql/9.4/contrib/postgis-2.1/postgis.sql
+
+    docker exec -it "${postname:?}" psql \
+        --dbname "${ckandatabase:?}" \
+        --username "postgres" \
+        --file /usr/share/postgresql/9.4/contrib/postgis-2.1/spatial_ref_sys.sql
+
+    docker exec -it "${postname:?}" psql \
+        --dbname "${ckandatabase:?}" \
+        --username "postgres" \
+        --file /usr/share/postgresql/9.4/contrib/postgis-2.1/rtpostgis.sql
+
+    docker exec -it "${postname:?}" psql \
+        --dbname "${ckandatabase:?}" \
+        --username "postgres" \
+        --file /usr/share/postgresql/9.4/contrib/postgis-2.1/topology.sql
+
+    #
+    # Update the spatial table owner.
+    docker exec -it "${postname:?}" psql \
+        --dbname "${ckandatabase:?}" \
+        --username "postgres" \
+        --command "ALTER VIEW geometry_columns OWNER TO ${ckanusername:?}"
+
+    docker exec -it "${postname:?}" psql \
+        --dbname "${ckandatabase:?}" \
+        --username "postgres" \
+        --command "ALTER TABLE spatial_ref_sys OWNER TO ${ckanusername:?}"
+
+    #
+    # Check to see if PostGIS is healthy.
+    docker exec -it "${postname:?}" psql \
+        --dbname "${ckandatabase:?}" \
+        --username "${ckanusername:?}" \
+        --command "SELECT postgis_full_version()"
+
+    #
+    # Expected POSTGIS="2.1.2 r12389" GEOS="3.4.2-CAPI-1.8.2 r3921" PROJ="Rel. 4.8.0, 6 March 2012" GDAL="GDAL 1.10.1, released 2013/08/26" LIBXML="2.9.1" LIBJSON="UNKNOWN" RASTER
+    # Actual   POSTGIS="2.1.8 r13780" GEOS="3.4.2-CAPI-1.8.2 r3921" PROJ="Rel. 4.8.0, 6 March 2012" GDAL="GDAL 1.10.1, released 2013/08/26" LIBXML="2.9.1" LIBJSON="UNKNOWN" RASTER
+    # Actual   POSTGIS="2.1.8 r13780" GEOS="3.4.2-CAPI-1.8.2 r3921" PROJ="Rel. 4.8.0, 6 March 2012" GDAL="GDAL 1.10.1, released 2013/08/26" LIBXML="2.9.1" LIBJSON="UNKNOWN" RASTER
+    # Actual   POSTGIS="2.1.8 r13780" GEOS="3.4.2-CAPI-1.8.2 r3921" PROJ="Rel. 4.8.0, 6 March 2012" GDAL="GDAL 1.10.1, released 2013/08/26" LIBXML="2.9.1" LIBJSON="UNKNOWN" RASTER
+    # Actual   POSTGIS="2.1.7 r13414" GEOS="3.4.2-CAPI-1.8.2 r3921" PROJ="Rel. 4.8.0, 6 March 2012" GDAL="GDAL 1.10.1, released 2013/08/26" LIBXML="2.9.1" LIBJSON="UNKNOWN" RASTER
+
+# -----------------------------------------------------
+# Configure our CKAN container.
+#[root@virtual]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        ckanname=ckanname
+        ckanlink=ckanlink
+
+        ckantempdir=${tempdir:?}/ckan
+        ckandatadir=${datadir:?}/ckan
+
+EOF
+
+# -----------------------------------------------------
+# Create our CKAN data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${ckandatadir:?}"
+    rmdata "${ckantempdir:?}"
+
+    mkdata "${ckandatadir:?}"
+    mkdata "${ckantempdir:?}"
+
+# -----------------------------------------------------
+# Run our CKAN container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker run \
+        --detach \
+        --publish 80:80 \
+        --name "${ckanname:?}" \
+        --link ${postname:?}:${postlink:?} \
+        --link ${solrname:?}:${solrlink:?} \
+        --link ${pushname:?}:${pushlink:?} \
+        --link ${redisname:?}:${redislink:?} \
+        --volume "${ckantempdir:?}:/temp" \
+        --volume "${ckandatadir:?}:/var/lib/ckan" \
+        astrotrop/ckan:${dockerset:?}
+
+# -----------------------------------------------------
+# Tail the SOLR logs
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${solrname:?}" \
+        tail -f /opt/solr/example/logs/solr.log
+
+# -----------------------------------------------------
+# Tail the DataPusher logs
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${pushname:?}" \
+        tail -f /var/log/httpd/push.metagrid.co.uk.error.log
+
+# -----------------------------------------------------
+# Tail the CKAN logs
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${ckanname:?}" \
+        tail -f /var/log/httpd/ckan.metagrid.co.uk.error.log
+
+
+# -----------------------------------------------------
+# MOVE TO DOCKER
+# Install the CKAN harvest extension
+# https://github.com/ckan/ckanext-harvest
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${ckanname:?}" bash
+        pushd "${ckanroot:?}"
+
+            pip install -e git+https://github.com/ckan/ckanext-harvest.git#egg=ckanext-harvest
+            pip install -r src/ckanext-harvest/pip-requirements.txt
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# MOVE TO DOCKER
+# Configure the harvest plugin.
+# https://github.com/ckan/ckanext-harvest
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+        vi "${ckanconf:?}/ckan.ini"
+
+            ## Plugins Settings
+        -   ckan.plugins = ....
+        +   ckan.plugins = .... harvest ckan_harvester
+
+        +   ## Harvester settings
+        +   # Set the harvester type.
+        +   ckan.harvest.mq.type = redis
+        +
+        +   # Configure the Redis connection.
+        +   ckan.harvest.mq.hostname=redislink
+        +   ckan.harvest.mq.port=6379
+        +   ckan.harvest.mq.redis_db=0
+
+    exit
+
+# -----------------------------------------------------
+# MOVE TO DOCKER
+# Install the CKAN spatial extension
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/install.html#install-the-extension
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+        #
+        # Install the dependencies.
+        # https://stackoverflow.com/questions/6504810/how-to-install-lxml-on-ubuntu
+        # https://stackoverflow.com/questions/15759150/src-lxml-etree-defs-h931-fatal-error-libxml-xmlversion-h-no-such-file-or-di
+
+        dnf -y install python-devel
+        dnf -y install libxml-devel
+        dnf -y install libxml2-devel
+        dnf -y install libxslt-devel
+        dnf -y install geos
+        dnf -y install geos-devel
+
+        pushd "${ckanroot:?}"
+
+            pip install -e "git+https://github.com/okfn/ckanext-spatial.git#egg=ckanext-spatial"
+            pip install -r src/ckanext-spatial/pip-requirements.txt
+
+        popd
+
+        #
+        # Warning - gcc may run out of memory duirng the build.
+        # Needed to stop the other docker containers to enable this to complete.
+        # Error: open CFI at the end of file; missing .cfi_endproc directive
+        #
+
+        #
+        # We need to limit the SQLAlchemy version.
+        #
+
+    exit
+
+# -----------------------------------------------------
+# MOVE TO DOCKER - DONE
+# Enable the spatial plugins.
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/install.html#configuration
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+        vi "${ckanconf:?}/ckan.ini"
+
+        -   ckan.plugins = stats text_view image_view recline_view datastore datapusher
+        +   ckan.plugins = stats text_view image_view recline_view datastore datapusher spatial_metadata spatial_query
+
+        +   # Spatial metadata EPSG code
+        +   # http://docs.ckan.org/projects/ckanext-spatial/en/latest/install.html#configuration
+        +   # ckan.spatial.srid = 4326
+
+        +   # Spatial search backend
+        +   # http://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#choosing-a-backend-for-the-spatial-search
+        +   ckanext.spatial.search_backend = solr
+
+    exit
+
+# -----------------------------------------------------
+# MOVE TO DOCKER
+# Update our SOLR schema.
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#choosing-a-backend-for-the-spatial-search
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${solrname:?}" bash
+
+        tempfile=$(mktemp)
+        cat > "${tempfile:?}" << EOF
+    <!--+
+        | CKAN spatial search fields.
+        | http://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#choosing-a-backend-for-the-spatial-search
+        +-->
+    <field name="bbox_area" type="float" indexed="true" stored="true" />
+    <field name="maxx" type="float" indexed="true" stored="true" />
+    <field name="maxy" type="float" indexed="true" stored="true" />
+    <field name="minx" type="float" indexed="true" stored="true" />
+    <field name="miny" type="float" indexed="true" stored="true" />
+EOF
+
+    sed -i '
+        /[:space:]*<\/fields>/ {
+            h
+            r '${tempfile:?}'
+            g
+            N
+            }
+        ' /opt/solr/example/solr/ckan/conf/schema.xml
+
+    exit
+
+# -----------------------------------------------------
+# MOVE TO DOCKER
+# Add the spatial search widget.
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#spatial-search-widget
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+        vi "${ckanroot:?}/src/ckan/ckan/templates/package/search.html"
+
+            {% block secondary_content %}
+        +   {% snippet "spatial/snippets/spatial_query.html" %}
+            <div class="filters">
+            ....    
+            </div>
+            {% endblock %}    
+
+    exit
+
+# -----------------------------------------------------
+# MOVE TO DOCKER
+# Add the data extent map.
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#dataset-extent-map
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+    vi "${ckanroot:?}/src/ckan/ckan/templates/package/read_base.html"
+
+        {% block secondary_content %}
+    +     {% set dataset_extent = h.get_pkg_dict_extra(c.pkg_dict, 'spatial', '') %}
+    +     {% if dataset_extent %}
+    +       {% snippet "spatial/snippets/dataset_map_sidebar.html", extent=dataset_extent %}
+    +     {% endif %}
+          {% block secondary_help_content %}{% endblock %}
+          ....    
+        {% endblock %}    
+
+    exit
+
+# -----------------------------------------------------
+# MOVE TO DOCKER - DONE
+# Configure the spatial harvest plugins.
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/harvesters.html
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+        vi "${ckanconf:?}/ckan.ini"
+
+            ## Plugins Settings
+        -   ckan.plugins = ....
+        +   ckan.plugins = .... csw_harvester waf_harvester doc_harvester
+
+# -----------------------------------------------------
+# MOVE TO DOCKER
+# Install the GeoNetwork harvester.
+# https://github.com/geosolutions-it/ckanext-geonetwork
+# http://demo.geo-solutions.it/share/linea_comune/doc/online/install/install_ckan_otherext.html
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+        pushd src
+
+            git clone https://github.com/geosolutions-it/ckanext-geonetwork.git
+
+            pushd ckanext-geonetwork
+           
+                python setup.py develop
+
+            popd
+        popd
+
+        vi "${ckanconf:?}/ckan.ini"
+
+            ## Plugins Settings
+        -   ckan.plugins = ....
+        +   ckan.plugins = .... geonetwork_harvester
+
+    exit
+
+# -----------------------------------------------------
+# Initialise our CKAN storage.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+        # Need to do this after the container starts because the directory is mounted as a volume.
+
+        mkdir --parent "${ckandata:?}/storage"
+        mkdir --parent "${ckandata:?}/resources"
+
+        chown -R apache "${ckandata:?}"
+        chgrp -R apache "${ckandata:?}"
+        chmod -R o=rwxs "${ckandata:?}"
+        chmod -R g=wrxs "${ckandata:?}"
+
+        exit
+
+# -----------------------------------------------------
+# MOVE TO DOCKER
+# Fix the database usernames and passwords.
+# https://github.com/ckan/ckanext-harvest
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    cat > "${ckantempdir:?}/postgresql.cfg" << EOF
+sqlalchemyurl=postgresql://${ckanusername:?}:${ckanpassword:?}@postlink/${ckandatabase:?}
+storereaderurl=postgresql://${storereadername:?}:${storereaderpass:?}@postlink:5432/${storedatabase:?}
+storewriterurl=postgresql://${storewritername:?}:${storewriterpass:?}@postlink:5432/${storedatabase:?}
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+        source /temp/postgresql.cfg
+
+        sed -i '
+            s|^sqlalchemy.url.*$|sqlalchemy.url = '${sqlalchemyurl:?}'|
+            s|^ckan.datastore.read_url.*$|ckan.datastore.read_url = '${storereaderurl:?}'|
+            s|^ckan.datastore.write_url.*$|ckan.datastore.write_url = '${storewriterurl:?}'|
+            ' "${ckanconf:?}/ckan.ini"
+
+    exit
+
+# -----------------------------------------------------
+# Initialise our CKAN database.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+        paster --plugin ckan db init \
+            -c "${ckanconf:?}/ckan.ini"
+
+        exit
+
+# -----------------------------------------------------
+# Initialise our admin user
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker exec -it "${ckanname:?}" bash
+
+        paster --plugin ckan sysadmin add zarquan \
+            -c "${ckanconf:?}/ckan.ini"
+
+            # Create new user: zarquan? [y/n]
+            # Password: 
+            # Confirm password: 
+
+        exit
+
+# -----------------------------------------------------
+# Initialise the harvester tables.
+# https://github.com/ckan/ckanext-harvest
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+        paster --plugin=ckanext-harvest harvester initdb \
+            -c "${ckanconf:?}/ckan.ini"
+
+    exit
+
+# -----------------------------------------------------
+# Initialise the spatial tables.
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/install.html#configuration
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckanname:?}" bash
+
+        paster --plugin=ckanext-spatial spatial initdb \
+            -c "${ckanconf:?}/ckan.ini"
+
+    exit
+
+# -----------------------------------------------------
+# Import our example data
+#[user@desktop]
+
+    Converted xls file
+
+    name : "Amazon forest biomass"
+    text : "Amazon forest biomass Dataset From Mitchard et al 2014"
+    link : "https://github.com/astrotrop/astrotrop/raw/master/src/docker/ckan/test/data/jenifer.001.xls"
+
+    #
+    # GeoJSON verifier
+    # http://geojson.io/
+
+    spatial :
+        {"type": "Polygon", "coordinates": [[[ -81.2109375, -16.63619187839765], [-81.2109375, 13.581920900545844], [-33.046875, 13.581920900545844], [-33.046875, -16.63619187839765], [-81.2109375,-16.63619187839765]]]}
+
+# -----------------------------------------------------
+# Import our example data
+#[user@desktop]
+
+    astrotrop/protected/data/leicester/AstroTrop/Forest_Non-Forest_Congo
+    astrotrop/protected/data/leicester/AstroTrop/Forest_Non-Forest_Congo/Forest_Cover_Congo.tif
+    astrotrop/protected/data/leicester/AstroTrop/Forest_Non-Forest_Congo/Forest_Cover_Congo.hdr
+    
+    ESRI BIL Header File
+    http://fileinfo.com/extension/hdr
+
+        ENVI
+        description = {
+          Majority Analysis Result [Thu Mar 06 15:50:21 2014]}
+        samples = 11250
+        lines   = 11250
+        bands   = 1
+        header offset = 0
+        file type = ENVI Classification
+        data type = 1
+        interleave = bsq
+        sensor type = Unknown
+        classes = 3
+        class lookup = {
+           0,   0,   0,   0, 139,   0, 255, 255, 255}
+        class names = {
+         Unclassified, Forest, 
+         Non-Forest}
+        byte order = 0
+        map info = {Geographic Lat/Lon, 1.0000, 1.0000, 15.00000000, 5.00000000, 4.4444000000e-004, 4.4444000000e-004, WGS-84, units=Degrees}
+        coordinate system string = {GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137.0,298.257223563]],PRIMEM["Greenwich",0.0],UNIT["Degree",0.0174532925199433]]}
+        wavelength units = Unknown
+        band names = {
+         Majority Analysis (N05E15_10_lstack_noratio_ALL_cal_points_SVM.dat)}
+
+    spatial
+        {
+        "type": "Polygon",
+        "coordinates":
+            [
+                [
+                    [
+                      16.962890625,
+                      -9.44906182688142
+                    ],
+                    [
+                      16.962890625,
+                      3.6888551431470478
+                    ],
+                    [
+                      31.201171875,
+                      3.6888551431470478
+                    ],
+                    [
+                      31.201171875,
+                      -9.44906182688142
+                    ],
+                    [
+                      16.962890625,
+                      -9.44906182688142
+                    ]
+                ]
+            ]
+        }
+
+    astrotrop/protected/data/leicester/AstroTrop/Forest_Non-Forest_Mexico
+    astrotrop/protected/data/leicester/AstroTrop/Forest_Non-Forest_Mexico/Forest_Cover_Mexico.tif
+    astrotrop/protected/data/leicester/AstroTrop/Forest_Non-Forest_Mexico/Forest_Cover_Mexico.tfw
+
+    World File for TIFF
+    http://fileinfo.com/extension/tfw
+
+        250.0000000000
+        0.0000000000
+        0.0000000000
+        -250.0000000000
+        -1590706.8019999999
+        3791463.8270000000
+
+    spatial
+        {
+        "type": "Polygon",
+        "coordinates":
+            [
+                [
+                    [
+                      16.962890625,
+                      -9.44906182688142
+                    ],
+                    [
+                      16.962890625,
+                      3.6888551431470478
+                    ],
+                    [
+                      31.201171875,
+                      3.6888551431470478
+                    ],
+                    [
+                      31.201171875,
+                      -9.44906182688142
+                    ],
+                    [
+                      16.962890625,
+                      -9.44906182688142
+                    ]
+                ]
+            ]
+        }
+
+# -----------------------------------------------------
+# PantropicBiomass
+#
+
+    Pantropical National Level Carbon Stock Dataset
+    http://www.whrc.org/mapping/pantropical/carbon_dataset.html
+
+    ArcGIS
+    https://www.arcgis.com/home/item.html?id=2332b43bc5454127bfde21e894c89a51
+    http://tiles.arcgis.com/tiles/tWF28TdwCm3ZaV7m/arcgis/rest/services/PantropicBiomassFull/MapServer
+
+    spatial
+        {
+        "type": "Polygon",
+        "coordinates":
+            [
+                [
+                    [
+                      -202.5,
+                      -27.68352808378776
+                    ],
+                    [
+                      -202.5,
+                      27.68352808378776
+                    ],
+                    [
+                      199.68749999999997,
+                      27.68352808378776
+                    ],
+                    [
+                      199.68749999999997,
+                      -27.68352808378776
+                    ],
+                    [
+                      -202.5,
+                      -27.68352808378776
+                    ]
+                ]
+            ]
+        }
+
+
+
+

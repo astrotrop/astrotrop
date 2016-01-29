@@ -102,7 +102,7 @@ EOF
         pushd src/docker
 
             docker build \
-                --tag "astrotrop/postgis:2-${imageset:?}" \
+                --tag "astrotrop/postgis:${imageset:?}" \
                 base/postgis
 
         popd
@@ -180,7 +180,7 @@ EOF
     docker push "astrotrop/java:8-${imageset:?}"
     docker push "astrotrop/tomcat:8-${imageset:?}"
 
-    docker push "astrotrop/postgis:2-${imageset:?}"
+    docker push "astrotrop/postgis:${imageset:?}"
 
     docker push "astrotrop/apache-base:${imageset:?}"
     docker push "astrotrop/apache-wsgi:${imageset:?}"
