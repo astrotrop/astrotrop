@@ -30,7 +30,7 @@
         build-essential        \
         patch                  \
         gcc                    \
-        git                    \
+        git
 
 # -----------------------------------------------------
 # Install our dependencies.
@@ -47,24 +47,24 @@
         python-psycopg2        \
         python-support         \
         python-urlgrabber      \
-        python-virtualenv      \
+        python-virtualenv
 
     apt-get -y install         \
         libxml2-dev            \
-        libxslt-dev            \
+        libxslt-dev
 
     apt-get -y install         \
-        gettext                \
+        gettext
 
     apt-get -y install         \
         libjpeg-dev            \
         libpng-dev             \
-        libpq-dev              \
+        libpq-dev
 
     apt-get -y install         \
         libgeos-dev            \
         libproj-dev            \
-        gdal-bin               \
+        gdal-bin
 
 # -----------------------------------------------------
 # Clone the GeoNode source code.

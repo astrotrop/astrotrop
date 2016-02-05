@@ -67,7 +67,6 @@ EOF
 #[root@virtual]
 
     pushd "${astrotropsrc:?}"
-
         pushd src/docker
         
             docker build \
