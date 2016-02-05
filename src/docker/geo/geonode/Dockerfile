@@ -20,18 +20,18 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
 # Add and run our build script.
-ADD build.sh .
+ADD build.sh /
 RUN chmod a+x,a-w build.sh
-RUN ./build.sh
+RUN /build.sh
 
 #
 # Add our run script.
-ADD run.sh .
-RUN chmod a+x,a-w run.sh
+ADD run.sh /
+RUN chmod a+x,a-w /run.sh
 
 EXPOSE 8000
 
-ENTRYPOINT ["run.sh"]
+ENTRYPOINT ["/run.sh"]
 CMD ["start"]
 
 
