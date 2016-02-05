@@ -70,7 +70,8 @@
 # Clone the GeoNode source code.
 #[root@builder]
 
-    git clone https://github.com/GeoNode/geonode.git /goenode
+    mkdir /geonode
+    git clone https://github.com/GeoNode/geonode.git /geonode
 
 # -----------------------------------------------------
 # Install GeoNode.

@@ -62,6 +62,13 @@ EOF
         popd
     fi
 
+# -----------------------------------------------------
+# Build our GeoNode container.
+#[root@virtual]
+
+    pushd "${astrotropsrc:?}"
+
+
 
 
 
