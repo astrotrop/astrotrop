@@ -1,0 +1,180 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Live services
+#
+
+    http://rstudio-04.metagrid.xyz:8787/
+    http://geoserv-04.metagrid.xyz:8080/geoserver/web/
+
+
+# -----------------------------------------------------
+# Dev services
+#
+
+    http://geoserv-05.metagrid.xyz:8080/geoserver/web/
+
+
+# -----------------------------------------------------
+# Carbon stock example
+#
+
+    On 2016-01-27 17:18, Mark Mulligan wrote:
+
+        I can provide the plot data and GIS files for one or two of the maps but am not sure how this will then work with the software.
+
+    On Fri, Jan 29, 2016 at 12:05 PM, Dave Morris wrote:
+
+        Can you describe what data you want to share and we will see what we can do.
+
+    On 2016-01-29 12:08, Mark Mulligan wrote:
+
+        ARCASCII or GEOTIFF format grids representing properties of the Amazon basin at a pixel resolution of 1km.
+
+    On Fri, Jan 29, 2016 at 1:10 PM, Dave Morris wrote:
+
+        How would someone get a copy of them, are they accessible from a website somewhere ?
+
+    On 2016-01-29 13:32, Mark Mulligan wrote:
+
+        Here is a smaller example
+
+
+
+    Carbon stock example :
+
+        astrotrop/protected/data/kings/carb_stock.zip
+
+        astrotrop/protected/data/kings/carb_stock/carb_stock.asc
+        astrotrop/protected/data/kings/carb_stock/carb_stock.asc.aux.xml
+        astrotrop/protected/data/kings/carb_stock/carb_stock.prj
+        astrotrop/protected/data/kings/carb_stock/carb_stock.readme.txt
+
+    Import ASC file into QGIS and export as GeoTIFF.
+    
+        astrotrop/protected/data/kings/carb_stock/carb_stock.tif
+    
+    Import ASC file into GeoServer, need to set the Coordinate Reference System.
+    
+        astrotrop/protected/data/kings/carb_stock/carb_stock.prj
+        WGS_1984
+        
+        http://spatialreference.org/ref/epsg/4326/
+        EPSG:4326
+    
+        Native SRS   : EPSG:404000
+        Declared SRS : EPSG:4326
+        SRS handling : Force declared
+
+    #
+    # Imported into GeoNode, viewed in QGIS
+    username=astrotrop&identifier=MetaGrid:carbon_stock&format=GeoTIFF&url=http://geoserv-05.metagrid.xyz:8080/geoserver/wcs&cache=PreferNetwork&password=FVdVJnHbMnJnspAPYFi0tm1Nu
+
+# -----------------------------------------------------
+# Food and Agriculture Organization of the United Nations
+#
+
+    http://www.fao.org/home/en/
+
+    http://www.fao.org/geonetwork/srv/en/main.home
+
+    Forests 2000 by Major Ecological Domains
+    crs=EPSG:4326&dpiMode=all&format=image/png&layers=forests_2000_major_ecological_domains&styles=&url=http://geonetwork3.fao.org/ows/1254?
+
+# -----------------------------------------------------
+#  FreeGISdata
+#
+
+    WMS Services (Global)
+    http://freegisdata.org/
+
+        WMS Service: World Mineral Deposits
+        http://freegisdata.org/record/urn:uuid:ee97878f-cfce-40d0-bf80-781c3bbb15cd/
+
+            Dataset Generalized Geology of the World: Age and Rock Type Domains
+            http://freegisdata.org/record/urn:uuid:ee97878f-cfce-40d0-bf80-781c3bbb15cd-GSC:WORLD_AgeRockDomain/        
+
+
+
+
+# -----------------------------------------------------
+# GeoMet - Meteorological Service of Canada (MSC)
+#
+
+    http://www.ec.gc.ca/meteo-weather/default.asp?lang=En&n=C0D9B3D8-1
+
+        GeoMet provides access to the Environment Canada's Meteorological Service of Canada (MSC)
+        raw numerical weather prediction (NWP) model data layers and the weather radar mosaic via
+        two Open Geospatial Consortium web service standards: Web Map Service (WMS) and Keyhole
+        Markup Language (KML).
+
+    http://geo.weather.gc.ca/geomet/?service=WMS&request=GetCapabilities
+
+
+    GDPS.ETA - Relative humidity
+    crs=EPSG:3857&dpiMode=7&format=image/png&layers=GDPS.ETA_HR&styles=&url=http://geo.weather.gc.ca/geomet/?lang%3DE%26
+
+    GDPS.ETA - Rain (QPF)
+    crs=EPSG:3857&dpiMode=7&format=image/png&layers=GDPS.ETA_RN&styles=&url=http://geo.weather.gc.ca/geomet/?lang%3DE%26
+
+
+# -----------------------------------------------------
+# Hydrata
+#
+
+    Hydrata is a web platform that connects open data, standards, tools and engineers together in one place. 
+    http://hydrata.com/
+    http://hydrata.com/layers/?limit=100&offset=0
+
+
+
+# -----------------------------------------------------
+# GeoServer
+#
+
+    Quickstart tutorial
+    http://qgis.boundlessgeo.com/static/docs/quickstart.html
+
+# -----------------------------------------------------
+# GeoNode
+#
+    GeoNode
+    http://geonode.org/
+
+    GeoNode and GeoServer
+    http://geonode.readthedocs.org/en/1.0/geoserver-extensions.html
+
+    Setup GeoServer for GeoNode    
+    http://training.geonode.geo-solutions.it/002_install_and_admin/002_geonode_install/install_geoserver_application.html
+
+    Spatial Data Infrastructure Best Practices with GeoNode
+    http://www.slideshare.net/SebastianBenthall/spatial-data-infrastructure-best-practices-with-geonode
+
+    GeoNode/geonode
+    https://github.com/GeoNode/geonode
+
+    
+
+
+
+

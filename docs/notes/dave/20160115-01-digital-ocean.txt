@@ -102,6 +102,22 @@
 
 
 # -----------------------------------------
+# SSH login to the server.
+#[user@desktop]
+
+    ssh astrotrop-01
+
+# -----------------------------------------
+# Disable plain text password login.
+#[root@virtual]
+
+    sed -i '
+        s/^#PasswordAuthentication.*$/PasswordAuthentication no/
+        ' /etc/ssh/sshd_config
+
+    service ssh restart
+
+# -----------------------------------------
 # Install admin tools.
 #[root@virtual]
 

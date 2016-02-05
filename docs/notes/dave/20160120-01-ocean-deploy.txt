@@ -85,13 +85,23 @@
     +       IdentityFile ~/.ssh/zrq.digitalocean.com.rsa
     +       Protocol 2
     +       Compression yes
-    +       PasswordAuthentication yes
+    +       PasswordAuthentication no
 
 # -----------------------------------------
 # SSH login to the server.
 #[user@desktop]
 
     ssh astrotrop-04
+
+# -----------------------------------------
+# Disable plain text password login.
+#[root@virtual]
+
+    sed -i '
+        s/^#PasswordAuthentication.*$/PasswordAuthentication no/
+        ' /etc/ssh/sshd_config
+
+    service ssh restart
 
 # -----------------------------------------
 # Install admin tools.

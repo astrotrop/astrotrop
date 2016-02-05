@@ -1,0 +1,90 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # AstroTROP GeoServer service
+    http://geoserv-05.metagrid.xyz:8080/geoserver
+
+
+
+    #
+    # Current pages
+    
+        CKAN Getting started ..
+        http://docs.ckan.org/en/ckan-2.3/maintaining/getting-started.html
+
+        CKAN Harvesting data .. 
+        http://docs.ckan.org/en/ckan-1.7.3/harvesting.html
+
+        CKAN CSW support ..
+        http://docs.ckan.org/en/ckan-1.7.3/geospatial.html#csw-support
+
+        CKAN Harvester configuration .. 
+        https://github.com/ckan/ckanext-harvest#configuration
+
+
+        GeoServer installing CSW plugin
+        http://docs.geoserver.org/stable/en/user/extensions/csw/installing.html
+
+        GeoServer download
+        http://geoserver.org/release/stable/
+
+
+
+
+    #
+    # CKAN harvest plugin ..
+    http://docs.ckan.org/en/ckan-1.7.3/harvesting.html
+
+    #
+    # CSW support
+    http://docs.ckan.org/en/ckan-1.7.3/geospatial.html#csw-support
+
+    #
+    # Harvester configuration
+    https://github.com/ckan/ckanext-harvest#configuration
+
+
+    http://eta.virtual.metagrid.co.uk/harvest
+
+        Add Harvest Source [+]
+    
+    http://eta.virtual.metagrid.co.uk/harvest/new
+
+        URL :
+
+        
+        Title :
+        
+        Description :
+        
+        Source type :
+
+            * CKAN
+            X CSW server
+            * Web Accessible Folder (WAF)
+            * Single spatial metadata document
+            * CSW server (GeoNetwork)
+
+        Update frequency :
+        
+            Manual

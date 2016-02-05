@@ -1,0 +1,241 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Configure our source code directory.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" <<- EOF
+
+        codedir=\${project:?}/code
+
+EOF
+
+    source "${HOME:?}/astrotrop.tools"
+
+    rmdata "${codedir:?}"
+    mkdata "${codedir:?}"
+
+# -----------------------------------------------------
+# Configure our GeoNode container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" <<- EOF
+
+        geonodename=geonode
+        geonodelink=geonode
+
+        geonodecodedir=\${codedir:?}/geonode
+        geonodetempdir=\${tempdir:?}/geonode
+        geonodedatadir=\${datadir:?}/geonode
+
+        geonodeusername=geonodeuser
+        geonodepassword=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Clone the GeoNode source code.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    if [ ! -e "${geonodecodedir:?}" ]
+    then
+        pushd "$(dirname ${geonodecodedir:?})"
+
+            git clone https://github.com/GeoNode/geonode.git "$(basename ${geonodecodedir:?})"
+
+        popd
+    else
+        pushd "${geonodecodedir:?}"
+            git pull
+        popd
+    fi
+
+# -----------------------------------------------------
+# Build the GeoNode container.
+#[root@virtual]
+
+    #
+    # Try the Ubuntu install instructions
+    # http://training.geonode.geo-solutions.it/002_install_and_admin/002_geonode_install/install_geonode_application.html
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        -it \
+        --publish 8000:8000 \
+        --volume "$(pwd)/postenv:/postenv" \
+        --volume "${geonodecodedir}:/geonode" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        --link "${geoservname:?}:${geoservlink:?}" \
+        ubuntu:14.04 \
+        bash
+
+        #
+        # Install dependencies
+        apt-get update
+        apt-get -y install         \
+            python                 \
+            python-dev             \
+            python-gdal            \
+            python-pycurl          \
+            python-imaging         \
+            python-pastescript     \
+            python-psycopg2        \
+            python-support         \
+            python-urlgrabber      \
+            python-virtualenv      \
+
+        apt-get -y install         \
+            libxml2-dev            \
+            libxslt-dev            \
+
+        apt-get -y install         \
+            build-essential        \
+            patch                  \
+            gcc                    \
+
+        apt-get -y install         \
+            gettext                \
+
+        apt-get -y install         \
+            libjpeg-dev            \
+            libpng-dev             \
+            libpq-dev              \
+
+        apt-get -y install         \
+            libgeos-dev            \
+            libproj-dev            \
+            gdal-bin               \
+
+        pip install -e /geonode
+
+            Successfully installed lxml Django beautifulsoup4 MultipartPostHandler httplib2 transifex-client Paver nose django-nose awesome-slugify django-pagination
+            django-jsonfield django-extensions django-taggit django-mptt django-guardian pinax-theme-bootstrap pinax-theme-bootstrap-account django-forms-bootstrap
+            django-friendly-tag-loader django-activity-stream django-downloadview django-tastypie django-polymorphic django-leaflet django-autocomplete-light
+            django-modeltranslation django-geoexplorer geonode-user-messages geonode-avatar geonode-announcements geonode-agon-ratings geonode-user-accounts geonode-arcrest
+            geonode-notification geonode-dialogos gsconfig gsimporter gisdata OWSLib pycsw pyproj Shapely django-haystack pyelasticsearch celery django-celery
+            django-bootstrap3-datetimepicker flake8 pep8 GeoNode regex Unidecode django-appconf python-mimeparse python-dateutil pytz geolinks simplejson kombu billiard
+            pyflakes mccabe amqp anyjson
+            Cleaning up...
+
+        #
+        # Edit our local settings
+        pushd /geonode/geonode
+
+            source /postenv
+
+            cp local_settings.py.sample local_settings.py
+            vi local_settings.py
+
+            cat local_settings.py
+
+            diff local_settings.py.sample local_settings.py
+
+                5c5
+                < SITEURL = "http://localhost:8000/"
+                ---
+                > SITEURL = "http://geonode-05.metagrid.xyz:8000/"
+                10,12c10,14
+                <          'NAME': 'geonode',
+                <          'USER': 'geonode',
+                <          'PASSWORD': 'geonode',
+                ---
+                >          'NAME'  : 'geonode',
+                >          'HOST'  : 'postgis',
+                >          'PORT'  : '5432',
+                >          'USER'  : 'geonode',
+                >          'PASSWORD': '########',
+                16,22c18,24
+                <         #'ENGINE': 'django.contrib.gis.db.backends.postgis',
+                <         'ENGINE': '', # Empty ENGINE name disables 
+                <         'NAME': 'geonode',
+                <         'USER' : 'geonode',
+                <         'PASSWORD' : 'geonode',
+                <         'HOST' : 'localhost',
+                <         'PORT' : '5432',
+                ---
+                >         'ENGINE': 'django.contrib.gis.db.backends.postgis',
+                >         #'ENGINE': '', # Empty ENGINE name disables 
+                >         'NAME'  : 'geonode_data',
+                >         'USER'  : 'geonode',
+                >         'PASSWORD' : '########',
+                >         'HOST'  : 'postgis',
+                >         'PORT'  : '5432',
+                30,31c32,35
+                <         'LOCATION' : 'http://localhost:8080/geoserver/',
+                <         'PUBLIC_LOCATION' : 'http://localhost:8080/geoserver/',
+                ---
+                >         'LOCATION' : 'http://geoserv:8080/geoserver/',
+                >         'PUBLIC_LOCATION' : 'http://geoserv-05.metagrid.xyz:8080/geoserver/',
+
+        popd
+
+
+        #
+        # Check the database connection.
+        apt-get -y install postgresql-client
+
+        source /postenv
+        cat > ~/.pgpass << EOF
+${postgishostname:?}:*:*:${postgisusername}:${postgispassword}
+${postgishostname:?}:*:*:${geonodeusername}:${geonodepassword}
+EOF
+        chmod u=rw,g=,o= ~/.pgpass
+
+        psql \
+            --host "${postgishostname:?}" \
+            --username "${geonodeusername:?}" \
+            --dbname "${geonodedatabase}" 
+
+            \l
+            \dt
+            \q
+
+        #
+        # Initialise our database.
+        pushd /geonode
+
+            python manage.py syncdb --noinput
+
+            python manage.py createsuperuser
+
+                Username: SuperMe
+                Email address: super@example.com
+                Password: 
+                Password (again): 
+                Superuser created successfully.
+
+        popd
+
+        #
+        # Start the Django
+        pushd /geonode
+
+            paver start_django -b 0.0.0.0:8000 -f
+
+            ....
+            ....
+

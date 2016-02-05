@@ -1,0 +1,79 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Install Catalog Services for Web (CSW)
+    http://docs.geoserver.org/stable/en/user/extensions/csw/installing.html
+
+
+# -----------------------------------------
+# SSH login to the host virtual machine.
+#[user@desktop]
+
+    ssh astrotrop-05
+
+# -----------------------------------------
+# Login to the geoserver container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        -u root \
+        "${geoservname:?}" \
+        bash        
+
+# -----------------------------------------
+# Login to the geoserver container.
+#[root@geoserv]
+
+    #
+    # Install download tools
+    dnf -y install wget
+    dnf -y install unzip
+
+    #
+    # Download and unzip the zipfile.
+    zipfile=geoserver-${GEOSERVER_VERSION:?}-csw-plugin.zip
+    zippath=/temp/${zipfile:?}
+    
+    wget -O "${zippath:?}" "http://sourceforge.net/projects/geoserver/files/GeoServer/${GEOSERVER_VERSION}/extensions/${zipfile:?}/download"
+
+    unzipped=/temp/csw-plugin
+    unzip \
+        "${zippath:?}" \
+        -d "${unzipped:?}"
+
+    #
+    # Copy the jar files into our webapp.        
+    for jarfile in $(ls ${unzipped:?}/*.jar)
+    do
+        cp --verbose --no-clobber \
+            "${jarfile:?}" \
+            "${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/WEB-INF/lib"
+    done
+
+    #
+    # Remove the zipfiles.
+    rm -rf "${unzipped:?}"
+    rm -rf "${zippath:?}"
+

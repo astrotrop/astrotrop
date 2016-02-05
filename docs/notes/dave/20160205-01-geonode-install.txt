@@ -1,0 +1,90 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Configure our source code directory.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" <<- EOF
+
+        codedir=\${project:?}/code
+
+EOF
+
+    source "${HOME:?}/astrotrop.tools"
+
+    rmdata "${codedir:?}"
+    mkdata "${codedir:?}"
+
+# -----------------------------------------------------
+# Clone the AstroTROP source code.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" <<- EOF
+
+        astrotropsrc=\${codedir:?}/astrotrop
+
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    if [ ! -e "${astrotropsrc:?}" ]
+    then
+        pushd "$(dirname ${astrotropsrc:?})"
+
+            git clone https://github.com/astrotrop/astrotrop.git "$(basename ${astrotropsrc:?})"
+
+        popd
+    else
+        pushd "${astrotropsrc:?}"
+            git pull
+        popd
+    fi
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Configure our GeoNode container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" <<- EOF
+
+        geonodename=geonode
+        geonodelink=geonode
+
+        geonodetempdir=\${tempdir:?}/geonode
+        geonodedatadir=\${datadir:?}/geonode
+
+        geonodeusername=geonodeuser
+        geonodepassword=$(pwgen 20 1)
+
+EOF
+
+

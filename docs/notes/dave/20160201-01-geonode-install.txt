@@ -1,0 +1,685 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# GeoNode
+#
+    GeoNode
+    http://geonode.org/
+
+    GeoNode and GeoServer
+    http://geonode.readthedocs.org/en/1.0/geoserver-extensions.html
+
+    Setup GeoServer for GeoNode    
+    http://training.geonode.geo-solutions.it/002_install_and_admin/002_geonode_install/install_geoserver_application.html
+
+    Spatial Data Infrastructure Best Practices with GeoNode
+    http://www.slideshare.net/SebastianBenthall/spatial-data-infrastructure-best-practices-with-geonode
+
+    GeoNode/geonode
+    https://github.com/GeoNode/geonode
+
+
+# -----------------------------------------------------
+# Configure our source code directory.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" <<- EOF
+
+        codedir=\${project:?}/code
+
+EOF
+
+    source "${HOME:?}/astrotrop.tools"
+
+    rmdata "${codedir:?}"
+    mkdata "${codedir:?}"
+
+
+# -----------------------------------------------------
+# Configure our GeoNode container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" <<- EOF
+
+        geonodename=geonode
+        geonodelink=geonode
+
+        geonodecodedir=\${codedir:?}/geonode
+        geonodetempdir=\${tempdir:?}/geonode
+        geonodedatadir=\${datadir:?}/geonode
+
+        geonodeusername=geonodeuser
+        geonodepassword=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Clone the GeoNode source code.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    if [ ! -e "${geonodecodedir:?}" ]
+    then
+        pushd "$(dirname ${geonodecodedir:?})"
+
+            git clone https://github.com/GeoNode/geonode.git "$(basename ${geonodecodedir:?})"
+
+        popd
+    else
+        pushd "${geonodecodedir:?}"
+            git pull
+        popd
+    fi
+
+# -----------------------------------------------------
+# Build the GeoNode container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    pushd "${geonodecodedir:?}"
+
+        #
+        # Broken in many ways :-(
+        # https://github.com/GeoNode/geonode
+        docker build \
+            --tag "astrotrop/geonode:${dockerset}" \
+            .
+
+    popd
+        
+    #
+    # Try the Ubuntu install instructions
+    # https://github.com/GeoNode/geonode
+    docker run \
+        -it \
+        ubuntu:14.04 \
+        bash
+
+        apt-get update
+
+        # works on 12-04
+        apt-get install python-software-properties
+        # works on 14-04
+        apt-get install software-properties-common
+
+        # fails
+        add-apt-repository ppa:geonode/release
+        # works
+        add-apt-repository ppa:geonode/stable
+
+        # fails
+        add-apt-repository ppa:geonode/release
+
+            You are about to add the following PPA to your system:
+             tag:launchpad.net:2008:redacted
+             More info: https://launchpad.net/~geonode/+archive/ubuntu/release
+            Press [ENTER] to continue or ctrl-c to cancel adding it
+
+            gpg: keyring `/tmp/tmpcMzsha/secring.gpg' created
+            gpg: keyring `/tmp/tmpcMzsha/pubring.gpg' created
+            gpg: "tag:launchpad.net:2008:redacted" not a key ID: skipping
+            recv failed
+
+        # works
+        # https://launchpad.net/~geonode/+archive/ubuntu/stable
+        add-apt-repository ppa:geonode/stable
+
+            You are about to add the following PPA to your system:
+             GeoNode stable releases
+             More info: https://launchpad.net/~geonode/+archive/ubuntu/stable
+            Press [ENTER] to continue or ctrl-c to cancel adding it
+
+            gpg: keyring `/tmp/tmpJr0OH3/secring.gpg' created
+            gpg: keyring `/tmp/tmpJr0OH3/pubring.gpg' created
+            gpg: requesting key 9FBF90A1 from hkp server keyserver.ubuntu.com
+            gpg: /tmp/tmpJr0OH3/trustdb.gpg: trustdb created
+            gpg: key 9FBF90A1: public key "Launchpad PPA for geonode" imported
+            gpg: Total number processed: 1
+            gpg:               imported: 1  (RSA: 1)
+            OK
+
+        apt-get update
+
+        # fails
+        apt-get install geonode
+
+            Errors were encountered while processing:
+             geoserver-geonode
+             geonode
+            E: Sub-process /usr/bin/dpkg returned an error code (1)
+
+    exit
+
+
+    #
+    # The 'simple' install instructions fail in a container.
+    # http://geonode.org/#install
+    # Possibly because they are trying to start Tomcat using a system script.
+    #   "Starting Tomcat servlet engine tomcat7 [fail]"
+
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        -it \
+        --volume "$(geonodecodedir):/geonode" \
+        ubuntu:14.04 \
+        bash
+
+        apt-get update
+
+            #
+            # Need to install 'add-apt-repository'
+            # apt-get -y install software-properties-common
+            
+            add-apt-repository ppa:geonode/stable
+
+            apt-get update
+
+            apt-get install geonode
+
+                Creating config file /etc/logrotate.d/tomcat7 with new version
+                invoke-rc.d: policy-rc.d denied execution of start.
+                Processing triggers for ureadahead (0.100.0-16) ...
+                Setting up geoserver-geonode (2.7.4-2) ...
+                 * Starting Tomcat servlet engine tomcat7 [fail] 
+
+                dpkg: error processing package geoserver-geonode (--configure):
+                 subprocess installed post-installation script returned error exit status 1
+                dpkg: dependency problems prevent configuration of geonode:
+                 geonode depends on geoserver-geonode | geoserver; however:
+                  Package geoserver-geonode is not configured yet.
+                  Package geoserver is not installed.
+
+                dpkg: error processing package geonode (--configure):
+                 dependency problems - leaving unconfigured
+                Processing triggers for libc-bin (2.19-0ubuntu6.6) ...
+                Processing triggers for python-support (1.0.15) ...
+                Processing triggers for ca-certificates (20141019ubuntu0.14.04.1) ...
+                Updating certificates in /etc/ssl/certs... 0 added, 0 removed; done.
+                Running hooks in /etc/ca-certificates/update.d....
+                done.
+                done.
+                Errors were encountered while processing:
+                 geoserver-geonode
+                 geonode
+                E: Sub-process /usr/bin/dpkg returned an error code (1)
+
+        exit    
+    
+    #
+    # Try the Ubuntu install instructions
+    # http://training.geonode.geo-solutions.it/002_install_and_admin/002_geonode_install/install_geonode_application.html
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        -it \
+        --volume "$(geonodecodedir):/geonode" \
+        ubuntu:14.04 \
+        bash
+
+        apt-get update
+
+        apt-get -y install         \
+            python-virtualenv      \
+            build-essential        \
+            openssh-server         \
+            apache2                \
+            gcc                    \
+            gdal-bin               \
+            gettext                \
+            git-core               \
+            libapache2-mod-wsgi    \
+            libgeos-dev            \
+            libjpeg-dev            \
+            libpng-dev             \
+            libpq-dev              \
+            libproj-dev            \
+            libxml2-dev            \
+            libxslt-dev            \
+            openjdk-7-jre          \
+            patch                  \
+            postgresql             \
+            postgis                \
+            postgresql-9.3-postgis-scripts \
+            postgresql-contrib     \
+            python                 \
+            python-dev             \
+            python-gdal            \
+            python-pycurl          \
+            python-imaging         \
+            python-pastescript     \
+            python-psycopg2        \
+            python-support         \
+            python-urlgrabber      \
+            python-virtualenv      \
+            tomcat7                \
+            unzip                  \
+            zip
+
+        pushd /geonode
+
+            pip install -e .
+
+                Successfully installed lxml Django beautifulsoup4 MultipartPostHandler httplib2 transifex-client Paver nose django-nose awesome-slugify django-pagination
+                django-jsonfield django-extensions django-taggit django-mptt django-guardian pinax-theme-bootstrap pinax-theme-bootstrap-account django-forms-bootstrap
+                django-friendly-tag-loader django-activity-stream django-downloadview django-tastypie django-polymorphic django-leaflet django-autocomplete-light
+                django-modeltranslation django-geoexplorer geonode-user-messages geonode-avatar geonode-announcements geonode-agon-ratings geonode-user-accounts geonode-arcrest
+                geonode-notification geonode-dialogos gsconfig gsimporter gisdata OWSLib pycsw pyproj Shapely django-haystack pyelasticsearch celery django-celery
+                django-bootstrap3-datetimepicker flake8 pep8 GeoNode regex Unidecode django-appconf python-mimeparse python-dateutil pytz geolinks simplejson kombu billiard
+                pyflakes mccabe amqp anyjson
+                Cleaning up...
+
+
+            paver help
+                Not enabling BingMaps base layer as a BING_API_KEY is not defined in local_settings.py file.
+                ---> paver.tasks.help
+                Usage: paver [global options] taskname [task options] [taskname [taskoptions]]
+
+                Options:
+                  --version             show program's version number and exit
+                  -n, --dry-run         don't actually do anything
+                  -v, --verbose         display all logging output
+                  -q, --quiet           display only errors
+                  -i, --interactive     enable prompting
+                  -f FILE, --file=FILE  read tasks from FILE [pavement.py]
+                  -h, --help            display this help information
+                  --propagate-traceback
+                                        propagate traceback, do not hide it under
+                                        BuildFailure(for debugging)
+
+                Tasks from paver.misctasks:
+                  generate_setup   - Generates a setup.py file that uses paver behind the scenes
+                  minilib          - Create a Paver mini library that contains enough for a simple
+                    pavement.py to be installed using a generated setup.py
+
+                Tasks from paver.tasks:
+                  help             - This help display.
+
+                Tasks from pavement:
+                  stop             - Stop GeoNode
+                  test             - Run GeoNode's Unit Test Suite
+                  win_install_deps - Install all Windows Binary automatically
+                    This can be removed as wheels become available for these packages
+                  test_javascript  - 
+                  test_integration - Run GeoNode's Integration test suite against the external apps
+                  run_tests        - Executes the entire test suite
+                  reset            - Reset a development environment (Database, GeoServer & Catalogue)
+                  reset_hard       - Reset a development environment (Database, GeoServer & Catalogue)
+                  setup_data       - Import sample data (from gisdata package) into GeoNode
+                  deb              - Creates debian packages
+                  static           - 
+                  setup            - Get dependencies and prepare a GeoNode development environment.
+                  start_geoserver  - Start GeoServer with GeoNode extensions
+                  upgradedb        - Add 'fake' data migrations for existing tables from legacy GeoNode versions
+                  sync             - Run the syncdb and migrate management commands to create and migrate a DB
+                  start_django     - Start the GeoNode Django application
+                  package          - Creates a tarball to use for building the system elsewhere
+                  start            - Start GeoNode (Django, GeoServer & Client)
+                  publish          - 
+                  stop_django      - Stop the GeoNode Django application
+                  stop_geoserver   - Stop GeoServer
+                  setup_geoserver  - Prepare a testing instance of GeoServer.
+
+
+            paver setup
+
+                Not enabling BingMaps base layer as a BING_API_KEY is not defined in local_settings.py file.
+                ---> pavement.setup
+                ---> pavement.setup_geoserver
+                makedirs downloaded
+                Downloading geoserver binary
+                Downloading jetty runner
+                makedirs geoserver
+                extracting geoserver
+
+
+            apt-get install git-buildpackage 
+            apt-get install debhelper
+
+            paver deb
+
+                ....
+                ....
+                ....
+                /geonode/GeoNode-2.4.dev20160201140320-all.tar.gz created
+                Creating package for GeoNode version 2.4.dev20160201140320
+                Getting rid of any uncommitted changes in debian/changelog
+                git checkout package/debian/changelog
+                ln -s /geonode/.git /geonode/package
+                cd package
+                git-dch --spawn-editor=snapshot --git-author --new-version=2.4.0+dev20160201140320 --id-length=6 --ignore-branch --release
+                /bin/sh: 1: git-dch: not found
+
+
+
+            ls -1 geoserver
+
+                data
+                geoserver
+
+            ls -1 geoserver/data
+
+                README.rst
+                demo
+                geonode
+                global.xml
+                gwc-gs.xml
+                images
+                logging.xml
+                logs
+                palettes
+                plugIns
+                printing
+                security
+                styles
+                wcs.xml
+                wfs.xml
+                wms.xml
+                workspaces
+
+            ls -1 geoserver/geoserver
+
+                META-INF
+                WEB-INF
+                data
+                index.html
+            
+            ls -1 geoserver/geoserver/WEB-INF/
+
+                classes
+                dispatcher-servlet.xml
+                lib
+                web.xml
+
+        popd
+    exit    
+
+    #
+    # Test access to our postgres container.
+
+    cat > "postenv" <<- EOF
+postgisdatabase=${postgisdatabase:?}
+postgishostname=${postgislink:?}
+postgisusername=${postgisusername:?}
+postgispassword=${postgispassword:?}
+
+geonodedatabase=geonode
+geonodeusername=geonode
+geonodepassword=########
+
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        -it \
+        --volume "$(pwd)/postenv:/postenv" \
+        --volume "${geonodecodedir}:/geonode" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        ubuntu:14.04 \
+        bash
+
+        apt-get update
+
+        apt-get install postgresql-client
+
+        source /postenv
+        cat > ~/.pgpass << EOF
+${postgishostname:?}:*:*:${postgisusername}:${postgispassword}
+EOF
+        chmod u=rw,g=,o= ~/.pgpass
+
+        psql \
+            --host "${postgishostname:?}" \
+            --username "${postgisusername:?}" \
+            --dbname "${postgisdatabase}" 
+
+
+            CREATE USER     geonode WITH LOGIN PASSWORD '########' ;
+            CREATE DATABASE geonode WITH OWNER geonode ;
+            CREATE DATABASE geonode_data WITH OWNER geonode ;
+
+            CREATE EXTENSION postgis ;
+            GRANT ALL ON geometry_columns TO PUBLIC ;
+            GRANT ALL ON spatial_ref_sys  TO PUBLIC ;
+
+            \q
+        exit
+
+    #
+    # Try the Ubuntu install instructions
+    # http://training.geonode.geo-solutions.it/002_install_and_admin/002_geonode_install/install_geonode_application.html
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        -it \
+        --publish 8000:8000 \
+        --volume "$(pwd)/postenv:/postenv" \
+        --volume "${geonodecodedir}:/geonode" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        --link "${geoservname:?}:${geoservlink:?}" \
+        ubuntu:14.04 \
+        bash
+
+        #
+        # Check the database connection.
+        apt-get update
+        apt-get -y install postgresql-client
+
+        source /postenv
+        cat > ~/.pgpass << EOF
+${postgishostname:?}:*:*:${postgisusername}:${postgispassword}
+${postgishostname:?}:*:*:${geonodeusername}:${geonodepassword}
+EOF
+        chmod u=rw,g=,o= ~/.pgpass
+
+        psql \
+            --host "${postgishostname:?}" \
+            --username "${geonodeusername:?}" \
+            --dbname "${geonodedatabase}" 
+
+            \l
+            \dt
+            \q
+
+        #
+        # Install dependencies
+        apt-get update
+        apt-get -y install         \
+            python-virtualenv      \
+            build-essential        \
+            gcc                    \
+            gdal-bin               \
+            gettext                \
+            libgeos-dev            \
+            libjpeg-dev            \
+            libpng-dev             \
+            libpq-dev              \
+            libproj-dev            \
+            libxml2-dev            \
+            libxslt-dev            \
+            patch                  \
+            python                 \
+            python-dev             \
+            python-gdal            \
+            python-pycurl          \
+            python-imaging         \
+            python-pastescript     \
+            python-psycopg2        \
+            python-support         \
+            python-urlgrabber      \
+            python-virtualenv      \
+            unzip                  \
+            zip
+
+#            postgis                \
+#            postgresql             \
+#            postgresql-contrib     \
+#            postgresql-9.3-postgis-scripts \
+#            git-core               \
+#            openssh-server         \
+#            apache2                \
+#            libapache2-mod-wsgi    \
+#            openjdk-7-jre          \
+#            tomcat7                \
+
+        pushd /geonode
+
+            pip install -e .
+
+                Successfully installed lxml Django beautifulsoup4 MultipartPostHandler httplib2 transifex-client Paver nose django-nose awesome-slugify django-pagination
+                django-jsonfield django-extensions django-taggit django-mptt django-guardian pinax-theme-bootstrap pinax-theme-bootstrap-account django-forms-bootstrap
+                django-friendly-tag-loader django-activity-stream django-downloadview django-tastypie django-polymorphic django-leaflet django-autocomplete-light
+                django-modeltranslation django-geoexplorer geonode-user-messages geonode-avatar geonode-announcements geonode-agon-ratings geonode-user-accounts geonode-arcrest
+                geonode-notification geonode-dialogos gsconfig gsimporter gisdata OWSLib pycsw pyproj Shapely django-haystack pyelasticsearch celery django-celery
+                django-bootstrap3-datetimepicker flake8 pep8 GeoNode regex Unidecode django-appconf python-mimeparse python-dateutil pytz geolinks simplejson kombu billiard
+                pyflakes mccabe amqp anyjson
+                Cleaning up...
+
+        popd
+
+        ls -1 /geonode/geonode
+
+            __init__.py
+            __init__.pyc
+            api
+            base
+            catalogue
+            ....
+            ....
+            version.py
+            version.pyc
+            views.py
+            wsgi.py
+
+        #
+        # Edit our local settings
+        pushd /geonode/geonode
+
+            cp local_settings.py.sample local_settings.py
+            vi local_settings.py
+
+            diff local_settings.py.sample local_settings.py
+
+                5c5
+                < SITEURL = "http://localhost:8000/"
+                ---
+                > SITEURL = "http://geonode-05.metagrid.xyz:8000/"
+                10,12c10,14
+                <          'NAME': 'geonode',
+                <          'USER': 'geonode',
+                <          'PASSWORD': 'geonode',
+                ---
+                >          'NAME'  : 'geonode',
+                >          'HOST'  : 'postgis',
+                >          'PORT'  : '5432',
+                >          'USER'  : 'geonode',
+                >          'PASSWORD': '########',
+                16,22c18,24
+                <         #'ENGINE': 'django.contrib.gis.db.backends.postgis',
+                <         'ENGINE': '', # Empty ENGINE name disables 
+                <         'NAME': 'geonode',
+                <         'USER' : 'geonode',
+                <         'PASSWORD' : 'geonode',
+                <         'HOST' : 'localhost',
+                <         'PORT' : '5432',
+                ---
+                >         'ENGINE': 'django.contrib.gis.db.backends.postgis',
+                >         #'ENGINE': '', # Empty ENGINE name disables 
+                >         'NAME'  : 'geonode_data',
+                >         'USER'  : 'geonode',
+                >         'PASSWORD' : '########',
+                >         'HOST'  : 'postgis',
+                >         'PORT'  : '5432',
+                30,31c32,35
+                <         'LOCATION' : 'http://localhost:8080/geoserver/',
+                <         'PUBLIC_LOCATION' : 'http://localhost:8080/geoserver/',
+                ---
+                >         'X-LOCATION' : 'http://localhost:8080/geoserver/',
+                >         'LOCATION' : 'http://geoserv:8080/geoserver/',
+                >         'X-PUBLIC_LOCATION' : 'http://localhost:8080/geoserver/',
+                >         'PUBLIC_LOCATION' : 'http://geoserv-05.metagrid.xyz:8080/geoserver/',
+
+        popd
+
+        #
+        # Initialise our database.
+        pushd /geonode
+
+            python manage.py syncdb --noinput
+
+            python manage.py createsuperuser
+
+                Username: SuperMe
+                Email address: super@example.com
+                Password: 
+                Password (again): 
+                Superuser created successfully.
+
+        popd
+
+        #
+        # Start the Django
+        pushd /geonode
+
+            paver start_django -b 0.0.0.0:8000 -f
+
+            ....
+            ....
+            
+
+    #
+    # Create user account.
+    http://geonode-05.metagrid.xyz:8000/admin/account/account/
+    http://geonode-05.metagrid.xyz:8000/admin/account/account/add/
+
+        name : astrotrop
+    
+    #
+    # Add remote OCS services
+    http://geonode-05.metagrid.xyz:8000/services/
+
+         	GeoServ-04
+         	http://geoserv-04.metagrid.xyz:8080/geoserver/ows
+         	
+         	GeoServ-05
+         	http://geoserv-05.metagrid.xyz:8080/geoserver/ows
+
+
+
+
+    http://training.geonode.geo-solutions.it/004_admin_workshop/007_loading_data_into_geonode/importlayers.html
+
+
+
+    #
+    # 404 when creating a map
+    https://trac.osgeo.org/osgeo/ticket/1219
+    https://github.com/GeoNode/geonode/issues/923
+    
+    #
+    # GeoNode extension for GeoServer
+    https://github.com/GeoNode/geoserver-geonode-ext
+    
+

@@ -30,8 +30,8 @@
       1G memory
      30G disk space
 
-    ipv4 : 178.62.5.172
-    ipv6 : 2a03:b0c0:1:d0::95:8001
+    ipv4 : 178.62.83.5
+    ipv6 : 2a03:b0c0:1:d0::d4:4001
 
 # -----------------------------------------------------
 # Update our DNS records.
@@ -41,8 +41,8 @@
 
         ;
         ; Digital Ocean machines.
-    +   astrotrop-05.ocean    A       178.62.5.172
-    +   astrotrop-05.ocean    AAAA    2a03:b0c0:1:d0::95:8001
+    +   astrotrop-05.ocean    A       178.62.83.5
+    +   astrotrop-05.ocean    AAAA    2a03:b0c0:1:d0::d4:4001
 
         $ORIGIN metagrid.xyz
 
@@ -92,13 +92,23 @@
     +       IdentityFile ~/.ssh/zrq.digitalocean.com.rsa
     +       Protocol 2
     +       Compression yes
-    +       PasswordAuthentication yes
+    +       PasswordAuthentication no
 
 # -----------------------------------------
 # SSH login to the server.
 #[user@desktop]
 
     ssh astrotrop-05
+
+# -----------------------------------------
+# Disable plain text password login.
+#[root@virtual]
+
+    sed -i '
+        s/^#PasswordAuthentication.*$/PasswordAuthentication no/
+        ' /etc/ssh/sshd_config
+
+    service ssh restart
 
 # -----------------------------------------
 # Install admin tools.
@@ -154,6 +164,8 @@ EOF
 
     source "${HOME:?}/astrotrop.conf"
 
+cat > "${HOME:?}/astrotrop.tools" << 'EOF'
+
     rmdata()
         {
         local path=${1:?}
@@ -180,6 +192,10 @@ EOF
         # chcon -t svirt_sandbox_file_t "${path:?}"
 
         }
+
+EOF
+
+    source "${HOME:?}/astrotrop.tools"
 
     rmdata "${tempdir:?}"
     rmdata "${datadir:?}"
@@ -311,6 +327,7 @@ POSTGRES_DATABASE=${postgisdatabase:?}
 POSTGRES_HOSTNAME=${postgislink:?}
 POSTGRES_USERNAME=${postgisusername:?}
 POSTGRES_PASSWORD=${postgispassword:?}
+POSTGRES_DATANAME=PG:dbname=${postgisdatabase:?} host=${postgislink:?} user=${postgisusername:?} password=${postgispassword:?}
 EOF
 
     docker run \
@@ -339,7 +356,6 @@ EOF
 #[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"
-
     docker exec \
         -it \
         "${rstudioname:?}" \
@@ -358,13 +374,34 @@ EOF
         # apt-get -y install r-cran-sp
         # apt-get -y install r-cran-rgdal
 
+        #
+        # Install the R ODBC package
+        apt-get -y install unixodbc
+        apt-get -y install r-cran-rodbc
+        apt-get -y install odbc-postgresql
+
+        #
+        # Configure the ODBC connection settings
+        # http://www.uptimemadeeasy.com/linux/install-postgresql-odbc-driver-on-linux/
+        source /data/environ
+        cat > /etc/odbc.ini << EOF
+[${POSTGRES_DATABASE:?}]
+Driver = /usr/lib/x86_64-linux-gnu/odbc/psqlodbcw.so 
+Protocol = 9.4.5
+Database = ${POSTGRES_DATABASE:?}
+Servername = ${POSTGRES_HOSTNAME:?}
+Username = ${POSTGRES_USERNAME:?}
+Password = ${POSTGRES_PASSWORD:?}
+EOF
+
+        exit
+
 # -----------------------------------------------------
 # Configure our GeoServer container.
 #[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"
     cat >> "${HOME:?}/astrotrop.conf" << EOF
-
 
         geoservname=geoserv
         geoservlink=geoserv
@@ -467,14 +504,13 @@ EOF
         )
 
 # -----------------------------------------------------
-# Install the PostgreSQL drivers.
+# Test the PostgreSQL driver.
 # https://code.google.com/p/rpostgresql/
 #[RStudio]
 
     #
     # Debian package is only available in testing (stretch) and unstable (sid).
     # https://packages.debian.org/sid/r-cran-rpostgresql
-
     library(RPostgreSQL)
 
         #
@@ -482,44 +518,41 @@ EOF
         # ....
 
     #
-    # Check we can connect to PostgreSQL.
-    # *username and password should come from env settings.
+    # Read the database settings from env file.
     dbname <- Sys.getenv("POSTGRES_DATABASE")
     dbhost <- Sys.getenv("POSTGRES_HOSTNAME")
     dbuser <- Sys.getenv("POSTGRES_USERNAME")
     dbpass <- Sys.getenv("POSTGRES_PASSWORD")
+    pgdsn  <- Sys.getenv("POSTGRES_DATANAME")
 
+    #
+    # Connect to the database.
     drv <- dbDriver("PostgreSQL")
     con <- dbConnect(drv, dbname=dbname, host=dbhost, user=dbuser, password=dbpass)
 
-    data <- dbGetQuery(con, "SELECT postgis_full_version()")
-    View(data)
+    dbGetQuery(con, "SELECT postgis_full_version()")
 
         #
         # POSTGIS="2.1.4 r12966" GEOS="3.4.2-CAPI-1.8.2 r3921" ....
         #
 
+# -----------------------------------------------------
+# Test the ODBC driver.
+#[RStudio]
 
-    implode <- function(..., sep='')
-        {
-        paste(..., collapse=sep)
-        }
+    #
+    # Load the ODBC driver.
+    library(RODBC)
 
-    pgdsn <- implode(
-        c(
-            "PG:dbname=",
-            dbname,        
-            " ",
-            "host=",
-            dbhost,        
-            " ",
-            "user=",
-            dbuser,        
-            " ",
-            "password=",
-            dbpass
-            )
-        )
+    #
+    # Connect to the database.
+    con <- odbcConnect(pgdsn)
+
+    #
+    # Run our test queries.
+    sqlQuery(con, "SELECT version();")
+
+    sqlQuery(con, "SELECT postgis_full_version()")
 
 # -----------------------------------------------------
 # Install the GDAL tools.
@@ -569,14 +602,21 @@ EOF
 
     #
     # Export the test data to our database.
-    # *username and password should come from env settings.
     writeOGR(
         states,
         pgdsn,
+        "mexican_states",
+        "PostgreSQL",
         layer_options = "geometry_name=geom",
-        "states",
-        "PostgreSQL"
         )
+
+    #
+    # Read the data back from our database.
+    readOGR(
+        pgdsn,
+        "mexican_states"
+        );
+
 
 # -----------------------------------------------------
 # Test our GeoServer container.
@@ -627,5 +667,132 @@ EOF
 
         Lat/Lon Bounding Box
         (compute from data)
+
+
+
+# -----------------------------------------------------
+# Read the database settings from env file.
+#[RStudio]
+
+    readRenviron("/data/environ")
+
+    dbname <- Sys.getenv("POSTGRES_DATABASE")
+    dbhost <- Sys.getenv("POSTGRES_HOSTNAME")
+    dbuser <- Sys.getenv("POSTGRES_USERNAME")
+    dbpass <- Sys.getenv("POSTGRES_PASSWORD")
+    pgdsn  <- Sys.getenv("POSTGRES_DATANAME")
+
+# -----------------------------------------------------
+# Test the ODBC driver.
+#[RStudio]
+
+    #
+    # Load the ODBC driver.
+    library(RODBC)
+
+    #
+    # Connect to the database using ODBC.
+    con <- odbcConnect(dbname)
+
+    #
+    # Run our test queries.
+    sqlQuery(con, "SELECT version();")
+    sqlQuery(con, "SELECT postgis_full_version()")
+
+# -----------------------------------------------------
+# Test the PostgreSQL driver.
+# https://code.google.com/p/rpostgresql/
+#[RStudio]
+
+    #
+    # Load the PostgreSQL driver.
+    # https://packages.debian.org/sid/r-cran-rpostgresql
+    library(RPostgreSQL)
+
+        #
+        # Loading required package: DBI
+        # ....
+
+    #
+    # Connect to the database.
+    drv <- dbDriver("PostgreSQL")
+    con <- dbConnect(drv, dbname=dbname, host=dbhost, user=dbuser, password=dbpass)
+
+    #
+    # Run our test queries.
+    dbGetQuery(con, "SELECT version()")
+    dbGetQuery(con, "SELECT postgis_full_version()")
+
+# -----------------------------------------------------
+# Install the GDAL tools.
+#[RStudio]
+
+    #
+    # Debian package is available in jessie, wheezy and squeeze.
+    # https://packages.debian.org/jessie/r-cran-sp
+
+    install.packages("rgdal")
+
+        #
+        # Installing package into ‘/usr/local/lib/R/site-library’
+        # ....
+
+    library(rgdal)
+
+        #
+        # Loading required package: sp
+        # rgdal: version: 1.1-3, (SVN revision 594)
+        # Geospatial Data Abstraction Library extensions to R successfully loaded]
+        # ....
+
+# -----------------------------------------------------
+# Loading vector data into PostGIS from R.
+# https://rpubs.com/dgolicher/6373
+#[RStudio]
+ 
+    #
+    # Import the test shapefiles.
+    states<-readOGR('/data/geostats/shapefiles','mex_states')
+
+        #
+        # OGR data source with driver: ESRI Shapefile 
+        # Source: "//data/geostats/shapefiles", layer: "mex_states"
+        # with 51 features
+        # It has 15 fields
+        #
+
+    #
+    # Plot the test data.
+    plot(states)
+    box()
+    axis(1)
+    axis(2)
+    grid()
+
+    #
+    # Export the test data to our database.
+    writeOGR(
+        states,
+        pgdsn,
+        "mexican_states",
+        "PostgreSQL"
+        )
+
+    #
+    # Read the data back from our database.
+    readOGR(
+        pgdsn,
+        "mexican_states"
+        );
+
+
+
+
+
+
+
+
+
+
 
 
