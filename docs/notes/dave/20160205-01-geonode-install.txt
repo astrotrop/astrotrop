@@ -99,6 +99,7 @@ EOF
 #[root@virtual]
 
         --detach \
+        -it \
 
     source "${HOME:?}/astrotrop.conf"
     docker run \
@@ -110,6 +111,12 @@ EOF
         --link "${postgisname:?}:${postgislink:?}" \
         --link "${postgisname:?}:${postgislink:?}" \
         --link "${geoservname:?}:${geoservlink:?}" \
+        "astrotrop/geonode:${dockerset:?}" \
+        bash
+
+
+        "astrotrop/geonode:${dockerset:?}"
+
         "astrotrop/geonode:${dockerset:?}" \
         bash
         

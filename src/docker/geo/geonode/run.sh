@@ -29,8 +29,7 @@ case "$1" in
     start)
         echo "Starting GeoNode Django"
         pushd /geonode
-            #paver start_django -b 0.0.0.0:8000
-            python manage.py runserver -b 0.0.0.0:8000
+            python manage.py runserver 0.0.0.0:8000
         popd
         ;;
 
