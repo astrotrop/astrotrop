@@ -104,11 +104,12 @@
 # Download the GeoNode source code.
 #[root@builder]
 
-    mkdir /geonode-new
+    mkdir /geonode
 
     tarfile=geonode-2.4.tar.gz
     tarpath=/tmp/${tarfile:?}
     wget \
+        --no-verbose \
         --output-document "${tarpath:?}" \
         'https://github.com/GeoNode/geonode/archive/2.4.tar.gz'
 
