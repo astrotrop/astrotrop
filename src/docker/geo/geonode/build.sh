@@ -115,7 +115,7 @@
     tar --gzip \
         --verbose \
         --extract \
-        --directory /geonode-new \
+        --directory /geonode \
         --strip-components 1 \
         --file "${tarpath:?}"
 
