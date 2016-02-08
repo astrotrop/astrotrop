@@ -73,16 +73,16 @@ server()
 
 case "$1" in 
     start)
-        config()
-        server()
+        config
+        server
         ;;
 
     config)
-        config()
+        config
         ;;
 
     server)
-        server()
+        server
         ;;
 
     *)  echo "INFO  : User command [$@]"

@@ -89,22 +89,25 @@
 # Test config script.
 #[root@virtual]
 
+    source "${HOME:?}/postenv"
+    source "${HOME:?}/astrotrop.conf"
+
     geonodeenv=$(mktemp)
     cat > "${geonodeenv:?}" << EOF
 
 SITEURL=http://geonode-05.metagrid.xyz:8000/
 
-DATABASE_NAME=geonode
+DATABASE_NAME=${geonodedatabase:?}
 DATABASE_HOST=postgis
 DATABASE_PORT=5432
-DATABASE_USER=geonode
-DATABASE_PASS=#######
+DATABASE_USER=${geonodeusername:?}
+DATABASE_PASS=${geonodepassword:?}
 
 DATASTORE_NAME=geonode_data
 DATASTORE_HOST=postgis
 DATASTORE_PORT=5432
-DATASTORE_USER=geonode
-DATASTORE_PASS=#######
+DATASTORE_USER=${geonodeusername:?}
+DATASTORE_PASS=${geonodepassword:?}
 
 OGC_SERVER_LOCAL=http://localhost:8080/geoserver/
 OGC_SERVER_PUBLIC=http://geonode-05.metagrid.xyz:8080/geoserver/
@@ -120,28 +123,8 @@ EOF
         "astrotrop/geonode:${dockerset:?}" \
         config
 
-        sed -i "
 
-            s|{SITEURL}|${SITEURL}|
 
-            s|{DATABASE_NAME}|${DATABASE_NAME}|
-            s|{DATABASE_HOST}|${DATABASE_HOST}|
-            s|{DATABASE_PORT}|${DATABASE_PORT}|
-            s|{DATABASE_USER}|${DATABASE_USER}|
-            s|{DATABASE_PASS}|${DATABASE_PASS}|
-
-            s|{DATASTORE_NAME}|${DATASTORE_NAME}|
-            s|{DATASTORE_HOST}|${DATASTORE_HOST}|
-            s|{DATASTORE_PORT}|${DATASTORE_PORT}|
-            s|{DATASTORE_USER}|${DATASTORE_USER}|
-            s|{DATASTORE_PASS}|${DATASTORE_PASS}|
-
-            s|{OGC_SERVER_LOCAL}|${OGC_SERVER_LOCAL}|
-            s|{OGC_SERVER_PUBLIC}|${OGC_SERVER_PUBLIC}|
-            s|{OGC_SERVER_USER}|${OGC_SERVER_USER}|
-            s|{OGC_SERVER_PASS}|${OGC_SERVER_PASS}|
-
-            " /geonode/geonode/local_settings.py
 
     exit    
 
