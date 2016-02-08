@@ -27,10 +27,11 @@
 
     apt-get update
     apt-get -y install         \
-        build-essential        \
-        patch                  \
-        gcc                    \
         git
+        gcc                    \
+        wget                   \
+        patch                  \
+        build-essential        \
 
 # -----------------------------------------------------
 # Install our dependencies.

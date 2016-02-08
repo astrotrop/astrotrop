@@ -73,7 +73,16 @@
 # Re-build the container.
 #[root@virtual]
 
+    source "${HOME:?}/astrotrop.conf"
+    pushd ${astrotropsrc:?}
 
+        git pull
+        
+        docker build \
+            --tag "astrotrop/geonode:${dockerset:?}" \
+            src/docker/geo/geonode/
+            
+    popd
 
 
 # -----------------------------------------------------
