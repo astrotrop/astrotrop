@@ -441,8 +441,7 @@ EOF
         bash
 
         apt-get update
-
-        apt-get install postgresql-client
+        apt-get -y install postgresql-client
 
         source /postenv
         cat > ~/.pgpass << EOF
@@ -455,10 +454,11 @@ EOF
             --username "${postgisusername:?}" \
             --dbname "${postgisdatabase}" 
 
-
             CREATE USER     geonode WITH LOGIN PASSWORD '########' ;
             CREATE DATABASE geonode WITH OWNER geonode ;
             CREATE DATABASE geonode_data WITH OWNER geonode ;
+
+            \c geonode_data
 
             CREATE EXTENSION postgis ;
             GRANT ALL ON geometry_columns TO PUBLIC ;

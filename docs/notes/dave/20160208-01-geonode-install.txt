@@ -1,0 +1,143 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Update services to 1.2
+    
+    #
+    # GoeNode - Use the same container to configure the service and database.
+
+    #
+    # Install full stack - PostGIS, RStudio, GeoServer, GeoNode
+
+    #
+    # Individual data directories, plus a shared directory.
+
+        /data/shared
+
+        /data/rstudio
+
+        /data/postgis
+
+        /data/geoserv
+
+        /data/geonode
+
+
+# -----------------------------------------------------
+# Test installing GeoNode using 2.4 release from GitHub.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        -it \
+        --rm \
+        --link "${postgisname:?}:${postgislink:?}" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        --link "${geoservname:?}:${geoservlink:?}" \
+        "astrotrop/geonode:${dockerset:?}" \
+        bash
+
+    mkdir temp
+    pushd temp
+
+        tarfile=geonode-2.4.tar.gz
+        wget -O "${tarfile:?}" https://github.com/GeoNode/geonode/archive/2.4.tar.gz
+
+        tar -ztvf "${tarfile:?}"
+
+        tar -xvzf "${tarfile:?}"
+
+    popd
+
+# -----------------------------------------------------
+# Re-build the container.
+#[root@virtual]
+
+
+
+
+# -----------------------------------------------------
+# Test config script.
+#[root@virtual]
+
+    geonodeenv=$(mktemp)
+    cat > "${geonodeenv:?}" << EOF
+
+SITEURL=http://geonode-05.metagrid.xyz:8000/
+
+DATABASE_NAME=geonode
+DATABASE_HOST=postgis
+DATABASE_PORT=5432
+DATABASE_USER=geonode
+DATABASE_PASS=#######
+
+DATASTORE_NAME=geonode_data
+DATASTORE_HOST=postgis
+DATASTORE_PORT=5432
+DATASTORE_USER=geonode
+DATASTORE_PASS=#######
+
+OGC_SERVER_LOCAL=http://localhost:8080/geoserver/
+OGC_SERVER_PUBLIC=http://geonode-05.metagrid.xyz:8080/geoserver/
+OGC_SERVER_USER=astrotrop
+OGC_SERVER_PASS=#########
+
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        -it \
+        --env-file "${geonodeenv:?}" \
+        "astrotrop/geonode:${dockerset:?}" \
+        config
+
+        sed -i "
+
+            s|{SITEURL}|${SITEURL}|
+
+            s|{DATABASE_NAME}|${DATABASE_NAME}|
+            s|{DATABASE_HOST}|${DATABASE_HOST}|
+            s|{DATABASE_PORT}|${DATABASE_PORT}|
+            s|{DATABASE_USER}|${DATABASE_USER}|
+            s|{DATABASE_PASS}|${DATABASE_PASS}|
+
+            s|{DATASTORE_NAME}|${DATASTORE_NAME}|
+            s|{DATASTORE_HOST}|${DATASTORE_HOST}|
+            s|{DATASTORE_PORT}|${DATASTORE_PORT}|
+            s|{DATASTORE_USER}|${DATASTORE_USER}|
+            s|{DATASTORE_PASS}|${DATASTORE_PASS}|
+
+            s|{OGC_SERVER_LOCAL}|${OGC_SERVER_LOCAL}|
+            s|{OGC_SERVER_PUBLIC}|${OGC_SERVER_PUBLIC}|
+            s|{OGC_SERVER_USER}|${OGC_SERVER_USER}|
+            s|{OGC_SERVER_PASS}|${OGC_SERVER_PASS}|
+
+            " /geonode/geonode/local_settings.py
+
+    exit    
+
+
+
+
+
+

@@ -51,7 +51,7 @@
 
     apt-get -y install         \
         libxml2-dev            \
-        libxslt-dev
+        libxslt1-dev
 
     apt-get -y install         \
         gettext
@@ -66,18 +66,67 @@
         libproj-dev            \
         gdal-bin
 
+    #
+    # Used to configure the database
+    apt-get -y install         \
+        postgresql-client
+
+    #
+    # From the project Dockerfile
+    apt-get -y install         \
+        python-bs4             \
+        python-pip             \
+        python-paver           \
+        python-nose            \
+        python-gdal            \
+        python-lxml            \
+        python-pillow          \
+        python-httplib2        \
+        python-multipartposthandler
+
+    #
+    # From the project Dockerfile
+    apt-get -y install           \
+        python-django            \
+        python-django-nose       \
+        python-django-taggit     \
+        python-django-jsonfield  \
+        python-django-pagination \
+        python-django-extensions
+
+    #
+    # From the project Dockerfile
+    apt-get -y install         \
+        transifex-client
+
 # -----------------------------------------------------
-# Clone the GeoNode source code.
+# Download the GeoNode source code.
 #[root@builder]
 
-    mkdir /geonode
-    git clone https://github.com/GeoNode/geonode.git /geonode
+    mkdir /geonode-new
+
+    tarfile=geonode-2.4.tar.gz
+    tarpath=/tmp/${tarfile:?}
+    wget \
+        --output-document "${tarpath:?}" \
+        'https://github.com/GeoNode/geonode/archive/2.4.tar.gz'
+
+    tar --gzip \
+        --verbose \
+        --extract \
+        --directory /geonode-new \
+        --strip-components 1 \
+        --file "${tarpath:?}"
+
+    rm "${tarpath:?}"
 
 # -----------------------------------------------------
-# Install GeoNode.
+# Install the GeoNode dependencies.
 #[root@builder]
     
     pip install -e /geonode
+
+
 
 
 

@@ -29,6 +29,10 @@ RUN /build.sh
 ADD run.sh /
 RUN chmod a+x,a-w /run.sh
 
+#
+# Add our template settings.
+ADD local_template.py /geonode
+
 EXPOSE 8000
 
 ENTRYPOINT ["/run.sh"]

@@ -95,39 +95,165 @@ EOF
 EOF
 
 # -----------------------------------------------------
-# Run our GeoNode container.
+# Configure our GeoNode database.
 #[root@virtual]
 
-        --detach \
-        -it \
+    geonodepgcfg=$(mktemp)
+    cat > "${geonodepgcfg:?}" <<- EOF
+postgisdatabase=${postgisdatabase:?}
+postgishostname=${postgislink:?}
+postgisusername=${postgisusername:?}
+postgispassword=${postgispassword:?}
+
+geonodedatabase=geonode
+geonodeusername=geonode
+geonodepassword=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Configure our GeoNode database.
+#[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"
     docker run \
         -it \
-        --name "${geonodename:?}" \
-        --publish 8000:8000 \
-        --volume "$(pwd)/postenv:/postenv" \
-        --volume "${geonodecodedir}:/geonode" \
+        --volume "${geonodepgcfg:?}:/pgcfg" \
         --link "${postgisname:?}:${postgislink:?}" \
         --link "${postgisname:?}:${postgislink:?}" \
         --link "${geoservname:?}:${geoservlink:?}" \
-        "astrotrop/geonode:${dockerset:?}" \
+        ubuntu:14.04 \
         bash
 
+        apt-get update
+        apt-get -y install postgresql-client
 
+        source /pgcfg
+        cat > ~/.pgpass << EOF
+${postgishostname:?}:*:*:${postgisusername}:${postgispassword}
+EOF
+        chmod u=rw,g=,o= ~/.pgpass
+
+        psql \
+            --host "${postgishostname:?}" \
+            --username "${postgisusername:?}" \
+            --dbname "${postgisdatabase}" 
+
+            CREATE USER     geonode WITH LOGIN PASSWORD '########' ;
+            CREATE DATABASE geonode WITH OWNER geonode ;
+            CREATE DATABASE geonode_data WITH OWNER geonode ;
+
+            \c geonode_data
+
+            CREATE EXTENSION postgis ;
+            GRANT ALL ON geometry_columns TO PUBLIC ;
+            GRANT ALL ON spatial_ref_sys  TO PUBLIC ;
+
+            \q
+        exit
+
+# -----------------------------------------------------
+# Configure our GeoNode settings.
+#[root@virtual]
+
+    geonodeconf=$(mktemp)
+    cat > "${geonodeconf:?}" << EOF
+
+EOF
+
+# -----------------------------------------------------
+# Run our GeoNode container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        --detach \
+        --name "${geonodename:?}" \
+        --publish 8000:8000 \
+        --volume "${geonodepgcfg:?}:/pgcfg" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        --link "${geoservname:?}:${geoservlink:?}" \
         "astrotrop/geonode:${dockerset:?}"
 
-        "astrotrop/geonode:${dockerset:?}" \
-        bash
-        
     docker logs -f "${geonodename:?}"
 
 # -----------------------------------------------------
 # Configure our GeoNode container.
 #[root@virtual]
 
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        "${geonodename:?}" \
+        bash
 
+        pushd /geonode
+            pushd geonode
 
+                cp local_settings.py.sample local_settings.py
 
-    git clone https://github.com/GeoNode/geonode.git
+                vi local_settings.py
+
+                diff local_settings.py.sample local_settings.py
+
+                    5c5
+                    < SITEURL = "http://localhost:8000/"
+                    ---
+                    > SITEURL = "http://geonode-05.metagrid.xyz:8000/"
+                    10,13c10,15
+                    <          'NAME': 'geonode',
+                    <          'USER': 'geonode',
+                    <          'PASSWORD': 'geonode',
+                    ---
+                    >          'NAME'    : 'geonode',
+                    >          'HOST'    : 'postgis',
+                    >          'PORT'    : '5432',
+                    >          'USER'    : 'geonode',
+                    >          'PASSWORD': '########',
+                    16,22c18,23
+                    <         #'ENGINE': 'django.contrib.gis.db.backends.postgis',
+                    <         'ENGINE': '', # Empty ENGINE name disables 
+                    <         'NAME': 'geonode',
+                    <         'USER' : 'geonode',
+                    <         'PASSWORD' : 'geonode',
+                    <         'HOST' : 'localhost',
+                    <         'PORT' : '5432',
+                    ---
+                    >         'ENGINE': 'django.contrib.gis.db.backends.postgis',
+                    >         'NAME'    : 'geonode_data',
+                    >         'HOST'    : 'postgis',
+                    >         'PORT'    : '5432',
+                    >         'USER'    : 'geonode',
+                    >         'PASSWORD': '########',
+                    30,33c31,34
+                    <         'LOCATION' : 'http://localhost:8080/geoserver/',
+                    <         'PUBLIC_LOCATION' : 'http://localhost:8080/geoserver/',
+                    <         'USER' : 'admin',
+                    <         'PASSWORD' : 'geoserver',
+                    ---
+                    >         'LOCATION' : 'http://geonode:8080/geoserver/',
+                    >         'PUBLIC_LOCATION' : 'http://geoserv-05.metagrid.xyz:8080/geoserver/',
+                    >         'USER' : 'astrotrop',
+                    >         'PASSWORD' : '########',
+
+                popd
+
+            python manage.py syncdb --noinput
+
+            python manage.py createsuperuser
+
+                Username: SuperUser
+                Email address: super@example.com
+                Password: 
+                Password (again): 
+                Superuser created successfully.
+
+        popd
+    exit
+
+    #
+    # Need to stop/start the main geonode container for the changes to take effect.
+    # ....
+
 
