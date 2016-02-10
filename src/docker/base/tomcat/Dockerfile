@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM astrotrop/java:8-1.1
+FROM astrotrop/java:8-1.2
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 ENV TOMCAT_VERSION 8.0.30
