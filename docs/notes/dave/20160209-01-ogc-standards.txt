@@ -1,0 +1,94 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+Hi Alan,
+
+Regarding standards, this is a summary of what I have found so far.
+
+I expect some form of these words will be in one or more of our presentations and reports.
+
+If you want use this in your presentations then please do, it all helps to get the message across.
+
+Dave
+
+---- ---- ---- ----
+
+AstroGrid formed the basis of the UK contribution to the International Virtual Observatory (IVOA) project.
+
+    http://ivoa.net/
+
+The most significant and long lasting output from the AstroGrid project are the contributions made to the IVOA standards.
+
+These standards are still in use today, over 13 years since they were first developed, enabling researchers and data providers to publish and share data in an international community.
+
+The IVOA continues to develop and refine these standards, adapting them to meet changing requirements and advances in research methods, computing hardware and data volumes.
+
+    http://ivoa.net/documents/
+
+    http://mail.ivoa.net/pipermail/dal/2016-February/007290.html
+
+The OGC (Open Geospatial Consortium) is the direct equivalent in your field.
+
+    http://www.opengeospatial.org/
+
+    "The OGC (Open Geospatial Consortium) is an international not for profit organization committed to making quality open standards for the global geospatial community. These standards are made through a consensus process and are freely available for anyone to use to improve sharing of the world's geospatial data." -- OGC website
+
+It is our recommendation that the AstroTROP and TROPGLOBE projects should endorse the OGC standards, and require their members to use OGC standards wherever possible.
+
+    http://www.opengeospatial.org/standards
+
+In particular, the following standards are directly relevant to the AstroTROP and TROPGLOBE science use cases.
+
+    Catalog Service for the Web
+    http://www.opengeospatial.org/standards/cat
+    https://en.wikipedia.org/wiki/Catalog_Service_for_the_Web
+
+    Web Map Service (WMS)
+    http://www.opengeospatial.org/standards/wms
+    https://en.wikipedia.org/wiki/Web_Map_Service
+
+    Web Map Tile Service (WMTS)
+    http://www.opengeospatial.org/standards/wmts
+    https://en.wikipedia.org/wiki/Web_Map_Tile_Service
+
+    Web Coverage Service (WCS)
+    http://www.opengeospatial.org/standards/wcs
+    https://en.wikipedia.org/wiki/Web_Coverage_Service
+
+    Web Coverage Processing Service (WCPS)
+    http://www.opengeospatial.org/standards/wcps
+    https://en.wikipedia.org/wiki/Web_Coverage_Processing_Service
+
+    Web Feature Service (WFS)
+    http://www.opengeospatial.org/standards/wfs
+    https://en.wikipedia.org/wiki/Web_Feature_Service
+
+Note that recommending the use of these standards does not necessarily require the development of new software or services. There is already a wide range of commercial and open source software applications and services that support the OGC standards.
+
+--------
+Dave Morris
+Software Developer
+Wide Field Astronomy Unit
+Institute for Astronomy
+University of Edinburgh
+--------
+
