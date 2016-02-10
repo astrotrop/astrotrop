@@ -210,3 +210,18 @@ EOF
         popd
     popd
 
+# -----------------------------------------------------
+# Build our GeoNode container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    pushd "${astrotropsrc:?}"
+        pushd src/docker
+        
+            docker build \
+                --tag "astrotrop/geonode:${dockerset:?}" \
+                geo/geonode/
+            
+        popd
+    popd
+

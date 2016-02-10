@@ -31,7 +31,7 @@ RUN chmod a+x /run.sh
 
 #
 # Add our template settings.
-ADD local_template.py /geonode
+ADD local_template.py /geonode/
 
 EXPOSE 8000
 

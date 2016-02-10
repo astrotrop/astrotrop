@@ -25,6 +25,7 @@
 # Install our build tools.
 #[root@builder]
 
+    echo "Installing build tools"
     apt-get update
     apt-get -y install         \
         git                    \
@@ -37,6 +38,7 @@
 # Install our dependencies.
 #[root@builder]
 
+    echo "Installing GeoNode dependencies"
     apt-get update
     apt-get -y install         \
         python                 \
@@ -104,6 +106,8 @@
 # Download the GeoNode source code.
 #[root@builder]
 
+    echo "Installing GeoNode source code"
+
     mkdir /geonode
 
     tarfile=geonode-2.4.tar.gz
@@ -123,8 +127,10 @@
     rm "${tarpath:?}"
 
 # -----------------------------------------------------
-# Install the GeoNode dependencies.
+# Build the GeoNode installation.
 #[root@builder]
+
+    echo "Building GeoNode installation"
     
     pip install -e /geonode
 
