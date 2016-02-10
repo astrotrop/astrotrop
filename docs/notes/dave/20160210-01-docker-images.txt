@@ -225,3 +225,73 @@ EOF
         popd
     popd
 
+# -----------------------------------------------------
+# Build our CKAN containers.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    pushd "${astrotropsrc:?}"
+        pushd src/docker
+        
+            docker build \
+                --tag "astrotrop/ckan-ckan:${dockerset:?}" \
+                ckan/ckan/
+
+            docker build \
+                --tag "astrotrop/ckan-push:${dockerset:?}" \
+                ckan/push/
+
+            docker build \
+                --tag "astrotrop/ckan-redis:${dockerset:?}" \
+                ckan/redis/
+
+            docker build \
+                --tag "astrotrop/ckan-solr:${dockerset:?}" \
+                ckan/solr/
+            
+        popd
+    popd
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Push our Docker images.
+#[user@laptop]
+
+    docker login
+
+        Username: xxxx
+        Password: yyyy
+        Email:    zzzz
+        Login Succeeded
+
+    docker push "astrotrop/fedora:22-${imageset:?}"
+
+    docker push "astrotrop/java:8-${imageset:?}"
+    docker push "astrotrop/tomcat:8-${imageset:?}"
+
+    docker push "astrotrop/postgis:${imageset:?}"
+
+    docker push "astrotrop/apache-base:${imageset:?}"
+    docker push "astrotrop/apache-wsgi:${imageset:?}"
+    docker push "astrotrop/apache-proxy:${imageset:?}"
+
+    docker push "astrotrop/geoserver:${imageset:?}"
+
+    docker push "astrotrop/rstudio:${imageset:?}"
+
