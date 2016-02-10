@@ -166,7 +166,7 @@ EOF
 #[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"
-    pushd "${project:?}/github"
+    pushd "${astrotropsrc:?}"
         pushd src/docker
 
             docker build \
@@ -181,8 +181,7 @@ EOF
 #[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"
-
-    pushd "${project:?}/github"
+    pushd "${astrotropsrc:?}"
         pushd src/docker
 
             docker build \
@@ -201,7 +200,7 @@ EOF
 #[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"
-    pushd "${project:?}/github"
+    pushd "${astrotropsrc:?}"
         pushd src/docker
 
             docker build \
