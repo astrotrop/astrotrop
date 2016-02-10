@@ -91,6 +91,7 @@
     # From the project Dockerfile
     apt-get -y install           \
         python-django            \
+        python-django-mptt       \
         python-django-nose       \
         python-django-taggit     \
         python-django-jsonfield  \
@@ -107,7 +108,9 @@
     apt-get -y install         \
         python-regex           \
         python-pyproj          \
-        python-shapely
+        python-shapely         \
+        python-billiard        \
+        python-simplejson
 
 
 # -----------------------------------------------------
