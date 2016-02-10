@@ -27,7 +27,7 @@ RUN /build.sh
 #
 # Add our run script.
 ADD run.sh /
-RUN chmod a+x,a-w /run.sh
+RUN chmod a+x /run.sh
 
 #
 # Add our template settings.

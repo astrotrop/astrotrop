@@ -571,7 +571,7 @@ EOF
     exit
 
 # -----------------------------------------------------
-# MOVE TO DOCKER
+# MOVE TO DOCKER - DONE
 # Configure the harvest plugin.
 # https://github.com/ckan/ckanext-harvest
 #[root@virtual]
@@ -597,7 +597,7 @@ EOF
     exit
 
 # -----------------------------------------------------
-# MOVE TO DOCKER
+# MOVE TO DOCKER - DONE
 # Install the CKAN spatial extension
 # http://docs.ckan.org/projects/ckanext-spatial/en/latest/install.html#install-the-extension
 #[root@virtual]
@@ -661,7 +661,7 @@ EOF
     exit
 
 # -----------------------------------------------------
-# MOVE TO DOCKER
+# MOVE TO DOCKER - DONE
 # Update our SOLR schema.
 # http://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#choosing-a-backend-for-the-spatial-search
 #[user@desktop]
@@ -751,7 +751,7 @@ EOF
         +   ckan.plugins = .... csw_harvester waf_harvester doc_harvester
 
 # -----------------------------------------------------
-# MOVE TO DOCKER
+# MOVE TO DOCKER - DONE
 # Install the GeoNetwork harvester.
 # https://github.com/geosolutions-it/ckanext-geonetwork
 # http://demo.geo-solutions.it/share/linea_comune/doc/online/install/install_ckan_otherext.html
@@ -799,7 +799,6 @@ EOF
         exit
 
 # -----------------------------------------------------
-# MOVE TO DOCKER
 # Fix the database usernames and passwords.
 # https://github.com/ckan/ckanext-harvest
 #[root@virtual]

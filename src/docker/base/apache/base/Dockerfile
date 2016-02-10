@@ -25,8 +25,13 @@ RUN dnf -y install httpd
 #
 # Install the Apache foreground script.
 # https://github.com/docker-library/httpd/tree/master/2.4
-COPY httpd-foreground /usr/local/bin/
-RUN chmod a+x /usr/local/bin/httpd-foreground
+#COPY httpd-foreground /usr/local/bin/
+#RUN chmod a+x /usr/local/bin/httpd-foreground
+
+#
+# Add our run script.
+ADD run.sh /
+RUN chmod a+x /run.sh
 
 #
 # Expose port 80.
@@ -34,5 +39,7 @@ EXPOSE 80
 
 #
 # Run Apache in the foreground.
-CMD ["httpd-foreground"]
+#CMD ["httpd-foreground"]
+ENTRYPOINT ["/run.sh"]
+CMD ["start"]
 

@@ -18,50 +18,99 @@
 
 
 #
-# Install Apache.
-dnf -y install httpd
-
-#
-# Install mod_wsgi.
-dnf -y install mod_wsgi
-
-#
 # Install postgresql client.
+echo "Installing PostgreSQL tools"
 dnf -y install postgresql
 dnf -y install postgresql-devel
 dnf -y install python-psycopg2
 
 #
 # Install the build tools.
+echo "Installing build tools"
 dnf -y install gcc
 dnf -y install git
+dnf -y install sed
 
 #
 # Install the Python tools.
+echo "Installing Python tools"
 dnf -y install python-pip
+dnf -y install python-devel
+dnf -y install python-psycopg2
 dnf -y install python-virtualenv
 
+
 #
-# Create our data directories.
-mkdir -p "${ckandata:?}/storage"
-mkdir -p "${ckandata:?}/resources"
-chown -R apache "${ckandata:?}"
+# Create our directories.
+echo "Creating CKAN directories"
+mkdir --parent "${ckanroot:?}"
+mkdir --parent "${ckanconf:?}"
+mkdir --parent "${ckandata:?}"
+mkdir --parent "${ckandata:?}/storage"
+mkdir --parent "${ckandata:?}/resources"
+
+RUN chgrp --recursive apache "${ckandata}"
+RUN chown --recursive apache "${ckandata}"
+RUN chmod --recursive o=rwxs "${ckandata}"
+RUN chmod --recursive g=rwxs "${ckandata}"
+
 
 #
 # Create our virtualenv.
-mkdir -p "${ckanroot:?}"
-virtualenv --no-site-packages "${ckanroot:?}"
-source "${ckanroot:?}/bin/activate"
+#virtualenv --no-site-packages "${ckanroot:?}"
+#source "${ckanroot:?}/bin/activate"
 
-    #
-    # Install CKAN and dependencies.
+
+#
+# Install CKAN.
+echo "Installing CKAN using pip"
+pushd ${ckanroot}
+
     pip install -e 'git+https://github.com/ckan/ckan.git@ckan-2.3#egg=ckan'
     pip install -r "${ckanroot:?}/src/ckan/requirements.txt"
 
+popd
+
+#
+# Install ckanext-spatial extension
+# http://stackoverflow.com/a/13754517
+echo "Installing ckanext-spatial"
+dnf -y install geos
+dnf -y install geos-devel
+dnf -y install python-devel
+dnf -y install libxml-devel
+dnf -y install libxml2-devel
+dnf -y install libxslt-devel
+pushd "${ckanroot:?}"
+
+    pip install -e "git+https://github.com/okfn/ckanext-spatial.git@f6cf9cd3f00945b29d6df6d16d7487651811cbf8#egg=ckanext-spatial"
+    pip install -r src/ckanext-spatial/pip-requirements.txt
+
+popd
+
+#
+# Install ckanext-geonetwork extension
+# http://stackoverflow.com/a/13754517
+echo "Installing ckanext-geonetwork"
+pushd "${ckanroot:?}"
+    pushd src
+
+        git clone https://github.com/geosolutions-it/ckanext-geonetwork.git
+
+        pushd ckanext-geonetwork
+       
+            python setup.py develop
+
+        popd
+    popd
+popd
+
+
+
 #
 # Restart our virtualenv.
-deactivate
-source "${ckanroot:?}/bin/activate"
+#deactivate
+#source "${ckanroot:?}/bin/activate"
 
 #
 # Link our Repoze.who config file.

@@ -92,3 +92,13 @@ Institute for Astronomy
 University of Edinburgh
 --------
 
+
+
+
+------------------------------
+Notes - 
+
+    Also need to mention OSGeo http://www.osgeo.org/
+
+    QGIS, PostGIS, GeoServer, GeoNetwork ...
+
