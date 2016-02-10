@@ -102,6 +102,14 @@
     apt-get -y install         \
         transifex-client
 
+    #
+    # Experiments ...
+    apt-get -y install         \
+        python-regex           \
+        python-pyproj          \
+        python-shapely
+
+
 # -----------------------------------------------------
 # Download the GeoNode source code.
 #[root@builder]
