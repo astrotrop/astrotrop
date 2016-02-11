@@ -117,7 +117,7 @@ EOF
         pushd src/docker
 
             docker build \
-                --tag "astrotrop/fedora:22-${dockerset:?}" \
+                --tag "astrotrop/fedora:${dockerset:?}" \
                 base/fedora
 
         popd
@@ -185,11 +185,11 @@ EOF
         pushd src/docker
 
             docker build \
-                --tag "astrotrop/java:8-${dockerset:?}" \
+                --tag "astrotrop/java:${dockerset:?}" \
                 base/java
 
             docker build \
-                --tag "astrotrop/tomcat:8-${dockerset:?}" \
+                --tag "astrotrop/tomcat:${dockerset:?}" \
                 base/tomcat
 
         popd
@@ -252,22 +252,47 @@ EOF
         popd
     popd
 
+# -----------------------------------------------------
+# List our CKAN images.
+#[root@virtual]
+
+    docker images
+
+        REPOSITORY                 TAG                 IMAGE ID            CREATED             VIRTUAL SIZE
+        astrotrop/ckan-solr        1.2                 06fa7dc1ef72        5 minutes ago       778.8 MB
+        astrotrop/ckan-redis       1.2                 76456e42dd5d        8 minutes ago       151.2 MB
+        astrotrop/ckan-push        1.2                 307a56324069        About an hour ago   729.4 MB
+        astrotrop/ckan-ckan        1.2                 5bd198bed4b6        About an hour ago   380.2 MB
+        astrotrop/geonode          1.2                 6b3286e3c5a0        2 hours ago         755.6 MB
+        astrotrop/geoserver        1.2                 f52aa1555e10        5 hours ago         773.9 MB
+        astrotrop/tomcat           8-1.2               8bbd13c9a4cb        6 hours ago         576.8 MB
+        astrotrop/java             8-1.2               d9dea8a3f657        6 hours ago         541.1 MB
+        astrotrop/rstudio          1.2                 5d2ad84f1d27        6 hours ago         1.667 GB
+        astrotrop/postgis          1.2                 e35d611c5bcf        6 hours ago         953.6 MB
+        astrotrop/apache-wsgi      1.2                 753dd75f8b70        7 hours ago         380.2 MB
+        astrotrop/apache-proxy     1.2                 8e3c08dabf03        7 hours ago         369.3 MB
+        astrotrop/apache-base      1.2                 06169ff85c49        7 hours ago         369.3 MB
+        astrotrop/fedora           22-1.2              d5951f512087        7 hours ago         351.6 MB
+        docker.io/rocker/rstudio   latest              4a2de825599c        17 hours ago        1.434 GB
+        docker.io/redis            latest              34ca6ac180ad        11 days ago         151.2 MB
+        docker.io/postgres         9.4                 ff155793d84e        2 weeks ago         263 MB
+        docker.io/ubuntu           14.04               8693db7e8a00        3 weeks ago         187.9 MB
+        docker.io/fedora           22                  9eb9e09c9cb3        3 months ago        186.5 MB
+        docker.io/ckan/solr        latest              3a9ee0bc7fe7        20 months ago       778.8 MB
+
+# -----------------------------------------------------
+# Fix the tags ..
+#[root@virtual]
+
+    docker tag astrotrop/fedora:22-1.2 astrotrop/fedora:${dockerset:?}
+
+    docker tag astrotrop/java:8-1.2    astrotrop/java:${dockerset:?}
+    docker tag astrotrop/tomcat:8-1.2  astrotrop/tomcat:${dockerset:?}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    docker rmi astrotrop/fedora:22-1.2
+    docker rmi astrotrop/java:8-1.2
+    docker rmi astrotrop/tomcat:8-1.2
 
 # -----------------------------------------------------
 # Push our Docker images.
@@ -280,18 +305,29 @@ EOF
         Email:    zzzz
         Login Succeeded
 
-    docker push "astrotrop/fedora:22-${imageset:?}"
+    imagelist="
+fedora
+java
+tomcat
+rstudio
+postgis
+geonode
+geoserver
+apache-base
+apache-proxy
+apache-wsgi
+ckan-push
+ckan-redis
+ckan-solr
+ckan-ckan
+"    
 
-    docker push "astrotrop/java:8-${imageset:?}"
-    docker push "astrotrop/tomcat:8-${imageset:?}"
+    for name in ${imagelist:?}
+    do
+        echo "Name [${name:?}]"
+        fullname=astrotrop/${name:?}:${dockerset:?}
+        echo "Long [${fullname:?}]"
+        docker push "${fullname:?}"
+    done
 
-    docker push "astrotrop/postgis:${imageset:?}"
-
-    docker push "astrotrop/apache-base:${imageset:?}"
-    docker push "astrotrop/apache-wsgi:${imageset:?}"
-    docker push "astrotrop/apache-proxy:${imageset:?}"
-
-    docker push "astrotrop/geoserver:${imageset:?}"
-
-    docker push "astrotrop/rstudio:${imageset:?}"
 
