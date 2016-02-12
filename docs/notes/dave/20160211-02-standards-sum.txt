@@ -1,0 +1,63 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+----------------------
+
+Semantics and vocabularies (section 2.2)
+
+In the examples
+
+    a) Forest, tree, shrub, bush.
+    b) Forest area, tree cover, tree density
+
+Can I suggest we include some examples from the AstroTROP use cases, such as terms for describing the scientific concepts the data represents :
+
+    Above Ground Bio Mass, Carbon Density, Burnt Area ... etc
+
+and terms describing the technical properties that describe what the data consists of :
+
+    Map, Layer, Shape, Point, Raster, Vector ... etc
+
+That might help to guide the discussion towards thinking about the metadata needed to describe Maps built up of Layers containing Points with values representing Bio Mass and Carbon Density (apologies if I have mangled the terms, I'm still not 100% confident with these myself).
+
+----------------------
+
+It might be useful to include a section on the ObsCore data model, possibly between the sections on Registry and Applications.
+
+http://ivoa.net/documents/ObsCore/index.html
+
+ObsCore represents the current work of the IVOA, which builds on the lower level standards created during the time that AstroGrid was active.
+
+The ObsCore standard defines an abstract data model which enable data discovery and data analysis queries to be applied in a consistent way across the whole of the VO.
+
+Given that the OGC has already defined a number of services that are equivalent to the low level IVOA services, adopting these may enable AstroTROP to jump ahead to look at developing the higher level abstractions like ObsCore sooner that the IVOA could.
+
+----------------------
+
+Problems with with UCDs ?
+Specifically UCDs should be URLs, if possible PURLs that point to useful explanations.
+
+    https://w3id.org/
+
+
+
+

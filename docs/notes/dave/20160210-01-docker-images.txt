@@ -322,6 +322,13 @@ ckan-solr
 ckan-ckan
 "    
 
+    imagelist="
+ckan-push
+ckan-redis
+ckan-solr
+ckan-ckan
+"    
+
     for name in ${imagelist:?}
     do
         echo "Name [${name:?}]"

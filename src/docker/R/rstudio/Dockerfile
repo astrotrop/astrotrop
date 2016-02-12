@@ -19,14 +19,17 @@ FROM rocker/rstudio
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# Add the R ODBC package to connect to PostGIS.
+# Add the ODBC and PostgreSQL drivers to connect to PostGIS.
 RUN apt-get update \
 	&& apt-get install -y --no-install-recommends \
+        unixodbc \
         r-cran-rodbc \
+        odbc-postgresql \
+        r-cran-rpostgresql \
 	&& rm -rf /var/lib/apt/lists/
 
 #
-# Enable to the latest (unstable) packages
+# Configure APT to use the latest (unstable) packages
 ADD unstable.txt /etc/apt/sources.list
 
 #

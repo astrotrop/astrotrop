@@ -54,13 +54,6 @@ RUN chown --recursive apache "${ckandata}"
 RUN chmod --recursive o=rwxs "${ckandata}"
 RUN chmod --recursive g=rwxs "${ckandata}"
 
-
-#
-# Create our virtualenv.
-#virtualenv --no-site-packages "${ckanroot:?}"
-#source "${ckanroot:?}/bin/activate"
-
-
 #
 # Install CKAN.
 echo "Installing CKAN using pip"
@@ -68,6 +61,16 @@ pushd ${ckanroot}
 
     pip install -e 'git+https://github.com/ckan/ckan.git@ckan-2.3#egg=ckan'
     pip install -r "${ckanroot:?}/src/ckan/requirements.txt"
+
+popd
+
+#
+# Install ckanext-harvest extension
+echo "Installing ckanext-harvest"
+pushd "${ckanroot:?}"
+
+    pip install -e 'git+https://github.com/ckan/ckanext-harvest.git#egg=ckanext-harvest'
+    pip install -r 'src/ckanext-harvest/pip-requirements.txt'
 
 popd
 
@@ -83,8 +86,8 @@ dnf -y install libxml2-devel
 dnf -y install libxslt-devel
 pushd "${ckanroot:?}"
 
-    pip install -e "git+https://github.com/okfn/ckanext-spatial.git@f6cf9cd3f00945b29d6df6d16d7487651811cbf8#egg=ckanext-spatial"
-    pip install -r src/ckanext-spatial/pip-requirements.txt
+    pip install -e 'git+https://github.com/okfn/ckanext-spatial.git@f6cf9cd3f00945b29d6df6d16d7487651811cbf8#egg=ckanext-spatial'
+    pip install -r 'src/ckanext-spatial/pip-requirements.txt'
 
 popd
 
@@ -95,7 +98,7 @@ echo "Installing ckanext-geonetwork"
 pushd "${ckanroot:?}"
     pushd src
 
-        git clone https://github.com/geosolutions-it/ckanext-geonetwork.git
+        git clone 'https://github.com/geosolutions-it/ckanext-geonetwork.git'
 
         pushd ckanext-geonetwork
        
@@ -104,13 +107,6 @@ pushd "${ckanroot:?}"
         popd
     popd
 popd
-
-
-
-#
-# Restart our virtualenv.
-#deactivate
-#source "${ckanroot:?}/bin/activate"
 
 #
 # Link our Repoze.who config file.

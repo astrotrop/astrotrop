@@ -1,0 +1,717 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create our target machine.
+#[user@desktop]
+
+    https://cloud.digitalocean.com/droplets
+
+    droplet : astrotrop-07
+    image   : Docker 1.10.1 on Ubuntu-14.04
+
+       1 CPU 
+      1G memory
+     30G disk space
+
+    ipv4 : 188.166.158.49
+    ipv6 : 2a03:b0c0:1:a1::2f:1
+
+# -----------------------------------------------------
+# Update our DNS records.
+#[admin@network]
+
+        $ORIGIN ocean.metagrid.co.uk
+
+    +   astrotrop-07    A       188.166.158.49
+    +   astrotrop-07    AAAA    2a03:b0c0:1:a1::2f:1
+
+        $ORIGIN metagrid.xyz
+
+    +   geoserv-07  CNAME  astrotrop-07.ocean.metagrid.co.uk.
+    +   geonode-07  CNAME  astrotrop-07.ocean.metagrid.co.uk.
+    +   rstudio-07  CNAME  astrotrop-07.ocean.metagrid.co.uk.
+    +   postgis-07  CNAME  astrotrop-07.ocean.metagrid.co.uk.
+    +   webserv-07  CNAME  astrotrop-07.ocean.metagrid.co.uk.
+    +   ckanreg-07  CNAME  astrotrop-07.ocean.metagrid.co.uk.
+
+# -----------------------------------------------------
+# Check our DNS records.
+#[user@desktop]
+
+    host geoserv-07.metagrid.xyz
+
+        geoserv-07.metagrid.xyz is an alias for astrotrop-07.ocean.metagrid.co.uk.
+        astrotrop-07.ocean.metagrid.co.uk has address 188.166.158.49
+        astrotrop-07.ocean.metagrid.co.uk has IPv6 address 2a03:b0c0:1:a1::2f:1
+
+    host geonode-07.metagrid.xyz
+
+        geonode-07.metagrid.xyz is an alias for astrotrop-07.ocean.metagrid.co.uk.
+        astrotrop-07.ocean.metagrid.co.uk has address 188.166.158.49
+        astrotrop-07.ocean.metagrid.co.uk has IPv6 address 2a03:b0c0:1:a1::2f:1
+
+    host rstudio-07.metagrid.xyz
+
+        rstudio-07.metagrid.xyz is an alias for astrotrop-07.ocean.metagrid.co.uk.
+        astrotrop-07.ocean.metagrid.co.uk has address 188.166.158.49
+        astrotrop-07.ocean.metagrid.co.uk has IPv6 address 2a03:b0c0:1:a1::2f:1
+
+    host postgis-07.metagrid.xyz
+
+        postgis-07.metagrid.xyz is an alias for astrotrop-07.ocean.metagrid.co.uk.
+        astrotrop-07.ocean.metagrid.co.uk has address 188.166.158.49
+        astrotrop-07.ocean.metagrid.co.uk has IPv6 address 2a03:b0c0:1:a1::2f:1
+
+    host webserv-07.metagrid.xyz
+
+        webserv-07.metagrid.xyz is an alias for astrotrop-07.ocean.metagrid.co.uk.
+        astrotrop-07.ocean.metagrid.co.uk has address 188.166.158.49
+        astrotrop-07.ocean.metagrid.co.uk has IPv6 address 2a03:b0c0:1:a1::2f:1
+
+    host ckanreg-07.metagrid.xyz
+
+        ckanreg-07.metagrid.xyz is an alias for astrotrop-07.ocean.metagrid.co.uk.
+        astrotrop-07.ocean.metagrid.co.uk has address 188.166.158.49
+        astrotrop-07.ocean.metagrid.co.uk has IPv6 address 2a03:b0c0:1:a1::2f:1
+        
+# -----------------------------------------------------
+# Update our SSH config.
+#[user@desktop]
+
+    gedit "${HOME:?}/.ssh/config" &
+
+    -   Host .... astrotrop-06
+    +   Host .... astrotrop-06 astrotrop-07
+            User root
+            HostName %h.ocean.metagrid.co.uk
+            IdentityFile ~/.ssh/zrq.digitalocean.com.rsa
+            Protocol 2
+            Compression yes
+            PasswordAuthentication no
+
+# -----------------------------------------
+# SSH login to the server.
+#[user@desktop]
+
+    ssh astrotrop-07
+
+# -----------------------------------------
+# Disable plain text password login.
+#[root@virtual]
+
+    sed -i '
+        s/^#PasswordAuthentication.*$/PasswordAuthentication no/
+        ' /etc/ssh/sshd_config
+
+    service ssh restart
+
+# -----------------------------------------
+# Install admin tools.
+#[root@virtual]
+
+    apt-get update
+
+    apt-get install -y htop
+
+    apt-get install -y pwgen
+
+
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy generator.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@virtual]
+
+    apt-get install -y haveged
+
+    service haveged start
+    
+# -----------------------------------------------------
+# Check Docker is installed and running..
+#[root@virtual]
+
+    docker info
+
+        Containers: 0
+         Running: 0
+         Paused: 0
+         Stopped: 0
+        Images: 0
+        Server Version: 1.10.1
+        Storage Driver: aufs
+         Root Dir: /var/lib/docker/aufs
+         Backing Filesystem: extfs
+         Dirs: 0
+         Dirperm1 Supported: false
+        Execution Driver: native-0.2
+        Logging Driver: json-file
+        Plugins: 
+         Volume: local
+         Network: bridge null host
+        Kernel Version: 3.13.0-77-generic
+        Operating System: Ubuntu 14.04.3 LTS
+        OSType: linux
+        Architecture: x86_64
+        CPUs: 1
+        Total Memory: 994 MiB
+        Name: astrotrop-07
+        ID: AJXC:MJBZ:TJD6:HJ4X:CJWS:7EIV:UPS6:6QLN:IDTQ:NDXI:HV2S:CMTU
+
+# -----------------------------------------------------
+# Configure our build.
+#[root@virtual]
+
+    cat > "${HOME:?}/astrotrop.conf" << EOF
+
+        dockerset=1.2
+
+        project=/var/local/astrotrop
+        tempdir=\${project:?}/temp
+        datadir=\${project:?}/data
+
+        tomcatuid=995:994
+
+        dnsname=metagrid.xyz
+
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
+
+# -----------------------------------------------------
+# Create our data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+cat > "${HOME:?}/tools" << 'EOF'
+
+    rmdata()
+        {
+        local path=${1:?}
+        if [ -e "${path}" ]
+        then
+            rm -rf "${path}"
+        fi
+        }
+
+    mkdata()
+        {
+        local path=${1:?}
+        local user=${2:-}
+        if [ ! -e "${path}" ]
+        then
+            mkdir --parents "${path:?}"
+        fi
+        if [ -n "${user:-}" ]
+        then
+            chown -R "${user:?}" "${path:?}"
+        fi
+
+        # Only if SELinux enabled        
+        # chcon -t svirt_sandbox_file_t "${path:?}"
+
+        }
+
+EOF
+
+    source "${HOME:?}/tools"
+
+    rmdata "${tempdir:?}"
+    rmdata "${datadir:?}"
+
+    mkdata "${tempdir:?}"
+    mkdata "${datadir:?}"
+
+# -----------------------------------------------------
+# Configure our SOLR container.
+#[root@virtual]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        solrdockname=ckan-solrn
+
+        solrlinkname=solrlink
+        solrlinkport=8983
+
+        solrtempdir=${tempdir:?}/solr
+        solrdatadir=${datadir:?}/solr
+
+EOF
+
+# -----------------------------------------------------
+# Create our SOLR data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${solrtempdir:?}"
+    rmdata "${solrdatadir:?}"
+
+    mkdata "${solrtempdir:?}"
+    mkdata "${solrdatadir:?}"
+
+# -----------------------------------------------------
+# Run our SOLR container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker run \
+        --detach \
+        --name   "${solrdockname:?}" \
+        --expose ${solrlinkport:?} \
+        --volume "${solrtempdir:?}:/temp" \
+        --volume "${solrdatadir:?}:/opt/solr/example/solr/ckan/data" \
+        astrotrop/ckan-solr:${dockerset:?}
+
+# -----------------------------------------------------
+# Configure our Redis container.
+#[root@virtual]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        redisdockname=ckan-redis
+
+        redislinkname=redislink
+        redislinkport=8983
+
+        redistempdir=${tempdir:?}/redis
+        redisdatadir=${datadir:?}/redis
+
+EOF
+
+# -----------------------------------------------------
+# Create our Redis data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${redistempdir:?}"
+    rmdata "${redisdatadir:?}"
+
+    mkdata "${redistempdir:?}"
+    mkdata "${redisdatadir:?}"
+
+# -----------------------------------------------------
+# Run our Redis container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker run \
+        --detach \
+        --name   "${redisdockname:?}" \
+        --expose ${redislinkport:?} \
+        --volume "${redistempdir:?}:/temp" \
+        --volume "${redisdatadir:?}:/data" \
+        astrotrop/ckan-redis:${dockerset:?}
+
+# -----------------------------------------------------
+# Configure our DataPusher container.
+#[root@virtual]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        pushdockname=ckan-push
+        pushlinkname=ckan-push
+
+        pushtempdir=${tempdir:?}/push
+        pushdatadir=${datadir:?}/push
+
+EOF
+
+# -----------------------------------------------------
+# Create our DataPusher directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${pushtempdir:?}"
+    rmdata "${pushdatadir:?}"
+
+    mkdata "${pushtempdir:?}"
+    mkdata "${pushdatadir:?}"
+
+# -----------------------------------------------------
+# Run our DataPusher container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker run \
+        --detach \
+        --name "${pushdockname:?}" \
+        --volume "${pushtempdir:?}:/temp" \
+        --volume "${pushdatadir:?}:/data" \
+        astrotrop/ckan-push:${dockerset:?}
+
+# -----------------------------------------------------
+# Configure our PostGIS container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" <<- EOF
+
+        postgisdockname=ckan-postgis
+        postgislinkname=postgis
+        postgislinkport=5432
+
+        postgistempdir=\${tempdir:?}/postgis
+        postgisdatadir=\${datadir:?}/postgis
+
+        postgishostname=postgis-07.\${dnsname:?}
+        postgishostport=5432
+
+        postgisdatabase=postgisdata
+        postgisusername=postgisuser
+        postgispassword=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Create our PostGIS data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${postgistempdir:?}"
+    rmdata "${postgisdatadir:?}"
+
+    mkdata "${postgistempdir:?}"
+    mkdata "${postgisdatadir:?}"
+
+# -----------------------------------------------------
+# Run our PostGIS container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    postgisenv=$(mktemp)
+    cat > "${postgisenv:?}" <<- EOF
+PGDATA=/data/pgdata
+POSTGRES_DB=${postgisdatabase:?}
+POSTGRES_USER=${postgisusername:?}
+POSTGRES_PASSWORD=${postgispassword:?}
+EOF
+
+    docker run \
+        --detach \
+        --name "${postgisdockname:?}" \
+        --env-file "${postgisenv:?}" \
+        --expose "${postgislinkport:?}" \
+        --volume "${postgisdatadir:?}:/data" \
+        --volume "${postgistempdir:?}:/temp" \
+        "astrotrop/postgis:${dockerset:?}"
+
+# -----------------------------------------------------
+# Test our PostGIS container.
+#[root@virtual]
+
+    docker exec -it "${postgisdockname:?}" psql \
+        --dbname "${postgisdatabase:?}" \
+        --username "${postgisusername:?}" \
+        --command "SELECT version()"
+
+         #
+         # PostgreSQL 9.4.5 on x86_64-unknown-linux-gnu, compiled by gcc (Debian 4.9.2-10) 4.9.2, 64-bit
+         #
+
+    docker exec -it "${postgisdockname:?}" psql \
+        --dbname "${postgisdatabase:?}" \
+        --username "${postgisusername:?}" \
+        --command "SELECT postgis_full_version()"
+
+        #
+        # POSTGIS="2.2.1 r14555" GEOS="3.4.2-CAPI-1.8.2 r3921" PROJ="Rel. 4.8.0, 6 March 2012" GDAL="GDAL 1.10.1, released 2013/08/26" LIBXML="2.9.1" LIBJSON="0.11.99" TOPOLOGY RASTER
+        #
+
+# -----------------------------------------------------
+# Configure our CKAN database.
+#[root@virtual]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        ckandatabase=ckandata
+        ckanusername=ckanrole
+        ckanpassword=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Create our CKAN database.
+# TODO Move to ckan-postgis container config()
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat > ${postgistempdir:?}/ckan-init.sql << EOF
+
+        CREATE ROLE ${ckanusername:?} WITH 
+            PASSWORD '${ckanpassword:?}'
+            NOSUPERUSER
+            NOCREATEDB
+            NOCREATEROLE
+            LOGIN
+            ;
+
+        CREATE DATABASE ${ckandatabase:?} WITH
+            OWNER = ${ckanusername:?}
+            ;
+EOF
+
+    docker exec -it \
+        "${postgisdockname:?}" \
+        psql \
+            postgres \
+            postgres
+
+        \i /temp/ckan-init.sql
+        \q
+
+# -----------------------------------------------------
+# Configure our CKAN datastore.
+# http://docs.ckan.org/en/master/datastore-setup.html
+#[root@virtual]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        storedatabase=storedata
+
+        storeownername=storeowner
+        storeownerpass=$(pwgen 20 1)
+
+        storereadername=storereader
+        storereaderpass=$(pwgen 20 1)
+
+        storewritername=storewriter
+        storewriterpass=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Create our CKAN datastore.
+# TODO Move to ckan-postgis container config()
+# http://docs.ckan.org/en/master/datastore-setup.html
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat > ${postgistempdir:?}/store-init.sql << EOF
+
+        --
+        -- Create our database roles.
+        CREATE ROLE ${storeownername:?} WITH 
+            PASSWORD '${storeownerpass:?}'
+            NOSUPERUSER
+            NOCREATEDB
+            NOCREATEROLE
+            NOLOGIN
+            ;
+
+        CREATE ROLE ${storereadername:?} WITH 
+            PASSWORD '${storereaderpass:?}'
+            NOSUPERUSER
+            NOCREATEDB
+            NOCREATEROLE
+            LOGIN
+            ;
+
+        CREATE ROLE ${storewritername:?} WITH 
+            PASSWORD '${storewriterpass:?}'
+            NOSUPERUSER
+            NOCREATEDB
+            NOCREATEROLE
+            LOGIN
+            ;
+
+        --
+        -- Create our database.
+        CREATE DATABASE ${storedatabase:?} WITH
+            OWNER = ${storeownername:?}
+            TEMPLATE = template0
+            ENCODING = 'UTF-8'
+            ;
+
+EOF
+
+    cat > ${postgistempdir:?}/store-grant.sql << EOF
+
+        --
+        -- Revoke permissions for the public role.
+        REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+        REVOKE USAGE  ON SCHEMA public FROM PUBLIC;
+
+        --
+        -- Grant permissions for the ckanuser role.
+        GRANT CREATE ON SCHEMA public TO "${ckanusername:?}";
+        GRANT USAGE  ON SCHEMA public TO "${ckanusername:?}";
+
+        --
+        -- Grant permissions for the storewriter role.
+        GRANT CREATE ON SCHEMA public TO "${storewritername:?}";
+        GRANT USAGE  ON SCHEMA public TO "${storewritername:?}";
+
+        --
+        -- Prevent storereader connecting to the ckan database.  
+        REVOKE CONNECT ON DATABASE "${ckandatabase:?}" FROM "${storereadername:?}";
+
+        --
+        -- Grant connect and select permissions to the storereader role.
+        GRANT CONNECT ON DATABASE "${storedatabase:?}" TO "${storereadername:?}";
+        GRANT USAGE   ON SCHEMA public TO "${storereadername:?}";
+
+        --
+        -- Grant access to all the tables to the storereader role.
+        GRANT SELECT ON ALL TABLES IN SCHEMA public TO "${storereadername:?}";
+
+        --
+        -- Grant access to storereader to any new tables created by storewriter.
+        ALTER DEFAULT PRIVILEGES FOR USER "${storewritername:?}" IN SCHEMA public
+            GRANT SELECT ON TABLES TO "${storereadername:?}";
+
+EOF
+
+    docker exec -it \
+        "${postgisdockname:?}" \
+        psql \
+            postgres \
+            postgres
+
+        \i /temp/store-init.sql
+        \i /temp/store-grant.sql
+        \q
+
+# -----------------------------------------------------
+# Configure the PostGIS database extensions.
+# TODO Move to ckan-postgis container config()
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/install.html#install-postgis-and-system-packages
+#[root@virtual]
+
+    #
+    # Create the PostGIS extension.
+    # Change the owner to spatial tables to the CKAN user to avoid errors later on.
+    cat > ${postgistempdir:?}/postgis-init.sql << EOF
+
+        CREATE EXTENSION postgis;
+        CREATE EXTENSION postgis_topology;
+
+        ALTER VIEW  geometry_columns OWNER TO "${ckanusername:?}" ;
+        ALTER TABLE spatial_ref_sys  OWNER TO "${ckanusername:?}" ;
+
+EOF
+
+    docker exec -it \
+        "${postgisdockname:?}" \
+        psql \
+            --dbname   "${ckandatabase:?}"  \
+            --username "${postgisusername:?}"
+
+        \i /temp/postgis-init.sql
+        \q
+
+# -----------------------------------------------------
+# Check to see if PostgreSQL is healthy.
+#[root@virtual]
+
+    docker exec -it \
+        "${postgisdockname:?}" \
+        psql \
+            --dbname   "${ckandatabase:?}"  \
+            --username "${postgisusername:?}" \
+            --command  "SELECT version()"
+
+        #
+        # PostgreSQL 9.4.5 on x86_64-unknown-linux-gnu, compiled by gcc (Debian 4.9.2-10) 4.9.2, 64-bit
+        #
+
+    docker exec -it \
+        "${postgisdockname:?}" \
+        psql \
+            --dbname   "${ckandatabase:?}"  \
+            --username "${postgisusername:?}" \
+            --command  "SELECT postgis_full_version()"
+
+        #
+        # POSTGIS="2.2.1 r14555" GEOS="3.4.2-CAPI-1.8.2 r3921" PROJ="Rel. 4.8.0, 6 March 2012" GDAL="GDAL 1.10.1, released 2013/08/26" LIBXML="2.9.1" LIBJSON="0.11.99" TOPOLOGY RASTER
+        #
+
+# -----------------------------------------------------
+# Configure our CKAN container.
+#[root@virtual]
+
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        ckandockname=ckan
+        ckanlinkname=ckanlink
+        ckanlinkport=80
+
+        ckanusername=astrotrop
+        ckanpassword=$(pwgen 20 1)
+
+        ckanhostname=ckandat-07.\${dnsname:?}
+        ckanhostport=80
+        ckanexternal=http://\${ckanhostname}:\${ckanhostport}/
+        ckaninternal=http://\${ckanlinkname}:\${ckanlinkport:?}/
+
+        ckantempdir=${tempdir:?}/ckan
+        ckandatadir=${datadir:?}/ckan
+
+EOF
+
+# -----------------------------------------------------
+# Create our CKAN data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${ckandatadir:?}"
+    rmdata "${ckantempdir:?}"
+
+    mkdata "${ckandatadir:?}"
+    mkdata "${ckantempdir:?}"
+
+# -----------------------------------------------------
+# Run our CKAN container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        --detach \
+        --name "${ckandockname:?}" \
+        --publish ${ckanhostport:?}:${ckanlinkport} \
+        --link ${postgisdockname:?}:${postgislinkname:?} \
+        --link ${solrdockname:?}:${solrlinkname:?} \
+        --link ${pushdockname:?}:${pushlinkname:?} \
+        --link ${redisdockname:?}:${redislinkname:?} \
+        --volume "${ckantempdir:?}:/temp" \
+        --volume "${ckandatadir:?}:/var/lib/ckan" \
+        astrotrop/ckan-ckan:${dockerset:?}
+
+# -----------------------------------------------------
+# Tail the CKAN logs
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" \
+        tail -f /var/log/httpd/ckan.metagrid.co.uk.error.log
+
+

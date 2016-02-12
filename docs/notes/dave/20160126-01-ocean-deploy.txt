@@ -376,6 +376,7 @@ EOF
 
         #
         # Install the R ODBC package
+        # TODO - move to Dockerfile 
         apt-get -y install unixodbc
         apt-get -y install r-cran-rodbc
         apt-get -y install odbc-postgresql
@@ -489,8 +490,6 @@ EOF
 # Test our RStudio container.
 #[user@desktop]
 
-    #
-    # Connect using web browser
     firefox 'http://rstudio-05.metagrid.xyz:8787/' &
 
 # -----------------------------------------------------

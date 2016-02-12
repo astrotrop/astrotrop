@@ -554,7 +554,7 @@ EOF
 
 
 # -----------------------------------------------------
-# MOVE TO DOCKER
+# MOVE TO DOCKER - DONE
 # Install the CKAN harvest extension
 # https://github.com/ckan/ckanext-harvest
 #[root@virtual]

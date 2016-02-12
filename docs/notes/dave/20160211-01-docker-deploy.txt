@@ -1,0 +1,1099 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create our target machine.
+#[user@desktop]
+
+    https://cloud.digitalocean.com/droplets
+
+    droplet : astrotrop-06
+    image   : Docker 1.10.1 on Ubuntu-14.04
+
+       1 CPU 
+      1G memory
+     30G disk space
+
+    ipv4 : 178.62.40.252
+    ipv6 : 2a03:b0c0:1:d0::8f:c001
+
+# -----------------------------------------------------
+# Update our DNS records.
+#[admin@network]
+
+        $ORIGIN ocean.metagrid.co.uk
+
+    +   astrotrop-06    A       178.62.40.252
+    +   astrotrop-06    AAAA    2a03:b0c0:1:d0::8f:c001
+
+        $ORIGIN metagrid.xyz
+
+    +   geoserv-06  CNAME  astrotrop-06.ocean.metagrid.co.uk.
+    +   geonode-06  CNAME  astrotrop-06.ocean.metagrid.co.uk.
+    +   rstudio-06  CNAME  astrotrop-06.ocean.metagrid.co.uk.
+    +   postgis-06  CNAME  astrotrop-06.ocean.metagrid.co.uk.
+    +   webserv-06  CNAME  astrotrop-06.ocean.metagrid.co.uk.
+
+
+# -----------------------------------------------------
+# Check our DNS records.
+#[user@desktop]
+
+    host geoserv-06.metagrid.xyz
+
+        geoserv-06.metagrid.xyz is an alias for astrotrop-06.ocean.metagrid.co.uk.
+        astrotrop-06.ocean.metagrid.co.uk has address 178.62.40.252
+        astrotrop-06.ocean.metagrid.co.uk has IPv6 address 2a03:b0c0:1:d0::8f:c001
+
+    host geonode-06.metagrid.xyz
+
+        geonode-06.metagrid.xyz is an alias for astrotrop-06.ocean.metagrid.co.uk.
+        astrotrop-06.ocean.metagrid.co.uk has address 178.62.40.252
+        astrotrop-06.ocean.metagrid.co.uk has IPv6 address 2a03:b0c0:1:d0::8f:c001
+ 
+    host rstudio-06.metagrid.xyz
+
+        rstudio-06.metagrid.xyz is an alias for astrotrop-06.ocean.metagrid.co.uk.
+        astrotrop-06.ocean.metagrid.co.uk has address 178.62.40.252
+        astrotrop-06.ocean.metagrid.co.uk has IPv6 address 2a03:b0c0:1:d0::8f:c001
+ 
+    host postgis-06.metagrid.xyz
+
+        postgis-06.metagrid.xyz is an alias for astrotrop-06.ocean.metagrid.co.uk.
+        astrotrop-06.ocean.metagrid.co.uk has address 178.62.40.252
+        astrotrop-06.ocean.metagrid.co.uk has IPv6 address 2a03:b0c0:1:d0::8f:c001
+ 
+    host webserv-06.metagrid.xyz
+
+        webserv-06.metagrid.xyz is an alias for astrotrop-06.ocean.metagrid.co.uk.
+        astrotrop-06.ocean.metagrid.co.uk has address 178.62.40.252
+        astrotrop-06.ocean.metagrid.co.uk has IPv6 address 2a03:b0c0:1:d0::8f:c001
+
+# -----------------------------------------------------
+# Update our SSH config.
+#[user@desktop]
+
+    gedit "${HOME:?}/.ssh/config" &
+
+    -   Host .... astrotrop-05
+    +   Host .... astrotrop-05 astrotrop-06
+            User root
+            HostName %h.ocean.metagrid.co.uk
+            IdentityFile ~/.ssh/zrq.digitalocean.com.rsa
+            Protocol 2
+            Compression yes
+            PasswordAuthentication no
+
+# -----------------------------------------
+# SSH login to the server.
+#[user@desktop]
+
+    ssh astrotrop-06
+
+# -----------------------------------------
+# Disable plain text password login.
+#[root@virtual]
+
+    sed -i '
+        s/^#PasswordAuthentication.*$/PasswordAuthentication no/
+        ' /etc/ssh/sshd_config
+
+    service ssh restart
+
+# -----------------------------------------
+# Install admin tools.
+#[root@virtual]
+
+    apt-get update
+
+    apt-get -y install htop
+
+    apt-get -y install pwgen
+    
+# -----------------------------------------------------
+# Check Docker is installed and running..
+#[root@virtual]
+
+    docker info
+
+        Containers: 0
+         Running: 0
+         Paused: 0
+         Stopped: 0
+        Images: 0
+        Server Version: 1.10.0
+        Storage Driver: aufs
+         Root Dir: /var/lib/docker/aufs
+         Backing Filesystem: extfs
+         Dirs: 0
+         Dirperm1 Supported: false
+        Execution Driver: native-0.2
+        Logging Driver: json-file
+        Plugins: 
+         Volume: local
+         Network: bridge null host
+        Kernel Version: 3.13.0-77-generic
+        Operating System: Ubuntu 14.04.3 LTS
+        OSType: linux
+        Architecture: x86_64
+        CPUs: 1
+        Total Memory: 994 MiB
+        Name: astrotrop-06
+        ID: QXV7:LEVQ:VMKD:267F:BEIM:5XQV:DY34:5XAD:3J6G:JQO4:T3N5:JOYL
+
+# -----------------------------------------------------
+# Configure our build.
+#[root@virtual]
+
+    cat > "${HOME:?}/astrotrop.conf" << EOF
+
+        dockerset=1.2
+
+        project=/var/local/astrotrop
+        tempdir=\${project:?}/temp
+        datadir=\${project:?}/data
+
+        tomcatuid=995:994
+
+        dnsname=metagrid.xyz
+
+EOF
+
+# -----------------------------------------------------
+# Create our data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+cat > "${HOME:?}/tools" << 'EOF'
+
+    rmdata()
+        {
+        local path=${1:?}
+        if [ -e "${path}" ]
+        then
+            rm -rf "${path}"
+        fi
+        }
+
+    mkdata()
+        {
+        local path=${1:?}
+        local user=${2:-}
+        if [ ! -e "${path}" ]
+        then
+            mkdir --parents "${path:?}"
+        fi
+        if [ -n "${user:-}" ]
+        then
+            chown -R "${user:?}" "${path:?}"
+        fi
+
+        # Only if SELinux enabled        
+        # chcon -t svirt_sandbox_file_t "${path:?}"
+
+        }
+
+EOF
+
+    source "${HOME:?}/tools"
+
+    rmdata "${tempdir:?}"
+    rmdata "${datadir:?}"
+
+    mkdata "${tempdir:?}"
+    mkdata "${datadir:?}"
+
+# -----------------------------------------------------
+# Configure our PostGIS container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" <<- EOF
+
+        postgisname=postgis
+        postgislink=postgis
+        postgisport=5432
+
+        postgistempdir=\${tempdir:?}/postgis
+        postgisdatadir=\${datadir:?}/postgis
+
+        postgishostname=postgis-06.\${dnsname:?}
+
+        postgisdatabase=postgisdata
+        postgisusername=postgisuser
+        postgispassword=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Create our PostGIS data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${postgistempdir:?}"
+    rmdata "${postgisdatadir:?}"
+
+    mkdata "${postgistempdir:?}"
+    mkdata "${postgisdatadir:?}"
+
+# -----------------------------------------------------
+# Run our PostGIS container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    postgisenv=$(mktemp)
+    cat > "${postgisenv:?}" <<- EOF
+PGDATA=/data/pgdata
+POSTGRES_DB=${postgisdatabase:?}
+POSTGRES_USER=${postgisusername:?}
+POSTGRES_PASSWORD=${postgispassword:?}
+EOF
+
+    docker run \
+        --detach \
+        --name "${postgisname:?}" \
+        --env-file "${postgisenv:?}" \
+        --expose "${postgisport:?}" \
+        --volume "${postgisdatadir:?}:/data" \
+        --volume "${postgistempdir:?}:/temp" \
+        "astrotrop/postgis:${dockerset:?}"
+
+# -----------------------------------------------------
+# Test our PostGIS container.
+#[root@virtual]
+
+    docker exec -it "${postgisname:?}" psql \
+        --dbname "${postgisdatabase:?}" \
+        --username "${postgisusername:?}" \
+        --command "SELECT version()"
+
+         #
+         # PostgreSQL 9.4.5 on x86_64-unknown-linux-gnu, compiled by gcc (Debian 4.9.2-10) 4.9.2, 64-bit
+         #
+
+    docker exec -it "${postgisname:?}" psql \
+        --dbname "${postgisdatabase:?}" \
+        --username "${postgisusername:?}" \
+        --command "SELECT postgis_full_version()"
+
+        #
+        # POSTGIS="2.2.1 r14555" GEOS="3.4.2-CAPI-1.8.2 r3921" PROJ="Rel. 4.8.0, 6 March 2012" GDAL="GDAL 1.10.1, released 2013/08/26" LIBXML="2.9.1" LIBJSON="0.11.99" TOPOLOGY RASTER
+        #
+
+# -----------------------------------------------------
+# Configure our RStudio container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        rstudioname=rstudio
+        rstudiolink=rstudio
+        rstudioport=8787
+
+        rstudiousername=astrotrop
+        rstudiopassword=$(pwgen 20 1)
+
+        rstudiohostname=rstudio-06.\${dnsname:?}
+        rstudioexternal=http://\${rstudiohostname}:\${rstudioport}/
+        rstudiointernal=http://\${rstudiolink}:8787/
+
+        rstudiotempdir=\${tempdir:?}/rstudio
+        rstudiodatadir=\${datadir:?}/rstudio/data
+        rstudiohomedir=\${datadir:?}/rstudio/home/
+
+EOF
+
+# -----------------------------------------------------
+# Create our RStudio directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    rmdata "${rstudiotempdir:?}"
+    rmdata "${rstudiohomedir:?}"
+    rmdata "${rstudiodatadir:?}"
+
+    mkdata "${rstudiotempdir:?}"
+    mkdata "${rstudiodatadir:?}"
+    mkdata "${rstudiohomedir:?}"
+    mkdata "${rstudiohomedir:?}/${rstudiousername:?}"
+
+# -----------------------------------------------------
+# Run our RStudio container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    rstudioenv=$(mktemp)
+    cat > "${rstudioenv:?}" <<- EOF
+USER=${rstudiousername:?}
+PASSWORD=${rstudiopassword:?}
+EOF
+
+    cat > "${rstudiodatadir:?}/environ" <<- EOF
+POSTGRES_DATABASE=${postgisdatabase:?}
+POSTGRES_HOSTNAME=${postgislink:?}
+POSTGRES_USERNAME=${postgisusername:?}
+POSTGRES_PASSWORD=${postgispassword:?}
+POSTGRES_DATANAME=PG:dbname=${postgisdatabase:?} host=${postgislink:?} user=${postgisusername:?} password=${postgispassword:?}
+EOF
+
+    docker run \
+        --detach \
+        --name "${rstudioname:?}" \
+        --env-file "${rstudioenv:?}" \
+        --publish "${rstudioport:?}:8787" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        --volume "${rstudiotempdir:?}:/temp" \
+        --volume "${rstudiodatadir:?}:/data" \
+        --volume "${rstudiohomedir:?}:/home" \
+        "astrotrop/rstudio:${dockerset:?}"
+
+# -----------------------------------------------------
+# Configure our RStudio container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        "${rstudioname:?}" \
+        bash        
+
+        #
+        # Update the apt sources.
+        # TODO - move to Dockerfile 
+        apt-get update
+
+        #
+        # Install the RPostgreSQL package
+        # TODO - move to Dockerfile 
+        apt-get -y install r-cran-rpostgresql
+
+        #
+        # Install the rgdal package
+        # TODO - move to Dockerfile 
+        # apt-get -y install r-cran-sp
+        # apt-get -y install r-cran-rgdal
+
+        #
+        # Install the R ODBC package
+        # TODO - move to Dockerfile 
+        apt-get -y install unixodbc
+        apt-get -y install r-cran-rodbc
+        apt-get -y install odbc-postgresql
+
+        #
+        # Configure the ODBC connection settings
+        # http://www.uptimemadeeasy.com/linux/install-postgresql-odbc-driver-on-linux/
+        # TODO Automate this as part of config()
+        source /data/environ
+        cat > /etc/odbc.ini << EOF
+[${POSTGRES_DATABASE:?}]
+Driver = /usr/lib/x86_64-linux-gnu/odbc/psqlodbcw.so 
+Protocol = 9.4.5
+Database = ${POSTGRES_DATABASE:?}
+Servername = ${POSTGRES_HOSTNAME:?}
+Username = ${POSTGRES_USERNAME:?}
+Password = ${POSTGRES_PASSWORD:?}
+EOF
+
+        exit
+
+# -----------------------------------------------------
+# Test our RStudio service.
+#[user@desktop]
+
+    firefox 'http://rstudio-06.metagrid.xyz:8787/' &
+
+# -----------------------------------------------------
+# Read our environment config file
+#[RStudio]
+
+    readRenviron("/data/environ")
+
+    Sys.getenv(
+        "POSTGRES_DATABASE"
+        )
+
+# -----------------------------------------------------
+# Test the PostgreSQL driver.
+# https://code.google.com/p/rpostgresql/
+#[RStudio]
+
+    #
+    # Debian package is only available in testing (stretch) and unstable (sid).
+    # https://packages.debian.org/sid/r-cran-rpostgresql
+    library(RPostgreSQL)
+
+        #
+        # Loading required package: DBI
+        # ....
+
+    #
+    # Read the database settings from env file.
+    dbname <- Sys.getenv("POSTGRES_DATABASE")
+    dbhost <- Sys.getenv("POSTGRES_HOSTNAME")
+    dbuser <- Sys.getenv("POSTGRES_USERNAME")
+    dbpass <- Sys.getenv("POSTGRES_PASSWORD")
+    pgdsn  <- Sys.getenv("POSTGRES_DATANAME")
+
+    #
+    # Connect to the database.
+    drv <- dbDriver("PostgreSQL")
+    con <- dbConnect(drv, dbname=dbname, host=dbhost, user=dbuser, password=dbpass)
+
+    dbGetQuery(con, "SELECT version()")
+
+        #
+        # PostgreSQL 9.4.5 on x86_64-unknown-linux-gnu ...."
+        #
+
+    dbGetQuery(con, "SELECT postgis_full_version()")
+
+        #
+        # POSTGIS="2.2.1 r14555" GEOS="3.4.2-CAPI-1.8.2 r3921 ...."
+        #
+
+# -----------------------------------------------------
+# Test the ODBC driver.
+#[RStudio]
+
+    #
+    # Load the ODBC driver.
+    library(RODBC)
+
+    con <- odbcConnect(dbname)
+
+    sqlQuery(con, "SELECT version()")
+
+        #
+        # PostgreSQL 9.4.5 on x86_64-unknown-linux-gnu ...."
+        #
+
+    sqlQuery(con, "SELECT postgis_full_version()")
+
+        #
+        # POSTGIS="2.2.1 r14555" GEOS="3.4.2-CAPI-1.8.2 r3921 ...."
+        #
+
+# -----------------------------------------------------
+# Install the GDAL tools.
+#[RStudio]
+
+    #
+    # Debian package is available in jessie, wheezy and squeeze.
+    # https://packages.debian.org/jessie/r-cran-sp
+
+    install.packages("rgdal")
+
+        #
+        # Installing package into ‘/usr/local/lib/R/site-library’
+        # ....
+
+    library(rgdal)
+
+        #
+        # Loading required package: sp
+        # rgdal: version: 1.1-3, (SVN revision 594)
+        # Geospatial Data Abstraction Library extensions to R successfully loaded]
+        # ....
+
+# -----------------------------------------------------
+# Download our RStudio test data.
+# TODO Move this inside the container.
+#[root@virtual]
+
+    apt-get -y install wget
+
+    apt-get -y install unzip
+
+    source "${HOME:?}/astrotrop.conf"
+    pushd "${rstudiodatadir:?}"
+        if [ ! -e geostats ]
+        then
+            if [ ! -e geostats.zip ]
+            then
+                wget https://dl.dropboxusercontent.com/u/2703650/Courses/geostats/geostats.zip
+            fi
+            unzip geostats.zip
+        fi
+    popd
+
+# -----------------------------------------------------
+# Loading vector data into PostGIS from R.
+# https://rpubs.com/dgolicher/6373
+#[RStudio]
+ 
+    #
+    # Import the test shapefiles.
+    states<-readOGR('/data/geostats/shapefiles','mex_states')
+
+        #
+        # OGR data source with driver: ESRI Shapefile 
+        # Source: "//data/geostats/shapefiles", layer: "mex_states"
+        # with 51 features
+        # It has 15 fields
+        #
+
+    #
+    # Plot the test data.
+    plot(states)
+    box()
+    axis(1)
+    axis(2)
+    grid()
+
+    #
+    # Export the test data to our database.
+    writeOGR(
+        states,
+        pgdsn,
+        "mexican_states",
+        "PostgreSQL",
+        layer_options = "geometry_name=geom",
+        )
+
+    #
+    # Read the data back from our database.
+    readOGR(
+        pgdsn,
+        "mexican_states"
+        );
+
+# -----------------------------------------------------
+# Configure our GeoServer container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        geoservname=geoserv
+        geoservlink=geoserv
+        geoservport=8080
+
+        geoservhostname=geoserv-06.\${dnsname:?}
+        geoservexternal=http://\${geoservhostname}:\${geoservport}/geoserver/
+        geoservinternal=http://\${geoservlink}:8080/geoserver/
+
+        geoservusername=astrotrop
+        geoservpassword=$(pwgen 20 1)
+
+        geoservtemp=\${tempdir:?}/geoserv
+        geoservdata=\${datadir:?}/geoserv
+
+EOF
+
+# -----------------------------------------------------
+# Create our GeoServer data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${geoservtemp:?}"
+    rmdata "${geoservdata:?}"
+
+    mkdata "${geoservtemp:?}" "${tomcatuid:?}"
+    mkdata "${geoservdata:?}" "${tomcatuid:?}"
+
+    #
+    # TODO add gosu/notroot to our Tomcat container
+    #
+
+# -----------------------------------------------------
+# Run our GeoServer container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    geoservenv=$(mktemp)
+    cat > "${geoservenv:?}" <<- EOF
+# TODO GeoServer admin user and pass
+# TODO PostGIS host, user and pass
+EOF
+
+    docker run \
+        --detach \
+        --name "${geoservname:?}" \
+        --env-file "${geoservenv:?}" \
+        --publish "${geoservport:?}:8080" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        --volume "${geoservtemp:?}:/temp" \
+        --volume "${geoservdata:?}:/data" \
+        "astrotrop/geoserver:${dockerset:?}"
+
+    docker logs -f "${geoservname:?}"
+
+# -----------------------------------------------------
+# Configure our GeoServer login.
+#[root@virtual]
+
+    #
+    # Add the astrortop user account.
+    # We can add the account - but the password encryption is wrong.
+    # Still need to login as admin and set the password manually.
+    pushd "${geoservdata:?}"
+
+        vi "security/usergroup/default/users.xml"
+
+            <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+            <userRegistry xmlns="http://www.geoserver.org/security/users" version="1.0">
+
+                <users>
+                    <user enabled="true" name="admin" password="crypt1:pQMeDtOfDWLUQSIl4QyqRNe8ptXxnr+3"/>
+        +           <!-- astrotrop-06 -->
+        +           <user enabled="true" name="astrotrop" password="crypt1:9pwQYsAwpkaRSOKGyNAGf1OjdkN0bTsFqZXDVeMFMiM="/>
+                </users>
+                <groups/>
+            </userRegistry>
+
+        vi "security/role/default/roles.xml"
+
+            <userList>
+                <userRoles username="admin">
+                    <roleRef roleID="ADMIN"/>
+                </userRoles>
+        +       <userRoles username="astrotrop">
+        +           <roleRef roleID="ADMIN"/>
+        +           <roleRef roleID="GROUP_ADMIN"/>
+        +       </userRoles>
+            </userList>
+
+# -----------------------------------------------------
+# Test our GeoServer service.
+#[user@desktop]
+
+    firefox 'http://geoserv-06.metagrid.xyz:8080/geoserver/web/' &
+
+# -----------------------------------------------------
+# Create a GeoServer layer from our PostGIS data.
+#[GeoServer]
+
+    New workspace
+
+        name : AstroTROP
+        namespace : http://www.astrotrop.org/
+        default : true
+
+    New (vector) data store
+
+        workspace : AstroTROP
+
+        name : PostGIS database
+        text : PostGIS database
+
+        type : postgis (default)
+        host : postgis (from the Docker link name) 
+        port : 5432
+        database : postgisdata (from the Docker config) 
+        schema : public
+        user : postgisuser (from the Docker config) 
+        pass : ############### (from the Docker config) 
+
+    New (layer) resource
+    
+        from   : AstroTROP:PostGIS
+        layer  : mexican_states
+        action : publish
+
+   Edit layer
+   
+        name  : MexicanStates   <-- no space
+        title : Mexican States  <-- space ok
+
+        Native Bounding Box
+        (compute from data)
+
+        Lat/Lon Bounding Box
+        (compute from data)
+
+# -----------------------------------------------------
+# Create a new style and add it to our layer.
+# http://docs.geoserver.org/stable/en/user/styling/sld-cookbook/index.html
+#[GeoServer]
+
+    <?xml version="1.0" encoding="ISO-8859-1"?>
+    <StyledLayerDescriptor version="1.0.0" 
+        xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" 
+        xmlns="http://www.opengis.net/sld" 
+        xmlns:ogc="http://www.opengis.net/ogc" 
+        xmlns:xlink="http://www.w3.org/1999/xlink" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+        <NamedLayer>
+            <Name>Polygon outline</Name>
+            <UserStyle>
+                <Title>Polygon outline style</Title>
+                <Abstract>A simple style that just displays a black outline</Abstract>
+
+                <FeatureTypeStyle>
+                    <!--FeatureTypeName>Feature</FeatureTypeName-->
+                    <Rule>
+                        <Name>Rule 1</Name>
+                        <Title>Black outline</Title>
+                        <Abstract>1 pixel black outline</Abstract>
+
+                        <PolygonSymbolizer>
+                            <!--Fill>
+                                <CssParameter name="fill">#AAAAAA</CssParameter>
+                            </Fill-->
+                            <Stroke>
+                                <CssParameter name="stroke">#000000</CssParameter>
+                                <CssParameter name="stroke-width">1</CssParameter>
+                                <CssParameter name="stroke-opacity">0.5</CssParameter>
+                            </Stroke>
+                        </PolygonSymbolizer>
+                    </Rule>
+                </FeatureTypeStyle>
+            </UserStyle>
+        </NamedLayer>
+    </StyledLayerDescriptor>
+
+# -----------------------------------------
+# Add the CSW plugin to our GeoServer.
+# TODO - add this to the GeoServer Dockerfile
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        -u root \
+        "${geoservname:?}" \
+        bash        
+
+        #
+        # Install download tools
+        dnf -y install wget
+        dnf -y install unzip
+
+        #
+        # Download and unzip the zipfile.
+        zipfile=geoserver-${GEOSERVER_VERSION:?}-csw-plugin.zip
+        zippath=/temp/${zipfile:?}
+        
+        wget -O "${zippath:?}" "http://sourceforge.net/projects/geoserver/files/GeoServer/${GEOSERVER_VERSION}/extensions/${zipfile:?}/download"
+
+        unzipped=/temp/csw-plugin
+        unzip \
+            "${zippath:?}" \
+            -d "${unzipped:?}"
+
+        #
+        # Copy the jar files into our webapp.        
+        for jarfile in $(ls ${unzipped:?}/*.jar)
+        do
+            cp --verbose --no-clobber \
+                "${jarfile:?}" \
+                "${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/WEB-INF/lib"
+        done
+
+        #
+        # Remove the zipfiles.
+        rm -rf "${unzipped:?}"
+        rm -rf "${zippath:?}"
+
+# -----------------------------------------
+# Restart our GeoServer container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker stop  "${geoservname:?}"
+    docker start "${geoservname:?}"
+    docker logs -f "${geoservname:?}"
+
+        Creation of SecureRandom instance for session ID generation using [SHA1PRNG] took [305,326] milliseconds.
+
+# -----------------------------------------
+# Configure our GeoNode container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        geonodename=geonode
+        geonodelink=geonode
+        geonodeport=8000
+
+        geonodehostname=geonode-06.\${dnsname:?}
+        geonodeexternal=http://\${geonodehostname}:\${geonodeport}/
+        geonodeinternal=http://\${geonodelink}:8000/
+
+        geonodeusername=astrotrop
+        geonodepassword=$(pwgen 20 1)
+
+        geonodedatabase=geonodedata
+        geonodedatastor=geonodedatastor
+        geonodedatauser=geonodedata
+        geonodedatapass=$(pwgen 20 1)
+
+        geonodetemp=\${tempdir:?}/geonode
+        geonodedata=\${datadir:?}/geonode
+
+EOF
+
+# -----------------------------------------------------
+# Create our GeoNode data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${geonodetemp:?}"
+    rmdata "${geonodedata:?}"
+
+    mkdata "${geonodetemp:?}"
+    mkdata "${geonodedata:?}"
+
+# -----------------------------------------
+# Configure our GeoNode container.
+# TODO Move this to config() script
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    geonodeenv=$(mktemp)
+    cat > "${geonodeenv:?}" << EOF
+
+POSTGIS_HOSTNAME=${postgislink:?}
+POSTGIS_DATABASE=${postgisdatabase:?}
+POSTGIS_USERNAME=${postgisusername:?}
+POSTGIS_PASSWORD=${postgispassword:?}
+
+SITEURL=${geonodeexternal:?}
+
+DATABASE_NAME=${geonodedatabase:?}
+DATABASE_HOST=${postgislink:?}
+DATABASE_PORT=5432
+DATABASE_USER=${geonodedatauser:?}
+DATABASE_PASS=${geonodedatapass:?}
+
+DATASTORE_NAME=${geonodedatastor:?}
+DATASTORE_HOST=${postgislink:?}
+DATASTORE_PORT=5432
+DATASTORE_USER=${geonodedatauser:?}
+DATASTORE_PASS=${geonodedatapass:?}
+
+OGC_SERVER_LOCAL=${geoservinternal:?}
+OGC_SERVER_PUBLIC=${geoservexternal:?}
+OGC_SERVER_USER=${geoservusername:?}
+OGC_SERVER_PASS=${geoservpassword:?}
+
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        -it \
+        --env-file "${geonodeenv:?}" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        "astrotrop/geonode:${dockerset:?}" \
+        bash
+
+        cat > ~/.pgpass << EOF
+${POSTGIS_HOSTNAME:?}:*:*:${POSTGIS_USERNAME:?}:${POSTGIS_PASSWORD:?}
+EOF
+        chmod u=rw,g=,o= ~/.pgpass
+
+        psql \
+            --host "${POSTGIS_HOSTNAME:?}" \
+            --username "${POSTGIS_USERNAME:?}" \
+            --dbname "${POSTGIS_DATABASE}" \
+            << EOF
+
+            CREATE USER     ${DATABASE_USER:?}  WITH LOGIN PASSWORD '${DATABASE_PASS:?}' ;
+            CREATE DATABASE ${DATABASE_NAME:?}  WITH OWNER ${DATABASE_USER:?} ;
+            CREATE DATABASE ${DATASTORE_NAME:?} WITH OWNER ${DATABASE_USER:?} ;
+
+            \c ${DATASTORE_NAME:?}
+
+            CREATE EXTENSION postgis ;
+            GRANT ALL ON geometry_columns TO PUBLIC ;
+            GRANT ALL ON spatial_ref_sys  TO PUBLIC ;
+
+EOF
+
+    exit
+
+# -----------------------------------------
+# Run our GeoNode container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        --detach \
+        --name "${geonodename:?}" \
+        --env-file "${geonodeenv:?}" \
+        --publish "${geonodeport:?}:8000" \
+        --link "${postgisname:?}:${postgislink:?}" \
+        --link "${geoservname:?}:${geoservlink:?}" \
+        --volume "${geonodetemp:?}:/temp" \
+        --volume "${geonodedata:?}:/data" \
+        "astrotrop/geonode:${dockerset:?}"
+
+    source "${HOME:?}/astrotrop.conf"
+    docker logs -f \
+        "${geonodename:?}"
+
+# -----------------------------------------------------
+# Configure our GeoNode service.
+# TODO Move this to config() script
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        "${geonodename:?}" \
+        bash
+
+        pushd /geonode
+        
+            python manage.py syncdb --noinput
+
+            python manage.py createsuperuser
+
+                Username: astrotrop
+                Email address: geonode-admin@metagrid.xyz
+                Password: 
+                Password (again): 
+                Superuser created successfully.
+
+#    #
+#    # https://docs.djangoproject.com/es/1.9/ref/django-admin/#createsuperuser
+#    python manage.py \
+#        createsuperuser \
+#            --username USERNAME \
+#            --email grumbles@example.com
+#
+#    #
+#    # https://docs.djangoproject.com/es/1.9/ref/django-admin/#changepassword
+#    python manage.py \
+#        changepassword \
+#            USERNAME
+#
+# Python solution
+# http://stackoverflow.com/a/6244481
+# http://stackoverflow.com/a/22722410
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Test our GeoNode service.
+#[user@desktop]
+
+    firefox 'http://geonode-06.metagrid.xyz:8000/' &
+
+# -----------------------------------------------------
+# Problems
+
+    Configure RStudio ODBC settings in init()
+
+
+    Add CSW plugin to the GeoServer Dockerfile
+
+    Configure GeoServer account in init().
+
+    Add styles in GeoServer Dockerfile.
+
+
+
+    Add syncdb to GeoNode init()
+
+    Add Python code to create GeoNode superuser
+
+# -----------------------------------------------------
+# Problems
+
+    Leaks between internal and external hostnames for the GeoServer service.
+    Probably easiest to put them on separate VMs and use external hostnames for everything.
+
+# -----------------------------------------------------
+# Problems
+
+    GeoNode stack trace contains all the ENV variables - including passwords :-(
+
+# -----------------------------------------------------
+# GeoNode thumbnail images contain errors
+#
+    #
+    # http://geonode-06.metagrid.xyz:8000/uploaded/thumbs/layer-d1366d1c-d101-11e5-9c8a-0242ac110005-thumb.png
+    # Cannot be displayed - contains errors.
+
+    #
+    # Although listed as PNG files, they actually contain HTML error messages from the GeoServer Tomcat.
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        "${geonodename:?}" \
+        bash
+        
+        pushd /geonode/geonode/uploaded/thumbs                                                                                                                                                                                  
+
+            file layer-d1366d1c-d101-11e5-9c8a-0242ac110005-thumb.png
+
+                # HTML document, ASCII text, with very long lines, with no line terminators
+
+
+            cat layer-d1366d1c-d101-11e5-9c8a-0242ac110005-thumb.png
+
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <title>Apache Tomcat/8.0.30 - Error report</title>
+                        <style type="text/css">
+                            H1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;}
+                            H2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;}
+                            H3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;}
+                            BODY {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;}
+                            B {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;}
+                            P {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;}
+                            A {color : black;}A.name {color : black;}.line {height: 1px; background-color: #525D76; border: none;}
+                        </style>
+                    </head>
+                    <body>
+                        <h1>HTTP Status 401 - No AuthenticationProvider found for org.springframework.security.authentication.UsernamePasswordAuthenticationToken</h1>
+                        <div class="line">
+                        </div>
+                        <p>
+                            <b>type</b> Status report
+                        </p>
+                        <p>
+                            <b>message</b>
+                            <u>No AuthenticationProvider found for org.springframework.security.authentication.UsernamePasswordAuthenticationToken</u>
+                        </p>
+                        <p>
+                            <b>description</b>
+                            <u>This request requires HTTP authentication.</u>
+                        </p>
+                        <hr class="line">
+                        <h3>Apache Tomcat/8.0.30</h3>
+                    </body>
+                </html>
+
+
+        popd
+    exit
+    
+    
+
