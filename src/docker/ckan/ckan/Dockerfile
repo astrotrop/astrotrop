@@ -25,44 +25,10 @@ ENV ckanroot /usr/lib/ckan
 ENV ckandata /var/lib/ckan
 
 #
-# Install postgresql client.
-#RUN dnf -y install postgresql
-#RUN dnf -y install postgresql-devel
-
-#
-# Install the build tools.
-#RUN dnf -y install gcc
-#RUN dnf -y install git
-
-#
-# Install the Python tools.
-#RUN dnf -y install python
-#RUN dnf -y install python-pip
-#RUN dnf -y install python-devel
-#RUN dnf -y install python-psycopg2
-
-#
-# Create our target directories.
-#RUN mkdir --parent ${ckanroot}
-#RUN mkdir --parent ${ckanconf}
-#RUN mkdir --parent ${ckandata}
-#RUN mkdir --parent ${ckandata}/storage
-#RUN mkdir --parent ${ckandata}/resources
-
-#RUN chgrp --recursive apache ${ckandata}
-#RUN chown --recursive apache ${ckandata}
-#RUN chmod --recursive o=rwxs ${ckandata}
-#RUN chmod --recursive g=rwxs ${ckandata}
-
-#
-# Install CKAN and dependencies.
-#WORKDIR ${ckanroot}
-#RUN pip install -e 'git+https://github.com/ckan/ckan.git@ckan-2.3#egg=ckan'
-#RUN pip install -r "${ckanroot}/src/ckan/requirements.txt"
-
-#
-# Link our Repoze.who config file.
-#RUN ln -s ${ckanroot}/src/ckan/who.ini ${ckanconf}/who.ini
+# Add and run our build script.
+ADD build.sh /
+RUN chmod a+x,a-w build.sh
+RUN /build.sh
 
 #
 # Install our CKAN config.

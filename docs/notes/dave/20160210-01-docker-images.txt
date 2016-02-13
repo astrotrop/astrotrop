@@ -322,10 +322,10 @@ ckan-solr
 ckan-ckan
 "    
 
-    imagelist="
 ckan-push
 ckan-redis
 ckan-solr
+    imagelist="
 ckan-ckan
 "    
 
