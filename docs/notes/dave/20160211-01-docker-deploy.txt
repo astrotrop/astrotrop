@@ -573,7 +573,7 @@ EOF
         pgdsn,
         "mexican_states",
         "PostgreSQL",
-        layer_options = "geometry_name=geom",
+        layer_options = "geometry_name=geom"
         )
 
     #

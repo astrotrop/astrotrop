@@ -296,8 +296,8 @@ EOF
     cat >> "${HOME:?}/astrotrop.conf" << EOF
 
         ckandatabase=ckandata
-        ckanusername=ckanrole
-        ckanpassword=$(pwgen 20 1)
+        ckandatauser=ckanrole
+        ckandatapass=$(pwgen 20 1)
 
 EOF
 
@@ -305,8 +305,8 @@ EOF
 
     cat > ${posttempdir:?}/ckan-init.sql << EOF
 
-        CREATE ROLE ${ckanusername:?} WITH 
-            PASSWORD '${ckanpassword:?}'
+        CREATE ROLE ${ckandatauser:?} WITH 
+            PASSWORD '${ckandatapass:?}'
             NOSUPERUSER
             NOCREATEDB
             NOCREATEROLE
@@ -314,7 +314,7 @@ EOF
             ;
 
         CREATE DATABASE ${ckandatabase:?} WITH
-            OWNER = ${ckanusername:?}
+            OWNER = ${ckandatauser:?}
             ;
 EOF
 
@@ -392,8 +392,8 @@ EOF
 
         --
         -- Grant permissions for the ckanuser role.
-        GRANT CREATE ON SCHEMA public TO "${ckanusername:?}";
-        GRANT USAGE  ON SCHEMA public TO "${ckanusername:?}";
+        GRANT CREATE ON SCHEMA public TO "${ckandatauser:?}";
+        GRANT USAGE  ON SCHEMA public TO "${ckandatauser:?}";
 
         --
         -- Grant permissions for the storewriter role.
@@ -460,18 +460,18 @@ EOF
     docker exec -it "${postname:?}" psql \
         --dbname "${ckandatabase:?}" \
         --username "postgres" \
-        --command "ALTER VIEW geometry_columns OWNER TO ${ckanusername:?}"
+        --command "ALTER VIEW geometry_columns OWNER TO ${ckandatauser:?}"
 
     docker exec -it "${postname:?}" psql \
         --dbname "${ckandatabase:?}" \
         --username "postgres" \
-        --command "ALTER TABLE spatial_ref_sys OWNER TO ${ckanusername:?}"
+        --command "ALTER TABLE spatial_ref_sys OWNER TO ${ckandatauser:?}"
 
     #
     # Check to see if PostGIS is healthy.
     docker exec -it "${postname:?}" psql \
         --dbname "${ckandatabase:?}" \
-        --username "${ckanusername:?}" \
+        --username "${ckandatauser:?}" \
         --command "SELECT postgis_full_version()"
 
     #
@@ -806,7 +806,7 @@ EOF
     source "${HOME:?}/astrotrop.conf"
 
     cat > "${ckantempdir:?}/postgresql.cfg" << EOF
-sqlalchemyurl=postgresql://${ckanusername:?}:${ckanpassword:?}@postlink/${ckandatabase:?}
+sqlalchemyurl=postgresql://${ckandatauser:?}:${ckandatapass:?}@postlink/${ckandatabase:?}
 storereaderurl=postgresql://${storereadername:?}:${storereaderpass:?}@postlink:5432/${storedatabase:?}
 storewriterurl=postgresql://${storewritername:?}:${storewriterpass:?}@postlink:5432/${storedatabase:?}
 EOF

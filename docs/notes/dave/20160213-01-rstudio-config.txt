@@ -1,0 +1,305 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Configure RStudio container to support PostGIS command line access.
+# TODO Move to Docker file and deploy instructions.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        "${rstudioname:?}" \
+        bash        
+
+        #
+        # Set the shell for the astrotrop user.
+        vi /etc/passwd    
+
+        -   astrotrop:x:1000:1000::/home/astrotrop:/bin/sh
+        +   astrotrop:x:1000:1000::/home/astrotrop:/bin/bash
+
+        #
+        # Install the PostGIS client.
+        apt-get install --no-install-recommends postgis 
+        apt-get install --no-install-recommends postgresql-client
+
+        #
+        # Install the PostgreSQL password file.
+        source /data/environ 
+        cat > /home/astrotrop/.pgpass << EOF
+${POSTGRES_HOSTNAME:?}:*:*:${POSTGRES_USERNAME:?}:${POSTGRES_PASSWORD:?}
+EOF
+        chown astrotrop /home/astrotrop/.pgpass    
+        chgrp astrotrop /home/astrotrop/.pgpass    
+        chmod u=rw,g=,o= /home/astrotrop/.pgpass    
+
+        #
+        # Test the database connect.
+        su - astrotrop
+        source /data/environ 
+        psql \
+            -h ${POSTGRES_HOSTNAME:?} \
+            -U ${POSTGRES_USERNAME:?} \
+            -d ${POSTGRES_DATABASE:?}
+        
+        #
+        # Import the data
+        shp2pgsql \
+            -s 4326 \
+            -I /temp/shapefiles/oaks.shp \
+            oaks |
+        psql \
+            -h ${POSTGRES_HOSTNAME:?} \
+            -U ${POSTGRES_USERNAME:?} \
+            -d ${POSTGRES_DATABASE:?}
+
+# -----------------------------------------------------
+# Read the database settings from env file.
+#[RStudio]
+
+    readRenviron("/data/environ")
+
+    dbname <- Sys.getenv("POSTGRES_DATABASE")
+    dbhost <- Sys.getenv("POSTGRES_HOSTNAME")
+    dbuser <- Sys.getenv("POSTGRES_USERNAME")
+    dbpass <- Sys.getenv("POSTGRES_PASSWORD")
+    pgdsn  <- Sys.getenv("POSTGRES_DATANAME")
+
+# -----------------------------------------------------
+# Load the PostgreSQL database driver,
+#[RStudio]
+
+    #
+    # Load the RPostgreSQL driver.
+    library(RPostgreSQL)
+
+# -----------------------------------------------------
+# Test the PostgreSQL database driver,
+#[RStudio]
+
+    drv <- dbDriver("PostgreSQL")
+    con <- dbConnect(drv, dbname=dbname, host=dbhost, user=dbuser, password=dbpass)
+
+    dbGetQuery(con, "SELECT version()")
+
+        #
+        # PostgreSQL 9.4.5 on x86_64-unknown-linux-gnu ...."
+        #
+
+    dbGetQuery(con, "SELECT postgis_full_version()")
+
+        #
+        # POSTGIS="2.2.1 r14555" GEOS="3.4.2-CAPI-1.8.2 r3921 ...."
+        #
+
+# -----------------------------------------------------
+# Load the ODBC database driver.
+#[RStudio]
+
+    library(RODBC)
+
+# -----------------------------------------------------
+# Test the ODBC database driver.
+#[RStudio]
+
+    con <- odbcConnect(dbname)
+
+    sqlQuery(con, "SELECT version()")
+
+        #
+        # PostgreSQL 9.4.5 on x86_64-unknown-linux-gnu ...."
+        #
+
+    sqlQuery(con, "SELECT postgis_full_version()")
+
+        #
+        # POSTGIS="2.2.1 r14555" GEOS="3.4.2-CAPI-1.8.2 r3921 ...."
+        #
+
+# -----------------------------------------------------
+# Install the GDAL tools.
+#[RStudio]
+
+    install.packages("rgdal")
+
+        #
+        # Installing package into ‘/usr/local/lib/R/site-library’
+        # ....
+
+    library(rgdal)
+
+        #
+        # Loading required package: sp
+        # rgdal: version: 1.1-3, (SVN revision 594)
+        # Geospatial Data Abstraction Library extensions to R successfully loaded]
+        # ....
+
+
+# -----------------------------------------------------
+# Loading vector data into PostGIS from R.
+# https://rpubs.com/dgolicher/6373
+#[RStudio]
+ 
+    #
+    # Import the shapefiles.
+    states<-readOGR('/data/geostats/shapefiles','mex_states')
+
+        #
+        # OGR data source with driver: ESRI Shapefile 
+        # Source: "//data/geostats/shapefiles", layer: "mex_states"
+        # with 51 features
+        # It has 15 fields
+        #
+
+    #
+    # Plot the shape data.
+    plot(states)
+    box()
+    axis(1)
+    axis(2)
+    grid()
+
+    #
+    # Export the test data to our database.
+    writeOGR(
+        states,
+        pgdsn,
+        "mexican_states",
+        "PostgreSQL",
+        layer_options = "geometry_name=geom"
+        )
+
+    #
+    # Read the data back from our database.
+    readOGR(
+        pgdsn,
+        "mexican_states"
+        );
+
+# -----------------------------------------------------
+# Loading point data into PostGIS from R.
+# https://rpubs.com/dgolicher/6373
+#[RStudio]
+
+    #
+    # Import the point data.
+    towns <- read.csv("/data/geostats/textfiles/MexTowns.csv")
+    head(towns)
+
+            gid                       placename    pop         x        y
+        1 30669                   Ciudad Madero 197216 -97.83139 22.27639
+        2 30856                        González  11212 -98.43056 22.82806
+        3 30908 Estación Manuel (Úrsulo Galván)  12077 -98.31972 22.72778
+        4 31450       Ciudad Gustavo Díaz Ordaz  11523 -98.59694 26.23222
+        5 32155                    Ciudad Mante  84787 -98.97222 22.74250
+        6 32410               Heroica Matamoros 449815 -97.50417 25.87972
+
+    #
+    # To turn this into a spatial object we just need to tell R which columns hold the coordinates.
+    coordinates(towns) <- ~x + y
+
+    # We also need to set the set the CRS.
+    # In this case it is the same as the shape file that we loaded (EPSG:4326)
+    proj4string(towns) <- proj4string(states)
+
+    #
+    # Export the towns to our database.
+    writeOGR(
+        towns,
+        pgdsn,
+        "mexican_towns",
+        "PostgreSQL",
+        layer_options = "geometry_name=geom"
+        )
+
+
+# -----------------------------------------------------
+# Loading point data into PostGIS from R.
+# https://rpubs.com/dgolicher/6373
+#[RStudio]
+
+    #
+    # Import the point data.
+    oaks <- read.csv("/data/geostats/textfiles/MexOaks.csv")
+    head(oaks)
+
+    # Set the coordinate columns and CRS.
+    coordinates(oaks) <- ~x + y
+    proj4string(oaks) <- proj4string(states)
+
+    #
+    # Write the updated data to a shapefile.
+    # TODO - Make sure the /temp directory is writeable.
+    writeOGR(
+        oaks,
+        "/temp/shapefiles",
+        "oaks",
+        "ESRI Shapefile"
+        )
+
+    #
+    # Use the command line shp2pgsql command to load the shapefile into the database.
+    # TODO Use env variables to set the pgsql params.
+
+    com <- "shp2pgsql -s 4326 -I /temp/shapefiles/oaks.shp oaks| psql -h postgis -U postgisuser -d postgisdata;"
+    system(com)
+
+        ....
+        ....
+        INSERT 0 1
+        INSERT 0 1
+        CREATE INDEX
+        COMMIT
+        ANALYZE
+
+# -----------------------------------------------------
+# Select all the oak species in the State of Chiapas, using a spatial overlay in R.
+# https://rpubs.com/dgolicher/6373
+#[RStudio]
+
+    oaks$state <- over(oaks, states)$admin_name
+    chisoaks <- subset(oaks, state == "Chiapas")
+    chis <- subset(states, states@data$admin_name == "Chiapas")
+    plot(chis)
+    points(chisoaks, pch = 21, bg = 3, cex = 0.4)
+    box()
+    axis(1)
+    axis(2)
+    grid()
+
+# -----------------------------------------------------
+# Select all the oak species in the State of Chiapas, using a PostGIS spatial query.
+# https://rpubs.com/dgolicher/6373
+#[RStudio]
+
+    query <- "select genus,species,st_x(o.geom) x,st_y(o.geom) y from oaks o, mexican_states s where st_intersects(o.geom,s.geom) and admin_name like 'Chiapas'"
+    chisoaks <- sqlQuery(con, query)
+    coordinates(chisoaks) <- ~x + y
+    plot(chis)
+    points(chisoaks, pch = 21, bg = 2, cex = 0.4)
+    box()
+    axis(1)
+    axis(2)
+    grid()
+
+

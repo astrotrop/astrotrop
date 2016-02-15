@@ -374,7 +374,7 @@ EOF
     cat >> "${HOME:?}/astrotrop.conf" <<- EOF
 
         postgisdockname=ckan-postgis
-        postgislinkname=postgis
+        postgislinkname=postgislink
         postgislinkport=5432
 
         postgistempdir=\${tempdir:?}/postgis
@@ -453,8 +453,8 @@ EOF
     cat >> "${HOME:?}/astrotrop.conf" << EOF
 
         ckandatabase=ckandata
-        ckanusername=ckanrole
-        ckanpassword=$(pwgen 20 1)
+        ckandatauser=ckanrole
+        ckandatapass=$(pwgen 20 1)
 
 EOF
 
@@ -466,8 +466,8 @@ EOF
     source "${HOME:?}/astrotrop.conf"
     cat > ${postgistempdir:?}/ckan-init.sql << EOF
 
-        CREATE ROLE ${ckanusername:?} WITH 
-            PASSWORD '${ckanpassword:?}'
+        CREATE ROLE ${ckandatauser:?} WITH 
+            PASSWORD '${ckandatapass:?}'
             NOSUPERUSER
             NOCREATEDB
             NOCREATEROLE
@@ -475,7 +475,7 @@ EOF
             ;
 
         CREATE DATABASE ${ckandatabase:?} WITH
-            OWNER = ${ckanusername:?}
+            OWNER = ${ckandatauser:?}
             ;
 EOF
 
@@ -562,8 +562,8 @@ EOF
 
         --
         -- Grant permissions for the ckanuser role.
-        GRANT CREATE ON SCHEMA public TO "${ckanusername:?}";
-        GRANT USAGE  ON SCHEMA public TO "${ckanusername:?}";
+        GRANT CREATE ON SCHEMA public TO "${ckandatauser:?}";
+        GRANT USAGE  ON SCHEMA public TO "${ckandatauser:?}";
 
         --
         -- Grant permissions for the storewriter role.
@@ -614,8 +614,8 @@ EOF
         CREATE EXTENSION postgis;
         CREATE EXTENSION postgis_topology;
 
-        ALTER VIEW  geometry_columns OWNER TO "${ckanusername:?}" ;
-        ALTER TABLE spatial_ref_sys  OWNER TO "${ckanusername:?}" ;
+        ALTER VIEW  geometry_columns OWNER TO "${ckandatauser:?}" ;
+        ALTER TABLE spatial_ref_sys  OWNER TO "${ckandatauser:?}" ;
 
 EOF
 
@@ -667,7 +667,7 @@ EOF
         ckanusername=astrotrop
         ckanpassword=$(pwgen 20 1)
 
-        ckanhostname=ckandat-07.\${dnsname:?}
+        ckanhostname=ckanreg-07.\${dnsname:?}
         ckanhostport=80
         ckanexternal=http://\${ckanhostname}:\${ckanhostport}/
         ckaninternal=http://\${ckanlinkname}:\${ckanlinkport:?}/
@@ -707,11 +707,175 @@ EOF
         astrotrop/ckan-ckan:${dockerset:?}
 
 # -----------------------------------------------------
+# Initialise our CKAN storage.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        # Need to do this after the container starts because the directory is mounted as a volume.
+
+        mkdir --parent "${ckandata:?}/storage"
+        mkdir --parent "${ckandata:?}/resources"
+
+        chown -R apache "${ckandata:?}"
+        chgrp -R apache "${ckandata:?}"
+        chmod -R o=rwxs "${ckandata:?}"
+        chmod -R g=wrxs "${ckandata:?}"
+
+        exit
+
+# -----------------------------------------------------
+# Fix the database usernames and passwords.
+# https://github.com/ckan/ckanext-harvest
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    cat > "${ckantempdir:?}/postgresql.cfg" << EOF
+sqlalchemyurl=postgresql://${ckandatauser:?}:${ckandatapass:?}@${postgislinkname:?}:${postgislinkport:?}/${ckandatabase:?}
+storereaderurl=postgresql://${storereadername:?}:${storereaderpass:?}@${postgislinkname:?}:${postgislinkport:?}/${storedatabase:?}
+storewriterurl=postgresql://${storewritername:?}:${storewriterpass:?}@${postgislinkname:?}:${postgislinkport:?}/${storedatabase:?}
+EOF
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        source /temp/postgresql.cfg
+
+        sed -i '
+            s|^sqlalchemy.url.*$|sqlalchemy.url = '${sqlalchemyurl:?}'|
+            s|^ckan.datastore.read_url.*$|ckan.datastore.read_url = '${storereaderurl:?}'|
+            s|^ckan.datastore.write_url.*$|ckan.datastore.write_url = '${storewriterurl:?}'|
+            ' "${ckanconf:?}/ckan.ini"
+
+    exit
+
+# -----------------------------------------------------
+# Initialise our CKAN database.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        paster --plugin ckan db init \
+            -c "${ckanconf:?}/ckan.ini"
+
+        exit
+
+# -----------------------------------------------------
+# Initialise our admin user
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        paster --plugin ckan sysadmin add zarquan \
+            -c "${ckanconf:?}/ckan.ini"
+
+            # Create new user: zarquan? [y/n]
+            # Password: 
+            # Confirm password: 
+
+        exit
+
+# -----------------------------------------------------
+# Initialise the harvester tables.
+# https://github.com/ckan/ckanext-harvest
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        paster --plugin=ckanext-harvest harvester initdb \
+            -c "${ckanconf:?}/ckan.ini"
+
+    exit
+
+# -----------------------------------------------------
+# Initialise the spatial tables.
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/install.html#configuration
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        paster --plugin=ckanext-spatial spatial initdb \
+            -c "${ckanconf:?}/ckan.ini"
+
+    exit
+
+# -----------------------------------------------------
+# MOVE TO DOCKER
+# Add the spatial search widget.
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#spatial-search-widget
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        vi "${ckanroot:?}/src/ckan/ckan/templates/package/search.html"
+
+            {% block secondary_content %}
+        +   {% snippet "spatial/snippets/spatial_query.html" %}
+            <div class="filters">
+            ....    
+            </div>
+            {% endblock %}    
+
+    exit
+
+# -----------------------------------------------------
+# MOVE TO DOCKER
+# Add the data extent map.
+# http://docs.ckan.org/projects/ckanext-spatial/en/latest/spatial-search.html#dataset-extent-map
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        vi "${ckanroot:?}/src/ckan/ckan/templates/package/read_base.html"
+
+            {% block secondary_content %}
+        +     {% set dataset_extent = h.get_pkg_dict_extra(c.pkg_dict, 'spatial', '') %}
+        +     {% if dataset_extent %}
+        +       {% snippet "spatial/snippets/dataset_map_sidebar.html", extent=dataset_extent %}
+        +     {% endif %}
+              {% block secondary_help_content %}{% endblock %}
+              ....    
+            {% endblock %}    
+
+    exit
+
+# -----------------------------------------------------
+# Test our site
+#[user@desktop]
+
+    firefox "http://ckanreg-07.metagrid.xyz/" &
+
+
+
+
+# -----------------------------------------------------
 # Tail the CKAN logs
 #[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"
-    docker exec -it "${ckandockname:?}" \
+    docker exec -it "${ckandockname:?}" bash
+
         tail -f /var/log/httpd/ckan.metagrid.co.uk.error.log
 
+
+
+TODO Re-test the database config settings
+TODO Fix the public hostnames and endpoint (ckan.site_url)
+TODO Fix the solr and redis URLs (solr_url)
+ckan.harvest.mq.hostname=redislink
+ckan.harvest.mq.port=6379
+ckan.harvest.mq.redis_db=0
+ckan.datapusher.url = http://pushlink:80/
+
+
+
+ 
 

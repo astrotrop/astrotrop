@@ -49,10 +49,10 @@ mkdir --parent "${ckandata:?}"
 mkdir --parent "${ckandata:?}/storage"
 mkdir --parent "${ckandata:?}/resources"
 
-RUN chgrp --recursive apache "${ckandata}"
-RUN chown --recursive apache "${ckandata}"
-RUN chmod --recursive o=rwxs "${ckandata}"
-RUN chmod --recursive g=rwxs "${ckandata}"
+chgrp --recursive apache "${ckandata}"
+chown --recursive apache "${ckandata}"
+chmod --recursive o=rwxs "${ckandata}"
+chmod --recursive g=rwxs "${ckandata}"
 
 #
 # Install CKAN.
