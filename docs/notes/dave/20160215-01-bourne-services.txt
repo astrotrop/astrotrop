@@ -749,3 +749,202 @@ EOF
     grid()
 
 
+
+
+
+
+# -----------------------------------------------------
+# Update our hosts file.
+# Need to do this whenever the virtual machine is restarted.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    postgisdockipv4=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${postgisdockname:?})
+    rstudiodockipv4=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${rstudiodockname:?})
+
+    cat >> /etc/hosts << EOF
+
+#
+# Docker container addresses
+${postgisdockipv4:?} ${postgisdockname:?}
+${rstudiodockipv4:?} ${rstudiodockname:?}
+
+EOF
+
+# -----------------------------------------------------
+# Install the PostgreSQL client.
+#[root@virtual]
+
+    apt-get install -y postgresql-client
+
+# -----------------------------------------------------
+# Create our user account.
+#[root@virtual]
+
+    username=Zarquan
+    username=Duncan
+
+    useradd \
+        --create-home \
+        --shell '/bin/bash' \
+        "${username:?}"
+
+# -----------------------------------------------------
+# Add our AstroTROP config.
+#[root@virtual]
+
+    ln /root/astrotrop.conf "/home/${username:?}/astrotrop.conf"
+
+# -----------------------------------------------------
+# Add our SSH config.
+#[root@virtual]
+
+    su - "${username:?}"
+
+        pushd "${HOME:?}"
+        
+            if [ ! -e '.ssh' ]
+            then
+                mkdir '.ssh'
+            fi
+
+            chown "$(id -u)"  '.ssh'
+            chgrp "$(id -g)"  '.ssh'
+            chmod g=,o=,u=rwx '.ssh'
+
+            pushd '.ssh'
+
+                if [ ! -e 'keys' ]
+                then
+                    mkdir 'keys'
+                fi
+
+                chown "$(id -u)"  'keys'
+                chgrp "$(id -g)"  'keys'
+                chmod g=,o=,u=rwx 'keys'
+
+                pushd 'keys'
+
+                    wget 'http://example.com/keys/public-key.pub'
+                    wget 'http://example.com/keys/public-key.pub'
+
+                popd
+
+                for key in $(find 'keys' -name '*.pub')
+                do
+                    echo "${key:?}" 
+                    echo "#" >> 'authorized_keys'
+                    cat  "${key:?}" >> 'authorized_keys'
+                done
+
+                chown "$(id -u)"   'authorized_keys'
+                chgrp "$(id -g)"   'authorized_keys'
+                chmod g=r,o=r,u=rw 'authorized_keys'                
+    
+            popd
+        popd
+    exit
+
+# -----------------------------------------------------
+# Configure our PostGIS client.
+#[root@virtual]
+
+    su - "${username:?}"
+    
+        source "${HOME:?}/astrotrop.conf"
+        cat >  "${HOME:?}/.pgpass" << EOF
+${postgisdockname:?}:5432:${postgisdatabase:?}:${postgisusername:?}:${postgispassword:?}
+EOF
+        chmod u=rw,g=,o= "${HOME:?}/.pgpass"
+
+    exit
+
+# -----------------------------------------------------
+# Test login to our PostGIS database.
+#[root@virtual]
+
+    su - "${username:?}"
+
+        source "${HOME:?}/astrotrop.conf"
+        psql \
+            --host "${postgisdockname:?}" \
+            --username "${postgisusername:?}" \
+            "${postgisdatabase:?}"
+
+            \l
+            \dt
+            \q
+
+    exit
+
+# -----------------------------------------------------
+# Create a shortcut command.
+#[root@virtual]
+
+    su - "${username:?}"
+
+        cat > "${HOME:?}/postgis.sh" << EOF
+source "${HOME:?}/astrotrop.conf"
+psql \
+    --host "\${postgisdockname:?}" \
+    --username "\${postgisusername:?}" \
+    "\${postgisdatabase:?}"
+EOF
+        chmod u=rwx,g=,o= "${HOME:?}/postgis.sh"
+
+    exit
+
+# -----------------------------------------------------
+# Test login using the shortcut.
+#[root@virtual]
+
+    su - "${username:?}"
+
+        source astrotrop.conf
+        ./postgis.sh
+
+        \l
+        \dt
+        \q
+
+# -----------------------------------------------------
+# Check we can login via SSH.
+#[user@desktop]
+
+    ssh USERNAME@postgis-08.metagrid.xyz
+
+# -----------------------------------------------------
+# Create our SSH tunnel config.
+#[user@desktop]
+
+    gedit "${HOME:?}/.ssh/config" &
+
+    +   Host astrotrop-postgis-08
+    +       User USERNAME
+    +       PasswordAuthentication no
+    +       HostName postgis-08.metagrid.xyz
+    +       IdentityFile ~/.ssh/PRIVATE-KEY
+    +       LocalForward 5432 postgis:5432
+
+
+# -----------------------------------------------------
+# Run the SSH tunnel.
+#[user@desktop]
+
+    ssh astrotrop-postgis-08
+
+# -----------------------------------------------------
+# Check we can login to PostgreSQL using the tunnel.
+#[user@desktop]
+
+    psql \
+        --host localhost \
+        --username "postgisuser" \
+        "postgisdata"
+
+
+
+
+
+
