@@ -853,9 +853,6 @@ EOF
 
     firefox "http://ckanreg-07.metagrid.xyz/" &
 
-
-
-
 # -----------------------------------------------------
 # Tail the CKAN logs
 #[root@virtual]
@@ -865,17 +862,60 @@ EOF
 
         tail -f /var/log/httpd/ckan.metagrid.co.uk.error.log
 
+# -----------------------------------------------------
+#
+
+#TODO Re-test the database config settings
+#TODO Fix the public hostnames and endpoint (ckan.site_url)
+#TODO Fix the solr and redis URLs (solr_url)
+#ckan.harvest.mq.hostname=redislink
+#ckan.harvest.mq.port=6379
+#ckan.harvest.mq.redis_db=0
+#ckan.datapusher.url = http://pushlink:80/
+
+# -----------------------------------------------------
+# Add Harvest sources
+
+    http://ckanreg-07.metagrid.xyz/harvest/new
 
 
-TODO Re-test the database config settings
-TODO Fix the public hostnames and endpoint (ckan.site_url)
-TODO Fix the solr and redis URLs (solr_url)
-ckan.harvest.mq.hostname=redislink
-ckan.harvest.mq.port=6379
-ckan.harvest.mq.redis_db=0
-ckan.datapusher.url = http://pushlink:80/
+        url   : http://geoserv-08.metagrid.xyz:8080/geoserver/ows
+        title : geoserv-08
+        type  : CSW server
 
 
 
- 
+# -----------------------------------------------------
+# Run our harvest jobs 
+# https://github.com/ckan/ckanext-harvest#running-the-harvest-jobs
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        paster \
+            --plugin=ckanext-harvest \
+            harvester \
+            gather_consumer \
+            -c "${ckanconf:?}/ckan.ini"
+
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        paster \
+            --plugin=ckanext-harvest \
+            harvester \
+            fetch_consumer \
+            -c "${ckanconf:?}/ckan.ini"
+
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        paster \
+            --plugin=ckanext-harvest \
+            harvester \
+            run \
+            -c "${ckanconf:?}/ckan.ini"
 

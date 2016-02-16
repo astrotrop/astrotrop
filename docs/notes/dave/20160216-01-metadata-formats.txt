@@ -1,0 +1,218 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    #
+    # GeoTIFF file format
+    https://trac.osgeo.org/geotiff/
+
+
+
+    #
+    # Geospatial searches (U.K. Natural History Museum)
+    http://extensions.ckan.org/extension/dataspatial
+    https://github.com/NaturalHistoryMuseum/ckanext-dataspatial
+
+    #
+    # Natural History Museum GitHub account.
+    https://github.com/NaturalHistoryMuseum
+
+    #
+    # Natural History Museum data
+    http://data.nhm.ac.uk/
+
+    #
+    # (CKAN) REST API    
+    http://data.nhm.ac.uk/api/3
+
+
+    #
+    # 
+    http://data.nhm.ac.uk/dataset/specimens-of-the-dulcamaroid-clade-of-solanum
+    http://data.nhm.ac.uk/dataset/specimens-of-the-dulcamaroid-clade-of-solanum/resource/a9cfd009-0f86-417d-9c90-c9d01772943f
+
+    Solr/JSON first five results
+    http://data.nhm.ac.uk/api/action/datastore_search?resource_id=a9cfd009-0f86-417d-9c90-c9d01772943f&limit=5
+
+        {
+        "help": " Search a datastore resource using Solr\n\n    This is an alternative to datastore_search, and conforms to the same\n    API. See datastore_search.\n    ",
+        "success": true,
+        "result": 
+            {
+            "resource_id": "a9cfd009-0f86-417d-9c90-c9d01772943f",
+            "fields": 
+            [
+                {
+                "type": "int4",
+                "id": "_id"
+                },
+                {
+                "type": "text",
+                "id": "Family"
+                },
+                {
+                "type": "text",
+                "id": "Collated name"
+                },
+
+
+    #
+    # Data file from Natural History Museum (download request via email)
+    http://data.nhm.ac.uk/
+
+        Hello,
+
+        The link to the resource you requested on data.nhm.ac.uk is available at:
+        http://data.nhm.ac.uk/resources/db190b1f8be291c7836da245a83d178a-32353-1450359581.zip
+
+        Best Wishes,
+        The Data Portal Bot
+
+    #
+    # Zip file contents.
+    db190b1f8be291c7836da245a83d178a-32353-1450359581.zip
+
+        meta.xml
+        multimedia.csv
+        occurrence.csv
+
+    #
+    # Meta xml contains field descriptions (using URLs) for the other files.
+    <archive xmlns="http://rs.tdwg.org/dwc/text/">
+        <core encoding="UTF-8" linesTerminatedBy="\n" fieldsTerminatedBy="," fieldsEnclosedBy="&quot;" ignoreHeaderLines="1" rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
+            <files>
+                <location>occurrence.csv</location>
+            </files>
+            <id index="0"/>
+            <field index="1" term="http://rs.tdwg.org/dwc/terms/minimumDepthInMeters"/>
+            <field index="2" term="http://rs.tdwg.org/dwc/terms/dynamicProperties"/>
+            <field index="3" term="http://rs.tdwg.org/dwc/terms/verbatimLatitude"/>
+            <field index="4" term="http://rs.tdwg.org/dwc/terms/month"/>
+            <field index="5" term="http://rs.tdwg.org/dwc/terms/continent"/>
+            <field index="6" term="http://rs.tdwg.org/dwc/terms/occurrenceID"/>
+            <field index="7" term="http://rs.tdwg.org/dwc/terms/latestEpochOrHighestSeries"/>
+            <field index="8" term="http://rs.tdwg.org/dwc/terms/maximumDepthInMeters"/>
+            <field index="9" term="http://rs.tdwg.org/dwc/terms/waterBody"/>
+            <field index="10" term="http://rs.tdwg.org/dwc/terms/kingdom"/>
+            <field index="11" term="http://rs.tdwg.org/dwc/terms/decimalLatitude"/>
+            <field index="12" term="http://rs.tdwg.org/dwc/terms/earliestEraOrLowestErathem"/>
+            <field index="13" term="http://rs.tdwg.org/dwc/terms/infraspecificEpithet"/>
+            ....
+            ....
+            ....
+            <field index="69" term="http://rs.tdwg.org/dwc/terms/scientificNameAuthorship"/>
+            <field index="70" term="http://rs.tdwg.org/dwc/terms/order"/>
+        </core>
+        <extension encoding="UTF-8" linesTerminatedBy="\n" fieldsTerminatedBy="," fieldsEnclosedBy="&quot;" ignoreHeaderLines="1" rowType="http://rs.gbif.org/terms/1.0/Multimedia">
+            <files>
+                <location>multimedia.csv</location>
+            </files>
+            <coreid index="0"/>
+            <field index="1" term="http://purl.org/dc/terms/license"/>
+            <field index="2" term="http://purl.org/dc/terms/title"/>
+            <field index="3" term="http://purl.org/dc/terms/format"/>
+            <field index="4" term="http://purl.org/dc/terms/rightsHolder"/>
+            <field index="5" term="http://purl.org/dc/terms/identifier"/>
+            <field index="6" term="http://purl.org/dc/terms/type"/>
+        </extension>
+    </archive>
+
+    In this particular example, the data refers to one specimen, so only one row in the cvs file.
+    In this particular example, most of the fields in the cvs files are blank.
+
+    #
+    # Field descriptions use URLs
+    <field index="18" term="http://rs.tdwg.org/dwc/terms/lifeStage"/>
+
+    #
+    # Metadata for lifeStage
+    http://rs.tdwg.org/dwc/terms/lifeStage
+    http://tdwg.github.io/dwc/terms/index.htm#lifeStage
+    http://tdwg.github.io/dwc/terms/history/index.htm#lifeStage-2009-04-24
+        "The age class or life stage of the biological individual(s) at the time the Occurrence was recorded. Recommended best practice is to use a controlled vocabulary."
+
+    # Discussion page
+    http://terms.tdwg.org/wiki/dwc:lifeStage
+
+
+    https://github.com/tdwg/dwc
+    ".. a glossary of terms intended to facilitate the sharing of information about biological diversity by providing reference definitions, examples, and commentaries."
+
+
+
+
+
+
+
+
+
+    http://terms.tdwg.org/wiki/Main_Page
+    Biodiversity Information StandardsTDWG
+        This platform is intended for evaluation by the GBIF-TDWG Vocabulary Management Task Group (VoMaG)
+        in collaboration with WP 4 of the Virtual Biodiversity Research and Access Network for Taxonomy (ViBRANT)
+
+
+
+    http://community.gbif.org/pg/groups/21382/
+    GBIF-TDWG Vocabulary Management Task Group (VoMaG)
+        The Vocabulary Management Task Group (VoMaG) is a Task Group under the Technical Architecture Group (TAG)
+        of the Biodiversity Information Standards (TDWG). It addresses the best practices for the collaborative
+        development and maintenance of vocabularies for the description of biodiversity resources.
+
+
+    http://www.gbif.org/resource/80862
+    Report of the TDWG Vocabulary Management Task Group (VoMaG)
+        The Vocabulary Management Task Group (VoMaG), convened under the Technical Architecture
+        Group (TAG) of Biodiversity Information Standards (TDWG) was formally established at the TDWG
+        2012 conference in Beijing. The purpose and scope of VoMaG is briefly introduced here. For further
+        information, please consult the charter 2 . Much of the prior, substantive work that informed VoMaG
+        grew out of the related TDWG RDF/OWL task group 3 and the EU funded ViBRANT project 4 which
+        includes a work package dedicated to biodiversity vocabularies.
+
+
+    http://vbrant.eu/
+        Virtual Biodiversity Research and Access Network for Taxonomy (ViBRANT)
+        .. was a European Union FP7 funded project starting in December 2010 and completed in November 2013.
+        ViBRANT supported the development of virtual research communities involved in biodiversity science.
+        Our goal was to provide a more integrated and effective framework for those managing biodiversity data on the Web.
+        
+        ViBRANT paved the way towards more interoperable systems and integrated services in biodiversity research.
+        We are already looking into preparing a successor project to support data, processes and communities towards
+        the long term vision of predictive modeling of the biosphere.   
+
+        Reports
+        http://vbrant.eu/sites/vbrant.eu/files/ViBRANTBrochure-digital.pdf
+        http://vbrant.eu/sites/vbrant.eu/files/ViBRANT_Final_Report_Final.pdf
+
+
+    GBIF resources    
+    http://www.gbif.org/resources
+
+
+
+
+    GeoNetwork - Geographic Metadata Catalog    
+    https://sourceforge.net/projects/geonetwork/
+    http://geonetwork-opensource.org/
+        Not evaluated yet ....
+
+

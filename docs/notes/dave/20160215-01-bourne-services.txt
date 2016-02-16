@@ -286,6 +286,8 @@ EOF
 # Test our PostGIS container.
 #[root@virtual]
 
+    source "${HOME:?}/astrotrop.conf"
+
     docker exec -it "${postgisdockname:?}" psql \
         --dbname "${postgisdatabase:?}" \
         --username "${postgisusername:?}" \
@@ -782,8 +784,7 @@ EOF
 # Create our user account.
 #[root@virtual]
 
-    username=Zarquan
-    username=Duncan
+    username=USERNAME
 
     useradd \
         --create-home \
@@ -942,6 +943,318 @@ EOF
         --host localhost \
         --username "postgisuser" \
         "postgisdata"
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Configure our GeoServer container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        geoservdockname=geoserv
+        geoservdockport=8080
+
+        geoservlinkname=geoserv
+        geoservlinkport=8080
+
+        geoservhostname=geoserv-06.\${dnsname:?}
+        geoservexternal=http://\${geoservhostname:?}:\${geoservdockport:?}/geoserver/
+        geoservinternal=http://\${geoservlinkname:?}:\${geoservlinkport:?}/geoserver/
+
+        geoservadminname=admin
+        geoservadminpass=$(pwgen 20 1)
+
+        geoservusername=astrotrop
+        geoservpassword=$(pwgen 20 1)
+
+        geoservtemp=\${tempdir:?}/geoserv
+        geoservdata=\${datadir:?}/geoserv
+
+EOF
+
+# -----------------------------------------------------
+# Create our GeoServer data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${geoservtemp:?}"
+    rmdata "${geoservdata:?}"
+
+    mkdata "${geoservtemp:?}" "${tomcatuid:?}"
+    mkdata "${geoservdata:?}" "${tomcatuid:?}"
+
+# -----------------------------------------------------
+# Run our GeoServer container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    geoservenv=$(mktemp)
+    cat > "${geoservenv:?}" <<- EOF
+# TODO GeoServer admin user and pass
+# TODO PostGIS host, user and pass
+EOF
+
+    docker run \
+        --detach \
+        --name "${geoservdockname:?}" \
+        --env-file "${geoservenv:?}" \
+        --link "${postgisdockname:?}:${postgislinkname:?}" \
+        --publish "${geoservdockport:?}:${geoservlinkport:?}" \
+        --volume "${geoservtemp:?}:/temp" \
+        --volume "${geoservdata:?}:/data" \
+        "astrotrop/geoserver:${dockerset:?}"
+
+    docker logs -f "${geoservdockname:?}"
+
+# -----------------------------------------------------
+# Test our GeoServer service.
+#[user@desktop]
+
+    firefox 'http://geoserv-08.metagrid.xyz:8080/geoserver/web/' &
+
+# -----------------------------------------------------
+# Configure our GeoServer login.
+#[root@virtual]
+
+    #
+    # We can add the account - but the password encryption is wrong.
+    # Still need to login as admin and set the password manually.
+    pushd "${geoservdata:?}"
+
+        vi "security/usergroup/default/users.xml"
+
+            <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+            <userRegistry xmlns="http://www.geoserver.org/security/users" version="1.0">
+
+                <users>
+                    <user enabled="true" name="admin" password="crypt1:pQMeDtOfDWLUQSIl4QyqRNe8ptXxnr+3"/>
+        +           <!-- astrotrop-08 -->
+        +           <user enabled="true" name="astrotrop" password="crypt1:9pwQYsAwpkaRSOKGyNAGf1OjdkN0bTsFqZXDVeMFMiM="/>
+                </users>
+                <groups/>
+            </userRegistry>
+
+        vi "security/role/default/roles.xml"
+
+            <userList>
+                <userRoles username="admin">
+                    <roleRef roleID="ADMIN"/>
+                </userRoles>
+        +       <userRoles username="astrotrop">
+        +           <roleRef roleID="ADMIN"/>
+        +           <roleRef roleID="GROUP_ADMIN"/>
+        +       </userRoles>
+            </userList>
+
+
+# -----------------------------------------------------
+# Test our GeoServer service.
+#[user@desktop]
+
+    firefox 'http://geoserv-06.metagrid.xyz:8080/geoserver/web/' &
+
+# -----------------------------------------------------
+# Create a GeoServer layer from our PostGIS data.
+#[GeoServer]
+
+    New workspace
+
+        name : AstroTROP
+        namespace : http://www.astrotrop.org/
+        default : true
+
+    New (vector) data store
+
+        workspace : AstroTROP
+
+        name : PostGIS database
+        text : PostGIS database
+
+        type : postgis (default)
+        host : postgis (from the Docker link name) 
+        port : 5432
+        database : postgisdata (from the Docker config) 
+        schema : public
+        user : postgisuser (from the Docker config) 
+        pass : ############### (from the Docker config) 
+
+    New (layer) resource
+    
+        from   : AstroTROP:PostGIS
+        layer  : mexican_states
+        action : publish
+
+   Edit layer
+   
+        name  : MexicanStates   <-- no space
+        title : Mexican States  <-- space ok
+
+        Native Bounding Box
+        (compute from data)
+
+        Lat/Lon Bounding Box
+        (compute from data)
+
+# -----------------------------------------------------
+# Create a new style and add it to our layer.
+# http://docs.geoserver.org/stable/en/user/styling/sld-cookbook/index.html
+#[GeoServer]
+
+    <?xml version="1.0" encoding="ISO-8859-1"?>
+    <StyledLayerDescriptor version="1.0.0" 
+        xsi:schemaLocation="http://www.opengis.net/sld StyledLayerDescriptor.xsd" 
+        xmlns="http://www.opengis.net/sld" 
+        xmlns:ogc="http://www.opengis.net/ogc" 
+        xmlns:xlink="http://www.w3.org/1999/xlink" 
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
+        <NamedLayer>
+            <Name>Polygon outline</Name>
+            <UserStyle>
+                <Title>Polygon outline style</Title>
+                <Abstract>A simple style that just displays a black outline</Abstract>
+
+                <FeatureTypeStyle>
+                    <!--FeatureTypeName>Feature</FeatureTypeName-->
+                    <Rule>
+                        <Name>Rule 1</Name>
+                        <Title>Black outline</Title>
+                        <Abstract>1 pixel black outline</Abstract>
+
+                        <PolygonSymbolizer>
+                            <!--Fill>
+                                <CssParameter name="fill">#AAAAAA</CssParameter>
+                            </Fill-->
+                            <Stroke>
+                                <CssParameter name="stroke">#000000</CssParameter>
+                                <CssParameter name="stroke-width">1</CssParameter>
+                                <CssParameter name="stroke-opacity">0.5</CssParameter>
+                            </Stroke>
+                        </PolygonSymbolizer>
+                    </Rule>
+                </FeatureTypeStyle>
+            </UserStyle>
+        </NamedLayer>
+    </StyledLayerDescriptor>
+
+# -----------------------------------------
+# Add the CSW plugin to our GeoServer.
+# TODO - add this to the GeoServer Dockerfile
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        -u root \
+        "${geoservdockname:?}" \
+        bash        
+
+        #
+        # Install download tools
+        dnf -y install wget
+        dnf -y install unzip
+
+        #
+        # Download and unzip the zipfile.
+        zipfile=geoserver-${GEOSERVER_VERSION:?}-csw-plugin.zip
+        zippath=/temp/${zipfile:?}
+        
+        wget -O "${zippath:?}" "http://sourceforge.net/projects/geoserver/files/GeoServer/${GEOSERVER_VERSION}/extensions/${zipfile:?}/download"
+
+        unzipped=/temp/csw-plugin
+        unzip \
+            "${zippath:?}" \
+            -d "${unzipped:?}"
+
+        #
+        # Copy the jar files into our webapp.        
+        for jarfile in $(ls ${unzipped:?}/*.jar)
+        do
+            cp --verbose --no-clobber \
+                "${jarfile:?}" \
+                "${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/WEB-INF/lib"
+        done
+
+        #
+        # Remove the zipfiles.
+        rm -rf "${unzipped:?}"
+        rm -rf "${zippath:?}"
+
+    exit
+    
+# -----------------------------------------
+# Restart our GeoServer container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker stop  "${geoservdockname:?}"
+    docker start "${geoservdockname:?}"
+
+    docker logs -f "${geoservdockname:?}"
+
+# -----------------------------------------------------
+# Save our GeoServer master password.
+#[root@virtual]
+
+    mv "${geoservdata:?}/security/masterpw.info" "${HOME:?}"
+
+
+
+# -----------------------------------------------------
+# Grant CREATE DATABASE permissions on PostGIS database.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${postgisdockname:?}" psql \
+        --dbname "${postgisdatabase:?}" \
+        --username "${postgisusername:?}"
+
+        ALTER USER postgisuser CREATEDB;
+
+        \q
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${postgisdockname:?}" psql \
+        --dbname "${postgisdatabase:?}" \
+        --username "${postgisusername:?}"
+
+        ALTER USER postgisuser CREATEDB;
+        ALTER USER postgisuser CREATEROLE;
+        ALTER USER postgisuser SUPERUSER;
+
+        \q
+
+
+
+
+ALTER TABLE public.phen OWNER TO postgres;
+ALTER TABLE public.layer_styles OWNER TO duncan;
+ALTER TABLE public.layer_styles_id_seq OWNER TO duncan;
+
+ALTER SEQUENCE landsat_rid_seq OWNED BY landsat.rid;
+
+ALTER TABLE public.landsat_rid_seq OWNER TO duncan;
+
+
+sed -n '/^ALTER .* OWNER TO .*/ p' /home/Duncan/reddeam.backup 
+
+sed -n '
+    s/^ALTER \(.*\) OWNER TO \(.*\)$/\2/ p
+    ' reddeam.backup 
+
+
+
 
 
 

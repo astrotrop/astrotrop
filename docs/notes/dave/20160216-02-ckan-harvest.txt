@@ -1,0 +1,442 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Run our fetch consumer 
+# https://github.com/ckan/ckanext-harvest#running-the-harvest-jobs
+#[root@virtual]
+
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        paster \
+            --plugin=ckanext-harvest \
+            harvester \
+            gather_consumer \
+            -c "${ckanconf:?}/ckan.ini"
+
+        2016-02-16 13:37:26,503 INFO  [ckanext.geonetwork.harvesters.geonetwork] GeoNetwork harvester: extending ISODocument with TimeInstant
+        2016-02-16 13:37:26,503 INFO  [ckanext.geonetwork.harvesters.geonetwork] GeoNetwork harvester: adding old GML URI
+        2016-02-16 13:37:26,504 INFO  [ckanext.geonetwork.harvesters.geonetwork] Added old URI for gml to temporal-extent-begin
+        2016-02-16 13:37:26,505 INFO  [ckanext.geonetwork.harvesters.geonetwork] Added old URI for gml to temporal-extent-begin
+        2016-02-16 13:37:26,505 INFO  [ckanext.geonetwork.harvesters.geonetwork] Added old URI for gml to temporal-extent-end
+        2016-02-16 13:37:26,505 INFO  [ckanext.geonetwork.harvesters.geonetwork] Added old URI for gml to temporal-extent-end
+        2016-02-16 13:37:26,506 INFO  [ckanext.geonetwork.harvesters.geonetwork] Added old URI for gml to temporal-extent-instant
+        2016-02-16 13:37:26,845 DEBUG [ckanext.harvest.model] Harvest tables defined in memory
+        2016-02-16 13:37:26,849 DEBUG [ckanext.harvest.model] Harvest tables already exist
+        2016-02-16 13:37:26,861 DEBUG [ckanext.spatial.plugin] Setting up the spatial model
+        2016-02-16 13:37:27,083 DEBUG [ckanext.spatial.model.package_extent] Spatial tables defined in memory
+        2016-02-16 13:37:27,094 DEBUG [ckanext.spatial.model.package_extent] Spatial tables already exist
+
+        2016-02-16 13:37:27,161 DEBUG [ckanext.harvest.queue] Gather queue consumer registered
+        2016-02-16 13:37:27,164 DEBUG [ckanext.harvest.queue] Received harvest job id: 821cfcbe-d007-4769-947d-4e41ba03f4f4
+        2016-02-16 13:37:27,175 DEBUG [ckanext.spatial.harvesters.csw.CSW.gather] CswHarvester gather_stage for job: <HarvestJob id=821cfcbe-d007-4769-947d-4e41ba03f4f4 created=2016-02-16 13:12:18.026398 gather_started=2016-02-16 13:37:27.174988 gather_finished=None finished=None source_id=873285ed-5556-4faa-a7de-a057ceef63d2 status=Running>
+        2016-02-16 13:37:27,724 DEBUG [ckanext.spatial.harvesters.csw.CSW.gather] Starting gathering for http://geoserv-08.metagrid.xyz:8080/geoserver/ows
+        2016-02-16 13:37:27,725 INFO  [ckanext.spatial.lib.csw_client] Making CSW request: getrecords2 {'typenames': 'csw:Record', 'maxrecords': 10, 'sortby': <owslib.fes.SortBy object at 0x7f7a882f6490>, 'outputschema': 'http://www.isotc211.org/2005/gmd', 'cql': None, 'startposition': 0, 'esn': 'brief', 'constraints': []}
+        2016-02-16 13:37:28,578 ERROR [ckanext.spatial.harvesters.csw.CSW.gather] Exception: Traceback (most recent call last):
+          File "/usr/lib/ckan/src/ckanext-spatial/ckanext/spatial/harvesters/csw.py", line 95, in gather_stage
+            for identifier in self.csw.getidentifiers(page=10, outputschema=self.output_schema(), cql=cql):
+          File "/usr/lib/ckan/src/ckanext-spatial/ckanext/spatial/lib/csw_client.py", line 127, in getidentifiers
+            csw.getrecords2(**kwa)
+          File "/usr/lib/python2.7/site-packages/owslib/csw.py", line 341, in getrecords2
+            self._invoke()
+          File "/usr/lib/python2.7/site-packages/owslib/csw.py", line 605, in _invoke
+            raise ows.ExceptionReport(self._exml, self.owscommon.namespace)
+        ExceptionReport: 'Request failed due to: Sorting on dc:identifier/dc:value is not supported.\nSorting on dc:identifier/dc:value is not supported.'
+        2016-02-16 13:37:28,600 INFO  [ckanext.harvest.model] Error gathering the identifiers from the CSW server ['Request failed due to: Sorting on dc:identifier/dc:value is not supported.\nSorting on dc:identifier/dc:value is not supported.']
+        2016-02-16 13:37:28,606 ERROR [ckanext.harvest.queue] Gather stage failed
+
+
+
+
+        2016-02-16 13:37:28,607 DEBUG [ckanext.harvest.queue] Received harvest job id: 12d01cec-2c7c-4ddf-935d-76b6e92156b2
+        2016-02-16 13:37:28,612 DEBUG [ckanext.spatial.harvesters.csw.CSW.gather] CswHarvester gather_stage for job: <HarvestJob id=12d01cec-2c7c-4ddf-935d-76b6e92156b2 created=2016-02-16 13:19:24.839200 gather_started=2016-02-16 13:37:28.612861 gather_finished=None finished=None source_id=76d84444-4fe5-4ce9-8f6e-784dcf6c8c12 status=Running>
+        2016-02-16 13:37:29,202 DEBUG [ckanext.spatial.harvesters.csw.CSW.gather] Starting gathering for http://geoserv-08.metagrid.xyz:8080/geoserver/csw
+        2016-02-16 13:37:29,203 INFO  [ckanext.spatial.lib.csw_client] Making CSW request: getrecords2 {'typenames': 'csw:Record', 'maxrecords': 10, 'sortby': <owslib.fes.SortBy object at 0x7f7a880af610>, 'outputschema': 'http://www.isotc211.org/2005/gmd', 'cql': None, 'startposition': 0, 'esn': 'brief', 'constraints': []}
+        2016-02-16 13:37:29,497 ERROR [ckanext.spatial.harvesters.csw.CSW.gather] Exception: Traceback (most recent call last):
+          File "/usr/lib/ckan/src/ckanext-spatial/ckanext/spatial/harvesters/csw.py", line 95, in gather_stage
+            for identifier in self.csw.getidentifiers(page=10, outputschema=self.output_schema(), cql=cql):
+          File "/usr/lib/ckan/src/ckanext-spatial/ckanext/spatial/lib/csw_client.py", line 127, in getidentifiers
+            csw.getrecords2(**kwa)
+          File "/usr/lib/python2.7/site-packages/owslib/csw.py", line 341, in getrecords2
+            self._invoke()
+          File "/usr/lib/python2.7/site-packages/owslib/csw.py", line 605, in _invoke
+            raise ows.ExceptionReport(self._exml, self.owscommon.namespace)
+        ExceptionReport: 'Request failed due to: Sorting on dc:identifier/dc:value is not supported.\nSorting on dc:identifier/dc:value is not supported.'
+        2016-02-16 13:37:29,503 INFO  [ckanext.harvest.model] Error gathering the identifiers from the CSW server ['Request failed due to: Sorting on dc:identifier/dc:value is not supported.\nSorting on dc:identifier/dc:value is not supported.']
+        2016-02-16 13:37:29,507 ERROR [ckanext.harvest.queue] Gather stage failed
+
+
+        2016-02-16 13:37:29,508 DEBUG [ckanext.harvest.queue] Received harvest job id: f7d7d5cd-675e-485f-a5d4-80b7775ac8fd
+        2016-02-16 13:37:29,512 DEBUG [ckanext.harvest.harvesters.ckanharvester] In CKANHarvester gather_stage (http://data.bris.ac.uk/data/)
+        /usr/lib64/python2.7/site-packages/sqlalchemy/orm/unitofwork.py:79: SAWarning: Usage of the 'related attribute set' operation is not currently supported within the execution stage of the flush process. Results may not be consistent.  Consider using alternative event listeners or connection-level operations instead.
+          sess._flush_warning("related attribute set")
+        /usr/lib64/python2.7/site-packages/sqlalchemy/orm/unitofwork.py:37: SAWarning: Usage of the 'collection append' operation is not currently supported within the execution stage of the flush process. Results may not be consistent.  Consider using alternative event listeners or connection-level operations instead.
+          sess._flush_warning("collection append")
+        /usr/lib64/python2.7/site-packages/sqlalchemy/orm/session.py:1907: SAWarning: Attribute history events accumulated on 1 previously clean instances within inner-flush event handlers have been reset, and will not result in database updates. Consider using set_committed_value() within inner-flush event handlers to avoid this warning.
+          self._flush(objects)
+        2016-02-16 13:37:33,861 DEBUG [ckanext.harvest.queue] Received from plugin gather_stage: 1111 objects (first: [u'21a9682e-b5d1-4637-b002-051561ff3bf8'] last: [u'73bba886-7773-4296-903e-f903973a5a29'])
+        2016-02-16 13:37:34,070 DEBUG [ckanext.harvest.queue] Sent 1111 objects to the fetch queue
+
+
+        ^CTraceback (most recent call last):
+          File "/usr/bin/paster", line 9, in <module>
+            load_entry_point('PasteScript==1.7.5', 'console_scripts', 'paster')()
+          File "/usr/lib/python2.7/site-packages/paste/script/command.py", line 104, in run
+            invoke(command, command_name, options, args[1:])
+          File "/usr/lib/python2.7/site-packages/paste/script/command.py", line 143, in invoke
+            exit_code = runner.run(args)
+          File "/usr/lib/python2.7/site-packages/paste/script/command.py", line 238, in run
+            result = self.command()
+          File "/usr/lib/ckan/src/ckanext-harvest/ckanext/harvest/commands/harvester.py", line 170, in command
+            for method, header, body in consumer.consume(queue=get_gather_queue_name()):
+          File "/usr/lib/ckan/src/ckanext-harvest/ckanext/harvest/queue.py", line 202, in consume
+            key, body = self.redis.blpop(self.routing_key)
+          File "/usr/lib/python2.7/site-packages/redis/client.py", line 1090, in blpop
+            return self.execute_command('BLPOP', *keys)
+          File "/usr/lib/python2.7/site-packages/redis/client.py", line 529, in execute_command
+            return self.parse_response(connection, command_name, **options)
+          File "/usr/lib/python2.7/site-packages/redis/client.py", line 541, in parse_response
+            response = connection.read_response()
+          File "/usr/lib/python2.7/site-packages/redis/connection.py", line 545, in read_response
+            response = self._parser.read_response()
+          File "/usr/lib/python2.7/site-packages/redis/connection.py", line 213, in read_response
+            response = self._buffer.readline()
+          File "/usr/lib/python2.7/site-packages/redis/connection.py", line 151, in readline
+            self._read_from_socket()
+          File "/usr/lib/python2.7/site-packages/redis/connection.py", line 109, in _read_from_socket
+            data = self._sock.recv(socket_read_size)
+        KeyboardInterrupt
+
+# -----------------------------------------------------
+# Run our fetch consumer 
+# https://github.com/ckan/ckanext-harvest#running-the-harvest-jobs
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        paster \
+            --plugin=ckanext-harvest \
+            harvester \
+            fetch_consumer \
+            -c "${ckanconf:?}/ckan.ini"
+
+    Start of harvest job ..
+
+        2016-02-16 13:38:22,905 INFO  [ckanext.geonetwork.harvesters.geonetwork] GeoNetwork harvester: extending ISODocument with TimeInstant
+        2016-02-16 13:38:22,909 INFO  [ckanext.geonetwork.harvesters.geonetwork] GeoNetwork harvester: adding old GML URI
+        2016-02-16 13:38:22,910 INFO  [ckanext.geonetwork.harvesters.geonetwork] Added old URI for gml to temporal-extent-begin
+        2016-02-16 13:38:22,910 INFO  [ckanext.geonetwork.harvesters.geonetwork] Added old URI for gml to temporal-extent-begin
+        2016-02-16 13:38:22,910 INFO  [ckanext.geonetwork.harvesters.geonetwork] Added old URI for gml to temporal-extent-end
+        2016-02-16 13:38:22,911 INFO  [ckanext.geonetwork.harvesters.geonetwork] Added old URI for gml to temporal-extent-end
+        2016-02-16 13:38:22,911 INFO  [ckanext.geonetwork.harvesters.geonetwork] Added old URI for gml to temporal-extent-instant
+        2016-02-16 13:38:23,332 DEBUG [ckanext.harvest.model] Harvest tables defined in memory
+        2016-02-16 13:38:23,346 DEBUG [ckanext.harvest.model] Harvest tables already exist
+        2016-02-16 13:38:23,360 DEBUG [ckanext.spatial.plugin] Setting up the spatial model
+        2016-02-16 13:38:23,483 DEBUG [ckanext.spatial.model.package_extent] Spatial tables defined in memory
+        2016-02-16 13:38:23,504 DEBUG [ckanext.spatial.model.package_extent] Spatial tables already exist
+
+        2016-02-16 13:38:23,600 DEBUG [ckanext.harvest.queue] Fetch queue consumer registered
+        2016-02-16 13:38:23,605 INFO  [ckanext.harvest.queue] Received harvest object id: 21a9682e-b5d1-4637-b002-051561ff3bf8
+        2016-02-16 13:38:23,627 DEBUG [ckanext.harvest.harvesters.ckanharvester] In CKANHarvester fetch_stage
+        2016-02-16 13:38:23,900 DEBUG [ckanext.harvest.harvesters.ckanharvester] In CKANHarvester import_stage
+        2016-02-16 13:38:24,020 INFO  [ckanext.harvest.harvesters.base] Package with GUID 0005beed-40d0-4e7f-b5de-9e227fd68692 does not exist, let's create it
+        /usr/lib64/python2.7/site-packages/sqlalchemy/orm/unitofwork.py:79: SAWarning: Usage of the 'related attribute set' operation is not currently supported within the execution stage of the flush process. Results may not be consistent.  Consider using alternative event listeners or connection-level operations instead.
+          sess._flush_warning("related attribute set")
+
+        2016-02-16 13:38:24,306 ERROR [ckan.model.modification] (ProgrammingError) permission denied for relation _table_metadata
+         'SELECT 1 FROM "_table_metadata" WHERE name = %s AND alias_of IS NULL' (u'21d8a751-c1cb-45ad-b9a5-4cdd792b079c',)
+
+    Check the database connection settings
+
+        vi "${ckanconf:?}/ckan.ini"
+
+            sqlalchemy.url = postgresql://ckanrole:ohwiiyiequoojeeneigh@postgis:5432/ckandata
+
+    #
+    # Check for SELECT access 
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" \
+        psql \
+            --host     "${postgislinkname:?}" \
+            --username "${ckandatauser:?}" \
+            --dbname   "${storedatabase:?}" \
+            --command "SELECT * FROM _table_metadata"
+
+            ERROR:  permission denied for relation _table_metadata
+
+    #
+    # Update the permission.
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${postgisdockname:?}" \
+        psql \
+            --username "${postgisusername:?}" \
+            --dbname   "${storedatabase:?}" \
+            --command  "GRANT SELECT ON ALL TABLES IN SCHEMA public TO ${ckandatauser:?}"
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${postgisdockname:?}" \
+        psql \
+            --username "${postgisusername:?}" \
+            --dbname   "${storedatabase:?}" \
+            --command  "GRANT SELECT ON ALL TABLES IN SCHEMA public TO ${storereadername:?}"
+
+
+# TODO - add this to store-grant.sql
+# GRANT SELECT ON ALL TABLES IN SCHEMA public TO ${ckandatauser:?}"
+# GRANT SELECT ON ALL TABLES IN SCHEMA public TO ${storereadername:?}"
+
+    #
+    # Check for SELECT access 
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" \
+        psql \
+            --host     "${postgislinkname:?}" \
+            --username "${ckandatauser:?}" \
+            --dbname   "${storedatabase:?}" \
+            --command "SELECT * FROM _table_metadata"
+
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" \
+        psql \
+            --host     "${postgislinkname:?}" \
+            --username "${storereadername:?}" \
+            --dbname   "${storedatabase:?}" \
+            --command "SELECT * FROM _table_metadata"
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" \
+        psql \
+            --host     "${postgislinkname:?}" \
+            --username "${storewritername:?}" \
+            --dbname   "${storedatabase:?}" \
+            --command "SELECT * FROM _table_metadata"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        Traceback (most recent call last):
+          File "/usr/lib/ckan/src/ckanext-harvest/ckanext/harvest/harvesters/base.py", line 336, in _create_or_update_package
+            new_package = get_action('package_create_rest')(context, package_dict)
+          File "/usr/lib/ckan/src/ckan/ckan/logic/__init__.py", line 424, in wrapped
+            result = _action(context, data_dict, **kw)
+          File "/usr/lib/ckan/src/ckan/ckan/logic/action/create.py", line 1115, in package_create_rest
+            dictized_after = _get_action('package_create')(context, dictized_package)
+          File "/usr/lib/ckan/src/ckan/ckan/logic/__init__.py", line 424, in wrapped
+            result = _action(context, data_dict, **kw)
+          File "/usr/lib/ckan/src/ckan/ckan/logic/action/create.py", line 215, in package_create
+            model.repo.commit()
+          File "/usr/lib/python2.7/site-packages/vdm/sqlalchemy/tools.py", line 107, in commit
+            self.session.commit()
+          File "/usr/lib64/python2.7/site-packages/sqlalchemy/orm/scoping.py", line 149, in do
+            return getattr(self.registry(), name)(*args, **kwargs)
+          File "/usr/lib64/python2.7/site-packages/sqlalchemy/orm/session.py", line 768, in commit
+            self.transaction.commit()
+          File "/usr/lib64/python2.7/site-packages/sqlalchemy/orm/session.py", line 370, in commit
+            self._prepare_impl()
+          File "/usr/lib64/python2.7/site-packages/sqlalchemy/orm/session.py", line 339, in _prepare_impl
+            self.session.dispatch.before_commit(self.session)
+          File "/usr/lib64/python2.7/site-packages/sqlalchemy/event/attr.py", line 257, in __call__
+            fn(*args, **kw)
+          File "/usr/lib/ckan/src/ckan/ckan/model/extension.py", line 112, in before_commit
+            methodcaller('before_commit', session)
+          File "/usr/lib/ckan/src/ckan/ckan/model/extension.py", line 92, in notify_observers
+            func(observer)
+          File "/usr/lib/ckan/src/ckan/ckan/model/modification.py", line 35, in before_commit
+            self.notify_observers(session, self.notify)
+          File "/usr/lib/ckan/src/ckan/ckan/model/modification.py", line 52, in notify_observers
+            method(obj, domain_object.DomainObjectOperation.new)
+          File "/usr/lib/ckan/src/ckan/ckan/model/modification.py", line 84, in notify
+            observer.notify(entity, operation)
+          File "/usr/lib/ckan/src/ckan/ckan/lib/search/__init__.py", line 128, in notify
+            {'id': entity.id}),
+          File "/usr/lib/ckan/src/ckan/ckan/logic/__init__.py", line 424, in wrapped
+            result = _action(context, data_dict, **kw)
+          File "/usr/lib/ckan/src/ckan/ckan/logic/action/get.py", line 975, in package_show
+            resource_dict = item.before_show(resource_dict)
+          File "/usr/lib/ckan/src/ckan/ckanext/datastore/plugin.py", line 284, in before_show
+            resource_dict['id']
+          File "/usr/lib64/python2.7/site-packages/sqlalchemy/engine/base.py", line 719, in execute
+            return self._execute_text(object, multiparams, params)
+          File "/usr/lib64/python2.7/site-packages/sqlalchemy/engine/base.py", line 868, in _execute_text
+            statement, parameters
+          File "/usr/lib64/python2.7/site-packages/sqlalchemy/engine/base.py", line 954, in _execute_context
+            context)
+          File "/usr/lib64/python2.7/site-packages/sqlalchemy/engine/base.py", line 1116, in _handle_dbapi_exception
+            exc_info
+          File "/usr/lib64/python2.7/site-packages/sqlalchemy/util/compat.py", line 189, in raise_from_cause
+            reraise(type(exception), exception, tb=exc_tb)
+          File "/usr/lib64/python2.7/site-packages/sqlalchemy/engine/base.py", line 947, in _execute_context
+            context)
+          File "/usr/lib64/python2.7/site-packages/sqlalchemy/engine/default.py", line 435, in do_execute
+            cursor.execute(statement, parameters)
+        ProgrammingError: (ProgrammingError) permission denied for relation _table_metadata
+         'SELECT 1 FROM "_table_metadata" WHERE name = %s AND alias_of IS NULL' (u'21d8a751-c1cb-45ad-b9a5-4cdd792b079c',)
+        2016-02-16 13:38:24,338 DEBUG [ckanext.harvest.model] ProgrammingError('(ProgrammingError) permission denied for relation _table_metadata\n',)
+        2016-02-16 13:38:24,350 INFO  [ckanext.harvest.queue] Received harvest object id: 07c6acc4-8dca-4653-871b-e7c8ec4e1186
+        2016-02-16 13:38:24,359 DEBUG [ckanext.harvest.harvesters.ckanharvester] In CKANHarvester fetch_stage
+        2016-02-16 13:38:24,586 DEBUG [ckanext.harvest.harvesters.ckanharvester] In CKANHarvester import_stage
+        2016-02-16 13:38:24,596 DEBUG [ckanext.harvest.model] DetachedInstanceError('Instance <User at 0x7f9600d28990> is not bound to a Session; attribute refresh operation cannot proceed',)
+        2016-02-16 13:38:24,602 INFO  [ckanext.harvest.queue] Received harvest object id: a74b1030-6a06-4b3a-a66b-32dadb283de5
+        2016-02-16 13:38:24,611 DEBUG [ckanext.harvest.harvesters.ckanharvester] In CKANHarvester fetch_stage
+        2016-02-16 13:38:24,805 DEBUG [ckanext.harvest.harvesters.ckanharvester] In CKANHarvester import_stage
+        2016-02-16 13:38:24,821 DEBUG [ckanext.harvest.model] DetachedInstanceError('Instance <User at 0x7f9600d28990> is not bound to a Session; attribute refresh operation cannot proceed',)
+        2016-02-16 13:38:24,829 INFO  [ckanext.harvest.queue] Received harvest object id: 78fc4b0f-9367-4c90-9e13-c932e793b58e
+
+    Lots of these :
+
+        2016-02-16 13:42:34,523 DEBUG [ckanext.harvest.model] DetachedInstanceError('Instance <User at 0x7f9600d28990> is not bound to a Session; attribute refresh operation cannot proceed',)
+        2016-02-16 13:42:34,531 INFO  [ckanext.harvest.queue] Received harvest object id: ec59810a-893b-4f3a-b899-2ab70d27e0c5
+        2016-02-16 13:42:34,542 DEBUG [ckanext.harvest.harvesters.ckanharvester] In CKANHarvester fetch_stage
+        2016-02-16 13:42:34,643 DEBUG [ckanext.harvest.harvesters.ckanharvester] In CKANHarvester import_stage
+        2016-02-16 13:42:34,656 DEBUG [ckanext.harvest.model] DetachedInstanceError('Instance <User at 0x7f9600d28990> is not bound to a Session; attribute refresh operation cannot proceed',)
+        2016-02-16 13:42:34,666 INFO  [ckanext.harvest.queue] Received harvest object id: 1235516b-5d0b-482e-9881-90784b26e4c9
+        2016-02-16 13:42:34,678 DEBUG [ckanext.harvest.harvesters.ckanharvester] In CKANHarvester fetch_stage
+        2016-02-16 13:42:35,034 DEBUG [ckanext.harvest.harvesters.ckanharvester] In CKANHarvester import_stage
+        2016-02-16 13:42:35,057 DEBUG [ckanext.harvest.model] DetachedInstanceError('Instance <User at 0x7f9600d28990> is not bound to a Session; attribute refresh operation cannot proceed',)
+
+    End of harvest job ..
+
+        Traceback (most recent call last):
+          File "/usr/bin/paster", line 9, in <module>
+            load_entry_point('PasteScript==1.7.5', 'console_scripts', 'paster')()
+          File "/usr/lib/python2.7/site-packages/paste/script/command.py", line 104, in run
+            invoke(command, command_name, options, args[1:])
+          File "/usr/lib/python2.7/site-packages/paste/script/command.py", line 143, in invoke
+            exit_code = runner.run(args)
+          File "/usr/lib/python2.7/site-packages/paste/script/command.py", line 238, in run
+            result = self.command()
+          File "/usr/lib/ckan/src/ckanext-harvest/ckanext/harvest/commands/harvester.py", line 178, in command
+            for method, header, body in consumer.consume(queue=get_fetch_queue_name()):
+          File "/usr/lib/ckan/src/ckanext-harvest/ckanext/harvest/queue.py", line 202, in consume
+            key, body = self.redis.blpop(self.routing_key)
+          File "/usr/lib/python2.7/site-packages/redis/client.py", line 1090, in blpop
+            return self.execute_command('BLPOP', *keys)
+          File "/usr/lib/python2.7/site-packages/redis/client.py", line 529, in execute_command
+            return self.parse_response(connection, command_name, **options)
+          File "/usr/lib/python2.7/site-packages/redis/client.py", line 541, in parse_response
+            response = connection.read_response()
+          File "/usr/lib/python2.7/site-packages/redis/connection.py", line 550, in read_response
+            raise response
+        redis.exceptions.ResponseError:
+            MISCONF Redis is configured to save RDB snapshots, but is currently not able to persist on disk.
+            Commands that may modify the data set are disabled. Please check Redis logs for details about the error.
+
+# -----------------------------------------------------
+# Run our harvester jobs 
+# https://github.com/ckan/ckanext-harvest#running-the-harvest-jobs
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        paster \
+            --plugin=ckanext-harvest \
+            harvester \
+            run \
+            -c "${ckanconf:?}/ckan.ini"
+
+        Traceback (most recent call last):
+          File "/usr/bin/paster", line 9, in <module>
+            load_entry_point('PasteScript==1.7.5', 'console_scripts', 'paster')()
+          File "/usr/lib/python2.7/site-packages/paste/script/command.py", line 104, in run
+            invoke(command, command_name, options, args[1:])
+          File "/usr/lib/python2.7/site-packages/paste/script/command.py", line 143, in invoke
+            exit_code = runner.run(args)
+          File "/usr/lib/python2.7/site-packages/paste/script/command.py", line 238, in run
+            result = self.command()
+          File "/usr/lib/ckan/src/ckanext-harvest/ckanext/harvest/commands/harvester.py", line 129, in command
+            self._load_config()
+          File "/usr/lib/ckan/src/ckanext-harvest/ckanext/harvest/commands/harvester.py", line 199, in _load_config
+            super(Harvester, self)._load_config()
+          File "/usr/lib/ckan/src/ckan/ckan/lib/cli.py", line 148, in _load_config
+            load_environment(conf.global_conf, conf.local_conf)
+          File "/usr/lib/ckan/src/ckan/ckan/config/environment.py", line 232, in load_environment
+            p.load_all(config)
+          File "/usr/lib/ckan/src/ckan/ckan/plugins/core.py", line 134, in load_all
+            load(*plugins)
+          File "/usr/lib/ckan/src/ckan/ckan/plugins/core.py", line 148, in load
+            service = _get_service(plugin)
+          File "/usr/lib/ckan/src/ckan/ckan/plugins/core.py", line 254, in _get_service
+            return plugin.load()(name=plugin_name)
+          File "/usr/lib/python2.7/site-packages/pkg_resources/__init__.py", line 2355, in load
+            return self.resolve()
+          File "/usr/lib/python2.7/site-packages/pkg_resources/__init__.py", line 2361, in resolve
+            module = __import__(self.module_name, fromlist=['__name__'], level=0)
+          File "/usr/lib/ckan/src/ckanext-spatial/ckanext/spatial/harvesters/__init__.py", line 9, in <module>
+            from ckanext.spatial.harvesters.csw import CSWHarvester
+          File "/usr/lib/ckan/src/ckanext-spatial/ckanext/spatial/harvesters/csw.py", line 15, in <module>
+            from ckanext.spatial.lib.csw_client import CswService
+          File "/usr/lib/ckan/src/ckanext-spatial/ckanext/spatial/lib/__init__.py", line 8, in <module>
+            from shapely.geometry import asShape
+          File "/usr/lib64/python2.7/site-packages/shapely/geometry/__init__.py", line 4, in <module>
+            from .base import CAP_STYLE, JOIN_STYLE
+          File "/usr/lib64/python2.7/site-packages/shapely/geometry/base.py", line 9, in <module>
+            from shapely.coords import CoordinateSequence
+          File "/usr/lib64/python2.7/site-packages/shapely/coords.py", line 8, in <module>
+            from shapely.geos import lgeos
+          File "/usr/lib64/python2.7/site-packages/shapely/geos.py", line 66, in <module>
+            _lgeos = load_dll('geos_c', fallbacks=['libgeos_c.so.1', 'libgeos_c.so'])
+          File "/usr/lib64/python2.7/site-packages/shapely/geos.py", line 33, in load_dll
+            lib = find_library(libname)
+          File "/usr/lib64/python2.7/ctypes/util.py", line 244, in find_library
+            return _findSoname_ldconfig(name) or _get_soname(_findLib_gcc(name))
+          File "/usr/lib64/python2.7/ctypes/util.py", line 233, in _findSoname_ldconfig
+            f = os.popen('/sbin/ldconfig -p 2>/dev/null')
+        OSError: [Errno 12] Cannot allocate memory
+
+
+    #
+    # Out of memory - easy enough to fix.
+    poweroff
+    resize
+    poweron
+
+    docker start \
+        ckan-postgis \
+        ckan-redis \
+        ckan-solrn \
+        ckan-push \
+        ckan
+
+
+
+
