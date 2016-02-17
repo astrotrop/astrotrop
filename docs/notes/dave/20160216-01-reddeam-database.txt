@@ -85,10 +85,8 @@
 
     ALTER FUNCTION plr.get_species_list(text, text) OWNER TO duncan;
 
-
-
 # -----------------------------------------------------
-#
+# sed script to analyse the data dump.
 #
 
     #
@@ -98,9 +96,13 @@
         /^COPY.*/q
         ' reddeam.backup
 
+# -----------------------------------------------------
+# Fixed file locations.
+#
+
     #
     # Webserver files
-    # /var/www/apps/figs/temp/climdiag.png
+    # Need to share a data directory with the Apache container. 
 
     sed -n '
         s|.*"\(/var/www[^"]*\)".*|\1|p
@@ -128,7 +130,6 @@
 
     #
     # Geoserver files
-    # /var/www/apps/figs/temp/climdiag.png
 
     sed -n '
         s|.*"\(/var/lib/opengeo[^"]*\)".*|\1|p
@@ -139,23 +140,7 @@
         /var/lib/opengeo/geoserver/rasters/BucketModelMeso1minute/worldclim1minute.tiff
 
     #
-    # ODBC connections
-    # con<-odbcConnect("reddeam")
-    # con<-odbcConnect("reddeam_full")
-
-    sed -n '
-        s|.*\(odbcConnect(.*)\).*|\1|g p
-        /^COPY.*/p
-        /^COPY.*/q
-        ' reddeam.backup | sort -b -f -u
-
-        odbcConnect("reddeam")
-        odbcConnect("reddeam_full")
-
-    #
-    # User home directories
-    # /home/duncan/FichasTecnicasConabio/predictors.tif
-    # /home/duncan/Fires.rmd
+    # User home files
 
     sed -n '
         s|.*"\(/home[^"]*\)".*|\1|g p
@@ -169,34 +154,23 @@
         /home/duncan/test.Rmd
 
 
-    #
-    # R libraries
-    # library(climatol)
-    # library(dismo)
+
+# -----------------------------------------------------
+# ODBC connections
+#
 
     sed -n '
-        s|.*\(library(.*)\).*|\1|g p
+        s|.*\(odbcConnect(.*)\).*|\1|g p
         /^COPY.*/p
         /^COPY.*/q
         ' reddeam.backup | sort -b -f -u
 
-        library(climatol)
-        library(dismo)
-        library(ggplot2)
-        library(googleVis)
-        library(knitr)
-      * library(mgcv)
-        library(randomForest)
-        library(raster)
-      * library(rgdal)
-        library(rgeos)
-      * library(RODBC)
-        library(sm)
-        library(vegan)
+        odbcConnect("reddeam")
+        odbcConnect("reddeam_full")
 
-    #
-    # Database object owners.
-    # ALTER TABLE spdata.biologia OWNER TO postgres;
+# -----------------------------------------------------
+# Database object owners.
+# ALTER TABLE spdata.biologia OWNER TO postgres;
 
     sed -n '
         s|^ALTER .* OWNER TO \(.*\);|\1|g p
@@ -208,9 +182,9 @@
         postgres
         rulo
 
-
-    #
-    # List the statements that set object owners.
+# -----------------------------------------------------
+# List the statements that set object owners.
+#
 
     sed -n '
         /^ALTER [^ ]* [^ ]* OWNER TO [^;]*;/p
@@ -283,9 +257,9 @@
         ....
         ....
 
-
-    #
-    # Change the object owner statements.
+# -----------------------------------------------------
+# Change the statements that set object owners.
+#
 
     sed -n '
         s|^ALTER \([^ ]*\) \([^ ]*\) OWNER TO \([^;]*\);|ALTER \1 \2 OWNER TO postgisuser;| p
@@ -359,64 +333,126 @@
         ....
 
 
+# -----------------------------------------------------
+# R libraries
+#
 
+    sed -n '
+        s|.*\(library(.*)\).*|\1|g p
+        /^COPY.*/p
+        /^COPY.*/q
+        ' reddeam.backup | sort -b -f -u
 
+        library(climatol)
+        library(dismo)
+        library(ggplot2)
+        library(googleVis)
+        library(knitr)
+        library(mgcv)
+        library(randomForest)
+        library(raster)
+        library(rgdal)
+        library(rgeos)
+        library(RODBC)
+        library(sm)
+        library(vegan)
 
+# -----------------------------------------------------
+# Install Debian packages where available.
+#
 
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${postgisdockname:?}" bash
+    docker exec -it "${rstudiodockname:?}" bash
+
+        apt-get update
+        apt-get install -y r-cran-ggplot2
+        apt-get install -y r-cran-mgcv
+        apt-get install -y r-cran-randomforest
+        apt-get install -y r-cran-rodbc
+        apt-get install -y r-cran-sm
+        apt-get install -y r-cran-vegan
+
+        exit
+
+# -----------------------------------------------------
+# Install R packages from source.
+#
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${postgisdockname:?}" R
+    docker exec -it "${rstudiodockname:?}" R
+
+        # https://cran.r-project.org/web/packages/dismo/index.html
+        install.packages("dismo")
+
+        # https://cran.r-project.org/web/packages/googleVis/
+        install.packages("googleVis")
+
+        # https://github.com/Debian/r-cran-knitr
+        install.packages("knitr")
+
+        # https://r-forge.r-project.org/R/?group_id=294
+        install.packages("raster")
+
+        q()
+
+# -----------------------------------------------------
+# Install dependencies for rgdal and rgeos.
+# http://stackoverflow.com/q/31342575
+#
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${postgisdockname:?}" bash
+    docker exec -it "${rstudiodockname:?}" bash
+
+        cat >> /etc/apt/sources.list << EOF
+deb http://httpredir.debian.org/debian unstable main
+EOF
+
+        apt-get update
+        apt-get install -y libgdal1i
+        apt-get install -y libgdal-dev
+        apt-get install -y libproj-dev
+
+        exit
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${postgisdockname:?}" R
+    docker exec -it "${rstudiodockname:?}" R
+
+        # https://cran.r-project.org/web/packages/rgdal/index.html
+        install.packages("rgdal")
+
+        # https://cran.r-project.org/web/packages/rgeos/index.html
+        install.packages("rgeos")
+
+        q()
+
+# -----------------------------------------------------
+# Test the R libraries.
+#
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${postgisdockname:?}" R
+    docker exec -it "${rstudiodockname:?}" R
+
+        library(dismo)
+        library(googleVis)
+        library(knitr)
+        library(raster)
+        library(rgdal)
+        library(rgeos)
+
+        q()
+
+# -----------------------------------------------------
+# One package still todo.
+#
 
     library(climatol)
 
         http://www.climatol.eu/
         Warning! The package at CRAN repositories is unusable with recent versions of R!!! While the problem is solved (needs lots of recoding), you can use the above climatol_2.2.tar.gz to install locally in your Linux computer
-
-    library(dismo)
-
-        https://cran.r-project.org/web/packages/dismo/index.html
-    
-    library(ggplot2)
-
-        https://packages.debian.org/jessie/r-cran-ggplot2
-
-    library(googleVis)
-
-        https://cran.r-project.org/web/packages/googleVis/
-
-    library(knitr)
-
-        https://github.com/Debian/r-cran-knitr
-
-    library(mgcv)
-
-        https://packages.debian.org/jessie/r-cran-mgcv
-
-    library(randomForest)
-
-        https://packages.debian.org/jessie/r-cran-randomforest
-
-    library(raster)
-
-        https://r-forge.r-project.org/R/?group_id=294
-
-    library(rgdal)
-
-        # Think we altready have this ?
-        https://cran.r-project.org/web/packages/rgdal/index.html
-
-    library(rgeos)
-
-        https://cran.r-project.org/web/packages/rgeos/index.html
-
-    library(RODBC)
-
-        https://packages.debian.org/sid/gnu-r/r-cran-rodbc
-
-    library(sm)
-
-        https://packages.debian.org/sid/gnu-r/r-cran-sm
-
-    library(vegan)
-
-        https://packages.debian.org/sid/gnu-r/r-cran-vegan
-
 
 
