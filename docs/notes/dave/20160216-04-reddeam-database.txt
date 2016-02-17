@@ -23,19 +23,6 @@
 # -----------------------------------------------------
 #
 #
-
-    #
-    # Example owners
-
-    ALTER TABLE public.phen OWNER TO postgres;
-    ALTER TABLE public.layer_styles OWNER TO duncan;
-    ALTER TABLE public.layer_styles_id_seq OWNER TO duncan;
-
-    ALTER SEQUENCE landsat_rid_seq OWNED BY landsat.rid;
-
-    ALTER TABLE public.landsat_rid_seq OWNER TO duncan;
-
-
     #
     # Example R functions
 
@@ -192,40 +179,6 @@
         duncan
         postgres
         rulo
-
-# -----------------------------------------------------
-# Sequences are owned by their respective tables.
-#
-
-    sed -n '
-        /^ALTER [^ ]* [^ ]* OWNED BY [^;]*;/p
-        /^COPY.*/p
-        /^COPY.*/q
-        ' reddeam.backup | sort -b -f -u
-
-
-        ALTER SEQUENCE biotree_id_seq OWNED BY biotree.id;
-        ALTER SEQUENCE defor_rid_seq OWNED BY defor.rid;
-        ALTER SEQUENCE estados_id_seq OWNED BY estados.id;
-        ALTER SEQUENCE estclim_id_seq OWNED BY estclim.id;
-        ALTER SEQUENCE fires_meso_2013_id_seq OWNED BY fires_meso_2013.id;
-        ALTER SEQUENCE glc_rid_seq OWNED BY glc.rid;
-        ALTER SEQUENCE grat_id_seq OWNED BY grat.id;
-        ALTER SEQUENCE hurricanes_id_seq OWNED BY hurricanes.id;
-        ALTER SEQUENCE iso_metadata_id_seq OWNED BY iso_metadata.id;
-        ALTER SEQUENCE landsat1000x1000_rid_seq OWNED BY landsat1000x1000.rid;
-        ALTER SEQUENCE landsat_350x350_rid_seq OWNED BY landsat_350x350.rid;
-        ALTER SEQUENCE landsat_rid_seq OWNED BY landsat.rid;
-        ALTER SEQUENCE layer_styles_id_seq OWNED BY layer_styles.id;
-        ALTER SEQUENCE modis_fire_am_id_seq OWNED BY modis_fire_am.id;
-        ALTER SEQUENCE modis_fire_id_seq OWNED BY modis_fire.id;
-        ALTER SEQUENCE ndvi_id_seq OWNED BY ndvi.id;
-        ALTER SEQUENCE npafed_gid_seq OWNED BY npafed.gid;
-        ALTER SEQUENCE prec_id_seq OWNED BY prec.id;
-        ALTER SEQUENCE "ProtectedAreas_id_seq" OWNED BY "ProtectedAreas".id;
-        ALTER SEQUENCE spatial_id_seq OWNED BY spatial.id;
-        ALTER SEQUENCE tmax_id_seq OWNED BY tmax.id;
-        ALTER SEQUENCE tmin_id_seq OWNED BY tmin.id;
 
 # -----------------------------------------------------
 # List the statements that set object owners.
@@ -462,11 +415,6 @@ EOF
 
         exit
 
-# -----------------------------------------------------
-# Install rgdal and rgeos.
-# http://stackoverflow.com/q/31342575
-#
-
     source "${HOME:?}/astrotrop.conf"
     docker exec -it "${postgisdockname:?}" R
     docker exec -it "${rstudiodockname:?}" R
@@ -504,10 +452,5 @@ EOF
 
         http://www.climatol.eu/
         Warning! The package at CRAN repositories is unusable with recent versions of R!!! While the problem is solved (needs lots of recoding), you can use the above climatol_2.2.tar.gz to install locally in your Linux computer
-
-
-# -----------------------------------------------------
-# Major snafu .. installing libgdal1i on postgis machine removes postgis !!
-# Works on RStudio, fails on PostGIS containers - different base version.
 
 

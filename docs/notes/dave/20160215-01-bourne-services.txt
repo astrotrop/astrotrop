@@ -225,6 +225,37 @@ EOF
     mkdata "${datadir:?}"
 
 # -----------------------------------------------------
+# Configure our Apache container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" <<- EOF
+
+        webservdockname=webserv
+        webservdockport=80
+        webservlinkname=webserv
+        webservlinkport=80
+
+        webservtempdir=\${tempdir:?}/webserv
+        webservdatadir=\${datadir:?}/webserv
+
+        webservhostname=webserv-08.\${dnsname:?}
+
+EOF
+
+# -----------------------------------------------------
+# Create our Apache data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${webservtempdir:?}"
+    rmdata "${webservdatadir:?}"
+
+    mkdata "${webservtempdir:?}"
+    mkdata "${webservdatadir:?}"
+
+# -----------------------------------------------------
 # Configure our PostGIS container.
 #[root@virtual]
 
@@ -239,7 +270,7 @@ EOF
         postgistempdir=\${tempdir:?}/postgis
         postgisdatadir=\${datadir:?}/postgis
 
-        postgishostname=postgis-06.\${dnsname:?}
+        postgishostname=postgis-08.\${dnsname:?}
 
         postgisdatabase=postgisdata
         postgisusername=postgisuser
@@ -280,6 +311,7 @@ EOF
         --expose "${postgisdockport:?}" \
         --volume "${postgisdatadir:?}:/data" \
         --volume "${postgistempdir:?}:/temp" \
+        --volume "${webservdatadir:?}:/www" \
         "astrotrop/postgis:${dockerset:?}"
 
 # -----------------------------------------------------
@@ -287,7 +319,6 @@ EOF
 #[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"
-
     docker exec -it "${postgisdockname:?}" psql \
         --dbname "${postgisdatabase:?}" \
         --username "${postgisusername:?}" \
@@ -376,6 +407,7 @@ EOF
         --volume "${rstudiotempdir:?}:/temp" \
         --volume "${rstudiodatadir:?}:/data" \
         --volume "${rstudiohomedir:?}:/home" \
+        --volume "${webservdatadir:?}:/www" \
         --publish "${rstudiodockport:?}:${rstudiolinkport:?}" \
         "astrotrop/rstudio:${dockerset:?}"
 
@@ -976,8 +1008,8 @@ EOF
         geoservusername=astrotrop
         geoservpassword=$(pwgen 20 1)
 
-        geoservtemp=\${tempdir:?}/geoserv
-        geoservdata=\${datadir:?}/geoserv
+        geoservtempdir=\${tempdir:?}/geoserv
+        geoservdatadir=\${datadir:?}/geoserv
 
 EOF
 
@@ -1011,8 +1043,9 @@ EOF
         --env-file "${geoservenv:?}" \
         --link "${postgisdockname:?}:${postgislinkname:?}" \
         --publish "${geoservdockport:?}:${geoservlinkport:?}" \
-        --volume "${geoservtemp:?}:/temp" \
-        --volume "${geoservdata:?}:/data" \
+        --volume "${geoservtempdir:?}:/temp" \
+        --volume "${geoservdatadir:?}:/data" \
+        --volume "${webservdatadir:?}:/www" \
         "astrotrop/geoserver:${dockerset:?}"
 
     docker logs -f "${geoservdockname:?}"
@@ -1236,22 +1269,6 @@ EOF
         \q
 
 
-
-
-ALTER TABLE public.phen OWNER TO postgres;
-ALTER TABLE public.layer_styles OWNER TO duncan;
-ALTER TABLE public.layer_styles_id_seq OWNER TO duncan;
-
-ALTER SEQUENCE landsat_rid_seq OWNED BY landsat.rid;
-
-ALTER TABLE public.landsat_rid_seq OWNER TO duncan;
-
-
-sed -n '/^ALTER .* OWNER TO .*/ p' /home/Duncan/reddeam.backup 
-
-sed -n '
-    s/^ALTER \(.*\) OWNER TO \(.*\)$/\2/ p
-    ' reddeam.backup 
 
 
 

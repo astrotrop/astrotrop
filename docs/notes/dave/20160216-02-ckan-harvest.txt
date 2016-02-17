@@ -21,7 +21,7 @@
 #
 
 # -----------------------------------------------------
-# Run our fetch consumer 
+# Run our gather consumer 
 # https://github.com/ckan/ckanext-harvest#running-the-harvest-jobs
 #[root@virtual]
 
@@ -235,91 +235,6 @@
             --command "SELECT * FROM _table_metadata"
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        Traceback (most recent call last):
-          File "/usr/lib/ckan/src/ckanext-harvest/ckanext/harvest/harvesters/base.py", line 336, in _create_or_update_package
-            new_package = get_action('package_create_rest')(context, package_dict)
-          File "/usr/lib/ckan/src/ckan/ckan/logic/__init__.py", line 424, in wrapped
-            result = _action(context, data_dict, **kw)
-          File "/usr/lib/ckan/src/ckan/ckan/logic/action/create.py", line 1115, in package_create_rest
-            dictized_after = _get_action('package_create')(context, dictized_package)
-          File "/usr/lib/ckan/src/ckan/ckan/logic/__init__.py", line 424, in wrapped
-            result = _action(context, data_dict, **kw)
-          File "/usr/lib/ckan/src/ckan/ckan/logic/action/create.py", line 215, in package_create
-            model.repo.commit()
-          File "/usr/lib/python2.7/site-packages/vdm/sqlalchemy/tools.py", line 107, in commit
-            self.session.commit()
-          File "/usr/lib64/python2.7/site-packages/sqlalchemy/orm/scoping.py", line 149, in do
-            return getattr(self.registry(), name)(*args, **kwargs)
-          File "/usr/lib64/python2.7/site-packages/sqlalchemy/orm/session.py", line 768, in commit
-            self.transaction.commit()
-          File "/usr/lib64/python2.7/site-packages/sqlalchemy/orm/session.py", line 370, in commit
-            self._prepare_impl()
-          File "/usr/lib64/python2.7/site-packages/sqlalchemy/orm/session.py", line 339, in _prepare_impl
-            self.session.dispatch.before_commit(self.session)
-          File "/usr/lib64/python2.7/site-packages/sqlalchemy/event/attr.py", line 257, in __call__
-            fn(*args, **kw)
-          File "/usr/lib/ckan/src/ckan/ckan/model/extension.py", line 112, in before_commit
-            methodcaller('before_commit', session)
-          File "/usr/lib/ckan/src/ckan/ckan/model/extension.py", line 92, in notify_observers
-            func(observer)
-          File "/usr/lib/ckan/src/ckan/ckan/model/modification.py", line 35, in before_commit
-            self.notify_observers(session, self.notify)
-          File "/usr/lib/ckan/src/ckan/ckan/model/modification.py", line 52, in notify_observers
-            method(obj, domain_object.DomainObjectOperation.new)
-          File "/usr/lib/ckan/src/ckan/ckan/model/modification.py", line 84, in notify
-            observer.notify(entity, operation)
-          File "/usr/lib/ckan/src/ckan/ckan/lib/search/__init__.py", line 128, in notify
-            {'id': entity.id}),
-          File "/usr/lib/ckan/src/ckan/ckan/logic/__init__.py", line 424, in wrapped
-            result = _action(context, data_dict, **kw)
-          File "/usr/lib/ckan/src/ckan/ckan/logic/action/get.py", line 975, in package_show
-            resource_dict = item.before_show(resource_dict)
-          File "/usr/lib/ckan/src/ckan/ckanext/datastore/plugin.py", line 284, in before_show
-            resource_dict['id']
-          File "/usr/lib64/python2.7/site-packages/sqlalchemy/engine/base.py", line 719, in execute
-            return self._execute_text(object, multiparams, params)
-          File "/usr/lib64/python2.7/site-packages/sqlalchemy/engine/base.py", line 868, in _execute_text
-            statement, parameters
-          File "/usr/lib64/python2.7/site-packages/sqlalchemy/engine/base.py", line 954, in _execute_context
-            context)
-          File "/usr/lib64/python2.7/site-packages/sqlalchemy/engine/base.py", line 1116, in _handle_dbapi_exception
-            exc_info
-          File "/usr/lib64/python2.7/site-packages/sqlalchemy/util/compat.py", line 189, in raise_from_cause
-            reraise(type(exception), exception, tb=exc_tb)
-          File "/usr/lib64/python2.7/site-packages/sqlalchemy/engine/base.py", line 947, in _execute_context
-            context)
-          File "/usr/lib64/python2.7/site-packages/sqlalchemy/engine/default.py", line 435, in do_execute
-            cursor.execute(statement, parameters)
-        ProgrammingError: (ProgrammingError) permission denied for relation _table_metadata
-         'SELECT 1 FROM "_table_metadata" WHERE name = %s AND alias_of IS NULL' (u'21d8a751-c1cb-45ad-b9a5-4cdd792b079c',)
-        2016-02-16 13:38:24,338 DEBUG [ckanext.harvest.model] ProgrammingError('(ProgrammingError) permission denied for relation _table_metadata\n',)
-        2016-02-16 13:38:24,350 INFO  [ckanext.harvest.queue] Received harvest object id: 07c6acc4-8dca-4653-871b-e7c8ec4e1186
-        2016-02-16 13:38:24,359 DEBUG [ckanext.harvest.harvesters.ckanharvester] In CKANHarvester fetch_stage
-        2016-02-16 13:38:24,586 DEBUG [ckanext.harvest.harvesters.ckanharvester] In CKANHarvester import_stage
-        2016-02-16 13:38:24,596 DEBUG [ckanext.harvest.model] DetachedInstanceError('Instance <User at 0x7f9600d28990> is not bound to a Session; attribute refresh operation cannot proceed',)
-        2016-02-16 13:38:24,602 INFO  [ckanext.harvest.queue] Received harvest object id: a74b1030-6a06-4b3a-a66b-32dadb283de5
-        2016-02-16 13:38:24,611 DEBUG [ckanext.harvest.harvesters.ckanharvester] In CKANHarvester fetch_stage
-        2016-02-16 13:38:24,805 DEBUG [ckanext.harvest.harvesters.ckanharvester] In CKANHarvester import_stage
-        2016-02-16 13:38:24,821 DEBUG [ckanext.harvest.model] DetachedInstanceError('Instance <User at 0x7f9600d28990> is not bound to a Session; attribute refresh operation cannot proceed',)
-        2016-02-16 13:38:24,829 INFO  [ckanext.harvest.queue] Received harvest object id: 78fc4b0f-9367-4c90-9e13-c932e793b58e
 
     Lots of these :
 

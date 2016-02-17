@@ -1,0 +1,141 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Run our gather consumer 
+# https://github.com/ckan/ckanext-harvest#running-the-harvest-jobs
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        paster \
+            --plugin=ckanext-harvest \
+            harvester \
+            gather_consumer \
+            -c "${ckanconf:?}/ckan.ini"
+
+        ....
+        2016-02-17 02:45:17,396 DEBUG [ckanext.harvest.queue] Gather queue consumer registered
+
+        ....
+        2016-02-17 02:46:50,284 DEBUG [ckanext.harvest.queue] Received harvest job id: e2778ce0-e711-44fb-a7f6-81faa130a799
+        2016-02-17 02:46:50,305 DEBUG [ckanext.spatial.harvesters.csw.CSW.gather] CswHarvester gather_stage for job: <HarvestJob id=e2778ce0-e711-44fb-a7f6-81faa130a799 created=2016-02-17 02:46:50.211201 gather_started=2016-02-17 02:46:50.305046 gather_finished=None finished=None source_id=873285ed-5556-4faa-a7de-a057ceef63d2 status=Running>
+        2016-02-17 02:46:50,843 DEBUG [ckanext.spatial.harvesters.csw.CSW.gather] Starting gathering for http://geoserv-08.metagrid.xyz:8080/geoserver/ows
+        2016-02-17 02:46:50,844 INFO  [ckanext.spatial.lib.csw_client] Making CSW request: getrecords2 {'typenames': 'csw:Record', 'maxrecords': 10, 'sortby': <owslib.fes.SortBy object at 0x7f090e0a8a10>, 'outputschema': 'http://www.isotc211.org/2005/gmd', 'cql': None, 'startposition': 0, 'esn': 'brief', 'constraints': []}
+
+        2016-02-17 02:46:51,656 ERROR [ckanext.spatial.harvesters.csw.CSW.gather] Exception: Traceback (most recent call last):
+
+          File "/usr/lib/ckan/src/ckanext-spatial/ckanext/spatial/harvesters/csw.py", line 95, in gather_stage
+            for identifier in self.csw.getidentifiers(page=10, outputschema=self.output_schema(), cql=cql):
+
+          File "/usr/lib/ckan/src/ckanext-spatial/ckanext/spatial/lib/csw_client.py", line 127, in getidentifiers
+            csw.getrecords2(**kwa)
+
+          File "/usr/lib/python2.7/site-packages/owslib/csw.py", line 341, in getrecords2
+            self._invoke()
+          File "/usr/lib/python2.7/site-packages/owslib/csw.py", line 605, in _invoke
+            raise ows.ExceptionReport(self._exml, self.owscommon.namespace)
+        ExceptionReport: 'Request failed due to: Sorting on dc:identifier/dc:value is not supported.\nSorting on dc:identifier/dc:value is not supported.'
+        2016-02-17 02:46:51,667 INFO  [ckanext.harvest.model] Error gathering the identifiers from the CSW server ['Request failed due to: Sorting on dc:identifier/dc:value is not supported.\nSorting on dc:identifier/dc:value is not supported.']
+        2016-02-17 02:46:51,673 ERROR [ckanext.harvest.queue] Gather stage failed
+
+# -----------------------------------------------------
+# Exception is in GeoServer logs 
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker logs -f "${geoservdockname:?}"
+
+        Caused by: java.io.IOException: Sorting on dc:identifier/dc:value is not supported.
+	        at org.geoserver.csw.store.internal.InternalCatalogStore.getRecordsInternal(InternalCatalogStore.java:108)
+	        at org.geoserver.csw.store.AbstractCatalogStore.getRecords(AbstractCatalogStore.java:129)
+	        at org.geoserver.csw.store.AbstractCatalogStore.getRecordsCount(AbstractCatalogStore.java:145)
+	        at org.geoserver.csw.GetRecords.run(GetRecords.java:105)
+
+
+    org.geoserver.csw.store.internal.InternalCatalogStore.getRecordsInternal(InternalCatalogStore.java:108)
+
+                if (!(expr instanceof PropertyName)) {
+                    throw new IOException("Sorting on " + sortby.getPropertyName()
+                            + " is not supported.");
+                }
+
+    /*
+     * No mention of 'dc:value' in the Python code 
+     *
+     */
+
+    https://github.com/ckan/ckanext-spatial/blob/master/ckanext/spatial/harvesters/csw.py#L95
+    File "/usr/lib/ckan/src/ckanext-spatial/ckanext/spatial/harvesters/csw.py", line 95, in gather_stage
+        for identifier in self.csw.getidentifiers(page=10, outputschema=self.output_schema(), cql=cql):
+
+    https://github.com/ckan/ckanext-spatial/blob/master/ckanext/spatial/lib/csw_client.py#L127
+    File "/usr/lib/ckan/src/ckanext-spatial/ckanext/spatial/lib/csw_client.py", line 127, in getidentifiers
+        csw.getrecords2(**kwa)
+
+
+    /*
+     * Java class that explicitly adds /dc:value to 
+     *
+     * Extends a propertyName representing a SimpleLiteral adding /dc:value at its end, and fixing
+    public class CSWPropertyPathExtender {
+        ....
+
+        PropertyName extendProperty(PropertyName expression, FilterFactory2 filterFactory, NamespaceSupport nss) {
+            ....
+                if (DC.NAMESPACE.equals(uri) || DCT.NAMESPACE.equals(uri)) {
+                    path = path + "/dc:value";
+                }
+        ....
+        }
+
+
+
+# -----------------------------------------------------
+# Run our fetch consumer 
+# https://github.com/ckan/ckanext-harvest#running-the-harvest-jobs
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        paster \
+            --plugin=ckanext-harvest \
+            harvester \
+            fetch_consumer \
+            -c "${ckanconf:?}/ckan.ini"
+
+# -----------------------------------------------------
+# Run our harvester jobs 
+# https://github.com/ckan/ckanext-harvest#running-the-harvest-jobs
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        paster \
+            --plugin=ckanext-harvest \
+            harvester \
+            run \
+            -c "${ckanconf:?}/ckan.ini"
+
