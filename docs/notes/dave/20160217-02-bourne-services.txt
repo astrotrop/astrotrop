@@ -1,0 +1,371 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Configure our Apache container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" <<- EOF
+
+        webservdockname=webserv
+        webservdockport=80
+        webservlinkname=webserv
+        webservlinkport=80
+
+        webservtempdir=\${tempdir:?}/webserv
+        webservdatadir=\${datadir:?}/webserv
+
+        webservhostname=webserv-08.\${dnsname:?}
+
+EOF
+
+# -----------------------------------------------------
+# Create our Apache data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${webservtempdir:?}"
+    rmdata "${webservdatadir:?}"
+
+    mkdata "${webservtempdir:?}"
+    mkdata "${webservdatadir:?}"
+
+# -----------------------------------------------------
+# Run our Apache container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        --detach \
+        --name "${webservdockname:?}" \
+        --publish "${webservdockport:?}:${webservlinkport:?}" \
+        --volume "${webservdatadir:?}:/usr/local/apache2/htdocs/" \
+        "httpd:2.4"
+
+# -----------------------------------------------------
+# Add a test page.
+#[root@virtual]
+
+    pushd "${webservdatadir:?}"
+
+        cat > index.html << EOF
+<html>
+    <head>
+    </head>
+    <body>
+        <p>
+            Test data ...
+        </p>
+    </body>
+</html>
+EOF
+
+    popd
+
+# -----------------------------------------------------
+# Check all the contaiers have access.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${webservdockname:?}" bash
+
+        sed -i '
+            /<\/body>/i \
+        <p> \
+            Apache data ... \
+        </p>
+            ' /usr/local/apache2/htdocs/index.html
+
+    exit
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${postgisdockname:?}" bash
+
+        sed -i '
+            /<\/body>/i \
+        <p> \
+            PostGIS data ... \
+        </p>
+            ' /www/index.html
+
+    exit
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${rstudiodockname:?}" bash
+
+        sed -i '
+            /<\/body>/i \
+        <p> \
+            RStudio data ... \
+        </p>
+            ' /www/index.html
+
+    exit
+
+
+# -----------------------------------------------------
+# Split the database dump.
+#[root@virtual]
+
+    #
+    # Print up to the first 'COPY'
+    sed -n '
+        1,/^COPY.*/ {
+            /^COPY.*/ !{
+                p
+                }
+            }
+        /^COPY.*/q
+        ' reddeam.backup > reddeam.schema
+
+    #
+    # Print from the first 'COPY'
+    sed -n '
+        /^COPY.*/,$ {
+            p
+            }
+        ' reddeam.backup
+
+# -----------------------------------------------------
+# List the statements that set object owners.
+#[root@virtual]
+
+    sed -n '
+        /^ALTER [^ ]* [^ ]* OWNER TO [^;]*;/p
+        ' reddeam.schema | sort -b -f -u
+
+# -----------------------------------------------------
+# Change the statements that set object owners.
+#[root@virtual]
+
+    sed -i '
+        s|^ALTER \(.*\) OWNER TO \([^;]*\);|ALTER \1 OWNER TO postgisuser;|
+        ' reddeam.schema
+
+# -----------------------------------------------------
+# List the ODBC connections
+#[root@virtual]
+
+    sed -n '
+        s|.*\(odbcConnect(.*)\).*|\1|g p
+        ' reddeam.schema | sort -b -f -u
+
+# -----------------------------------------------------
+# Change the ODBC connections
+#[root@virtual]
+
+    sed -i '
+        s|.*\(odbcConnect(.*)\).*|odbcConnect("reddeam")|g
+        ' reddeam.schema
+
+# -----------------------------------------------------
+# List the webserver files
+#[root@virtual]
+
+    sed -n '
+        s|.*"\(/var/www[^"]*\)".*|\1|p
+        ' reddeam.schema | sort -b -f -u
+
+        /var/www/apps/Fichas/resources
+        /var/www/apps/Fichas/resources/backdrop.png
+        /var/www/apps/Fichas/resources/ndvimeso.tif
+        /var/www/apps/Fichas/resources/predictors.tif
+        /var/www/apps/Fichas/resources/shapefiles
+        /var/www/apps/Fichas/resources/Soil.tif
+        /var/www/apps/Fichas/resources/Worldclim2min.tif
+        /var/www/apps/Fichas/results/figure/
+        /var/www/apps/figs/rdump.rda
+        /var/www/apps/figs/temp/
+        /var/www/apps/figs/temp/climdiag.png
+        /var/www/apps/figs/temp/pie.png
+        /var/www/apps/figs/temp/prec_diag.png
+        /var/www/apps/figs/temp/temp_diag.png
+        /var/www/apps/figs/temp/worldclimdiag.png
+        /var/www/apps/results/splist.html
+        /var/www/apps/results/test.html
+
+# -----------------------------------------------------
+# Change the webserver files
+#[root@virtual]
+
+    sed -i '
+        s|"/var/www/\([^"]*\)"|"/www/\1"|g
+        ' reddeam.schema
+
+# -----------------------------------------------------
+# List the webserver files
+#[root@virtual]
+
+    sed -n '
+        s|.*"\(/www[^"]*\)".*|\1|p
+        ' reddeam.schema | sort -b -f -u
+
+
+# -----------------------------------------------------
+# Update our PostGIS pgpass file.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >  "${HOME:?}/.pgpass" << EOF
+${postgisdockname:?}:5432:${postgisdatabase:?}:${postgisusername:?}:${postgispassword:?}
+EOF
+    chmod u=rw,g=,o= "${HOME:?}/.pgpass"
+
+# -----------------------------------------------------
+# Create a new PostGIS database.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    psql \
+        --host "${postgisdockname:?}" \
+        --username "${postgisusername:?}" \
+        --dbname "${postgisdatabase:?}"
+
+        DROP DATABASE reddeam ;
+        CREATE DATABASE reddeam ;
+
+        \c reddeam ;
+
+        \i reddeam.schema 
+
+        \q
+
+# -----------------------------------------------------
+# Update our PostGIS pgpass file.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >>  "${HOME:?}/.pgpass" << EOF
+${postgisdockname:?}:5432:reddeam:${postgisusername:?}:${postgispassword:?}
+EOF
+    chmod u=rw,g=,o= "${HOME:?}/.pgpass"
+
+# -----------------------------------------------------
+# Login to the new database.
+#[root@virtual]
+
+    psql \
+        --host "${postgisdockname:?}" \
+        --username "${postgisusername:?}" \
+        --dbname reddeam
+
+# -----------------------------------------------------
+# Load the data into postgresql.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    sed -n '
+        /^COPY clima_old/,$ {
+            /^COPY clima_old/ {
+                i\
+SET search_path = cna, pg_catalog;
+                }
+            p
+            }
+        ' reddeam.backup | psql \
+            --host "${postgisdockname:?}" \
+            --username "${postgisusername:?}" \
+            --dbname reddeam
+
+
+# -----------------------------------------------------
+# Update our PostGIS pgpass file.
+#[root@virtual]
+
+    username=Zarquan
+    username=Duncan
+
+    su - "${username:?}"
+    
+        source "${HOME:?}/astrotrop.conf"
+        cat >>  "${HOME:?}/.pgpass" << EOF
+${postgisdockname:?}:5432:reddeam:${postgisusername:?}:${postgispassword:?}
+EOF
+        chmod u=rw,g=,o= "${HOME:?}/.pgpass"
+
+    exit
+
+# -----------------------------------------------------
+# Test login to our PostGIS database.
+#[root@virtual]
+
+    su - "${username:?}"
+
+        source "${HOME:?}/astrotrop.conf"
+        psql \
+            --host "${postgisdockname:?}" \
+            --username "${postgisusername:?}" \
+            --dbname reddeam
+
+            \l
+            \dt
+            \q
+
+    exit
+
+# -----------------------------------------------------
+# Test write to /www from PostgreSQL.
+#[root@virtual]
+
+    psql \
+        --host "${postgisdockname:?}" \
+        --username "${postgisusername:?}" \
+        --dbname reddeam
+
+        COPY (SELECT count(*) FROM cna.clima_old) TO '/www/postgres/query.csv' (format csv);
+
+        \q
+
+# -----------------------------------------------------
+# Test write to /www from RStudio.
+#[RStudio]
+
+    writeOGR(
+        oaks,
+        "/www/shapefiles",
+        "oaks",
+        "ESRI Shapefile"
+        )
+
+# -----------------------------------------------------
+# Disc space monitoring - from the host VM.
+#[root@virtual]
+
+    df -h /
+
+        Filesystem                 Size  Used Avail Use% Mounted on
+        /dev/disk/by-label/DOROOT  315G  141G  159G  47% /
+
+# -----------------------------------------------------
+# Disc space monitoring - from inside the container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${postgisdockname:?}" df -h /
+
+        Filesystem      Size  Used Avail Use% Mounted on
+        none            315G  141G  159G  47% /
+
+

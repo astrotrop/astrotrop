@@ -511,3 +511,9 @@ EOF
 # Works on RStudio, fails on PostGIS containers - different base version.
 
 
+    library(rgdal)
+    library(rgeos)
+
+
+
+
