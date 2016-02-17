@@ -98,6 +98,7 @@
      * Java class that explicitly adds /dc:value to 
      *
      * Extends a propertyName representing a SimpleLiteral adding /dc:value at its end, and fixing
+
     public class CSWPropertyPathExtender {
         ....
 
@@ -108,8 +109,6 @@
                 }
         ....
         }
-
-
 
 # -----------------------------------------------------
 # Run our fetch consumer 
@@ -138,4 +137,36 @@
             harvester \
             run \
             -c "${ckanconf:?}/ckan.ini"
+
+
+
+# FIX
+# Reverse this change
+https://github.com/ckan/ckanext-spatial/commit/eb9cd6fc1c8bac2c1dafed29a43e975a94c918b6
+
+#
+# New issue. XML validation.
+
+    2016-02-17 17:30:09,283 INFO  [ckanext.harvest.queue] Received harvest object id: 14d3ea6f-d520-42ab-b5e1-348853cc26b9
+    2016-02-17 17:30:09,299 DEBUG [ckanext.spatial.harvesters.csw.CSW.fetch] CswHarvester fetch_stage for object: 14d3ea6f-d520-42ab-b5e1-348853cc26b9
+    2016-02-17 17:30:09,697 INFO  [ckanext.spatial.lib.csw_client] Making CSW request: getrecordbyid [u'AstroTROP:MexicanOaks'] {'esn': 'full', 'outputschema': 'http://www.isotc211.org/2005/gmd'}
+    2016-02-17 17:30:09,769 DEBUG [ckanext.spatial.harvesters.csw.CSW.fetch] XML content saved (len 3567)
+    2016-02-17 17:30:09,776 DEBUG [ckanext.spatial.harvesters.base.import] Import stage for harvest object: 14d3ea6f-d520-42ab-b5e1-348853cc26b9
+    2016-02-17 17:30:09,781 DEBUG [ckanext.spatial.validation.validation] Starting validation against profile(s) iso19139
+    2016-02-17 17:30:09,831 INFO  [ckanext.spatial.validation.validation] Validation errors found using schema Dataset schema (gmx.xsd)
+    2016-02-17 17:30:09,838 INFO  [ckanext.spatial.validation.validation] Validating against "ISO19139 XSD Schema" profile failed
+    2016-02-17 17:30:09,838 DEBUG [ckanext.spatial.validation.validation] [('Dataset schema (gmx.xsd) Validation Error', None), (u"Element '{http://www.isotc211.org/2005/gmd}dateStamp': This element is not expected. Expected is one of ( {http://www.isotc211.org/2005/gmd}language, {http://www.isotc211.org/2005/gmd}characterSet, {http://www.isotc211.org/2005/gmd}parentIdentifier, {http://www.isotc211.org/2005/gmd}hierarchyLevel, {http://www.isotc211.org/2005/gmd}hierarchyLevelName, {http://www.isotc211.org/2005/gmd}contact ).", 5)]
+    2016-02-17 17:30:09,839 ERROR [ckanext.spatial.harvesters.base] Validation errors found using profile iso19139 for object with GUID AstroTROP:MexicanOaks
+    2016-02-17 17:30:09,845 DEBUG [ckanext.harvest.model] Dataset schema (gmx.xsd) Validation Error
+    2016-02-17 17:30:09,849 DEBUG [ckanext.harvest.model] Element '{http://www.isotc211.org/2005/gmd}dateStamp': This element is not expected. Expected is one of ( {http://www.isotc211.org/2005/gmd}language, {http://www.isotc211.org/2005/gmd}characterSet, {http://www.isotc211.org/2005/gmd}parentIdentifier, {http://www.isotc211.org/2005/gmd}hierarchyLevel, {http://www.isotc211.org/2005/gmd}hierarchyLevelName, {http://www.isotc211.org/2005/gmd}contact )., line 5
+
+
+    #
+    # This doesn't look like the cause ..
+    http://www.isotc211.org/2005/gmd/metadataEntity.xsd
+
+
+
+
+
 

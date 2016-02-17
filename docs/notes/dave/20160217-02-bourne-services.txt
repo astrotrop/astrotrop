@@ -363,9 +363,41 @@ EOF
 #[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"
+
+    df -h /
     docker exec -it "${postgisdockname:?}" df -h /
 
         Filesystem      Size  Used Avail Use% Mounted on
         none            315G  141G  159G  47% /
 
+# -----------------------------------------------------
+# Run our GeoServer container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    geoservenv=$(mktemp)
+    cat > "${geoservenv:?}" <<- EOF
+# TODO GeoServer admin user and pass
+# TODO PostGIS host, user and pass
+EOF
+
+    docker run \
+        --detach \
+        --name "${geoservdockname:?}" \
+        --env-file "${geoservenv:?}" \
+        --link "${postgisdockname:?}:${postgislinkname:?}" \
+        --publish "${geoservdockport:?}:${geoservlinkport:?}" \
+        --volume "${geoservtempdir:?}:/temp" \
+        --volume "${geoservdatadir:?}:/data" \
+        --volume "${webservdatadir:?}:/www" \
+        "astrotrop/geoserver:${dockerset:?}"
+
+    docker logs -f "${geoservdockname:?}"
+
+# -----------------------------------------------------
+# Test our GeoServer service.
+#[user@desktop]
+
+    firefox 'http://geoserv-08.metagrid.xyz:8080/geoserver/web/' &
 
