@@ -76,9 +76,6 @@
     docker logs -f "${geoservname:?}"
 
 
-
-
-
 # -----------------------------------------------------
 # Install the WPS extension
 # http://docs.geoserver.org/2.4.1/user/extensions/wps/index.html
