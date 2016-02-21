@@ -1,0 +1,115 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Kings (policysupport)
+#
+
+    I have prepared a pres for the workshop on an application with the forestplots data as suggested.
+    The pres is  here<https://docs.google.com/presentation/d/1kmlliXi1GKh0A39JXr2s6q-7T2_KCSjR4MfvCsGQDUY/edit?usp=sharing> but I am struggling to see how this might interface with ASTROGRID software.
+    I can provide the plot data and GIS files for one or two of the maps but am not sure how this will then work with the software.
+
+    ....
+    
+    ARCASCII or GEOTIFF format grids representing properties of the Amazon basin at a pixel resolution of 1km
+
+    ....
+
+    Here is a smaller example (carb-stock.zip)
+    
+        astrotrop/protected/data/Kings/carb_stock
+        
+            carb_stock.asc
+            carb_stock.asc.aux.xml
+            carb_stock.prj
+            carb_stock.readme.txt
+
+                Data: Carbon stock
+    
+                Units: tonnes C/km2
+
+                Citation:
+
+                    Mosaic of:
+                        Saatchi S, Harris NL, Brown S, Lefsky M, Mitchard ET, Salas W, Zutta BR, Buermann W, Lewis SL, Hagen S, Petrova S, White L, Silman M, Morel A. (2011).
+                        Benchmark map of forest carbon stocks in tropical regions across three continents. Proc Natl Acad Sci U S A. 2011 Jun 14;108(24):9899-904.
+                    and
+                        Ruesch, Aaron, and Holly K. Gibbs. 2008. New IPCC Tier-1 Global Biomass Carbon Map For the Year 2000.
+                        Available online from the Carbon Dioxide Information Analysis Center http://cdiac.ornl.gov], Oak Ridge National Laboratory, Oak Ridge, Tennessee.
+
+    ....
+
+    I think at this stage just the one - as a demonstration.  You can use this one for the Amazon
+    https://drive.google.com/file/d/0B5Wf1ntCjOObZV9Zb1FIdE41TmM/ (pot_carbon_value.zip)
+
+        astrotrop/protected/data/Kings/pot_carbon_value
+
+            pot_carbon_value.asc
+            pot_carbon_value.prj
+            pot_carbon_value.readme.txt
+
+                Data: Relative potential carbon value index
+
+                Units: 0-1  locally
+     
+                Citation:
+
+                    Costingnature version 2 (2016) Model results from the Costingnature system (non commercial-use).
+                    http://www.policysupport.org/costingnature
+
+# -----------------------------------------------------
+# Kings (terra-i)
+#
+
+    Fires 2004 - 2016
+
+
+# -----------------------------------------------------
+# Leicester
+#
+
+    Burnt area
+        
+
+
+# -----------------------------------------------------
+# Leeds
+#
+
+    Published data files.
+
+    Website KML listing.
+
+
+# -----------------------------------------------------
+# Data so far
+#
+
+    GeoServ-05
+    http://geoserv-05.metagrid.xyz:8080/geoserver/web/
+    
+        AGB-MEX-v1      GeoTIFF - Leicester
+        carbon_stock    GeoTIFF - Kings
+
+
+
+

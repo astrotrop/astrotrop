@@ -1,0 +1,131 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# TODO
+# GeoNode stuff ...
+
+    GeoNode thumbnail uses local GeoServer as a proxy to get the thumbnail image.
+
+    http://docs.geonode.org/en/master/reference/developers/django-apps.html#geonode-proxy-assist-javascript-applications-in-accessing-remote-servers
+
+    geonode.proxy.views.geoserver
+
+        This view proxies requests to GeoServer. Instead of a URL-encoded URL parameter,
+        the path component of the request is expected to be a path component for GeoServer.
+        Requests to this URL require valid authentication against the Django site, and
+        will use the default OGC_SERVER USER, PASSWORD and LOCATION settings as defined in
+        the maps application.
+
+    Need to have the right username/password in GeoNode and GeoServer
+
+        OGC_SERVER = {
+            'default' : {
+                'BACKEND' : 'geonode.geoserver',
+                'LOCATION' : 'http://geoserv:8080/geoserver/',
+                'PUBLIC_LOCATION' : 'http://geoserv-06.metagrid.xyz:/geoserver/',
+                'USER' : 'astrotrop',
+                'PASSWORD' : 'thaephaejahjahfuacho',
+                ....
+            }
+        }
+
+
+    We should probably install the printing extension ?
+    2016-02-20 14:55:10,092 TRACE [ows.OWSHandlerMapping] - No handler mapping found for [/rest/printng/render.png]
+
+
+
+
+# -----------------------------------------------------
+# TODO
+# GeoNode stuff ...
+
+    GeoNode harvester
+    https://lists.okfn.org/pipermail/ckan-dev/2015-June/009016.html
+
+        GeoNode does provide a CSW endpoint, but there are some inconsistencies here 
+        and there, such as a really long resource list for layer records, and some 
+        difficulty in telling the resource type when harvesting a map. This harvester 
+        bypasses such issues by retrieving the records using GeoNode's own API.
+
+    GeoNode harvester for CKAN
+    https://github.com/geosolutions-it/ckanext-geonode
+
+
+# -----------------------------------------------------
+# TODO
+# CKAN stuff ...
+
+    take a static copy of the CSW output, edit and store on website
+
+    like this
+    http://data.metagrid.co.uk/astrotrop/test/test-001.xml
+    
+
+# -----------------------------------------------------
+# TODO
+# CKAN stuff ...
+
+    Automate the harvesting ?
+    
+
+# -----------------------------------------------------
+# TODO
+# GeoNode stuff ...
+    
+        geoserver/wms
+    
+    
+# -----------------------------------------------------
+# TODO add to Dockerfile
+# Install ckanext-geoview
+# https://github.com/pduchesne/ckanext-geoview
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        pushd "${ckanroot:?}"
+
+            pip install ckanext-geoview
+
+        popd
+
+        vi "${ckanconf:?}/ckan.ini"
+
+        -   ckan.plugins = .... 
+        +   ckan.plugins = .... resource_proxy geo_view geojson_view
+
+
+        -   ckan.views.default_views = ...
+        +   ckan.views.default_views = ... geo_view geojson_view
+
+        +   #
+        +   # https://github.com/pduchesne/ckanext-geoview
+        +   ckanext.geoview.ol_viewer.formats = wms wfs geojson gml kml arcgis_rest
+
+        +   #
+        +   # http://docs.ckan.org/projects/ckanext-spatial/en/latest/map-widgets.html#configuring-the-base-layer
+        +   ckanext.spatial.common_map.type = mapquest
+
+

@@ -1,0 +1,183 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Install the printing extension
+# SKIP - DIDN'T HELP :-(
+# http://docs.geoserver.org/latest/en/user/extensions/printing/index.html
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        -u root \
+        "${geoservname:?}" \
+        bash        
+
+        #
+        # Install download tools
+        dnf -y install wget
+        dnf -y install unzip
+
+        #
+        # Download and unzip the zipfile.
+        zipfile=geoserver-${GEOSERVER_VERSION:?}-printing-plugin.zip
+        zippath=/temp/${zipfile:?}
+        
+        wget -O "${zippath:?}" "http://sourceforge.net/projects/geoserver/files/GeoServer/${GEOSERVER_VERSION}/extensions/${zipfile:?}/download"
+
+        unzipped=/temp/csw-plugin
+        unzip \
+            "${zippath:?}" \
+            -d "${unzipped:?}"
+
+        #
+        # Copy the jar files into our webapp.        
+        for jarfile in $(ls ${unzipped:?}/*.jar)
+        do
+            cp --verbose --no-clobber \
+                "${jarfile:?}" \
+                "${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/WEB-INF/lib"
+        done
+
+        #
+        # Remove the zipfiles.
+        rm -rf "${unzipped:?}"
+        rm -rf "${zippath:?}"
+
+    exit
+
+# -----------------------------------------
+# Restart our GeoServer container.
+# SKIP - DIDN'T HELP :-(
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker stop  "${geoservname:?}"
+    docker start "${geoservname:?}"
+    docker logs -f "${geoservname:?}"
+
+
+
+
+
+# -----------------------------------------------------
+# Install the WPS extension
+# http://docs.geoserver.org/2.4.1/user/extensions/wps/index.html
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        -u root \
+        "${geoservname:?}" \
+        bash        
+
+        #
+        # Install download tools
+        dnf -y install wget
+        dnf -y install unzip
+
+        #
+        # Download and unzip the zipfile.
+        zipfile=geoserver-${GEOSERVER_VERSION:?}-wps-plugin.zip
+        zippath=/temp/${zipfile:?}
+        
+        wget -O "${zippath:?}" "http://sourceforge.net/projects/geoserver/files/GeoServer/${GEOSERVER_VERSION}/extensions/${zipfile:?}/download"
+
+        unzipped=/temp/csw-plugin
+        unzip \
+            "${zippath:?}" \
+            -d "${unzipped:?}"
+
+        #
+        # Copy the jar files into our webapp.        
+        for jarfile in $(ls ${unzipped:?}/*.jar)
+        do
+            cp --verbose \
+                "${jarfile:?}" \
+                "${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/WEB-INF/lib"
+        done
+
+        #
+        # Remove the zipfiles.
+        rm -rf "${unzipped:?}"
+        rm -rf "${zippath:?}"
+
+    exit
+
+# -----------------------------------------------------
+# Install the printng extension, and dependencies.
+# https://repo.boundlessgeo.com/main/org/opengeo/geoserver/printng/
+# https://repo.boundlessgeo.com/main/org/opengeo/geoserver/printng/2.8-SNAPSHOT/printng-2.8-20151216.160057-3.pom
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        -u root \
+        "${geoservname:?}" \
+        bash        
+
+        pushd ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/WEB-INF/lib
+
+            wget "https://repo.boundlessgeo.com/main/org/opengeo/geoserver/printng/2.8-SNAPSHOT/printng-2.8-20151216.160057-3.jar"
+
+            #wget "http://central.maven.org/maven2/org/xhtmlrenderer/core-renderer/R8/core-renderer-R8.jar"
+            wget "http://central.maven.org/maven2/org/xhtmlrenderer/flying-saucer-core/9.0.8/flying-saucer-core-9.0.8.jar"
+            wget "http://central.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/1.2.1/tagsoup-1.2.1.jar"
+
+        popd
+    exit
+
+
+# -----------------------------------------------------
+# Install the full JRE (headless fails to load fonts)
+# http://stackoverflow.com/a/30650244
+#
+#   2016-02-20 23:15:00,857 DEBUG [printng.spi] - configuring render size from document to java.awt.Dimension[width=617,height=363]
+#   2016-02-20 23:15:00,994 ERROR [geoserver.rest] - Exception intercepted
+#   java.lang.NullPointerException
+#       at sun.awt.FontConfiguration.getVersion(FontConfiguration.java:1264)
+#       at sun.awt.FontConfiguration.readFontConfigFile(FontConfiguration.java:219)
+#
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        -u root \
+        "${geoservname:?}" \
+        bash        
+
+        dnf install -y openjdk-8-jre
+
+    exit
+
+# -----------------------------------------
+# Restart our GeoServer container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker stop  "${geoservname:?}"
+    docker start "${geoservname:?}"
+
+    #docker logs -f "${geoservname:?}"
+    tail -f /var/local/astrotrop/data/geoserv/logs/geoserver.log 
+
+

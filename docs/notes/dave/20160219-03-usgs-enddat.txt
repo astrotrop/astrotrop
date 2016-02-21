@@ -1,0 +1,48 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    Environmental Data Discovery and Transformation
+    http://cida.usgs.gov/enddat/
+
+
+    http://cida.usgs.gov/enddat/UserGuide.jsp
+
+        The Environmental Data Discovery and Transformation (EnDDaT) service is a tool
+        used to discover data from a variety of data sources, collect and process the
+        data, and perform basic transformations.
+
+        The end result is that environmental data from multiple sources is sorted into
+        a single table. This user guide will step through the process of obtaining data,
+        and describe available transforms and processing available for the data.
+    
+
+
+    Water watch
+    http://waterwatch.usgs.gov/index.php?id=ww    
+    
+    
+    USGS Geo Data Portal
+    http://cida.usgs.gov/gdp/
+
+
+

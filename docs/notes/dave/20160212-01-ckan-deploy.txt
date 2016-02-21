@@ -919,3 +919,36 @@ EOF
             run \
             -c "${ckanconf:?}/ckan.ini"
 
+
+# -----------------------------------------------------
+# TODO ckanext-geoview
+# https://github.com/pduchesne/ckanext-geoview
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" bash
+
+        pushd "${ckanroot:?}"
+
+            pip install ckanext-geoview
+
+        popd
+
+        vi "${ckanconf:?}/ckan.ini"
+
+        -   ckan.plugins = .... 
+        +   ckan.plugins = .... resource_proxy geo_view geojson_view
+
+
+        -   ckan.views.default_views = ...
+        +   ckan.views.default_views = ... geo_view geojson_view
+
+        +   #
+        +   # https://github.com/pduchesne/ckanext-geoview
+        +   ckanext.geoview.ol_viewer.formats = wms wfs geojson gml kml arcgis_rest
+
+        +   #
+        +   # http://docs.ckan.org/projects/ckanext-spatial/en/latest/map-widgets.html#configuring-the-base-layer
+        +   ckanext.spatial.common_map.type = mapquest
+
+

@@ -1,0 +1,495 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Create our target machine.
+#[user@desktop]
+
+    https://cloud.digitalocean.com/droplets
+
+    droplet : astrotrop-09
+    image   : Docker 1.10.1 on Ubuntu-14.04
+
+       1 CPU 
+      1G memory
+     30G disk space
+
+    ipv4 : 188.166.145.152
+    ipv6 : 2a03:b0c0:1:a1::5:1
+
+# -----------------------------------------------------
+# Update our DNS records.
+#[admin@network]
+
+        $ORIGIN ocean.metagrid.co.uk
+
+    +   astrotrop-09    A       188.166.145.152
+    +   astrotrop-09    AAAA    2a03:b0c0:1:a1::5:1
+
+        $ORIGIN metagrid.xyz
+
+    +   geonode-09  CNAME  astrotrop-09.ocean.metagrid.co.uk.
+
+
+# -----------------------------------------------------
+# Check our DNS records.
+#[user@desktop]
+
+    host geonode-09.metagrid.xyz
+
+        geonode-09.metagrid.xyz is an alias for astrotrop-09.ocean.metagrid.co.uk.
+        astrotrop-09.ocean.metagrid.co.uk has address 188.166.145.152
+        astrotrop-09.ocean.metagrid.co.uk has IPv6 address 2a03:b0c0:1:a1::5:1
+
+# -----------------------------------------------------
+# Update our SSH config.
+#[user@desktop]
+
+    gedit "${HOME:?}/.ssh/config" &
+
+    -   Host .... astrotrop-07
+    +   Host .... astrotrop-07 astrotrop-08
+            User root
+            HostName %h.ocean.metagrid.co.uk
+            IdentityFile ~/.ssh/zrq.digitalocean.com.rsa
+            Protocol 2
+            Compression yes
+            PasswordAuthentication no
+
+# -----------------------------------------
+# SSH login to the server.
+#[user@desktop]
+
+    ssh astrotrop-09
+
+# -----------------------------------------
+# Disable plain text password login.
+#[root@virtual]
+
+    sed -i '
+        s/^#PasswordAuthentication.*$/PasswordAuthentication no/
+        ' /etc/ssh/sshd_config
+
+    service ssh restart
+
+# -----------------------------------------
+# Install admin tools.
+#[root@virtual]
+
+    apt-get update
+
+    apt-get -y install htop
+
+    apt-get -y install pwgen
+
+# -----------------------------------------------------
+# Install and start the HAVEGE entropy generator.
+# http://redmine.roe.ac.uk/issues/828
+# http://blog-ftweedal.rhcloud.com/2014/05/more-entropy-with-haveged/
+# http://stackoverflow.com/questions/26021181/not-enough-entropy-to-support-dev-random-in-docker-containers-running-in-boot2d/
+#[root@virtual]
+
+    apt-get -y install haveged
+
+    service haveged status
+
+        * haveged is running
+    
+# -----------------------------------------------------
+# Check Docker is installed and running..
+#[root@virtual]
+
+    docker info
+
+        Containers: 0
+         Running: 0
+         Paused: 0
+         Stopped: 0
+        Images: 0
+        Server Version: 1.10.1
+        Storage Driver: aufs
+         Root Dir: /var/lib/docker/aufs
+         Backing Filesystem: extfs
+         Dirs: 0
+         Dirperm1 Supported: false
+        Execution Driver: native-0.2
+        Logging Driver: json-file
+        Plugins: 
+         Volume: local
+         Network: bridge null host
+        Kernel Version: 3.13.0-77-generic
+        Operating System: Ubuntu 14.04.3 LTS
+        OSType: linux
+        Architecture: x86_64
+        CPUs: 1
+        Total Memory: 994 MiB
+        Name: astrotrop-09
+        ID: D7UP:ZYFC:I2UV:HS4V:SJSH:RVUS:3K7A:DV5Q:ZKYX:4DNC:DMYY:ADL5
+
+# -----------------------------------------------------
+# Configure our build.
+#[root@virtual]
+
+    cat > "${HOME:?}/astrotrop.conf" << EOF
+
+        dockerset=1.2
+
+        project=/var/local/astrotrop
+        tempdir=\${project:?}/temp
+        datadir=\${project:?}/data
+
+        tomcatuid=995:994
+
+        dnsname=metagrid.xyz
+
+EOF
+
+# -----------------------------------------------------
+# Create our data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+cat > "${HOME:?}/tools" << 'EOF'
+
+    rmdata()
+        {
+        local path=${1:?}
+        if [ -e "${path}" ]
+        then
+            rm -rf "${path}"
+        fi
+        }
+
+    mkdata()
+        {
+        local path=${1:?}
+        local user=${2:-}
+        if [ ! -e "${path}" ]
+        then
+            mkdir --parents "${path:?}"
+        fi
+        if [ -n "${user:-}" ]
+        then
+            chown -R "${user:?}" "${path:?}"
+        fi
+
+        # Only if SELinux enabled        
+        # chcon -t svirt_sandbox_file_t "${path:?}"
+
+        }
+
+EOF
+
+    source "${HOME:?}/tools"
+
+    rmdata "${tempdir:?}"
+    rmdata "${datadir:?}"
+
+    mkdata "${tempdir:?}"
+    mkdata "${datadir:?}"
+
+
+# -----------------------------------------------------
+# Configure our PostGIS container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" <<- EOF
+
+        postgisdockname=postgis
+        postgisdockport=5432
+        postgislinkname=postgis
+        postgislinkport=5432
+
+        postgistempdir=\${tempdir:?}/postgis
+        postgisdatadir=\${datadir:?}/postgis
+
+        postgishostname=postgis-09.\${dnsname:?}
+
+        postgisdatabase=postgisdata
+        postgisusername=postgisuser
+        postgispassword=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Create our PostGIS data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${postgistempdir:?}"
+    rmdata "${postgisdatadir:?}"
+
+    mkdata "${postgistempdir:?}"
+    mkdata "${postgisdatadir:?}"
+
+# -----------------------------------------------------
+# Run our PostGIS container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    postgisenv=$(mktemp)
+    cat > "${postgisenv:?}" <<- EOF
+PGDATA=/data/pgdata
+POSTGRES_DB=${postgisdatabase:?}
+POSTGRES_USER=${postgisusername:?}
+POSTGRES_PASSWORD=${postgispassword:?}
+EOF
+
+    docker run \
+        --detach \
+        --name "${postgisdockname:?}" \
+        --env-file "${postgisenv:?}" \
+        --expose "${postgisdockport:?}" \
+        --volume "${postgisdatadir:?}:/data" \
+        --volume "${postgistempdir:?}:/temp" \
+        "astrotrop/postgis:${dockerset:?}"
+
+# -----------------------------------------------------
+# Test our PostGIS container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${postgisdockname:?}" psql \
+        --dbname "${postgisdatabase:?}" \
+        --username "${postgisusername:?}" \
+        --command "SELECT version()"
+
+         #
+         # PostgreSQL 9.4.5 on x86_64-unknown-linux-gnu, compiled by gcc (Debian 4.9.2-10) 4.9.2, 64-bit
+         #
+
+    docker exec -it "${postgisdockname:?}" psql \
+        --dbname "${postgisdatabase:?}" \
+        --username "${postgisusername:?}" \
+        --command "SELECT postgis_full_version()"
+
+        #
+        # POSTGIS="2.2.1 r14555" GEOS="3.4.2-CAPI-1.8.2 r3921" PROJ="Rel. 4.8.0, 6 March 2012" GDAL="GDAL 1.10.1, released 2013/08/26" LIBXML="2.9.1" LIBJSON="0.11.99" TOPOLOGY RASTER
+        #
+
+# -----------------------------------------
+# Configure our GeoNode container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        geonodedockname=geonode
+
+        geonodelinkport=8000
+        geonodelinkname=geonode
+
+        geonodehostport=8000
+        geonodehostname=geonode-09.\${dnsname:?}
+
+        geonodeexternal=http://\${geonodehostname:?}:\${geonodehostport:?}/
+        geonodeinternal=http://\${geonodelinkname:?}:\${geonodelinkport:?}/
+
+        geonodeusername=astrotrop
+        geonodepassword=$(pwgen 20 1)
+
+        geonodedatabase=geonodedata
+        geonodedatastor=geonodedatastor
+        geonodedatauser=geonodedata
+        geonodedatapass=$(pwgen 20 1)
+
+        geonodetemp=\${tempdir:?}/geonode
+        geonodedata=\${datadir:?}/geonode
+
+EOF
+
+# -----------------------------------------
+# Configure our GeoServer connection.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        geoservhostport=8080
+        geoservhostname=geoserv-06.\${dnsname:?}
+        geoservexternal=http://\${geoservhostname:?}:\${geoservhostport:?}/geoserver/
+        geoservinternal=http://\${geoservhostname:?}:\${geoservhostport:?}/geoserver/
+
+        geoservusername=astrotrop
+        geoservpassword=thaephaejahjahfuacho
+
+EOF
+
+# -----------------------------------------------------
+# Create our GeoNode data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${geonodetemp:?}"
+    rmdata "${geonodedata:?}"
+
+    mkdata "${geonodetemp:?}"
+    mkdata "${geonodedata:?}"
+
+# -----------------------------------------
+# Configure our GeoNode container.
+# TODO Move this to config() script
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    geonodeenv=$(mktemp)
+    cat > "${geonodeenv:?}" << EOF
+
+POSTGIS_HOSTNAME=${postgislinkname:?}
+POSTGIS_HOSTPORT=${postgislinkport:?}
+POSTGIS_DATABASE=${postgisdatabase:?}
+POSTGIS_USERNAME=${postgisusername:?}
+POSTGIS_PASSWORD=${postgispassword:?}
+
+SITEURL=${geonodeexternal:?}
+
+DATABASE_NAME=${geonodedatabase:?}
+DATABASE_HOST=${postgislinkname:?}
+DATABASE_PORT=${postgislinkport:?}
+DATABASE_USER=${geonodedatauser:?}
+DATABASE_PASS=${geonodedatapass:?}
+
+DATASTORE_NAME=${geonodedatastor:?}
+DATASTORE_HOST=${postgislinkname:?}
+DATASTORE_PORT=${postgislinkport:?}
+DATASTORE_USER=${geonodedatauser:?}
+DATASTORE_PASS=${geonodedatapass:?}
+
+OGC_SERVER_LOCAL=${geoservinternal:?}
+OGC_SERVER_PUBLIC=${geoservexternal:?}
+OGC_SERVER_USER=${geoservusername:?}
+OGC_SERVER_PASS=${geoservpassword:?}
+
+EOF
+
+# -----------------------------------------
+# Run our GeoNode container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        -it \
+        --env-file "${geonodeenv:?}" \
+        --link "${postgisdockname:?}:${postgislinkname:?}" \
+        "astrotrop/geonode:${dockerset:?}" \
+        bash
+
+        cat > ~/.pgpass << EOF
+${POSTGIS_HOSTNAME:?}:*:*:${POSTGIS_USERNAME:?}:${POSTGIS_PASSWORD:?}
+EOF
+        chmod u=rw,g=,o= ~/.pgpass
+
+        psql \
+            --host "${POSTGIS_HOSTNAME:?}" \
+            --username "${POSTGIS_USERNAME:?}" \
+            --dbname "${POSTGIS_DATABASE}" \
+            << EOF
+
+            CREATE USER     ${DATABASE_USER:?}  WITH LOGIN PASSWORD '${DATABASE_PASS:?}' ;
+            CREATE DATABASE ${DATABASE_NAME:?}  WITH OWNER ${DATABASE_USER:?} ;
+            CREATE DATABASE ${DATASTORE_NAME:?} WITH OWNER ${DATABASE_USER:?} ;
+
+            \c ${DATASTORE_NAME:?}
+
+            CREATE EXTENSION postgis ;
+            GRANT ALL ON geometry_columns TO PUBLIC ;
+            GRANT ALL ON spatial_ref_sys  TO PUBLIC ;
+
+EOF
+
+    exit
+
+# -----------------------------------------
+# Run our GeoNode container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        --detach \
+        --name "${geonodedockname:?}" \
+        --env-file "${geonodeenv:?}" \
+        --publish "${geonodehostport:?}:${geonodelinkport:?}" \
+        --link "${postgisdockname:?}:${postgislinkname:?}" \
+        --volume "${geonodetemp:?}:/temp" \
+        --volume "${geonodedata:?}:/data" \
+        "astrotrop/geonode:${dockerset:?}"
+
+    source "${HOME:?}/astrotrop.conf"
+    docker logs -f \
+        "${geonodedockname:?}"
+
+# -----------------------------------------------------
+# Configure our GeoNode service.
+# TODO Move this to config() script
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        "${geonodedockname:?}" \
+        bash
+
+        pushd /geonode
+        
+            python manage.py syncdb --noinput
+
+            python manage.py createsuperuser
+
+                Username: astrotrop
+                Email address: geonode-admin@metagrid.xyz
+                Password: 
+                Password (again): 
+                Superuser created successfully.
+
+#    #
+#    # https://docs.djangoproject.com/es/1.9/ref/django-admin/#createsuperuser
+#    python manage.py \
+#        createsuperuser \
+#            --username USERNAME \
+#            --email grumbles@example.com
+#
+#    #
+#    # https://docs.djangoproject.com/es/1.9/ref/django-admin/#changepassword
+#    python manage.py \
+#        changepassword \
+#            USERNAME
+#
+# Python solution
+# http://stackoverflow.com/a/6244481
+# http://stackoverflow.com/a/22722410
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Test our GeoNode service.
+#[user@desktop]
+
+    firefox 'http://geonode-09.metagrid.xyz:8000/' &
+

@@ -401,3 +401,9 @@ EOF
 
     firefox 'http://geoserv-08.metagrid.xyz:8080/geoserver/web/' &
 
+
+# -----------------------------------------------------
+# Need to add CSW to our GeoServer.
+#[user@desktop]
+
+

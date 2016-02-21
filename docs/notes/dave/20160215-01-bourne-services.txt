@@ -129,6 +129,10 @@
 #[root@virtual]
 
     apt-get -y install haveged
+
+    service haveged status
+
+        * haveged is running
     
 # -----------------------------------------------------
 # Check Docker is installed and running..

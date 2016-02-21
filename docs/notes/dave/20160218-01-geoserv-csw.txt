@@ -1,0 +1,354 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # CKAN-07 harvest of metadata from GeoServ-06
+    http://ckanreg-07.metagrid.xyz/harvest/geoserv-06
+
+        Harvest source 
+        URL  : http://geoserv-06.metagrid.xyz:8080/geoserver/ows
+        Type : CSW server
+
+    #
+    # Gather process now works (need to remove the sortby in the request) 
+
+        2016-02-18 11:29:30,663 DEBUG [ckanext.spatial.harvesters.csw.CSW.gather] Starting gathering for http://geoserv-06.metagrid.xyz:8080/geoserver/ows
+        2016-02-18 11:29:30,663 INFO  [ckanext.spatial.lib.csw_client]
+            Making CSW request: 
+                getrecords2 {
+                    'outputschema': 'http://www.isotc211.org/2005/gmd',
+                    'cql': None,
+                    'startposition': 0,
+                    'typenames': 'csw:Record',
+                    'maxrecords': 10,
+                    'esn': 'brief',
+                    'constraints': []
+                    }
+        2016-02-18 11:29:30,993 INFO  [ckanext.spatial.harvesters.csw.CSW.gather] Got identifier AstroTROP:MexicanTowns from the CSW
+        2016-02-18 11:29:30,993 INFO  [ckanext.spatial.harvesters.csw.CSW.gather] Got identifier AstroTROP:MexicanStates from the CSW
+        2016-02-18 11:29:30,994 INFO  [ckanext.spatial.harvesters.csw.CSW.gather] Got identifier AstroTROP:MexicanOaks from the CSW
+
+    #
+    # Fetch process fails with validation errors.
+
+        2016-02-18 11:32:34,299 INFO  [ckanext.harvest.queue] Received harvest object id: dc7928c8-35af-45fc-91d4-764d433f819e
+        2016-02-18 11:32:34,331 DEBUG [ckanext.spatial.harvesters.csw.CSW.fetch] CswHarvester fetch_stage for object: dc7928c8-35af-45fc-91d4-764d433f819e
+        2016-02-18 11:32:34,767 INFO  [ckanext.spatial.lib.csw_client] Making CSW request: getrecordbyid [u'AstroTROP:MexicanTowns'] {'esn': 'full', 'outputschema': 'http://www.isotc211.org/2005/gmd'}
+        2016-02-18 11:32:34,959 DEBUG [ckanext.spatial.harvesters.csw.CSW.fetch] XML content saved (len 3579)
+        2016-02-18 11:32:34,973 DEBUG [ckanext.spatial.harvesters.base.import] Import stage for harvest object: dc7928c8-35af-45fc-91d4-764d433f819e
+        2016-02-18 11:32:34,977 DEBUG [ckanext.spatial.validation.validation] Starting validation against profile(s) iso19139
+        2016-02-18 11:32:35,024 INFO  [ckanext.spatial.validation.validation] Validation errors found using schema Dataset schema (gmx.xsd)
+        2016-02-18 11:32:35,029 INFO  [ckanext.spatial.validation.validation] Validating against "ISO19139 XSD Schema" profile failed
+        2016-02-18 11:32:35,029 DEBUG [ckanext.spatial.validation.validation]
+            [
+                (
+                    'Dataset schema (gmx.xsd) Validation Error', None),
+                    (
+                    u"Element '{http://www.isotc211.org/2005/gmd}dateStamp': 
+                        This element is not expected.
+                        Expected is one of (
+                            {http://www.isotc211.org/2005/gmd}language,
+                            {http://www.isotc211.org/2005/gmd}characterSet,
+                            {http://www.isotc211.org/2005/gmd}parentIdentifier,
+                            {http://www.isotc211.org/2005/gmd}hierarchyLevel,
+                            {http://www.isotc211.org/2005/gmd}hierarchyLevelName,
+                            {http://www.isotc211.org/2005/gmd}contact
+                            ).",
+                    5
+                )
+            ]
+        2016-02-18 11:32:35,030 ERROR [ckanext.spatial.harvesters.base] Validation errors found using profile iso19139 for object with GUID AstroTROP:MexicanTowns
+        2016-02-18 11:32:35,037 DEBUG [ckanext.harvest.model] Dataset schema (gmx.xsd) Validation Error
+        2016-02-18 11:32:35,041 DEBUG [ckanext.harvest.model]
+            Element '{http://www.isotc211.org/2005/gmd}dateStamp':
+            This element is not expected.
+            Expected is one of (
+                {http://www.isotc211.org/2005/gmd}language,
+                {http://www.isotc211.org/2005/gmd}characterSet,
+                {http://www.isotc211.org/2005/gmd}parentIdentifier,
+                {http://www.isotc211.org/2005/gmd}hierarchyLevel,
+                {http://www.isotc211.org/2005/gmd}hierarchyLevelName,
+                {http://www.isotc211.org/2005/gmd}contact
+                ).,line 5
+
+
+    #
+    # Response from GeoServer.
+    <?xml version="1.0" encoding="UTF-8"?>
+    <csw:GetRecordByIdResponse
+        xmlns="http://www.opengis.net/cat/csw/apiso/1.0"
+        xmlns:csw="http://www.opengis.net/cat/csw/2.0.2"
+        xmlns:gco="http://www.isotc211.org/2005/gco"
+        xmlns:gmd="http://www.isotc211.org/2005/gmd"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+            http://www.opengis.net/cat/csw/2.0.2
+            http://geoserv-06.metagrid.xyz:8080/geoserver/schemas/csw/2.0.2/CSW-discovery.xsd
+            ">
+        <gmd:MD_Metadata>
+            <gmd:fileIdentifier>
+                <gco:CharacterString>AstroTROP:MexicanOaks</gco:CharacterString>
+            </gmd:fileIdentifier>
+            <gmd:dateStamp>
+                <gco:Date>Unknown</gco:Date>
+            </gmd:dateStamp>
+            <gmd:contact>
+                <gmd:CI_ResponsibleParty>
+                    <gmd:individualName>
+                        <gco:CharacterString>GeoServer</gco:CharacterString>
+                    </gmd:individualName>
+                </gmd:CI_ResponsibleParty>
+            </gmd:contact>
+            ....
+            ....
+            ....
+        </gmd:MD_Metadata>
+    </csw:GetRecordByIdResponse>
+
+    #
+    # ISO 19115 and 19115-2 metadata standards
+    # Specific sequence - contact should be before dateStamp
+    # https://geo-ide.noaa.gov/wiki/index.php?title=MI_Metadata
+
+    #
+    # Validation Error Guidance
+    # https://geo-ide.noaa.gov/wiki/index.php?title=Validation_Error_Guidance
+
+    #
+    # Example validation analysis
+    # https://sourceforge.net/p/geonetwork/mailman/message/26771631/
+
+    #
+    # XML schema - contact is before dateStamp
+    # http://schemas.opengis.net/iso/19139/20070417/gmd/metadataEntity.xsd
+	<xs:complexType name="MD_Metadata_Type">
+		<xs:annotation>
+			<xs:documentation>Information about the metadata</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="gco:AbstractObject_Type">
+				<xs:sequence>
+					<xs:element name="fileIdentifier" type="gco:CharacterString_PropertyType" minOccurs="0"/>
+					<xs:element name="language" type="gco:CharacterString_PropertyType" minOccurs="0"/>
+					<xs:element name="characterSet" type="gmd:MD_CharacterSetCode_PropertyType" minOccurs="0"/>
+					<xs:element name="parentIdentifier" type="gco:CharacterString_PropertyType" minOccurs="0"/>
+					<xs:element name="hierarchyLevel" type="gmd:MD_ScopeCode_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="hierarchyLevelName" type="gco:CharacterString_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="contact" type="gmd:CI_ResponsibleParty_PropertyType" maxOccurs="unbounded"/>
+					<xs:element name="dateStamp" type="gco:Date_PropertyType"/>
+					<xs:element name="metadataStandardName" type="gco:CharacterString_PropertyType" minOccurs="0"/>
+					<xs:element name="metadataStandardVersion" type="gco:CharacterString_PropertyType" minOccurs="0"/>
+					<xs:element name="dataSetURI" type="gco:CharacterString_PropertyType" minOccurs="0"/>
+					<xs:element name="locale" type="gmd:PT_Locale_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="spatialRepresentationInfo" type="gmd:MD_SpatialRepresentation_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="referenceSystemInfo" type="gmd:MD_ReferenceSystem_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="metadataExtensionInfo" type="gmd:MD_MetadataExtensionInformation_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="identificationInfo" type="gmd:MD_Identification_PropertyType" maxOccurs="unbounded"/>
+					<xs:element name="contentInfo" type="gmd:MD_ContentInformation_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="distributionInfo" type="gmd:MD_Distribution_PropertyType" minOccurs="0"/>
+					<xs:element name="dataQualityInfo" type="gmd:DQ_DataQuality_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="portrayalCatalogueInfo" type="gmd:MD_PortrayalCatalogueReference_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="metadataConstraints" type="gmd:MD_Constraints_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="applicationSchemaInfo" type="gmd:MD_ApplicationSchemaInformation_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="metadataMaintenance" type="gmd:MD_MaintenanceInformation_PropertyType" minOccurs="0"/>
+					<xs:element name="series" type="gmd:DS_Aggregate_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="describes" type="gmd:DS_DataSet_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="propertyType" type="gco:ObjectReference_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="featureType" type="gco:ObjectReference_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+					<xs:element name="featureAttribute" type="gco:ObjectReference_PropertyType" minOccurs="0" maxOccurs="unbounded"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+
+    #
+    # GeoTools source code (XML handling components in GeoServer).
+    # https://github.com/geotools/geotools/tree/master/modules/library/xml/src/main/java/org/geotools/xml/schema
+    
+    #
+    # GeoSever tutorial (video)
+    # https://www.youtube.com/watch?v=yMejg2IGcAg
+    
+    #
+    # Gitted (LCX container)
+    # https://github.com/geonef/gitted.geoserver.demo
+    
+
+    #
+    # GeoServer CWS tutorial
+    # http://docs.geoserver.org/stable/en/user/extensions/csw/tutorial.html
+    
+    #
+    # Check the CSW config
+
+    source ~/astrotrop.conf 
+    docker exec -it "${geoservname:?}" bash
+
+        pushd /var/local/tomcat/
+            pushd webapps
+                pushd geoserver
+                    pushd data/csw
+
+cat > MD_Metadata << 'EOF'
+@fileIdentifier.CharacterString=prefixedName
+identificationInfo.AbstractMD_Identification.citation.CI_Citation.title.CharacterString=title
+identificationInfo.AbstractMD_Identification.descriptiveKeywords.MD_Keywords.keyword.CharacterString=keywords
+identificationInfo.AbstractMD_Identification.abstract.CharacterString=abstract
+hierarchyLevel.MD_ScopeCode.@codeListValue='http://purl.org/dc/dcmitype/Dataset'
+$contact.CI_ResponsibleParty.individualName.CharacterString='John Smith'
+$dateStamp.Date= if_then_else ( isNull("metadata.date") , 'Unknown', "metadata.date")
+EOF
+
+ln -s MD_Metadata MD_Metadata.properties
+
+                    popd
+                popd
+            popd
+        popd
+    exit
+    
+    docker stop  "${geoservname:?}"
+    sleep 5
+    docker start "${geoservname:?}"
+    sleep 5
+    docker logs -f "${geoservname:?}"
+
+    #
+    # Check the results ...
+
+    <csw:GetRecordByIdResponse
+        xsi:schemaLocation="
+        http://www.opengis.net/cat/csw/2.0.2
+        http://geoserv-06.metagrid.xyz:8080/geoserver/schemas/csw/2.0.2/CSW-discovery.xsd
+        ">
+        <gmd:MD_Metadata>
+            <gmd:fileIdentifier>
+                <gco:CharacterString>AstroTROP:MexicanOaks</gco:CharacterString>
+            </gmd:fileIdentifier>
+            <gmd:dateStamp>
+                <gco:Date>Unknown</gco:Date>
+            </gmd:dateStamp>
+            <gmd:contact>
+                <gmd:CI_ResponsibleParty>
+                    <gmd:individualName>
+                        <gco:CharacterString>GeoServer</gco:CharacterString>
+                    </gmd:individualName>
+                </gmd:CI_ResponsibleParty>
+            </gmd:contact>
+            ....
+        </gmd:MD_Metadata>
+    </csw:GetRecordByIdResponse>
+
+    #
+    # Use symlinks to swap between properties files.
+    /var/local/astrotrop/data/geoserv/csw
+
+        MD_Metadata.date    
+        MD_Metadata.nodate    
+
+        MD_Metadata.properties -> MD_Metadata.nodate
+
+            <ows:ExceptionReport
+                xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                xmlns:ows="http://www.opengis.net/ows"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                version="1.0.0"
+                xsi:schemaLocation="
+                    http://www.opengis.net/ows
+                    http://geoserv-06.metagrid.xyz:8080/geoserver/schemas/ows/1.0.0/owsExceptionReport.xsd
+                    ">
+                <ows:Exception exceptionCode="NoApplicableCode">
+                    <ows:ExceptionText>
+                        java.lang.IllegalStateException:
+                            Failed to build feature 'http://www.isotc211.org/2005/gmd:MD_Metadata_Type';
+                                its property 'http://www.isotc211.org/2005/gmd:dateStamp' requires at least 1 occurrence(s) but number of occurrences was 0.
+                            Failed to build feature 'http://www.isotc211.org/2005/gmd:MD_Metadata_Type';
+                                its property 'http://www.isotc211.org/2005/gmd:dateStamp' requires at least 1 occurrence(s) but number of occurrences was 0.
+                    </ows:ExceptionText>
+                </ows:Exception>
+            </ows:ExceptionReport>
+
+        MD_Metadata.properties -> MD_Metadata.date
+
+            <?xml version="1.0" encoding="UTF-8"?>
+            <csw:GetRecordByIdResponse
+                xmlns="http://www.opengis.net/cat/csw/apiso/1.0"
+                xmlns:csw="http://www.opengis.net/cat/csw/2.0.2"
+                xmlns:gco="http://www.isotc211.org/2005/gco"
+                xmlns:gmd="http://www.isotc211.org/2005/gmd"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="
+                    http://www.opengis.net/cat/csw/2.0.2
+                    http://geoserv-06.metagrid.xyz:8080/geoserver/schemas/csw/2.0.2/CSW-discovery.xsd
+                    ">
+                <gmd:MD_Metadata>
+                    <gmd:fileIdentifier>
+                        <gco:CharacterString>AstroTROP:MexicanOaks</gco:CharacterString>
+                    </gmd:fileIdentifier>
+                    <gmd:dateStamp>
+                        <gco:Date>Unknown</gco:Date>
+                    </gmd:dateStamp>
+                    <gmd:contact>
+                        <gmd:CI_ResponsibleParty>
+                            <gmd:individualName>
+                                <gco:CharacterString>GeoServer</gco:CharacterString>
+                            </gmd:individualName>
+                        </gmd:CI_ResponsibleParty>
+                    </gmd:contact>
+                    ....
+                    ....
+                    ....
+                </gmd:MD_Metadata>
+            </csw:GetRecordByIdResponse>
+
+        #
+        # Summary
+        # - if no properties file, server reverts to defaukts.
+        # - properties file with no date causes an exception
+        # - properties file with date does not control the sequence
+        # - properties file with date controls the default (null) value
+       
+            $dateStamp.Date= if_then_else ( isNull("metadata.date") , 'toad', "metadata.date")
+
+            <gco:Date>toad</gco:Date>
+
+
+        #
+        # Can't find the code that generates the XML.
+        # Can't find the code that reads the properties file.
+
+
+        #
+        # Searching for the properties file name finds this class.
+        org.geoserver.csw.records.iso.MetaDataDescriptor
+
+
+
+        #
+        # GeoTools source code.
+        # https://github.com/geotools/geotools
+
+        #
+        # GeoServer source code.
+        # https://sourceforge.net/projects/geoserver
+
+
