@@ -1,0 +1,645 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Project data
+#
+
+# -----------------------------------------------------
+# Bournmouth
+#
+
+    geonode-08
+    geoserv-08
+    postgis-08
+    rstudio-08
+
+        geostats
+            shapefiles
+            cvs text
+            MODIS tiff    
+
+        TODO - Add the raster data into PostGIS
+
+# -----------------------------------------------------
+# Leicester
+# 
+
+    geonode-10
+    geoserv-10
+    postgis-10
+
+
+        Aboveground Biomass and Uncertainty Map for Mexico
+        AGB-MEX-v1.tiff (230M x 2) ~ 500M
+
+        Forest_Non-Forest_Mexico 122M
+
+            1 = Forest
+            The No Data Value is Non-Forest or Other
+
+        Forest_Non-Forest_Congo 126M
+
+            0 = unclassified
+            1 = Forest
+            2 = Non-Forest
+
+        Documentation (broken links)
+            
+            http://www.gionet.eu/
+            http://www2.le.ac.uk/colleges/scieng/research/centres/clcr/Past%20projects/copy_of_gionet
+
+            http://www.gionet.eu/wp-content/uploads/2014/06/Deforestation-map-of-the-Congo-basin-from-1996-to-the-present.pdf
+            http://www.gionet.eu/wp-content/uploads/GIONET_Deliverable_D2_Global_Biomass_Information_System_PedroRVeiga.pdf
+
+# -----------------------------------------------------
+# Kings
+# 
+
+    geonode-11
+    geoserv-11
+    postgis-11
+
+        Carbon stock (4.5M)
+
+            carb_stock.asc
+            carb_stock.asc.aux.xml
+            carb_stock.prj
+            carb_stock.readme.txt
+
+                Data: Carbon stock
+
+                Units: tonnes C/km2
+
+                Citation:
+
+                    Mosaic of:
+                        Saatchi S, Harris NL, Brown S, Lefsky M, Mitchard ET, Salas W, Zutta BR, Buermann W, Lewis SL, Hagen S, Petrova S, White L, Silman M, Morel A. (2011).
+                        Benchmark map of forest carbon stocks in tropical regions across three continents. Proc Natl Acad Sci U S A. 2011 Jun 14;108(24):9899-904.
+                    and
+                        Ruesch, Aaron, and Holly K. Gibbs. 2008. New IPCC Tier-1 Global Biomass Carbon Map For the Year 2000.
+                        Available online from the Carbon Dioxide Information Analysis Center http://cdiac.ornl.gov], Oak Ridge National Laboratory, Oak Ridge, Tennessee.
+
+        Potential carbon (200M)
+
+            pot_carbon_value.asc
+            pot_carbon_value.prj
+            pot_carbon_value.readme.txt
+
+                Data: Relative potential carbon value index
+
+                Units: 0-1  locally
+     
+                Citation:
+
+                    Costingnature version 2 (2016) Model results from the Costingnature system (non commercial-use).
+                    http://www.policysupport.org/costingnature
+
+
+
+
+
+# -----------------------------------------------------
+# Leeds
+#
+
+    geoserv-14
+    postgis-14
+
+    geonode-15
+    postgis-15
+
+
+    Published data files.
+    Some have simple GIS lat/lon data in them, others are only partially relational.
+    Easy ones first.
+
+    Load the data into PostGIS ?
+    Not sure how to display on map ... need help from Duncan/Kevin to develop the science case.
+
+    Mitchard's papaer (2) is probably the easiest.
+
+        1) Above-ground biomass and structure of 260 African tropical forests
+        http://rstb.royalsocietypublishing.org/content/368/1625/20120295
+
+        http://dx.doi.org/10.5521/FORESTPLOTS.NET/2013_1
+        http://www.forestplots.net/data-packages/lewis-et-al-2013
+        http://data.datacite.org/application/x-research-info-systems/10.5521/FORESTPLOTS.NET/2013_1
+        http://www.forestplots.net/upload/data-packages/lewis-et-al-2013/Lewis_et_al%20_2013_Phil%20_TransDataPackage.xlsx
+
+        2) Markedly divergent estimates of Amazon forest carbon density from ground plots and satellites
+        http://onlinelibrary.wiley.com/doi/10.1111/geb.12168/full
+
+        http://dx.doi.org/10.5521/FORESTPLOTS.NET/2014_1        
+        http://www.forestplots.net/data-packages/mitchard-et-al-2014
+        http://data.datacite.org/application/x-research-info-systems/10.5521/FORESTPLOTS.NET/2014_1
+        http://www.forestplots.net/upload/data-packages/Amazon_forest_biomass_Dataset_From_Mitchard_et_al_2014.xlsx
+
+        3) Tropical forest wood production: a cross-continental comparison
+        http://onlinelibrary.wiley.com/doi/10.1111/1365-2745.12263/abstract
+
+        http://dx.doi.org/10.5521/FORESTPLOTS.NET/2014_3
+        http://www.forestplots.net/data-packages/banin-et-al-2014
+        http://data.datacite.org/application/x-research-info-systems/10.5521/FORESTPLOTS.NET/2014_3
+        http://www.forestplots.net/upload/data-packages/Baninetal2014_Data.xls
+
+        4) Methods to estimate aboveground wood productivity from long-term forest inventory plots
+        http://www.sciencedirect.com/science/article/pii/S0378112714001169
+
+        http://dx.doi.org/10.5521/ForestPlots.net/2014_2
+        http://www.forestplots.net/data-packages/talbot-et-al-2014
+        http://data.datacite.org/application/x-research-info-systems/10.5521/FORESTPLOTS.NET/2014_2
+        http://www.forestplots.net/upload/data-packages/SW_Amazon_Productivity_Methods_Dataset_From_Talbot_et_al_2014.xlsx
+
+        5) Long-term decline of the Amazon carbon sink
+        http://www.nature.com/nature/journal/v519/n7543/full/nature14283.html
+
+        http://www.forestplots.net/data-packages/brienen-et-al-2015
+        http://dx.doi.org/10.5521/ForestPlots.net/2014_4
+        http://data.datacite.org/application/x-research-info-systems/10.5521/FORESTPLOTS.NET/2014_4
+        http://www.forestplots.net/upload/data-packages/brienen-et-al-2015/data_package_Long_term_decline_of_Amazon_carbon_sink_2015.zip
+
+        6) Hyperdominance in Amazonian forest carbon cycling
+        http://www.nature.com/ncomms/2015/150428/ncomms7857/full/ncomms7857.html
+
+        http://www.forestplots.net/data-packages/fauset-et-al-2015
+        http://dx.doi.org/10.5521/FORESTPLOTS.NET/2015_1
+        http://data.datacite.org/application/x-research-info-systems/10.5521/FORESTPLOTS.NET/2015_1
+        http://www.forestplots.net/upload/data-packages/fauset-et-al-2015/Fausetetal2015Datapackage_V1.xlsx
+
+        7) Efficient plot-based floristic assessment of tropical forests
+        http://www.rainfor.org/upload/publication-store/itm_79/Phillips%20OL%20et%20al%20JTE%202003.pdf
+
+        https://www.forestplots.net/data-packages/phillips-et-al-2015
+        http://dx.doi.org/10.5521/FORESTPLOTS.NET/1999_1
+        http://data.datacite.org/application/x-research-info-systems/10.5521/FORESTPLOTS.NET/1999_1
+        https://www.forestplots.net/upload/data-packages/phillips-et-al-2015/PeruTransectData.zip
+
+    Website KML listing.
+
+
+# -----------------------------------------------------
+# Kings (terra-i)
+#
+
+    geoserv-xx - large disc (2 x 100G)
+    postgis-xx
+
+    geonode-xx
+    postgis-xx
+    
+        increase 52G
+        decrease 56G
+        
+        mosaic experiments ...
+
+    http://docs.geoserver.org/latest/en/user/tutorials/image_mosaic_plugin/imagemosaic.html
+    http://docs.geoserver.org/latest/en/user/tutorials/imagemosaic_timeseries/imagemosaic_timeseries.html
+
+    cat > tiles.txt << EOF
+        08v05
+        07v06
+        08v06
+        09v06
+        08v07
+        09v07
+        10v07
+        11v07
+        09v08
+        10v08
+        11v08
+        12v08
+        13v08
+        09v09
+        10v09
+        11v09
+        12v09
+        13v09
+        14v09
+        10v10
+        11v10
+        12v10
+        13v10
+        14v10
+        11v11
+        12v11
+        13v11
+        14v11
+        11v12
+        12v12
+        13v12
+        12v13
+        13v13
+    EOF
+
+    # Note : 2015 data ends at 177 not 353
+    # Note : different paths for increase and decrease
+
+    type=decrease
+    path=cumulative_detections
+
+    type=increase
+    path=increase
+
+        for cell in $(cat tiles.txt)
+        do
+            tile=h${cell:?}
+            for year in {2004..2014}
+            do
+                echo ""
+                echo "Tile [${tile}]"
+                echo "Type [${type}]"
+                echo "Year [${year}]"
+                name=${tile}_${type:?}_${year}-1_${year}-353.asc.gz
+                echo "Name [${name}]"
+
+                wget -P "${type:?}" "http://www.terra-i.org/terraiData/data/tiles/${tile:?}/${path:?}/${name:?}/${name:?}"
+            done
+        done
+
+    for type in increase decrease
+    do
+        pushd ${type:?}
+            for file in $(ls -1)
+            do
+                echo "File [${file:?}]"
+                gunzip "${file:?}"
+            done
+        popd
+    done
+
+# -----------------------------------------------------
+# Edinburgh
+#
+
+    geoserv-xx
+    postgis-xx
+
+    geonode-xx
+    geoserv-xx
+    postgis-xx
+
+
+    Comparing Global Carbon Maps
+    https://carbonmaps.ourecosystem.com/interface/#oe-app
+
+    A Comparison of Tropical Carbon Maps
+    http://www.geos.ed.ac.uk/~emitchar/carbonmapcomparison/Index.html
+
+
+    Baccini et al. (2012)
+    http://www.nature.com/nclimate/journal/v2/n3/full/nclimate1354.html
+
+    Saatchi et al. (2011)
+    http://www.pnas.org/content/108/24/9899.full
+
+    GeoCarbon Data Portal
+    https://www.bgc-jena.mpg.de/geodb/projects/Data.php
+
+# -----------------------------------------------------
+# External data
+#
+
+    # -----------------------------------------------------
+    # Mitchard paper
+
+    geoserv-xx
+    postgis-xx
+
+    geonode-xx
+    postgis-xx
+
+        # -----------------------------------------------------
+        # ForestPlots
+
+            Amazon_forest_biomass_Dataset.xlsx
+
+        # -----------------------------------------------------
+        # Baccini
+                
+                Brazil91.zip.tif (125M)
+
+        # -----------------------------------------------------
+        # Saatchi et al. PNAS 2011
+
+            399M
+
+            america_agb_1km.tif
+            Latin America_metadata.pdf
+
+
+
+    # -----------------------------------------------------
+    # Global Forest Change 2000–2014
+    # http://earthenginepartners.appspot.com/science-2013-global-forest/download_v1.2.html
+
+        Tree canopy cover for year 2000 (treecover2000)
+        Tree cover in the year 2000, defined as canopy closure for all vegetation taller than 5m in height. Encoded as a percentage per output grid cell, in the range 0–100.
+        https://storage.googleapis.com/earthenginepartners-hansen/GFC2015/treecover2000.txt
+
+        Global forest cover loss 2000–2014 (loss)
+        Forest loss during the period 2000–2014, defined as a stand-replacement disturbance, or a change from a forest to non-forest state. Encoded as either 1 (loss) or 0 (no loss).
+        https://storage.googleapis.com/earthenginepartners-hansen/GFC2015/loss.txt
+
+        Global forest cover gain 2000–2012 (gain)
+        Forest gain during the period 2000–2012, defined as the inverse of loss, or a non-forest to forest change entirely within the study period. Encoded as either 1 (gain) or 0 (no gain).
+        https://storage.googleapis.com/earthenginepartners-hansen/GFC2015/gain.txt
+
+        Year of gross forest cover loss event (lossyear)
+        A disaggregation of total forest loss to annual time scales. Encoded as either 0 (no loss) or else a value in the range 1–13, representing loss detected primarily in the year 2001–2014, respectively.
+        https://storage.googleapis.com/earthenginepartners-hansen/GFC2015/lossyear.txt
+
+
+    # -----------------------------------------------------
+    # Global Forest Watch
+    # http://data.globalforestwatch.org/datasets
+
+        #
+        # Open Data Portal (non-standard API)
+        # http://www.globalforestwatch.org/howto/odp
+        # https://github.com/Vizzuality/gfw
+        # https://github.com/wri/gfw-commodities-app
+        # https://github.com/wri/gfw-fires-app
+        # https://github.com/Vizzuality/gfw-climate
+
+        #
+        # Interesting blog
+        # http://blog.globalforestwatch.org/
+
+        #
+        # Support WMS is there but not advertised.
+        # http://wri.github.io/gfw-sync/gfw_web_service_directory.html
+
+            http://gis-gfw.wri.org/arcgis/services/forest_cover/MapServer/WMSServer?request=GetCapabilities&service=WMS
+            http://gis-gfw.wri.org/arcgis/services/forest_change/MapServer/WMSServer?request=GetCapabilities&service=WMS
+            http://gis-gfw.wri.org/arcgis/services/conservation/MapServer/WMSServer?request=GetCapabilities&service=WMS
+            http://gis-gfw.wri.org/arcgis/services/land_use/MapServer/WMSServer?request=GetCapabilities&service=WMS
+            http://gis-gfw.wri.org/arcgis/services/people/MapServer/WMSServer?request=GetCapabilities&service=WMS
+            http://gis-gfw.wri.org/arcgis/services/infrastructure/MapServer/WMSServer?request=GetCapabilities&service=WMS
+            http://50.18.182.188:6080/arcgis/services/TreeCover2000/ImageServer/WMSServer?request=GetCapabilities&service=WMS
+            http://50.18.182.188:6080/arcgis/services/ForestCover_lossyear/ImageServer/WMSServer?request=GetCapabilities&service=WMS
+            http://50.18.182.188:6080/arcgis/services/ForestGain_2000_2012/ImageServer/WMSServer?request=GetCapabilities&service=WMS
+            
+        # -----------------------------------------------------
+        # Near-global QUICC alerts (NASA)
+        # http://data.globalforestwatch.org/datasets/e7bfe60d90ea4e5aa808eba4723ad3f8_0
+
+            Identifies areas of land that have lost at least 40% of their green vegetation cover from the previous quarterly product.
+            
+        # -----------------------------------------------------
+        # Guatemala forest cover
+        # http://data.globalforestwatch.org/datasets/7eafe9b59c064e8eb1684cdd39bc1321
+
+            Identifies forest cover and type for Guatemala in 2012.
+
+        # -----------------------------------------------------
+        # Guatemala Forest Density
+        # http://data.globalforestwatch.org/datasets/7935041390964af0a09763ff83c30b0e
+
+            Identifies forest density in 2012.
+
+        # -----------------------------------------------------
+        # Guatemala forest cover change 2001-2006
+        # http://data.globalforestwatch.org/datasets/8c5ab8c0b7dd40e1a7e62ecc371c5195
+
+            Identifies forest gain, loss, and stable forest cover for the time period 2001-2006 
+
+        # -----------------------------------------------------
+        # Guatemala forest cover change 2006-2010
+        # http://data.globalforestwatch.org/datasets/e9fc601e873d4e4795aab57d4f5e0c8d
+
+            Identifies forest gain, loss, and stable forest cover for the time period 2006-2010
+
+        # -----------------------------------------------------
+        # Colombia mining titles
+        # http://data.globalforestwatch.org/datasets/b8f366a12d384d158574b1b5003eb026_0
+
+            This data set provides the boundaries of mining titles (títulos mineros concedidos) for Colombia.
+
+        # -----------------------------------------------------
+        # Brazil indigenous lands
+        # http://data.globalforestwatch.org/datasets/322d13636595466883421d553f2af65a_2
+
+            This data set displays the boundaries of areas designated as Indigenous Lands in Brazil.
+
+        # -----------------------------------------------------
+        # Gran Chaco deforestation
+        # http://data.globalforestwatch.org/datasets/3d668cf0fbcb415bba1ec00bc6263877_5
+        
+            Deforestation monitoring in the Gran Chaco has been carried out by the non-profit
+            [Guyra Paraguay](http://www.guyra.org.py/index.php?lang=en) since 2011, using 30-meter
+            resolution 
+        # -----------------------------------------------------
+        # Humid tropics FORMA alerts
+        # http://data.globalforestwatch.org/datasets/550bd7fc2c5d45418e5e515ce170da22_3
+        
+            FORMA (FORest Monitoring for Action) is a near real-time tree cover loss alert system
+            for humid tropical forests (as defined by Hansen et al. (2008), based on WWF’s
+            terrestrial ecoregions) spanning portions of 89 countries.
+
+        # -----------------------------------------------------
+        # Brazilian Amazon SAD Alerts
+        # http://data.globalforestwatch.org/datasets/9c4a16f9520447349159fa30abcea08b_2
+
+            The Deforestation Alert System (Sistema de Alerta de Desmatamento—SAD) is a
+            monthly alert that monitors forest cover loss and forest degradation in the
+            Brazilian Amazon. 
+
+        # -----------------------------------------------------
+        # Carbon emissions from aboveground biomass loss
+        # http://data.globalforestwatch.org/datasets/d33587b6aee248faa2f388aaac96f92c_0
+
+            The data reflects estimated carbon dioxide emissions to the atmosphere as a
+            result of aboveground live woody biomass. The data reflects the co-location
+            of biomass estimates for the year 2000 from Woods Hole Research Center with
+            annual tree cover loss estimates from 2001 to 2014.
+
+        # -----------------------------------------------------
+        # Aboveground live woody biomass density
+        # http://data.globalforestwatch.org/datasets/8f93a6f94a414f9588ce4657a39c59ff_1
+
+            This is a higher resolution data product that expands upon the methodology
+            presented in Baccini et al. (2012) to generate a pan-tropical map of aboveground
+            live woody biomass density at 30 m resolution for circa the year 2000.
+
+    # -----------------------------------------------------
+    # World Resources Institute
+    # http://www.wri.org/
+
+        WRI is a global research organization that turns big ideas into action at the nexus of environment, economic opportunity and human well-being.
+
+        # -----------------------------------------------------
+        # ArcGIS REST Services Directory 
+        # http://gis-gfw.wri.org/arcgis/rest/services
+        
+        http://gis-gfw.wri.org/arcgis/rest/services/climate/MapServer/1/
+
+
+    # -----------------------------------------------------
+    # Natural History Museum
+    # http://www.nhm.ac.uk
+
+        #
+        # (CKAN) REST API    
+        http://data.nhm.ac.uk/api/3
+
+
+    # -----------------------------------------------------
+    # CGIAR-CSI
+    # http://www.cgiar-csi.org/data
+
+        Consortium for Spatial Information (CGIAR-CSI) is spatial science community
+        that facilitates CGIAR’s international agricultural development research
+        using spatial analysis, GIS, and remote sensing.
+
+        # -----------------------------------------------------
+        # CGIAR-CSI - Elevation
+        #
+
+            The CGIAR-CSI GeoPortal is able to provide SRTM 90m Digital Elevation Data
+            for the entire world. The SRTM digital elevation data, produced by NASA
+            originally, is a major breakthrough in digital mapping of the world, and
+            provides a major advance in the accessibility of high quality elevation data
+            for large portions of the tropics and other areas of the developing world.
+            The SRTM digital elevation data provided on this site has been processed to
+            fill data voids, and to facilitate it's ease of use by a wide group of
+            potential users.
+            
+
+            http://srtm.csi.cgiar.org/SRT-ZIP/SRTM_V41/SRTM_Data_GeoTiff/${geotiff}
+
+            Mexcio tiles.
+            srtm_13_06.zip srtm_14_06.zip srtm_15_06.zip srtm_16_06.zip srtm_17_06.zip srtm_18_06.zip srtm_19_06.zip srtm_20_06.zip srtm_21_06.zip
+            srtm_13_07.zip srtm_14_07.zip srtm_15_07.zip srtm_16_07.zip srtm_17_07.zip srtm_18_07.zip srtm_19_07.zip srtm_20_07.zip srtm_21_07.zip
+            srtm_13_08.zip srtm_14_08.zip srtm_15_08.zip srtm_16_08.zip srtm_17_08.zip srtm_18_08.zip srtm_19_08.zip srtm_20_08.zip srtm_21_08.zip srtm_22_08.zip
+                           srtm_14_09.zip srtm_15_09.zip srtm_16_09.zip srtm_17_09.zip srtm_18_09.zip srtm_19_09.zip srtm_20_09.zip srtm_21_09.zip srtm_22_09.zip
+                                          srtm_15_10.zip                               srtm_18_10.zip srtm_19_10.zip srtm_20_10.zip srtm_21_10.zip srtm_22_10.zip
+                                                                                                      srtm_19_11.zip srtm_20_11.zip srtm_21_11.zip srtm_22_11.zip
+
+            #
+            # Experiment with the image mosaic plugin
+            # http://docs.geoserver.org/latest/en/user/tutorials/image_mosaic_plugin/imagemosaic.html
+            # http://gis.stackexchange.com/questions/171777/geoserver-crop-coverage-wps-with-image-mosaic
+
+            #
+            # Mosaic the original tiles, then extract area based on a shapefile ?
+            # Demo the WPS service.
+
+
+        # -----------------------------------------------------
+        # CGIAR-CSI - Climate
+        # http://www.cgiar-csi.org/data/uea-cru-ts-v3-10-01-historic-climate-database
+
+            In January 2010, the University of East Anglia officially released the CRU-TS 3.0 Climate Database.
+
+                Time series, separate asc files for each month.
+                1901-01 ... 2009-12 
+
+            Using the ImageMosaic plugin for raster time-series data
+            http://docs.geoserver.org/latest/en/user/tutorials/imagemosaic_timeseries/imagemosaic_timeseries.html
+
+                tmx/cru_ts_3_10.1901.2009.tmx_1901_1.asc
+                tmx/cru_ts_3_10.1901.2009.tmx_1901_1.asc.aux.xml
+                tmx/cru_ts_3_10.1901.2009.tmx_1901_2.asc
+                tmx/cru_ts_3_10.1901.2009.tmx_1901_2.asc.aux.xml
+                ....
+                ....
+                tmx/cru_ts_3_10.1901.2009.tmx_2009_10.asc
+                tmx/cru_ts_3_10.1901.2009.tmx_2009_11.asc
+                tmx/cru_ts_3_10.1901.2009.tmx_2009_12.asc        
+
+
+        # -----------------------------------------------------
+        # CGIAR-CSI - Climate
+        # http://www.cgiar-csi.org/data/global-aridity-and-pet-database
+
+            The Global Potential Evapo-Transpiration (Global-PET) and Global Aridity Index
+            (Global-Aridity) dataset provides high-resolution global raster climate data
+            related to evapo-transpiration processes and rainfall deficit for potential
+            vegetative growth.
+
+            https://hc.app.box.com/shared/dinuaz4ovn
+
+
+            Extraterrestrial Solar Radiation
+            PET - monthly
+            PET - anual
+            Aridity - anual
+
+            Papers describing the methodology
+
+        # -----------------------------------------------------
+        # CGIAR-CSI - 
+        # http://www.cgiar-csi.org/data/global-high-resolution-soil-water-balance
+
+            The Global High-Resolution Soil-Water Balance dataset provides hydrological
+            raster data (ESRI Grid format) describing actual evapo-transpiration and
+            soil water deficit with resolution of 30 arc seconds (~920 m at equator). 
+
+# -----------------------------------------------------
+# Non-standard API
+# http://harvestchoice.org/tools/harvestchoice-data-services
+# http://harvestchoice.github.io/hc-api3/
+# https://github.com/jeroenooms/opencpu
+# https://www.opencpu.org/
+
+    Reallly great, but I need to write code to access it :-(
+    Non standard API .. needs to be better or I don't have time to learn it.
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Test WMS requests.
+# http://docs.geoserver.org/latest/en/user/services/wms/reference.html
+
+    curl \
+        -o 'test-1.tiff' \
+        --data 'service=WMS' \
+        --data 'version=1.1.0' \
+        --data 'request=GetMap' \
+        --data 'bgcolor=000000' \
+        --data 'transparent=true' \
+        --data 'format=image%2Fgeotiff' \
+        --data 'layers=AstroTROP:carbon_stock' \
+        --data 'width=2048&height=2048' \
+        --data 'bbox=-121.28906250000001,-17.978733095556155,-35.15625,35.17380831799959' \
+        'http://geoserv-06.metagrid.xyz:8080/geoserver/AstroTROP/wms'
+
+    curl \
+        -o 'test-2.8.tiff' \
+        --data 'service=WMS' \
+        --data 'version=1.1.0' \
+        --data 'request=GetMap' \
+        --data 'bgcolor=000000' \
+        --data 'transparent=true' \
+        --data 'format=image%2Fgeotiff8' \
+        --data 'layers=AstroTROP:1' \
+        --data 'width=2048&height=2048' \
+        --data 'bbox=-121.28906250000001,-17.978733095556155,-35.15625,35.17380831799959' \
+        'http://geoserv-06.metagrid.xyz:8080/geoserver/AstroTROP/wms'
+
+

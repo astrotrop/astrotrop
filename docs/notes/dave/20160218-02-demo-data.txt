@@ -111,5 +111,41 @@
         carbon_stock    GeoTIFF - Kings
 
 
+# -----------------------------------------------------
+# Mexico altitude
+#
+
+    http://srtm.csi.cgiar.org/SELECTION/listImages.asp
+
+
+    The CGIAR-CSI GeoPortal is able to provide SRTM 90m Digital Elevation Data
+    for the entire world. The SRTM digital elevation data, produced by NASA
+    originally, is a major breakthrough in digital mapping of the world, and
+    provides a major advance in the accessibility of high quality elevation data
+    for large portions of the tropics and other areas of the developing world.
+    The SRTM digital elevation data provided on this site has been processed to
+    fill data voids, and to facilitate it's ease of use by a wide group of
+    potential users
+    
+    MIRROR DOWNLOAD SITE:
+    Dr. Mark Mulligan (King’s College London) mirrors the data, and has
+    created a Google Earth Interface for browsing and downloading SRTM tiles.
+    it also provides smaller (1 by 1 degree) tiles for users who have difficulty
+    with the 5x5 degree tiles as well as 2D and 3D visualisation of the data.
+
+    http://srtm.csi.cgiar.org/SRT-ZIP/SRTM_V41/SRTM_Data_GeoTiff/${geotiff}
+
+    srtm_13_06.zip srtm_14_06.zip srtm_15_06.zip srtm_16_06.zip srtm_17_06.zip srtm_18_06.zip srtm_19_06.zip srtm_20_06.zip srtm_21_06.zip
+    srtm_13_07.zip srtm_14_07.zip srtm_15_07.zip srtm_16_07.zip srtm_17_07.zip srtm_18_07.zip srtm_19_07.zip srtm_20_07.zip srtm_21_07.zip
+    srtm_13_08.zip srtm_14_08.zip srtm_15_08.zip srtm_16_08.zip srtm_17_08.zip srtm_18_08.zip srtm_19_08.zip srtm_20_08.zip srtm_21_08.zip srtm_22_08.zip
+                   srtm_14_09.zip srtm_15_09.zip srtm_16_09.zip srtm_17_09.zip srtm_18_09.zip srtm_19_09.zip srtm_20_09.zip srtm_21_09.zip srtm_22_09.zip
+                                  srtm_15_10.zip                               srtm_18_10.zip srtm_19_10.zip srtm_20_10.zip srtm_21_10.zip srtm_22_10.zip
+                                                                                              srtm_19_11.zip srtm_20_11.zip srtm_21_11.zip srtm_22_11.zip
+      
+                                                                
+    
+    
+    
+
 
 

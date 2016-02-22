@@ -177,4 +177,77 @@
     #docker logs -f "${geoservname:?}"
     tail -f /var/local/astrotrop/data/geoserv/logs/geoserver.log 
 
+    
+    
+# -----------------------------------------
+# Fix for CKAN harvest request to GeoServ.
+#
+
+    # FIX
+    # Reverse this change
+    https://github.com/ckan/ckanext-spatial/commit/eb9cd6fc1c8bac2c1dafed29a43e975a94c918b6
+
+# -----------------------------------------
+# Fix for CKAN harvest fetch/gather.
+#
+
+    #
+    # Check for SELECT access 
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" \
+        psql \
+            --host     "${postgislinkname:?}" \
+            --username "${ckandatauser:?}" \
+            --dbname   "${storedatabase:?}" \
+            --command "SELECT * FROM _table_metadata"
+
+            ERROR:  permission denied for relation _table_metadata
+
+    #
+    # Update the permission.
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${postgisdockname:?}" \
+        psql \
+            --username "${postgisusername:?}" \
+            --dbname   "${storedatabase:?}" \
+            --command  "GRANT SELECT ON ALL TABLES IN SCHEMA public TO ${ckandatauser:?}"
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${postgisdockname:?}" \
+        psql \
+            --username "${postgisusername:?}" \
+            --dbname   "${storedatabase:?}" \
+            --command  "GRANT SELECT ON ALL TABLES IN SCHEMA public TO ${storereadername:?}"
+
+
+    # TODO - add this to store-grant.sql
+    # GRANT SELECT ON ALL TABLES IN SCHEMA public TO ${ckandatauser:?}"
+    # GRANT SELECT ON ALL TABLES IN SCHEMA public TO ${storereadername:?}"
+
+    #
+    # Check for SELECT access 
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" \
+        psql \
+            --host     "${postgislinkname:?}" \
+            --username "${ckandatauser:?}" \
+            --dbname   "${storedatabase:?}" \
+            --command "SELECT * FROM _table_metadata"
+
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" \
+        psql \
+            --host     "${postgislinkname:?}" \
+            --username "${storereadername:?}" \
+            --dbname   "${storedatabase:?}" \
+            --command "SELECT * FROM _table_metadata"
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${ckandockname:?}" \
+        psql \
+            --host     "${postgislinkname:?}" \
+            --username "${storewritername:?}" \
+            --dbname   "${storedatabase:?}" \
+            --command "SELECT * FROM _table_metadata"
 
