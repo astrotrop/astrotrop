@@ -47,29 +47,28 @@
 
     curl 'http://geonode-10.metagrid.xyz:8000/catalogue/csw?service=CSW&version=2.0.2&request=GetRecords&typeName=csw:Record'
 
-    curl --get \
-        --data 'OUTPUTFORMAT=application/xml' \
-        --data 'SERVICE=CSW' \
-        --data 'OUTPUTSCHEMA=http://www.isotc211.org/2005/gmd' \
-        --data 'REQUEST=GetRecordById' \
-        --data 'VERSION=2.0.2' \
-        --data 'ID=952b60d0-faf7-4989-8a1c-4548f3990126' \
-        'http://geonode-10.metagrid.xyz:8000/catalogue/csw'
 
     curl --get \
+        --output 'geonode-10-GetRecords.xml' \
         --data 'SERVICE=CSW' \
         --data 'TypeNames=gmd:MD_Metadata' \
         --data 'OUTPUTSCHEMA=http://www.isotc211.org/2005/gmd' \
         --data 'REQUEST=GetRecords' \
         --data 'VERSION=2.0.2' \
         --data 'ElementSetName=full' \
+        --data 'resultType=results' \
         'http://geonode-10.metagrid.xyz:8000/catalogue/csw'
 
 
-
-<csw:SearchStatus timestamp="2016-02-22T07:35:04Z"/>
-<csw:SearchResults nextRecord="0" numberOfRecordsMatched="5" numberOfRecordsReturned="5" recordSchema="http://www.isotc211.org/2005/gmd" elementSet="full"/>
-</csw:GetRecordsResponse>
-
+    curl --get \
+        --output 'geonode-06-GetRecords.xml' \
+        --data 'SERVICE=CSW' \
+        --data 'TypeNames=gmd:MD_Metadata' \
+        --data 'OUTPUTSCHEMA=http://www.isotc211.org/2005/gmd' \
+        --data 'REQUEST=GetRecords' \
+        --data 'VERSION=2.0.2' \
+        --data 'ElementSetName=full' \
+        --data 'resultType=results' \
+        'http://geonode-06.metagrid.xyz:8000/catalogue/csw'
 
 
