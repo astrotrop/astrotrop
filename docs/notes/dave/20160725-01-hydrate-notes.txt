@@ -1,0 +1,126 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    #
+    # Restoring the AstroTROP services onto local VMs.
+    
+
+#---------------------------------------------------------------------
+# Create a bridge and connect eno1 to it.
+#[root@dell-three]
+
+    vi /etc/sysconfig/network-scripts/ifcfg-eno1
+
+    -   BRIDGE=br0
+    +   #BRIDGE=br0
+    
+    vi /etc/sysconfig/network-scripts/ifcfg-br0
+
+        DEVICE=br0
+        TYPE=Bridge
+        ONBOOT=yes
+        DELAY=0
+        STP=off
+        BOOTPROTO=dhcp
+        NM_CONTROLLED=no
+    
+#---------------------------------------------------------------------
+# Create a bridged network in libvirt.
+#[root@dell-three]
+
+    netconf=$(mktemp)
+
+    cat > "${netconf:?}" << EOF
+<network ipv6='yes'>
+  <name>host-bridge</name>
+  <uuid></uuid>
+  <forward mode='bridge'/>
+  <bridge name='br0'/>
+</network>
+EOF
+
+#---------------------------------------------------------------------
+# Define our bridged network.
+#[user@dell-three]
+
+    virsh \
+        --connect "${connection:?}" \
+        net-define \
+            "${netconf:?}"
+
+    virsh \
+        --connect "${connection:?}" \
+        net-start \
+            'host-bridge'
+
+    virsh \
+        --connect "${connection:?}" \
+        net-autostart \
+            'host-bridge'
+
+#---------------------------------------------------------------------
+# Add a connection to one of our VMs.
+#[user@dell-three]
+
+    virsh \
+        --connect "${connection:?}" \
+        shutdown 'Aughin'
+
+    virsh \
+        --connect "${connection:?}" \
+        edit 'Aughin'
+
+        +   <interface type='network'>
+        +     <mac address='52:54:00:00:10:10'/>
+        +     <source network='host-bridge'/>
+        +     <model type='virtio'/>
+        +     <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+        +   </interface>
+
+    virsh \
+        --connect "${connection:?}" \
+        start 'Aughin'
+
+#---------------------------------------------------------------------
+# Check the VM configuration.
+#[root@Aughin]
+
+    ssh Aughin
+
+        ens3: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+                inet 192.168.100.10  netmask 255.255.255.0  broadcast 192.168.100.255
+                inet6 2001:8b0:be72:d4ea:5054:ff:fe00:1000  prefixlen 64  scopeid 0x0<global>
+                inet6 fe80::5054:ff:fe00:1000  prefixlen 64  scopeid 0x20<link>
+                ether 52:54:00:00:10:00  txqueuelen 1000  (Ethernet)
+                ....
+
+        ens4: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+                inet 10.11.0.3  netmask 255.0.0.0  broadcast 10.255.255.255
+                inet6 2001:8b0:be72:d4ea:5054:ff:fe00:1010  prefixlen 64  scopeid 0x0<global>
+                inet6 fe80::5054:ff:fe00:1010  prefixlen 64  scopeid 0x20<link>
+                ether 52:54:00:00:10:10  txqueuelen 1000  (Ethernet)
+                ....
+
+
+
+
