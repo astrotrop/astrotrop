@@ -1,0 +1,168 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Configure our build.
+#[root@virtual]
+
+    cat > "${HOME:?}/astrotrop.conf" << EOF
+
+        droplet=02
+
+        dockerset=1.2
+
+        project=/var/local/astrotrop
+        tempdir=\${project:?}/temp
+        datadir=\${project:?}/data
+
+        tomcatuid=995:994
+
+        dnsdomain=trop.metagrid.co.uk
+
+EOF
+
+# -----------------------------------------------------
+# Create our data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+cat > "${HOME:?}/tools" << 'EOF'
+
+    rmdata()
+        {
+        local path=${1:?}
+        if [ -e "${path}" ]
+        then
+            rm -rf "${path}"
+        fi
+        }
+
+    mkdata()
+        {
+        local path=${1:?}
+        local user=${2:-}
+        if [ ! -e "${path}" ]
+        then
+            mkdir --parents "${path:?}"
+        fi
+        if [ -n "${user:-}" ]
+        then
+            chown -R "${user:?}" "${path:?}"
+        fi
+
+        # Only if SELinux enabled        
+        # chcon -t svirt_sandbox_file_t "${path:?}"
+
+        }
+
+EOF
+
+    source "${HOME:?}/tools"
+
+    rmdata "${tempdir:?}"
+    rmdata "${datadir:?}"
+
+    mkdata "${tempdir:?}"
+    mkdata "${datadir:?}"
+
+# -----------------------------------------------------
+# Configure our PostGIS container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" <<- EOF
+
+        postgisdockname=postgis
+        postgisdockport=5432
+        postgislinkname=postgis
+        postgislinkport=5432
+
+        postgistempdir=\${tempdir:?}/postgis
+        postgisdatadir=\${datadir:?}/postgis
+
+        postgisdatabase=postgisdata
+        postgisusername=postgisuser
+        postgispassword=$(pwgen 20 1)
+
+EOF
+
+# -----------------------------------------------------
+# Create our PostGIS data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${postgistempdir:?}"
+    rmdata "${postgisdatadir:?}"
+
+    mkdata "${postgistempdir:?}"
+    mkdata "${postgisdatadir:?}"
+
+# -----------------------------------------------------
+# Run our PostGIS container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    postgisenv=$(mktemp)
+    cat > "${postgisenv:?}" <<- EOF
+PGDATA=/data/pgdata
+POSTGRES_DB=${postgisdatabase:?}
+POSTGRES_USER=${postgisusername:?}
+POSTGRES_PASSWORD=${postgispassword:?}
+EOF
+
+    docker run \
+        --detach \
+        --name "${postgisdockname:?}" \
+        --env-file "${postgisenv:?}" \
+        --expose "${postgisdockport:?}" \
+        --volume "${postgisdatadir:?}:/data" \
+        --volume "${postgistempdir:?}:/temp" \
+        "astrotrop/postgis:${dockerset:?}"
+
+# -----------------------------------------------------
+# Test our PostGIS container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${postgisdockname:?}" psql \
+        --dbname "${postgisdatabase:?}" \
+        --username "${postgisusername:?}" \
+        --command "SELECT version()"
+
+         #
+         # PostgreSQL 9.4.5 on x86_64-unknown-linux-gnu, compiled by gcc (Debian 4.9.2-10) 4.9.2, 64-bit
+         #
+
+    docker exec -it "${postgisdockname:?}" psql \
+        --dbname "${postgisdatabase:?}" \
+        --username "${postgisusername:?}" \
+        --command "SELECT postgis_full_version()"
+
+        #
+        # POSTGIS="2.2.1 r14555" GEOS="3.4.2-CAPI-1.8.2 r3921" PROJ="Rel. 4.8.0, 6 March 2012" GDAL="GDAL 1.10.1, released 2013/08/26" LIBXML="2.9.1" LIBJSON="0.11.99" TOPOLOGY RASTER
+        #
+
+

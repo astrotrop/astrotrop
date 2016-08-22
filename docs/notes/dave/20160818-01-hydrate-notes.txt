@@ -1,0 +1,163 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Restoring the AstroTROP services onto local VMs.
+    #    
+
+#---------------------------------------------------------------------
+# Check the host network config.
+#[root@dell-three]
+
+    ifconfig 
+    
+        br1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 10.0.0.14  netmask 255.0.0.0  broadcast 10.255.255.255
+            inet6 2001:8b0:be72:d4ea:222:19ff:feaa:f503  prefixlen 64  scopeid 0x0<global>
+            inet6 fe80::222:19ff:feaa:f503  prefixlen 64  scopeid 0x20<link>
+            ether 00:22:19:aa:f5:03  txqueuelen 1000  (Ethernet)
+            ....
+            
+        br2: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 81.187.152.19  netmask 255.255.255.240  broadcast 81.187.152.31
+            inet6 2001:8b0:be72:d4ea:222:19ff:feaa:f504  prefixlen 64  scopeid 0x0<global>
+            inet6 fe80::222:19ff:feaa:f504  prefixlen 64  scopeid 0x20<link>
+            ether 00:22:19:aa:f5:04  txqueuelen 1000  (Ethernet)
+            ....
+
+        eno1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            ether 00:22:19:aa:f5:03  txqueuelen 1000  (Ethernet)
+            ....
+
+        eno2: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            ether 00:22:19:aa:f5:04  txqueuelen 1000  (Ethernet)
+            ....
+
+        lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+            inet 127.0.0.1  netmask 255.0.0.0
+            inet6 ::1  prefixlen 128  scopeid 0x10<host>
+            ....
+
+        virbr0: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+            inet 192.168.30.1  netmask 255.255.255.0  broadcast 192.168.30.255
+            inet6 2001:8b0:be72:d4ea::  prefixlen 64  scopeid 0x0<global>
+            inet6 fe80::5054:ff:fe00:3001  prefixlen 64  scopeid 0x20<link>
+            ether 52:54:00:00:30:01  txqueuelen 1000  (Ethernet)
+            ....
+
+    brctl show
+
+        bridge name	bridge id		STP enabled	interfaces
+        br1		8000.002219aaf503	yes		eno1
+        br2		8000.002219aaf504	yes		eno2
+        virbr0		8000.525400003001	yes		virbr0-nic
+
+    route
+
+        Kernel IP routing table
+        Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+        default         polyester.andre 0.0.0.0         UG    425    0        0 br2
+        default         billion.metagri 0.0.0.0         UG    426    0        0 br1
+        10.0.0.0        0.0.0.0         255.0.0.0       U     425    0        0 br1
+        81.187.152.16   0.0.0.0         255.255.255.240 U     425    0        0 br2
+        192.168.30.0    0.0.0.0         255.255.255.0   U     0      0        0 virbr0
+
+    ip route 
+
+        default via 81.187.152.17 dev br2  proto static  metric 425 
+        default via 10.0.0.25 dev br1  proto static  metric 426 
+        10.0.0.0/8 dev br1  proto kernel  scope link  src 10.0.0.14  metric 425 
+        81.187.152.16/28 dev br2  proto kernel  scope link  src 81.187.152.19  metric 425 
+        192.168.30.0/24 dev virbr0  proto kernel  scope link  src 192.168.30.1 
+
+#---------------------------------------------------------------------
+# Check the libvirt network config.
+#[root@dell-three]
+
+    virsh -c ${connection:?} \
+        net-list --all
+
+             Name                 State      Autostart     Persistent
+            ----------------------------------------------------------
+             bridged              active     no            yes
+             default              active     yes           yes
+             routed               inactive   no            yes
+
+    virsh -c ${connection:?} \
+        net-dumpxml \
+            default
+
+            <network ipv6='yes'>
+              <name>default</name>
+              <uuid>75a0c1b1-bb0a-4d81-b536-02f1df9464d7</uuid>
+              <forward mode='nat'>
+                <nat>
+                  <port start='1024' end='65535'/>
+                </nat>
+              </forward>
+              <bridge name='virbr0' stp='on' delay='0'/>
+              <mac address='52:54:00:00:30:01'/>
+              <ip family='ipv4' address='192.168.30.1' netmask='255.255.255.0'>
+                <dhcp>
+                  <range start='192.168.30.2' end='192.168.30.7'/>
+                  <host mac='52:54:00:00:30:02' name='Delshy' ip='192.168.30.2'/>
+                  <host mac='52:54:00:00:30:03' name='Raktai' ip='192.168.30.3'/>
+                  <host mac='52:54:00:00:30:04' name='Fiburia' ip='192.168.30.4'/>
+                  <host mac='52:54:00:00:30:05' name='Drair' ip='192.168.30.5'/>
+                  <host mac='52:54:00:00:30:06' name='Aemy' ip='192.168.30.6'/>
+                  <host mac='52:54:00:00:30:07' name='Lyeyk' ip='192.168.30.7'/>
+                </dhcp>
+              </ip>
+              <ip family='ipv6' address='2001:8b0:be72:d4ea::' prefix='64'>
+              </ip>
+            </network>
+
+    virsh -c ${connection:?} \
+        net-dumpxml \
+            bridged
+
+            <network ipv6='yes'>
+              <name>bridged</name>
+              <uuid>30de9963-e2a9-44c6-9dfc-f2cd6f42d2cd</uuid>
+              <forward mode='bridge'/>
+              <bridge name='br2'/>
+            </network>
+
+    virsh -c ${connection:?} \
+        net-dumpxml \
+            routed
+
+            <network>
+              <name>routed</name>
+              <uuid>4bd989d3-f950-4e4d-9268-17dab830c8c9</uuid>
+              <forward mode='route'/>
+              <bridge name='virbr2' stp='on' delay='2'/>
+              <mac address='52:54:00:00:03:25'/>
+              <ip family='ipv4' address='81.187.152.25' netmask='255.255.255.252'>
+                <dhcp>
+                  <range start='81.187.152.26' end='81.187.152.26'/>
+                  <host mac='52:54:00:00:30:26' name='Kaleon' ip='81.187.152.26'/>
+                </dhcp>
+              </ip>
+            </network>
+
+

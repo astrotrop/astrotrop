@@ -1,0 +1,305 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Restoring the AstroTROP services onto local VMs.
+    #    
+
+# -----------------------------------------------------
+# docs/notes/dave/20160221-02-demo-services.txt
+
+    Local GeoServ/GeoNode instances for each data provider.
+    
+        GeoNode
+        PostGIS
+
+        GeoServ
+        PostGIS
+        RStudio (optional)    
+        Webserv (optional)    
+    
+    Global GeoNode instance for the project.
+
+        GeoNode
+        PostGIS
+
+        GeoServ
+        PostGIS
+
+    Global CKAN instance
+
+        CKAN-ckan
+        CKAN-push
+        CKAN-solr
+        PostGIS
+        
+# -----------------------------------------------------
+# docs/notes/dave/20160222-01-geobase-deploy.txt            
+
+    #
+    # Two virtual machines.
+
+        astrotrop-10    A       188.166.145.149
+        astrotrop-10    AAAA    2a03:b0c0:1:a1::36:e001
+
+        astrotrop-11    A       188.166.157.116
+        astrotrop-11    AAAA    2a03:b0c0:1:a1::37:6001
+
+    #
+    # Two services on each VM.
+
+        geoserv-10  CNAME  astrotrop-10.ocean.metagrid.co.uk.
+        geonode-10  CNAME  astrotrop-10.ocean.metagrid.co.uk.
+
+        geoserv-11  CNAME  astrotrop-11.ocean.metagrid.co.uk.
+        geonode-11  CNAME  astrotrop-11.ocean.metagrid.co.uk.
+
+# -----------------------------------------------------
+# docs/notes/dave/20160222-01-geobase-deploy.txt            
+
+    Install PostGIS.
+    
+# -----------------------------------------------------
+# docs/notes/dave/20160222-02-geoserv-deploy.txt
+
+    Install GeoServer
+
+# -----------------------------------------------------
+# docs/notes/dave/20160222-03-geonode-deploy.txt
+
+    Install GeoNode
+
+# -----------------------------------------------------
+# docs/notes/dave/20160222-04-ckan-deploy.txt
+
+    Install CKAN
+
+# -----------------------------------------------------
+# docs/notes/dave/20160222-05-ckan-harvest.txt
+
+    Harvest CKAN
+
+# -----------------------------------------------------
+# docs/notes/dave/20160304-01-archive-store.txt
+
+    #
+    # 9 VMs archived
+
+    droplet=astrotrop-08
+    droplet=astrotrop-09
+
+    droplet=astrotrop-12
+    droplet=astrotrop-13
+
+    droplet=astrotrop-20
+    droplet=astrotrop-21
+
+    droplet=astrotrop-30
+    droplet=astrotrop-31
+    droplet=astrotrop-32
+
+
+    /home/dave/storage/astrotrop
+
+        rstudio-03 CNAME astrotrop-03
+
+        webserv-04 CNAME astrotrop-04
+
+        geonode-08 CNAME astrotrop-08
+        postgis-08 CNAME astrotrop-08
+        rstudio-08 CNAME astrotrop-08
+        webserv-08 CNAME astrotrop-08
+        astrotrop-08 : 135G
+
+            PostGIS
+            GeoServ
+            RStudio
+
+                Duncan's data
+
+                Data from Bournmouth
+                workspaces/AstroTROP/PostGIS database/MexicanOaks
+                workspaces/AstroTROP/PostGIS database/MexicanStates
+                workspaces/AstroTROP/PostGIS database/MexicanTowns
+
+        geonode-09 CNAME astrotrop-09
+        astrotrop-09 : 89M
+
+            PostGIS
+
+        ckanreg-12 CNAME astrotrop-12
+        astrotrop-12 : 89M
+
+            PostGIS
+            CKAN
+            Solr
+
+        ckanreg-13 CNAME astrotrop-13
+        ckanreg-23 CNAME astrotrop-13
+        astrotrop-13 : 90M
+
+            PostGIS
+            CKAN
+            Solr
+
+
+        geonode-10 CNAME astrotrop-10
+        geoserv-10 CNAME astrotrop-10
+        geonode-20 CNAME astrotrop-10
+        geoserv-20 CNAME astrotrop-10
+        astrotrop-20 : 771M
+
+            PostGIS
+            GeoServ geoserv-10
+            GeoNode geonode-10
+            
+                Data from Leicester
+                workspaces/Leicester/AGB-MEX/AGB-MEX_v1
+                workspaces/Leicester/AGB-MEX
+                workspaces/Leicester/Forest cover Mexico/Forest_Cover_Mexico
+                workspaces/Leicester/Forest cover Mexico
+                workspaces/Leicester/Forest-cover-Congo/Forest_Cover_Congo
+                workspaces/Leicester/Forest-cover-Congo
+                workspaces/Leicester/Forest_Non-Forest_Congo
+                workspaces/Leicester/Forest_Non-Forest_Mexico
+                workspaces/Leicester
+
+        geonode-11 CNAME astrotrop-11
+        geoserv-11 CNAME astrotrop-11
+        geonode-21 CNAME astrotrop-11
+        geoserv-21 CNAME astrotrop-11
+        astrotrop-21 : 279M
+
+            PostGIS
+            GeoServ geoserv-11
+            GeoNode geonode-11
+            
+                Data from Kings
+                workspaces/Policysupport/Carbon stock
+                workspaces/Policysupport/Potential carbon
+                workspaces/Policysupport/pot_carbon_value
+                workspaces/Policysupport
+
+        geonode-30 CNAME astrotrop-30
+        astrotrop-30 : 89M
+
+            PostGIS
+            GeoNode
+
+        geonode-31 CNAME astrotrop-31
+        astrotrop-31 : 89M
+
+            PostGIS
+            GeoNode
+
+        geonode-32 CNAME astrotrop-32
+        geoserv-32 CNAME astrotrop-32
+        astrotrop-32 : 89M
+
+            PostGIS
+            GeoServ
+            GeoNode
+
+# -----------------------------------------------------
+# If we want to use the archived data.
+# Better in the short term ..
+# In the long run, maintaining a blob is hard work.
+
+# Or we could install from clean and then import the data.
+# Better in the long run ..
+# Short term, might make mistakes.
+
+# Added complication ..
+# Apache name virtual hosting.
+
+# One IP address for the whole lot.
+# Everything uses http, so in theory it should work.
+# Install using DNS names for internal addresses.
+# Then add gateway Apache service
+# Update DNS names to external address.
+
+    VM 1
+
+        Apache proxy
+
+    VM 2
+
+        PostGIS postgis-08
+        GeoServ geoserv-08
+        RStudio rstudio-08
+
+            Data from Bournmouth
+            workspaces/AstroTROP/PostGIS database/MexicanOaks
+            workspaces/AstroTROP/PostGIS database/MexicanStates
+            workspaces/AstroTROP/PostGIS database/MexicanTowns
+
+    VM 3
+
+        PostGIS
+        GeoServ geoserv-10
+        GeoNode geonode-10
+        
+            Data from Leicester
+            workspaces/Leicester/AGB-MEX/AGB-MEX_v1
+            workspaces/Leicester/AGB-MEX
+            workspaces/Leicester/Forest cover Mexico/Forest_Cover_Mexico
+            workspaces/Leicester/Forest cover Mexico
+            workspaces/Leicester/Forest-cover-Congo/Forest_Cover_Congo
+            workspaces/Leicester/Forest-cover-Congo
+            workspaces/Leicester/Forest_Non-Forest_Congo
+            workspaces/Leicester/Forest_Non-Forest_Mexico
+            workspaces/Leicester
+
+    VM 4
+
+        PostGIS
+        GeoServ geoserv-11
+        GeoNode geonode-11
+        
+            Data from Kings
+            workspaces/Policysupport/Carbon stock
+            workspaces/Policysupport/Potential carbon
+            workspaces/Policysupport/pot_carbon_value
+            workspaces/Policysupport
+
+    VM 5
+
+        PostGIS
+        GeoServ
+        GeoNode
+
+    VM 6
+
+        PostGIS
+        CKAN
+        Solr
+
+
+
+    
+
+
+
+
+
+
+

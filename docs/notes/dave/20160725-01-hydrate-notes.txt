@@ -28,7 +28,7 @@
 #---------------------------------------------------------------------
 # Create a bridge and connect eno1 to it.
 #[root@dell-three]
-
+    
     vi /etc/sysconfig/network-scripts/ifcfg-eno1
 
     -   BRIDGE=br0
