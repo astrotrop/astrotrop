@@ -51,6 +51,33 @@
 
 EOF
 
+# -----------------------------------------
+# Configure our GeoServ references.
+#[root@virtual]
+
+#
+# Only if GeoServ is on a different host
+#
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        geoservlinkname=geoserv
+
+        geoservhostname=geoserv-21.metagrid.xyz
+        geoservhostport=8080
+
+        geoservexternal=http://\${geoservhostname:?}:\${geoservhostport:?}/geoserver/
+        geoservinternal=http://\${geoservhostname:?}:\${geoservhostport:?}/geoserver/
+
+        #geoservusername=astrotrop
+        #geoservpassword=uanahfaiphanaelajeer
+
+        geoservusername=astrotrop
+        geoservpassword=miegheilithoojaiseel
+
+EOF
+
 # -----------------------------------------------------
 # Create our GeoNode data directories.
 #[root@virtual]
@@ -111,7 +138,6 @@ EOF
         -it \
         --env-file "${geonodeenv:?}" \
         --link "${postgisdockname:?}:${postgislinkname:?}" \
-        --link "${geoservdockname:?}:${geoservlinkname:?}" \
         --volume "${geonodetempdir:?}:/temp" \
         --volume "${geonodedatadir:?}:/data" \
         "astrotrop/geonode:${dockerset:?}" \

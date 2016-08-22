@@ -27,6 +27,7 @@
     https://cloud.digitalocean.com/droplets
 
     droplet : astrotrop-12
+    droplet : astrotrop-13
     image   : Docker 1.10.1 on Ubuntu-14.04
 
        1 CPU 
@@ -47,6 +48,9 @@
     +   astrotrop-12    A       188.166.149.177
     +   astrotrop-12    AAAA    2a03:b0c0:1:a1::37:7001
 
+    +   astrotrop-13    A       188.166.157.128
+    +   astrotrop-13    AAAA    2a03:b0c0:1:a1::3a:7001
+    
     vi /var/named/data/metagrid.xyz.zone
 
         $ORIGIN metagrid.xyz
@@ -61,13 +65,15 @@
 
     host ckanreg-12.metagrid.xyz
 
+    host ckanreg-13.metagrid.xyz
+
 # -----------------------------------------------------
 # Update our SSH config.
 #[user@desktop]
 
     gedit "${HOME:?}/.ssh/config" &
 
-    +   Host .... astrotrop-11 astrotrop-12
+    +   Host .... astrotrop-11 astrotrop-12 astrotrop-13
             User root
             HostName %h.ocean.metagrid.co.uk
             IdentityFile ~/.ssh/zrq.digitalocean.com.rsa
@@ -80,6 +86,8 @@
 #[user@desktop]
 
     ssh astrotrop-12
+
+    ssh astrotrop-13
 
 # -----------------------------------------
 # Disable plain text password login.
@@ -129,7 +137,7 @@
 
     cat > "${HOME:?}/astrotrop.conf" << EOF
 
-        droplet=12
+        droplet=13
         dockerset=1.2
 
         project=/var/local/astrotrop
@@ -797,6 +805,7 @@ EOF
 # Test our site
 #[root@virtual]
 
+    source "${HOME:?}/astrotrop.conf"
     echo "${ckanexternal:?}"
 
 # -----------------------------------------------------
@@ -818,31 +827,6 @@ EOF
 #ckan.harvest.mq.port=6379
 #ckan.harvest.mq.redis_db=0
 #ckan.datapusher.url = http://pushlink:80/
-
-# -----------------------------------------------------
-# Add Harvest sources
-
-        url   : http://geonode-08.metagrid.xyz:8000/catalogue/csw
-        title : GeoNode-08-CSw
-        type  : CSW server
-
-        url   : http://geonode-10.metagrid.xyz:8000/catalogue/csw
-        title : GeoNode-10-CSw
-        type  : CSW server
-
-        url   : http://geonode-11.metagrid.xyz:8000/catalogue/csw
-        title : GeoNode-11-CSw
-        type  : CSW server
-
-
-
-        url   : http://geoserv-06.metagrid.xyz:8080/geoserver/ows
-        title : GeoServ-08-OWS
-        type  : CSW server
-
-
-
-
 
 # -----------------------------------------------------
 # TODO ckanext-geoview
@@ -948,6 +932,20 @@ EOF
             --dbname   "${storedatabase:?}" \
             --command "SELECT * FROM _table_metadata"
 
+# -----------------------------------------------------
+# Add Harvest sources
+
+        url   : http://geonode-08.metagrid.xyz:8000/catalogue/csw
+        title : GeoNode-08-CSW
+        type  : CSW server
+
+#        url   : http://geonode-20.metagrid.xyz:8000/catalogue/csw
+#        title : GeoNode-20-CSW
+#        type  : CSW server
+
+#        url   : http://geonode-21.metagrid.xyz:8000/catalogue/csw
+#        title : GeoNode-21-CSW
+#        type  : CSW server
 
 # -----------------------------------------------------
 # Run our harvest jobs 
@@ -977,18 +975,32 @@ EOF
     source "${HOME:?}/astrotrop.conf"
     docker exec -it "${ckandockname:?}" bash
 
-        paster \
-            --plugin=ckanext-harvest \
-            harvester \
-            run \
-            -c "${ckanconf:?}/ckan.ini"
+        paster --plugin=ckanext-harvest harvester run -c "${ckanconf:?}/ckan.ini"
+
+# -----------------------------------------------------
+# Cross link 
+#
+
+    #
+    # Cross link from Geoserv to GeoNode
+    http://geonode-21.metagrid.xyz:8000/services/register/
+        http://geoserv-20.metagrid.xyz:8080/geoserver/ows
+        WMS/WFS/WCS
+
+
+    http://geonode-21.metagrid.xyz:8000/services/register/
+        http://geoserv-08.metagrid.xyz:8080/geoserver/ows
+        WMS/WFS/WCS
+
+
+    #
+    # Harvest
+    http://ckanreg-23.metagrid.xyz/harvest
+
+        url   : http://geonode-21.metagrid.xyz:8000/catalogue/csw
+        title : GeoNode-21-CSW
+        type  : CSW server
 
 
 
-
-
-
-http://geonode-08.metagrid.xyz:8000/catalogue/csw
-
-http://geonode-10.metagrid.xyz:8000/catalogue/wms
 

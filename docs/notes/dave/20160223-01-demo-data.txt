@@ -1,0 +1,160 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Bournmouth
+#
+
+    geonode-08
+    geoserv-08
+    postgis-08
+    rstudio-08
+
+        ipv4 : 188.166.150.174
+        ipv6 : 2a03:b0c0:1:a1::17:1
+
+        geostats
+            shapefiles
+            cvs text
+            MODIS tiff    
+
+# -----------------------------------------------------
+# Leicester
+# 
+
+    geonode-30
+    postgis-30
+
+        ipv4 : 178.62.44.96
+        ipv6 : 2a03:b0c0:1:d0::37:d001
+
+    geoserv-20 (10)
+    postgis-20 (10)
+
+        ipv4 : 188.166.145.149
+        ipv6 : 2a03:b0c0:1:a1::36:e001
+
+
+        Aboveground Biomass and Uncertainty Map for Mexico
+        AGB-MEX-v1.tiff (230M x 2) ~ 500M
+
+        Forest_Non-Forest_Mexico 122M
+
+            1 = Forest
+            The No Data Value is Non-Forest or Other
+
+        Forest_Non-Forest_Congo 126M
+
+            0 = unclassified
+            1 = Forest
+            2 = Non-Fores
+
+
+# -----------------------------------------------------
+# Kings
+# 
+
+    geonode-31
+    postgis-31
+
+        ipv4 : 178.62.47.104
+        ipv6 : 2a03:b0c0:1:d0::50:c001
+
+    geoserv-21 (11)
+    postgis-21 (11)
+
+        ipv4 : 188.166.157.116
+        ipv6 : 2a03:b0c0:1:a1::37:6001
+
+        Carbon stock (4.5M)
+
+            carb_stock.asc
+            carb_stock.asc.aux.xml
+            carb_stock.prj
+            carb_stock.readme.txt
+
+                Data: Carbon stock
+
+                Units: tonnes C/km2
+
+                Citation:
+
+                    Mosaic of:
+                        Saatchi S, Harris NL, Brown S, Lefsky M, Mitchard ET, Salas W, Zutta BR, Buermann W, Lewis SL, Hagen S, Petrova S, White L, Silman M, Morel A. (2011).
+                        Benchmark map of forest carbon stocks in tropical regions across three continents. Proc Natl Acad Sci U S A. 2011 Jun 14;108(24):9899-904.
+                    and
+                        Ruesch, Aaron, and Holly K. Gibbs. 2008. New IPCC Tier-1 Global Biomass Carbon Map For the Year 2000.
+                        Available online from the Carbon Dioxide Information Analysis Center http://cdiac.ornl.gov], Oak Ridge National Laboratory, Oak Ridge, Tennessee.
+
+        Potential carbon (200M)
+
+            pot_carbon_value.asc
+            pot_carbon_value.prj
+            pot_carbon_value.readme.txt
+
+                Data: Relative potential carbon value index
+
+                Units: 0-1  locally
+     
+                Citation:
+
+                    Costingnature version 2 (2016) Model results from the Costingnature system (non commercial-use).
+                    http://www.policysupport.org/costingnature
+
+
+# -----------------------------------------------------
+# Combined
+# 
+
+
+    geonode-32
+    geoserv-32
+    postgis-32
+
+        ipv4 : 178.62.49.117
+        ipv6 : 2a03:b0c0:1:d0::55:e001
+
+
+    http://geonode-32.metagrid.xyz:8000/services/register/
+        http://geoserv-08.metagrid.xyz:8080/geoserver/ows
+        GeoServ-08-WMS
+        WMS/WFS/WCS
+
+    http://geonode-32.metagrid.xyz:8000/services/register/
+        http://geoserv-20.metagrid.xyz:8080/geoserver/ows
+        GeoServ-20-WMS
+        WMS/WFS/WCS
+
+    http://geonode-32.metagrid.xyz:8000/services/register/
+        http://geoserv-21.metagrid.xyz:8080/geoserver/ows
+        GeoServ-21-WMS
+        WMS/WFS/WCS
+
+
+# -----------------------------------------------------
+# 
+# 
+
+
+
+
+

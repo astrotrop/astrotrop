@@ -27,6 +27,10 @@
 # -----------------------------------------------------
 # Bournmouth
 #
+    astrotrop-08
+
+    ipv4 : 188.166.150.174
+    ipv6 : 2a03:b0c0:1:a1::17:1
 
     geonode-08
     geoserv-08
@@ -44,9 +48,14 @@
 # Leicester
 # 
 
-    geonode-10
-    geoserv-10
-    postgis-10
+    astrotrop-22
+
+    ipv4 : 
+    ipv6 : 
+
+    geonode-22
+    geoserv-22
+    postgis-22
 
 
         Aboveground Biomass and Uncertainty Map for Mexico
@@ -122,11 +131,11 @@
 # Leeds
 #
 
-    geoserv-14
-    postgis-14
+    geoserv-xx
+    postgis-xx
 
-    geonode-15
-    postgis-15
+    geonode-xx
+    postgis-xx
 
 
     Published data files.
@@ -397,8 +406,8 @@
             http://gis-gfw.wri.org/arcgis/services/infrastructure/MapServer/WMSServer?request=GetCapabilities&service=WMS
             http://50.18.182.188:6080/arcgis/services/TreeCover2000/ImageServer/WMSServer?request=GetCapabilities&service=WMS
             http://50.18.182.188:6080/arcgis/services/ForestCover_lossyear/ImageServer/WMSServer?request=GetCapabilities&service=WMS
-            http://50.18.182.188:6080/arcgis/services/ForestGain_2000_2012/ImageServer/WMSServer?request=GetCapabilities&service=WMS
             
+            http://50.18.182.188:6080/arcgis/services/ForestGain_2000_2012/ImageServer/WMSServer?request=GetCapabilities&service=WMS
         # -----------------------------------------------------
         # Near-global QUICC alerts (NASA)
         # http://data.globalforestwatch.org/datasets/e7bfe60d90ea4e5aa808eba4723ad3f8_0

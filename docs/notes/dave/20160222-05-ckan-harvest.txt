@@ -21,10 +21,97 @@
 #
 
 
+# -----------------------------------------------------
+# Bournmouth
+#
+
+    geonode-08
+    geoserv-08
+    postgis-08
+    rstudio-08
+
+        geostats
+            Mexico states
+            Mexico towns
+            Mexico oaks
+
+# -----------------------------------------------------
+# Test
+#
+
+    geonode-09
+    postgis-09
+
+
+# -----------------------------------------------------
+# Leicester
+# 
+
+    geonode-20
+    geoserv-20
+    postgis-20
+
+        AGB-MEX-v1.tiff
+        forest_cover_mexico
+        forest_cover_congo
+
+# -----------------------------------------------------
+# Kings
+# 
+
+    geonode-21
+    geoserv-21
+    postgis-21
+
+        Carbon stock (4.5M)
+
+            carb_stock.asc
+            carb_stock.asc.aux.xml
+            carb_stock.prj
+            carb_stock.readme.txt
+
+            pot_carbon_value.asc
+            pot_carbon_value.prj
+            pot_carbon_value.readme.txt
+
+# -----------------------------------------------------
+# CKAN
+# 
+
+    ckanreg-12
+
+
+
+
+http://geoserv-08.metagrid.xyz:8080/geoserver/web/
+http://geoserv-09.metagrid.xyz:8080/geoserver/web/
+http://geoserv-10.metagrid.xyz:8080/geoserver/web/
+http://geoserv-11.metagrid.xyz:8080/geoserver/web/
+
+http://geonode-08.metagrid.xyz:8000/
+http://geonode-09.metagrid.xyz:8000/
+http://geonode-10.metagrid.xyz:8000/
+http://geonode-11.metagrid.xyz:8000/
+
+
+
+
+
+
+
+
+
+
+# -----------------------------------------------------
+# Stuff ...
+#
+#
+
+
+
 
     http://ckanreg-07.metagrid.xyz/harvest
     12 sources
-    
     
     GeoNode 10 CSW
     http://ckanreg-07.metagrid.xyz/harvest/geonode-10
@@ -71,4 +158,17 @@
         --data 'resultType=results' \
         'http://geonode-06.metagrid.xyz:8000/catalogue/csw'
 
+
+
+
+    curl --get \
+        --data 'SERVICE=CSW' \
+        --data 'TypeNames=gmd:MD_Metadata' \
+        --data 'OUTPUTSCHEMA=http://www.isotc211.org/2005/gmd' \
+        --data 'REQUEST=GetRecords' \
+        --data 'VERSION=2.0.2' \
+        --data 'ElementSetName=full' \
+        --data 'resultType=results' \
+        'http://geonode-32.metagrid.xyz:8000/catalogue/csw' |
+        tee 'geonode-32-GetRecords.xml'
 

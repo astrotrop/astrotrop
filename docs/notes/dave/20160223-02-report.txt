@@ -1,0 +1,119 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    #
+    # GeoServer capabilities
+    http://geonetwork-opensource.org/manuals/2.10.4/eng/developer/xml_services/csw_services.html
+    
+    http://geoserv-20.metagrid.xyz:8080/geoserver/ows?REQUEST=GetCapabilities&service=wms
+    http://geoserv-20.metagrid.xyz:8080/geoserver/ows?REQUEST=GetCapabilities&service=wfs
+
+
+    #
+    # CSW Catalog service for the web
+    # https://en.wikipedia.org/wiki/Catalog_Service_for_the_Web
+
+    curl --get \
+        --data 'SERVICE=CSW' \
+        --data 'TypeNames=gmd:MD_Metadata' \
+        --data 'OUTPUTSCHEMA=http://www.isotc211.org/2005/gmd' \
+        --data 'REQUEST=GetRecords' \
+        --data 'VERSION=2.0.2' \
+        --data 'ElementSetName=full' \
+        --data 'resultType=results' \
+        'http://geoserv-20.metagrid.xyz:8080/geoserver/ows' |    
+        less
+
+
+    #
+    # Web Map Service (WMS)
+    # https://en.wikipedia.org/wiki/Web_Map_Service
+
+    #
+    # Cut out part of a layer.
+    curl \
+        -o 'test-25.tiff' \
+        --data 'service=WMS' \
+        --data 'version=1.1.0' \
+        --data 'request=GetMap' \
+        --data 'bgcolor=000000' \
+        --data 'transparent=true' \
+        --data 'format=image%2Fgeotiff' \
+        --data 'layers=Leicester:AGB-MEX_v1' \
+        --data 'width=1024&height=1024' \
+        --data 'bbox=-120,-20,-25,25' \
+        'http://geoserv-20.metagrid.xyz:8080/geoserver/Leicester/wms'
+
+
+    #
+    # Web Processing Service (WPS)
+    # https://en.wikipedia.org/wiki/Web_Processing_Service
+
+    #
+    # WPS request builder
+    http://geoserv-21.metagrid.xyz:8080/geoserver/web/?wicket:bookmarkablePage=:org.geoserver.wps.web.WPSRequestBuilder
+
+
+
+
+
+
+
+    Bournmouth - 08
+    geoservusername=astrotrop
+    geoservpassword=phoophohraekeghaidoh
+    
+    Leicester - 20     
+    geoservusername=astrotrop
+    geoservpassword=uanahfaiphanaelajeer
+
+    Policysupport - 21
+    geoservusername=astrotrop
+    geoservpassword=miegheilithoojaiseel
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+    curl \
+        -o 'test-1.tiff' \
+        --data 'service=WMS' \
+        --data 'version=1.1.0' \
+        --data 'request=GetMap' \
+        --data 'bgcolor=000000' \
+        --data 'transparent=true' \
+        --data 'format=image%2Fgeotiff' \
+        --data 'layers=AstroTROP:carbon_stock' \
+        --data 'width=2048&height=2048' \
+        --data 'bbox=-121.28906250000001,-17.978733095556155,-35.15625,35.17380831799959' \
+        'http://geoserv-06.metagrid.xyz:8080/geoserver/AstroTROP/wms'
+
