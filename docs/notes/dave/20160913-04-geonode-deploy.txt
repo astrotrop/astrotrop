@@ -30,7 +30,7 @@
         geonodedockname=geonode
         geonodehostport=8000
 
-        geonodehostname=\${geonodedockname:?}-\${droplet:?}.\${dnsdomain:?}
+        geonodehostname=\${geonodedockname:?}.\${dnsfull:?}
         geonodeexternal=http://\${geonodehostname:?}/
         geonodeinternal=http://\${geonodedockname:?}:\${geonodehostport:?}/
 
@@ -108,8 +108,8 @@ EOF
         --env-file "${geonodeenv:?}" \
         --volume  "${geonodetempdir:?}:/temp" \
         --volume  "${geonodedatadir:?}:/data" \
-        --network "${dockernet:?}" \
-        "astrotrop/geonode:${dockerset:?}" \
+        --network "${netname:?}" \
+        "astrotrop/geonode:${version:?}" \
         bash
 
         cat > ~/.pgpass << EOF
@@ -148,8 +148,8 @@ EOF
         --env-file "${geonodeenv:?}" \
         --volume  "${geonodetempdir:?}:/temp" \
         --volume  "${geonodedatadir:?}:/data" \
-        --network "${dockernet:?}" \
-        "astrotrop/geonode:${dockerset:?}"
+        --network "${netname:?}" \
+        "astrotrop/geonode:${version:?}"
 
     source "${HOME:?}/astrotrop.conf"
     docker logs -f \
@@ -177,6 +177,9 @@ EOF
                 Password: 
                 Password (again): 
                 Superuser created successfully.
+
+        #
+        # http://source.mihelac.org/2009/10/23/django-avoiding-typing-password-for-superuser/
 
 #    #
 #    # https://docs.djangoproject.com/es/1.9/ref/django-admin/#createsuperuser
@@ -208,6 +211,22 @@ EOF
                 user.save
 
                 exit()
+
+            python manage.py shell
+
+                from django.contrib.auth import get_user_model
+                User = get_user_model()
+
+                from django.contrib.auth.models import User
+                User.objects.create_superuser(
+                    'admin',
+                    'admin@example.com',
+                    'pass'
+                    )
+
+                exit()
+
+
 
         popd
     exit

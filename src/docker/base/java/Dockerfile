@@ -24,3 +24,8 @@ ENV JAVA_VERSION 1.8.0
 # Install Java
 RUN dnf -y install java-${JAVA_VERSION}-openjdk
 
+#
+# Fix for Network Security Services (NSS) issue.
+# https://bugzilla.redhat.com/show_bug.cgi?id=1332867
+# https://bugzilla.redhat.com/show_bug.cgi?id=1332456
+RUN dnf update -y nss

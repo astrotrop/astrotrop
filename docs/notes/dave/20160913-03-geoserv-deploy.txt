@@ -22,7 +22,7 @@
 
 # -----------------------------------------------------
 # Configure our GeoServer container.
-#[root@virtual]
+#[user@virtual]
 
     source "${HOME:?}/astrotrop.conf"
     cat >> "${HOME:?}/astrotrop.conf" << EOF
@@ -30,7 +30,7 @@
         geoservdockname=geoserv
         geoservdockport=8080
 
-        geoservhostname=\${geoservdockname:?}-\${droplet:?}.\${dnsdomain:?}
+        geoservhostname=\${geoservdockname:?}.\${dnsfull:?}
         geoservexternal=http://\${geoservhostname:?}/geoserver/
         geoservinternal=http://\${geoservdockname:?}:\${geoservdockport:?}/geoserver/
 
@@ -44,19 +44,22 @@ EOF
 
 # -----------------------------------------------------
 # Create our GeoServer data directories.
-#[root@virtual]
+#[user@virtual]
 
     source "${HOME:?}/astrotrop.conf"
     
     rmdata "${geoservtempdir:?}"
     rmdata "${geoservdatadir:?}"
 
-    mkdata "${geoservtempdir:?}" "${tomcatuid:?}"
-    mkdata "${geoservdatadir:?}" "${tomcatuid:?}"
+    mkdata "${geoservtempdir:?}"
+    mkdata "${geoservdatadir:?}"
+
+    chmod a+rwx "${geoservtempdir:?}"
+    chmod a+rwx "${geoservdatadir:?}"
 
 # -----------------------------------------------------
 # Run our GeoServer container.
-#[root@virtual]
+#[user@virtual]
 
     source "${HOME:?}/astrotrop.conf"
 
@@ -72,8 +75,8 @@ EOF
         --env-file "${geoservenv:?}" \
         --volume  "${geoservtempdir:?}:/temp" \
         --volume  "${geoservdatadir:?}:/data" \
-        --network "${dockernet:?}" \
-        "astrotrop/geoserver:${dockerset:?}"
+        --network "${netname:?}" \
+        "astrotrop/geoserver:${version:?}"
 
     docker logs -f "${geoservdockname:?}"
 

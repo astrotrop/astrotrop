@@ -23,14 +23,12 @@
 
 # -----------------------------------------------------
 # Configure our build.
-#[root@virtual]
+# [user@virtual]
 
     cat > "${HOME:?}/astrotrop.conf" << EOF
 
-        droplet=02
-
-        dockerset=1.2
-        dockernet=baltic
+        version=1.2
+        netname=baltic
 
         project=/var/local/astrotrop
         tempdir=\${project:?}/temp
@@ -38,13 +36,15 @@
 
         tomcatuid=995:994
 
-        dnsdomain=trop.metagrid.co.uk
+        dnsbase=astrotrop.xyz
+        dnsname=alpha
+        dnsfull=\${dnsname:?}.\${dnsbase}
 
 EOF
 
 # -----------------------------------------------------
 # Create our data directories.
-#[root@virtual]
+# [user@virtual]
 
     source "${HOME:?}/astrotrop.conf"
 
@@ -87,17 +87,16 @@ EOF
     mkdata "${tempdir:?}"
     mkdata "${datadir:?}"
 
-
 # -----------------------------------------------------
 # Create our Docker network.
-#[root@virtual]
+#[user@virtual]
 
     source "${HOME:?}/astrotrop.conf"
 
     docker network \
         create \
         --driver bridge \
-        "${dockernet:?}"
+        "${netname:?}"
 
 # -----------------------------------------------------
 # Configure our PostGIS container.
@@ -151,8 +150,8 @@ EOF
         --volume  "${postgisdatadir:?}:/data" \
         --volume  "${postgistempdir:?}:/temp" \
         --expose  "${postgisdockport:?}" \
-        --network "${dockernet:?}" \
-        "astrotrop/postgis:${dockerset:?}"
+        --network "${netname:?}" \
+        "astrotrop/postgis:${version:?}"
 
 # -----------------------------------------------------
 # Test our PostGIS container.

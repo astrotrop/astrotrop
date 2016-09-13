@@ -67,12 +67,12 @@
     dnf install -y git
 
 # -----------------------------------------------------
-# Create our projects directory.
+# Create our local directory.
 # [root@virtual]
 
-    mkdir /var/local/projects
-    chgrp users  /var/local/projects
-    chmod g+rwsx /var/local/projects
+    mkdir -p /var/local
+    chgrp users  /var/local
+    chmod g+rwsx /var/local
 
 # -----------------------------------------------------
 # Create our docker user.
@@ -111,8 +111,8 @@
 # Install our source code.
 # [user@virtual]
 
-    mkdir /var/local/projects/astrotrop
-    pushd /var/local/projects/astrotrop
+    mkdir /var/local/astrotrop
+    pushd /var/local/astrotrop
 
         git clone 'git@github.com:astrotrop/astrotrop.git' github
 
@@ -124,7 +124,7 @@
 
     version=1.2
 
-    pushd /var/local/projects/astrotrop
+    pushd /var/local/astrotrop
 
         pushd github/src/docker/base
 
@@ -163,7 +163,7 @@
 # Build our geo containers.
 # [user@virtual]
 
-    pushd /var/local/projects/astrotrop
+    pushd /var/local/astrotrop
 
         pushd github/src/docker/geo
 
@@ -175,10 +175,6 @@
                 --tag "astrotrop/geonode:${version:?}" \
                 geonode            
 
-            docker build \
-                --tag "astrotrop/geoexplorer:${version:?}" \
-                geoexplorer            
-
         popd
     popd
 
@@ -187,16 +183,16 @@
 # [user@virtual]
 
     Install PostGIS.
-    docs/notes/dave/20160912-02-geobase-deploy.txt
+    docs/notes/dave/20160913-02-geobase-deploy.txt
 
     Install GeoServer
-    docs/notes/dave/20160912-03-geoserv-deploy.txt
+    docs/notes/dave/20160913-03-geoserv-deploy.txt
 
     Install GeoNode
-    docs/notes/dave/20160912-04-geonode-deploy.txt
+    docs/notes/dave/20160913-04-geonode-deploy.txt
 
     Install ApacheProxy
-    docs/notes/dave/20160912-05-apache-deploy.txt
+    docs/notes/dave/20160913-05-apache-deploy.txt
 
 
 
