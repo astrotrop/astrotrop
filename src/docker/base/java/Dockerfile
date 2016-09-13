@@ -22,5 +22,5 @@ ENV JAVA_VERSION 1.8.0
 
 #
 # Install Java
-RUN dnf -y install java-${JAVA_VERSION}-openjdk-headless
+RUN dnf -y install java-${JAVA_VERSION}-openjdk
 

@@ -21,6 +21,12 @@
 #
 
 # -----------------------------------------------------
+# Login to the VM host
+# [user@desktop]
+
+    ssh Zarquan@dell-three
+
+# -----------------------------------------------------
 # List the VMs
 # [user@dell-three]
 
@@ -55,10 +61,39 @@
     dnf update -y docker-engine
 
 # -----------------------------------------------------
+# Install Git.
+# [root@virtual]
+
+    dnf install -y git
+
+# -----------------------------------------------------
+# Create our projects directory.
+# [root@virtual]
+
+    mkdir /var/local/projects
+    chgrp users  /var/local/projects
+    chmod g+rwsx /var/local/projects
+
+# -----------------------------------------------------
 # Create our docker user.
 # [root@virtual]
 
-    useradd Docker 
+    username=stevedore
+
+    useradd "${username:?}" -G users -G docker
+
+    usermod --lock "${username:?}"
+
+    userhome=$(getent passwd "${username:?}" | cut -d: -f6)
+
+    mkdir "${userhome:?}/.ssh"
+
+    cp "${HOME}/.ssh/authorized_keys" \
+       "${userhome:?}/.ssh"
+
+    chown -R "$(id -u ${username:?})" "${userhome:?}/.ssh"
+    chgrp -R "$(id -g ${username:?})" "${userhome:?}/.ssh"
+    chmod u=rxw,g=,o= "${userhome:?}/.ssh"
 
 # -----------------------------------------------------
 # Reboot our virtual machine.
@@ -66,14 +101,90 @@
 
     reboot
 
+# -----------------------------------------------------
+# Login to the VM
+# [user@dell-three]
 
+    ssh stevedore@192.168.30.02
 
+# -----------------------------------------------------
+# Install our source code.
+# [user@virtual]
 
+    mkdir /var/local/projects/astrotrop
+    pushd /var/local/projects/astrotrop
 
+        git clone 'git@github.com:astrotrop/astrotrop.git' github
+
+    popd
+
+# -----------------------------------------------------
+# Build our base containers.
+# [user@virtual]
+
+    version=1.2
+
+    pushd /var/local/projects/astrotrop
+
+        pushd github/src/docker/base
+
+            docker build \
+                --tag "astrotrop/fedora:${version:?}" \
+                fedora
+
+            docker build \
+                --tag "astrotrop/apache-base:${version:?}" \
+                apache/base
+
+            docker build \
+                --tag "astrotrop/apache-proxy:${version:?}" \
+                apache/proxy
+
+            docker build \
+                --tag "astrotrop/apache-wsgi:${version:?}" \
+                apache/wsgi
+
+            docker build \
+                --tag "astrotrop/java:${version:?}" \
+                java
+
+            docker build \
+                --tag "astrotrop/tomcat:${version:?}" \
+                tomcat
+
+            docker build \
+                --tag "astrotrop/postgis:${version:?}" \
+                postgis
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# Build our geo containers.
+# [user@virtual]
+
+    pushd /var/local/projects/astrotrop
+
+        pushd github/src/docker/geo
+
+            docker build \
+                --tag "astrotrop/geoserver:${version:?}" \
+                geoserver            
+
+            docker build \
+                --tag "astrotrop/geonode:${version:?}" \
+                geonode            
+
+            docker build \
+                --tag "astrotrop/geoexplorer:${version:?}" \
+                geoexplorer            
+
+        popd
+    popd
 
 # -----------------------------------------------------
 # Install our containers.
-# [root@virtual]
+# [user@virtual]
 
     Install PostGIS.
     docs/notes/dave/20160912-02-geobase-deploy.txt
