@@ -19,7 +19,7 @@ FROM astrotrop/apache-base:1.2
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# Install mod_proxy.
-#RUN dnf -y install mod_proxy
+# The base Apache install already has mod_proxy.
+# RUN dnf -y install mod_proxy
 
 

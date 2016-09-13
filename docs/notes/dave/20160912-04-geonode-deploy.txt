@@ -1,0 +1,238 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------
+# Configure our GeoNode container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        geonodedockname=geonode
+        geonodehostport=8000
+
+        geonodehostname=\${geonodedockname:?}-\${droplet:?}.\${dnsdomain:?}
+        geonodeexternal=http://\${geonodehostname:?}/
+        geonodeinternal=http://\${geonodedockname:?}:\${geonodehostport:?}/
+
+        geonodeusername=astrotrop
+        geonodepassword=$(pwgen 20 1)
+
+        geonodedatabase=geonodedata
+        geonodedatastor=geonodedatastor
+        geonodedatauser=geonodedata
+        geonodedatapass=$(pwgen 20 1)
+
+        geonodetempdir=\${tempdir:?}/geonode
+        geonodedatadir=\${datadir:?}/geonode
+
+EOF
+
+# -----------------------------------------------------
+# Create our GeoNode data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${geonodetempdir:?}"
+    rmdata "${geonodedatadir:?}"
+
+    mkdata "${geonodetempdir:?}"
+    mkdata "${geonodedatadir:?}"
+
+# -----------------------------------------
+# Configure our GeoNode container.
+# TODO Move this to config() script
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    geonodeenv=$(mktemp)
+    cat > "${geonodeenv:?}" << EOF
+
+POSTGIS_HOSTNAME=${postgisdockname:?}
+POSTGIS_HOSTPORT=${postgisdockport:?}
+POSTGIS_DATABASE=${postgisdatabase:?}
+POSTGIS_USERNAME=${postgisusername:?}
+POSTGIS_PASSWORD=${postgispassword:?}
+
+SITEURL=${geonodeexternal:?}
+
+DATABASE_NAME=${geonodedatabase:?}
+DATABASE_HOST=${postgisdockname:?}
+DATABASE_PORT=${postgisdockport:?}
+DATABASE_USER=${geonodedatauser:?}
+DATABASE_PASS=${geonodedatapass:?}
+
+DATASTORE_NAME=${geonodedatastor:?}
+DATASTORE_HOST=${postgisdockname:?}
+DATASTORE_PORT=${postgisdockport:?}
+DATASTORE_USER=${geonodedatauser:?}
+DATASTORE_PASS=${geonodedatapass:?}
+
+OGC_SERVER_LOCAL=${geoservinternal:?}
+OGC_SERVER_PUBLIC=${geoservexternal:?}
+OGC_SERVER_USER=${geoservusername:?}
+OGC_SERVER_PASS=${geoservpassword:?}
+
+EOF
+
+# -----------------------------------------
+# Configure our GeoNode container.
+# TODO This could be done using PostGIS rather than GeoNode container.
+# TODO This could be done using external script rather than here-doc.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        -it \
+        --env-file "${geonodeenv:?}" \
+        --volume  "${geonodetempdir:?}:/temp" \
+        --volume  "${geonodedatadir:?}:/data" \
+        --network "${dockernet:?}" \
+        "astrotrop/geonode:${dockerset:?}" \
+        bash
+
+        cat > ~/.pgpass << EOF
+${POSTGIS_HOSTNAME:?}:*:*:${POSTGIS_USERNAME:?}:${POSTGIS_PASSWORD:?}
+EOF
+        chmod u=rw,g=,o= ~/.pgpass
+
+        psql \
+            --host "${POSTGIS_HOSTNAME:?}" \
+            --username "${POSTGIS_USERNAME:?}" \
+            --dbname "${POSTGIS_DATABASE}" \
+            << EOF
+
+            CREATE USER     ${DATABASE_USER:?}  WITH LOGIN PASSWORD '${DATABASE_PASS:?}' ;
+            CREATE DATABASE ${DATABASE_NAME:?}  WITH OWNER ${DATABASE_USER:?} ;
+            CREATE DATABASE ${DATASTORE_NAME:?} WITH OWNER ${DATABASE_USER:?} ;
+
+            \c ${DATASTORE_NAME:?}
+
+            CREATE EXTENSION postgis ;
+            GRANT ALL ON geometry_columns TO PUBLIC ;
+            GRANT ALL ON spatial_ref_sys  TO PUBLIC ;
+
+EOF
+
+    exit
+
+# -----------------------------------------
+# Run our GeoNode container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        --detach \
+        --name "${geonodedockname:?}" \
+        --env-file "${geonodeenv:?}" \
+        --volume  "${geonodetempdir:?}:/temp" \
+        --volume  "${geonodedatadir:?}:/data" \
+        --network "${dockernet:?}" \
+        "astrotrop/geonode:${dockerset:?}"
+
+    source "${HOME:?}/astrotrop.conf"
+    docker logs -f \
+        "${geonodedockname:?}"
+
+# -----------------------------------------------------
+# Configure our GeoNode service.
+# TODO Move this to config() script
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        "${geonodedockname:?}" \
+        bash
+
+        pushd /geonode
+        
+            python manage.py syncdb --noinput
+
+            python manage.py createsuperuser
+
+                Username: astrotrop
+                Email address: geonode-admin@astrotrop.xyz
+                Password: 
+                Password (again): 
+                Superuser created successfully.
+
+#    #
+#    # https://docs.djangoproject.com/es/1.9/ref/django-admin/#createsuperuser
+#    python manage.py \
+#        createsuperuser \
+#            --username USERNAME \
+#            --email grumbles@example.com
+#
+#    #
+#    # https://docs.djangoproject.com/es/1.9/ref/django-admin/#changepassword
+#    python manage.py \
+#        changepassword \
+#            USERNAME
+#
+# Python solution
+# http://stackoverflow.com/a/6244481
+# http://stackoverflow.com/a/22722410
+# http://stackoverflow.com/a/17874111
+
+            python manage.py shell
+
+                from django.contrib.auth import get_user_model
+                User = get_user_model()
+
+                user = User.objects.get(username='astrotrop')
+                user.set_password('simple')
+                user.is_superuser = True
+                user.is_staff = True
+                user.save
+
+                exit()
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Test our GeoNode service.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    echo "${geonodeexternal:?}"
+
+# -----------------------------------------------------
+# Import layers from GeoServer..
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        "${geonodedockname:?}" \
+        bash
+
+        pushd /geonode
+
+            python manage.py updatelayers
+
+        popd
+    exit
+

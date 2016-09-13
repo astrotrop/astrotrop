@@ -30,6 +30,7 @@
         droplet=02
 
         dockerset=1.2
+        dockernet=baltic
 
         project=/var/local/astrotrop
         tempdir=\${project:?}/temp
@@ -86,6 +87,18 @@ EOF
     mkdata "${tempdir:?}"
     mkdata "${datadir:?}"
 
+
+# -----------------------------------------------------
+# Create our Docker network.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker network \
+        create \
+        --driver bridge \
+        "${dockernet:?}"
+
 # -----------------------------------------------------
 # Configure our PostGIS container.
 #[root@virtual]
@@ -95,8 +108,6 @@ EOF
 
         postgisdockname=postgis
         postgisdockport=5432
-        postgislinkname=postgis
-        postgislinkport=5432
 
         postgistempdir=\${tempdir:?}/postgis
         postgisdatadir=\${datadir:?}/postgis
@@ -137,9 +148,10 @@ EOF
         --detach \
         --name "${postgisdockname:?}" \
         --env-file "${postgisenv:?}" \
-        --expose "${postgisdockport:?}" \
-        --volume "${postgisdatadir:?}:/data" \
-        --volume "${postgistempdir:?}:/temp" \
+        --volume  "${postgisdatadir:?}:/data" \
+        --volume  "${postgistempdir:?}:/temp" \
+        --expose  "${postgisdockport:?}" \
+        --network "${dockernet:?}" \
         "astrotrop/postgis:${dockerset:?}"
 
 # -----------------------------------------------------

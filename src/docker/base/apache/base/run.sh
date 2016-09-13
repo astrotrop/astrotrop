@@ -34,9 +34,10 @@ server()
     {
     echo "INFO  : Starting Apache service"
     #
-    # Apache gets grumpy about PID files pre-existing
+    # remove any existing PID file.
     rm -f /var/run/httpd/httpd.pid
-
+    #
+    # Run Apache in the foreground.
     exec httpd -DFOREGROUND
     }
 

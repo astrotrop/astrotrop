@@ -1,0 +1,92 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# List the VMs
+# [user@dell-three]
+
+    source ${HOME}/helio.settings
+
+    virsh \
+        -c ${connection:?} \
+        list --all
+
+# -----------------------------------------------------
+# Create a new VM
+# [user@dell-three]
+
+    createvm
+
+        INFO : Node name [Delshy]
+        INFO : Base name [fedora-23-docker-20160701.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-23-docker-20160701.qcow]
+        INFO : Disc name [Delshy.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login to the VM
+# [user@dell-three]
+
+    ssh root@192.168.30.02
+
+# -----------------------------------------------------
+# Update our docker engine.
+# [root@virtual]
+
+    dnf update -y docker-engine
+
+# -----------------------------------------------------
+# Create our docker user.
+# [root@virtual]
+
+    useradd Docker 
+
+# -----------------------------------------------------
+# Reboot our virtual machine.
+# [root@virtual]
+
+    reboot
+
+
+
+
+
+
+# -----------------------------------------------------
+# Install our containers.
+# [root@virtual]
+
+    Install PostGIS.
+    docs/notes/dave/20160912-02-geobase-deploy.txt
+
+    Install GeoServer
+    docs/notes/dave/20160912-03-geoserv-deploy.txt
+
+    Install GeoNode
+    docs/notes/dave/20160912-04-geonode-deploy.txt
+
+    Install ApacheProxy
+    docs/notes/dave/20160912-05-apache-deploy.txt
+
+
+
+

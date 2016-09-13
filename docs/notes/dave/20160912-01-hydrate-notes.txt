@@ -1,0 +1,138 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+    VM 1
+
+        Apache proxy
+
+    VM 2
+
+        PostGIS postgis-02
+        GeoServ geoserv-02
+        GeoNode geonode-02
+
+            Data from Bournmouth
+            workspaces/AstroTROP/PostGIS database/MexicanOaks
+            workspaces/AstroTROP/PostGIS database/MexicanStates
+            workspaces/AstroTROP/PostGIS database/MexicanTowns
+
+    VM 3
+
+        PostGIS postgis-03
+        GeoServ geoserv-03
+        GeoNode geonode-03
+        
+            Data from Leicester
+            workspaces/Leicester/AGB-MEX/AGB-MEX_v1
+            workspaces/Leicester/AGB-MEX
+            workspaces/Leicester/Forest cover Mexico/Forest_Cover_Mexico
+            workspaces/Leicester/Forest cover Mexico
+            workspaces/Leicester/Forest-cover-Congo/Forest_Cover_Congo
+            workspaces/Leicester/Forest-cover-Congo
+            workspaces/Leicester/Forest_Non-Forest_Congo
+            workspaces/Leicester/Forest_Non-Forest_Mexico
+            workspaces/Leicester
+
+    VM 4
+
+        PostGIS postgis-04
+        GeoServ geoserv-04
+        GeoNode geonode-04
+        
+            Data from Kings
+            workspaces/Policysupport/Carbon stock
+            workspaces/Policysupport/Potential carbon
+            workspaces/Policysupport/pot_carbon_value
+            workspaces/Policysupport
+
+    VM 5
+
+        PostGIS postgis-05
+        GeoServ geoserv-05
+        GeoNode geonode-05
+
+    VM 6
+
+        PostGIS postgis-06
+        CKAN    ckan-06
+        Solr    solr-06
+
+# -----------------------------------------------------
+# List the VMs
+# [user@dell-three]
+
+    source ${HOME}/helio.settings
+
+    virsh \
+        -c ${connection:?} \
+        list --all
+
+# -----------------------------------------------------
+# Create a new VM
+# [user@dell-three]
+
+    createvm
+
+        INFO : Node name [Delshy]
+        INFO : Base name [fedora-23-docker-20160701.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-23-docker-20160701.qcow]
+        INFO : Disc name [Delshy.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login to the VM
+# [user@dell-three]
+
+    # ssh doesn't read the hosts file
+
+    ssh root@192.168.30.02
+
+# -----------------------------------------------------
+# Update our virtual machine.
+# [root@virtual]
+
+    dnf update -y docker-engine
+
+    reboot
+
+# -----------------------------------------------------
+# Install our containers.
+# [root@virtual]
+
+    Install PostGIS.
+    docs/notes/dave/20160912-02-geobase-deploy.txt
+
+    Install GeoServer
+    docs/notes/dave/20160912-03-geoserv-deploy.txt
+
+    Install GeoNode
+    docs/notes/dave/20160912-04-geonode-deploy.txt
+
+    Install ApacheProxy
+    docs/notes/dave/20160912-05-apache-deploy.txt
+
+
+
+
+
+

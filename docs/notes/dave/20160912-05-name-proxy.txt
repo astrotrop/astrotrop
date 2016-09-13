@@ -1,0 +1,182 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+
+# -----------------------------------------------------
+# List the available networks
+# [user@dell-three]
+
+    source ${HOME}/helio.settings
+
+    virsh \
+        -c ${connection:?} \
+        net-list --all
+
+# -----------------------------------------------------
+# Star the bridged network
+# [user@dell-three]
+
+    source ${HOME}/helio.settings
+
+    virsh \
+        -c ${connection:?} \
+        net-start bridged
+
+# -----------------------------------------------------
+# Add a new network interface to our VM.
+# [user@dell-three]
+
+    source ${HOME}/helio.settings
+
+    virsh \
+        -c ${connection:?} \
+        edit Delshy
+
+
+        <interface type='network'>
+          <mac address='52:54:00:00:81:30'/>
+          <source network='bridged'/>
+          <model type='virtio'/>
+          <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
+        </interface>
+
+    virsh \
+        -c ${connection:?} \
+        shutdown Delshy
+
+    virsh \
+        -c ${connection:?} \
+        start Delshy
+
+# -----------------------------------------------------
+# Login to the VM
+# [user@dell-three]
+
+    # ssh doesn't read the hosts file
+
+    ssh root@192.168.30.02
+
+# -----------------------------------------------------
+# Add our new network interface.
+#[root@virtual]
+
+#
+# Default config will get a 10. address from our DHCP server.
+# Unknown MAC addresses get a temp 10.12.0.5 address.
+
+cat > /etc/sysconfig/network-scripts/ifcfg-ens4 << EOF
+NAME="ens4"
+DEVICE="ens4"
+ONBOOT=yes
+NETBOOT=yes
+UUID="$(uuidgen)"
+IPV6INIT=yes
+BOOTPROTO=dhcp
+TYPE=Ethernet
+EOF
+
+    reboot
+
+    ifconfig
+    
+        ens4: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+            inet 10.12.0.5  netmask 255.0.0.0  broadcast 10.255.255.255
+            inet6 2001:8b0:be72:d4ea:5054:ff:fe00:8130  prefixlen 64  scopeid 0x0<global>
+            inet6 fe80::5054:ff:fe00:8130  prefixlen 64  scopeid 0x20<link>
+
+
+# -----------------------------------------------------
+# Configure our Apache proxy container.
+#[root@virtual]
+
+cat >> "${HOME:?}/astrotrop.conf" << EOF
+apacheport=80
+EOF
+
+# -----------------------------------------------------
+# Create our Apache proxy container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    apacheenv=$(mktemp)
+    cat > "${apacheenv:?}" <<- EOF
+geoservinternal=${geoservinternal:?}
+geonodeinternal=${geonodeinternal:?}
+EOF
+
+    docker run \
+        --rm \
+        --tty \
+        --interactive \
+        --volume  "${apacheenv:?}:/config" \
+        --publish "${apacheport:?}:${apacheport:?}" \
+        --network "${dockernet:?}" \
+        astrotrop/fedora:1.2 \
+        bash
+
+        #
+        # Install the Apache service.
+        dnf install -y httpd
+
+        #
+        # Add our geoserv proxy config.
+cat > /etc/httpd/conf.d/geoserv.conf << EOF
+<VirtualHost *:*>
+    ProxyPreserveHost On
+    ProxyPass        "/geoserver" "http://geoserv:8080/geoserver"
+    ProxyPassReverse "/geoserver" "http://geoserv:8080/geoserver"
+    ServerName geoserv.alpha.astrotrop.xyz
+</VirtualHost>
+EOF
+
+        #
+        # Add our geonode proxy config.
+cat > /etc/httpd/conf.d/geonode.conf << EOF
+<VirtualHost *:*>
+    ProxyPreserveHost On
+    ProxyPass        "/" "http://geonode:8000/"
+    ProxyPassReverse "/" "http://geonode:8000/"
+    ServerName geonode.alpha.astrotrop.xyz
+</VirtualHost>
+EOF
+
+        #
+        # Run the Apache service.
+        # https://github.com/docker-library/httpd/blob/12bf8c8883340c98b3988a7bade8ef2d0d6dcf8a/2.2/httpd-foreground
+
+            #
+            # Remove any previous PID file.
+            rm -f /var/run/httpd/httpd.pid
+
+            #
+            # Run Apache in the foreground
+            exec httpd -DFOREGROUND
+
+# -----------------------------------------------------
+# Test our Apache service.
+#[user@desktop]
+
+    curl -v 'http://geoserv.alpha.astrotrop.xyz/'
+
+
