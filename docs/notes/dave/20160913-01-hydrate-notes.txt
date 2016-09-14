@@ -106,7 +106,7 @@
 # [user@dell-three]
 
     ssh stevedore@192.168.30.02
-
+    ssh root@192.168.30.02
 
 # -----------------------------------------------------
 # Install our source code.
@@ -135,7 +135,6 @@
     version=1.2
 
     pushd /var/local/astrotrop
-
         pushd github/src/docker/base
 
             docker build \
@@ -174,7 +173,6 @@
 # [user@virtual]
 
     pushd /var/local/astrotrop
-
         pushd github/src/docker/geo
 
             docker build \

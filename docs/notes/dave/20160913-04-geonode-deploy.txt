@@ -151,7 +151,6 @@ EOF
         --network "${netname:?}" \
         "astrotrop/geonode:${version:?}"
 
-    source "${HOME:?}/astrotrop.conf"
     docker logs -f \
         "${geonodedockname:?}"
 
@@ -170,17 +169,18 @@ EOF
         
             python manage.py syncdb --noinput
 
-            python manage.py createsuperuser
-
-                Username: astrotrop
-                Email address: geonode-admin@astrotrop.xyz
-                Password: 
-                Password (again): 
-                Superuser created successfully.
-
-        #
-        # http://source.mihelac.org/2009/10/23/django-avoiding-typing-password-for-superuser/
-
+#
+#           python manage.py createsuperuser
+#
+#               Username: astrotrop
+#               Email address: geonode-admin@astrotrop.xyz
+#               Password: 
+#               Password (again): 
+#               Superuser created successfully.
+#
+#    #
+#    # http://source.mihelac.org/2009/10/23/django-avoiding-typing-password-for-superuser/
+#
 #    #
 #    # https://docs.djangoproject.com/es/1.9/ref/django-admin/#createsuperuser
 #    python manage.py \
@@ -198,35 +198,32 @@ EOF
 # http://stackoverflow.com/a/6244481
 # http://stackoverflow.com/a/22722410
 # http://stackoverflow.com/a/17874111
-
+#
+#           python manage.py shell
+#
+#               from django.contrib.auth import get_user_model
+#               User = get_user_model()
+#
+#               user = User.objects.get(username='astrotrop')
+#               user.set_password('simple')
+#               user.is_superuser = True
+#               user.is_staff = True
+#               user.save
+#
+#               exit()
+#
             python manage.py shell
 
                 from django.contrib.auth import get_user_model
                 User = get_user_model()
 
-                user = User.objects.get(username='astrotrop')
-                user.set_password('simple')
-                user.is_superuser = True
-                user.is_staff = True
-                user.save
-
-                exit()
-
-            python manage.py shell
-
-                from django.contrib.auth import get_user_model
-                User = get_user_model()
-
-                from django.contrib.auth.models import User
                 User.objects.create_superuser(
-                    'admin',
+                    'astrotrop',
                     'admin@example.com',
-                    'pass'
+                    'password'
                     )
 
                 exit()
-
-
 
         popd
     exit
@@ -239,7 +236,7 @@ EOF
     echo "${geonodeexternal:?}"
 
 # -----------------------------------------------------
-# Import layers from GeoServer..
+# Import layers from GeoServer.
 #[root@virtual]
 
     source "${HOME:?}/astrotrop.conf"

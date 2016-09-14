@@ -70,8 +70,6 @@
 # Login to the VM
 # [user@dell-three]
 
-    # ssh doesn't read the hosts file
-
     ssh root@192.168.30.02
 
 # -----------------------------------------------------
@@ -80,7 +78,7 @@
 
 #
 # Default config will get a 10. address from our DHCP server.
-# Unknown MAC addresses get a temp 10.12.0.5 address.
+# Unknown MAC addresses get a temp 10.12.x.y address.
 
 cat > /etc/sysconfig/network-scripts/ifcfg-ens4 << EOF
 NAME="ens4"
@@ -95,86 +93,81 @@ EOF
 
     reboot
 
+# -----------------------------------------------------
+# Login to the VM
+# [user@dell-three]
+
+    ssh root@192.168.30.02
+
+# -----------------------------------------------------
+# Check the network interfaces.
+# [user@dell-three]
+
     ifconfig
     
         ens4: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-            inet 10.12.0.5  netmask 255.0.0.0  broadcast 10.255.255.255
+            inet 10.12.0.7  netmask 255.0.0.0  broadcast 10.255.255.255
             inet6 2001:8b0:be72:d4ea:5054:ff:fe00:8130  prefixlen 64  scopeid 0x0<global>
             inet6 fe80::5054:ff:fe00:8130  prefixlen 64  scopeid 0x20<link>
 
+# -----------------------------------------------------
+# Restart our containers.
+#[root@virtual]
+
+    docker start postgis
+    docker start geoserv
+    docker start geonode
 
 # -----------------------------------------------------
 # Configure our Apache proxy container.
 #[root@virtual]
 
-cat >> "${HOME:?}/astrotrop.conf" << EOF
-apacheport=80
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        apacheproxyport=80
+        apacheproxyname=http-proxy
+
 EOF
 
-# -----------------------------------------------------
-# Create our Apache proxy container.
+# -----------------------------------------
+# Create our virtual host config.
 #[root@virtual]
 
-    source "${HOME:?}/astrotrop.conf"
-
-    apacheenv=$(mktemp)
-    cat > "${apacheenv:?}" <<- EOF
-geoservinternal=${geoservinternal:?}
-geonodeinternal=${geonodeinternal:?}
-EOF
-
-    docker run \
-        --rm \
-        --tty \
-        --interactive \
-        --volume  "${apacheenv:?}:/config" \
-        --publish "${apacheport:?}:${apacheport:?}" \
-        --network "${dockernet:?}" \
-        astrotrop/fedora:1.2 \
-        bash
-
-        #
-        # Install the Apache service.
-        dnf install -y httpd
-
-        #
-        # Add our geoserv proxy config.
-cat > /etc/httpd/conf.d/geoserv.conf << EOF
+geoservconf=$(mktemp)
+cat > "${geoservconf:?}" << EOF
 <VirtualHost *:*>
     ProxyPreserveHost On
-    ProxyPass        "/geoserver" "http://geoserv:8080/geoserver"
-    ProxyPassReverse "/geoserver" "http://geoserv:8080/geoserver"
+    ProxyPass        "/geoserver/" "${geoservinternal:?}"
+    ProxyPassReverse "/geoserver/" "${geoservinternal:?}"
     ServerName geoserv.alpha.astrotrop.xyz
 </VirtualHost>
 EOF
 
-        #
-        # Add our geonode proxy config.
-cat > /etc/httpd/conf.d/geonode.conf << EOF
+geonodeconf=$(mktemp)
+cat > "${geonodeconf:?}" << EOF
 <VirtualHost *:*>
     ProxyPreserveHost On
-    ProxyPass        "/" "http://geonode:8000/"
-    ProxyPassReverse "/" "http://geonode:8000/"
+    ProxyPass        "/" "${geonodeinternal:?}"
+    ProxyPassReverse "/" "${geonodeinternal:?}"
     ServerName geonode.alpha.astrotrop.xyz
 </VirtualHost>
 EOF
 
-        #
-        # Run the Apache service.
-        # https://github.com/docker-library/httpd/blob/12bf8c8883340c98b3988a7bade8ef2d0d6dcf8a/2.2/httpd-foreground
+# -----------------------------------------
+# Run our Apache proxy container.
+#[root@virtual]
 
-            #
-            # Remove any previous PID file.
-            rm -f /var/run/httpd/httpd.pid
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        --detach \
+        --name "${apacheproxyname:?}" \
+        --volume  "${geoservconf:?}:/etc/httpd/conf.d/geoserv.conf" \
+        --volume  "${geonodeconf:?}:/etc/httpd/conf.d/geonode.conf" \
+        --network "${netname:?}" \
+        --publish "${apacheproxyport:?}:${apacheproxyport:?}" \
+        "astrotrop/apache-proxy:${version:?}"
 
-            #
-            # Run Apache in the foreground
-            exec httpd -DFOREGROUND
-
-# -----------------------------------------------------
-# Test our Apache service.
-#[user@desktop]
-
-    curl -v 'http://geoserv.alpha.astrotrop.xyz/'
-
+    docker logs -f \
+        "${apacheproxyname:?}"
 

@@ -54,6 +54,9 @@ EOF
     mkdata "${geoservtempdir:?}"
     mkdata "${geoservdatadir:?}"
 
+#
+# Fix for permissions.
+# Original set the owner to tomcat.
     chmod a+rwx "${geoservtempdir:?}"
     chmod a+rwx "${geoservdatadir:?}"
 
@@ -83,6 +86,10 @@ EOF
 # -----------------------------------------------------
 # Configure our GeoServer login.
 #[root@virtual]
+
+#
+# Need to be root to edit files owned by Tomcat.
+
 
     #
     # We can add the account - but the password encryption is wrong.
@@ -247,6 +254,10 @@ EOF
 
     docker logs -f "${geoservdockname:?}"
 
+# -----------------------------------------------------
+# Test our GeoServer service.
+#[root@virtual]
 
-
+    source "${HOME:?}/astrotrop.conf"
+    echo "${geoservexternal:?}"
 
