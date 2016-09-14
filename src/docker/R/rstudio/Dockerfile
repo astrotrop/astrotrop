@@ -19,28 +19,31 @@ FROM rocker/rstudio
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# Add the ODBC and PostgreSQL drivers to connect to PostGIS.
-RUN apt-get update \
-	&& apt-get install -y --no-install-recommends \
-        unixodbc \
-        r-cran-rodbc \
-        odbc-postgresql \
-        r-cran-rpostgresql \
-	&& rm -rf /var/lib/apt/lists/
+# Update the whole system.
+# https://github.com/rocker-org/rocker/issues/134
+RUN apt-get update \ 
+ && apt-get dist-upgrade \
+ && rm -rf /var/lib/apt/lists/
 
 #
-# Configure APT to use the latest (unstable) packages
-#ADD unstable.txt /etc/apt/sources.list
+# Add the ODBC and PostgreSQL drivers to connect to PostGIS.
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      unixodbc \
+      odbc-postgresql \
+      r-cran-rodbc \
+      r-cran-rpostgresql \
+ && rm -rf /var/lib/apt/lists/
 
 #
 # Add the gdal package .
 #       r-cran-rgdal \
-RUN apt-get update \ 
-	&& apt-get install -y --no-install-recommends \
-        libgdal1i \
-        libproj-dev \
-        libgdal-dev \
-	&& rm -rf /var/lib/apt/lists/
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends \
+      libgdal1i \
+      libproj-dev \
+      libgdal-dev \
+ && rm -rf /var/lib/apt/lists/
 
 
 
