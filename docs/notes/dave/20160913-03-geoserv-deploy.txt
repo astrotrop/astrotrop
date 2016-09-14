@@ -81,56 +81,6 @@ EOF
     docker logs -f "${geoservdockname:?}"
 
 # -----------------------------------------------------
-# Install the full JRE (headless fails to load fonts)
-# http://stackoverflow.com/a/30650244
-# TODO - add to Dockerfile
-#[root@virtual]
-#
-#   2016-02-20 23:15:00,857 DEBUG [printng.spi] - configuring render size from document to java.awt.Dimension[width=617,height=363]
-#   2016-02-20 23:15:00,994 ERROR [geoserver.rest] - Exception intercepted
-#   java.lang.NullPointerException
-#       at sun.awt.FontConfiguration.getVersion(FontConfiguration.java:1264)
-#       at sun.awt.FontConfiguration.readFontConfigFile(FontConfiguration.java:219)
-#
-
-    source "${HOME:?}/astrotrop.conf"
-    docker exec \
-        -it \
-        -u root \
-        "${geoservdockname:?}" \
-        bash        
-
-        dnf install -y java-1.8.0-openjdk
-
-    exit
-
-# -----------------------------------------------------
-# Install the Tomcat native 
-# TODO - add to Dockerfile
-#[root@virtual]
-
-    source "${HOME:?}/astrotrop.conf"
-    docker exec \
-        -it \
-        -u root \
-        "${geoservdockname:?}" \
-        bash        
-
-        dnf install -y tomcat-native
-
-    exit
-
-# -----------------------------------------------------
-# Restart the container. 
-#[root@virtual]
-
-    docker stop  "${geoservdockname:?}"
-    docker start "${geoservdockname:?}"
-
-    docker logs -f "${geoservdockname:?}"
-
-
-# -----------------------------------------------------
 # Configure our GeoServer login.
 #[root@virtual]
 

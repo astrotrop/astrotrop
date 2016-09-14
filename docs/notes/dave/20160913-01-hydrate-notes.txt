@@ -107,15 +107,25 @@
 
     ssh stevedore@192.168.30.02
 
+
 # -----------------------------------------------------
 # Install our source code.
 # [user@virtual]
 
-    mkdir /var/local/astrotrop
+    if [ ! -e /var/local/astrotrop ]
+    then
+        mkdir /var/local/astrotrop
+    fi
+
     pushd /var/local/astrotrop
-
-        git clone 'git@github.com:astrotrop/astrotrop.git' github
-
+        if [ ! -e github ]
+        then
+            git clone 'git@github.com:astrotrop/astrotrop.git' github
+        else
+            pushd github
+                git pull
+            popd
+        fi
     popd
 
 # -----------------------------------------------------
