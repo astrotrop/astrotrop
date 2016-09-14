@@ -154,6 +154,16 @@ cat > "${geonodeconf:?}" << EOF
 </VirtualHost>
 EOF
 
+rstudioconf=$(mktemp)
+cat > "${rstudioconf:?}" << EOF
+<VirtualHost *:*>
+    ProxyPreserveHost On
+    ProxyPass        "/" "${rstudiointernal:?}"
+    ProxyPassReverse "/" "${rstudiointernal:?}"
+    ServerName rstudio.alpha.astrotrop.xyz
+</VirtualHost>
+EOF
+
 # -----------------------------------------
 # Run our Apache proxy container.
 #[root@virtual]
@@ -164,6 +174,7 @@ EOF
         --name "${apacheproxyname:?}" \
         --volume  "${geoservconf:?}:/etc/httpd/conf.d/geoserv.conf" \
         --volume  "${geonodeconf:?}:/etc/httpd/conf.d/geonode.conf" \
+        --volume  "${rstudioconf:?}:/etc/httpd/conf.d/rstudio.conf" \
         --network "${netname:?}" \
         --publish "${apacheproxyport:?}:${apacheproxyport:?}" \
         "astrotrop/apache-proxy:${version:?}"

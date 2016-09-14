@@ -30,7 +30,7 @@ RUN apt-get update \
 
 #
 # Configure APT to use the latest (unstable) packages
-ADD unstable.txt /etc/apt/sources.list
+#ADD unstable.txt /etc/apt/sources.list
 
 #
 # Add the gdal package .

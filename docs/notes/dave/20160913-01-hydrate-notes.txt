@@ -187,6 +187,20 @@
     popd
 
 # -----------------------------------------------------
+# Build our R container.
+# [user@virtual]
+
+    pushd /var/local/astrotrop
+        pushd github/src/docker/R
+
+            docker build \
+                --tag "astrotrop/rstudio:${version:?}" \
+                rstudio
+
+        popd
+    popd
+
+# -----------------------------------------------------
 # Install our containers.
 # [user@virtual]
 
@@ -199,8 +213,11 @@
     Install GeoNode
     docs/notes/dave/20160913-04-geonode-deploy.txt
 
+    Install RStudio
+    docs/notes/dave/20160914-01-rstudio-deploy.txt
+
     Install ApacheProxy
-    docs/notes/dave/20160913-05-apache-deploy.txt
+    docs/notes/dave/20160914-02-proxy-deploy.txt
 
 
 

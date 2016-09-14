@@ -1,0 +1,519 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------
+# Configure our RStudio container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        rstudiodockname=rstudio
+        rstudiohostport=8000
+
+        rstudiohostname=\${rstudiodockname:?}.\${dnsfull:?}
+        rstudioexternal=http://\${rstudiohostname:?}/
+        rstudiointernal=http://\${rstudiodockname:?}:\${rstudiohostport:?}/
+
+        rstudiousername=astrotrop
+        rstudiopassword=$(pwgen 20 1)
+
+        rstudiotempdir=\${tempdir:?}/rstudio
+        rstudiodatadir=\${datadir:?}/rstudio/data
+        rstudiohomedir=\${datadir:?}/rstudio/home/
+
+EOF
+
+# -----------------------------------------------------
+# Create our RStudio data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${rstudiotempdir:?}"
+    rmdata "${rstudiodatadir:?}"
+    rmdata "${rstudiohomedir:?}"
+
+    mkdata "${rstudiotempdir:?}"
+    mkdata "${rstudiodatadir:?}"
+    mkdata "${rstudiohomedir:?}"
+
+# -----------------------------------------------------
+# Run our RStudio container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    rstudioenv=$(mktemp)
+    cat > "${rstudioenv:?}" <<- EOF
+USER=${rstudiousername:?}
+PASSWORD=${rstudiopassword:?}
+EOF
+
+    cat > "${rstudiodatadir:?}/environ" <<- EOF
+POSTGRES_DATABASE=${postgisdatabase:?}
+POSTGRES_HOSTNAME=${postgisdockname:?}
+POSTGRES_HOSTPORT=${postgisdockport:?}
+POSTGRES_USERNAME=${postgisusername:?}
+POSTGRES_PASSWORD=${postgispassword:?}
+POSTGRES_DATANAME=PG:dbname=${postgisdatabase:?} host=${postgisdockname:?} port=${postgisdockport:?} user=${postgisusername:?} password=${postgispassword:?}
+EOF
+
+    docker run \
+        --detach \
+        --name "${rstudiodockname:?}" \
+        --env-file "${rstudioenv:?}" \
+        --volume  "${rstudiotempdir:?}:/temp" \
+        --volume  "${rstudiodatadir:?}:/data" \
+        --volume  "${rstudiohomedir:?}:/home" \
+        --network "${netname:?}" \
+        "astrotrop/rstudio:${dockerset:?}"
+
+# -----------------------------------------------------
+# Configure our RStudio container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        "${rstudiodockname:?}" \
+        bash        
+
+        #
+        # Update the apt sources.
+        # TODO - move to Dockerfile 
+        apt-get update
+
+        #
+        # Install the RPostgreSQL package
+        # TODO - move to Dockerfile 
+        apt-get -y install r-cran-rpostgresql
+
+        #
+        # Install the rgdal package
+        # TODO - move to Dockerfile 
+        # apt-get -y install r-cran-sp
+        # apt-get -y install r-cran-rgdal
+
+        #
+        # Install the R ODBC package
+        # TODO - move to Dockerfile 
+        apt-get -y install unixodbc
+        apt-get -y install r-cran-rodbc
+        apt-get -y install odbc-postgresql
+
+        #
+        # Configure the ODBC connection settings
+        # http://www.uptimemadeeasy.com/linux/install-postgresql-odbc-driver-on-linux/
+        # TODO Automate this as part of config()
+        source /data/environ
+        cat > /etc/odbc.ini << EOF
+[${POSTGRES_DATABASE:?}]
+Driver = /usr/lib/x86_64-linux-gnu/odbc/psqlodbcw.so 
+Protocol = 9.4.5
+Database = ${POSTGRES_DATABASE:?}
+Servername = ${POSTGRES_HOSTNAME:?}
+Username = ${POSTGRES_USERNAME:?}
+Password = ${POSTGRES_PASSWORD:?}
+Port     = ${POSTGRES_HOSTPORT:?}
+EOF
+
+    exit
+
+# -----------------------------------------------------
+# Configure RStudio to support PostGIS command line access.
+# TODO Move to Docker file and deploy instructions.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        "${rstudiodockname:?}" \
+        bash        
+
+        #
+        # Set the shell for the astrotrop user.
+        chsh astrotrop -s /bin/bash
+
+        #
+        # Install the PostGIS client.
+        # TODO - Figure out why the postgis package requires sound, video and blueray ?
+        # 151 new packages, 71.0 MB of archives, 250 MB of disk space will be used.
+        apt-get install --no-install-recommends postgis 
+        apt-get install --no-install-recommends postgresql-client
+
+        #
+        # Install the PostgreSQL password file.
+        source /data/environ 
+        cat > /home/astrotrop/.pgpass << EOF
+${POSTGRES_HOSTNAME:?}:*:*:${POSTGRES_USERNAME:?}:${POSTGRES_PASSWORD:?}
+EOF
+        chown astrotrop /home/astrotrop/.pgpass    
+        chgrp astrotrop /home/astrotrop/.pgpass    
+        chmod u=rw,g=,o= /home/astrotrop/.pgpass    
+
+    exit
+
+# -----------------------------------------------------
+# Update our hosts file.
+# Need to do this whenever the virtual machine is restarted.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    postgisdockipv4=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${postgisdockname:?})
+    rstudiodockipv4=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${rstudiodockname:?})
+
+    cat >> /etc/hosts << EOF
+#
+# Docker container addresses
+${postgisdockipv4:?} ${postgisdockname:?}
+${rstudiodockipv4:?} ${rstudiodockname:?}
+
+EOF
+
+# -----------------------------------------------------
+# Install Debian packages where available.
+#
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${rstudiodockname:?}" bash
+
+        apt-get update
+        apt-get install -y r-cran-ggplot2
+        apt-get install -y r-cran-mgcv
+        apt-get install -y r-cran-randomforest
+        apt-get install -y r-cran-rodbc
+        apt-get install -y r-cran-sm
+        apt-get install -y r-cran-vegan
+
+        exit
+
+# -----------------------------------------------------
+# Install R packages from source.
+#
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${rstudiodockname:?}" R
+
+        # https://cran.r-project.org/web/packages/dismo/index.html
+        install.packages("dismo")
+
+        # https://cran.r-project.org/web/packages/googleVis/
+        install.packages("googleVis")
+
+        # https://github.com/Debian/r-cran-knitr
+        install.packages("knitr")
+
+        # https://r-forge.r-project.org/R/?group_id=294
+        install.packages("raster")
+
+        q()
+
+# -----------------------------------------------------
+# Install dependencies for rgdal and rgeos.
+# http://stackoverflow.com/q/31342575
+#
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${rstudiodockname:?}" bash
+
+        cat /etc/apt/sources.list
+
+            deb http://httpredir.debian.org/debian unstable main
+            deb http://httpredir.debian.org/debian testing-updates main
+            deb http://security.debian.org testing/updates main
+
+        apt-get update
+        apt-get install --no-install-recommends libgdal1i
+        apt-get install --no-install-recommends libgdal-dev
+        apt-get install --no-install-recommends libproj-dev
+
+        exit
+
+# -----------------------------------------------------
+# Install rgdal and rgeos.
+# http://stackoverflow.com/q/31342575
+#
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${rstudiodockname:?}" R
+
+        # https://cran.r-project.org/web/packages/rgdal/index.html
+        install.packages("rgdal")
+
+        # https://cran.r-project.org/web/packages/rgeos/index.html
+        install.packages("rgeos")
+
+        q()
+
+# -----------------------------------------------------
+# Test the R libraries.
+#
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec -it "${rstudiodockname:?}" R
+
+        library(dismo)
+        library(googleVis)
+        library(knitr)
+        library(raster)
+        library(rgdal)
+        library(rgeos)
+
+        q()
+
+# -----------------------------------------------------
+# Test our RStudio service.
+#[user@desktop]
+
+    firefox 'http://rstudio-08.metagrid.xyz:8787/' &
+
+# -----------------------------------------------------
+# Read the database settings from env file.
+#[RStudio]
+
+    readRenviron("/data/environ")
+
+    dbname <- Sys.getenv("POSTGRES_DATABASE")
+    dbhost <- Sys.getenv("POSTGRES_HOSTNAME")
+    dbport <- Sys.getenv("POSTGRES_HOSTPORT")
+    dbuser <- Sys.getenv("POSTGRES_USERNAME")
+    dbpass <- Sys.getenv("POSTGRES_PASSWORD")
+    pgdsn  <- Sys.getenv("POSTGRES_DATANAME")
+
+# -----------------------------------------------------
+# Load the PostgreSQL database driver,
+#[RStudio]
+
+    library(RPostgreSQL)
+
+# -----------------------------------------------------
+# Test the PostgreSQL database driver,
+#[RStudio]
+
+    drv <- dbDriver("PostgreSQL")
+    con <- dbConnect(drv, dbname=dbname, host=dbhost, user=dbuser, password=dbpass)
+
+    dbGetQuery(con, "SELECT version()")
+
+        #
+        # PostgreSQL 9.4.5 on x86_64-unknown-linux-gnu ...."
+        #
+
+    dbGetQuery(con, "SELECT postgis_full_version()")
+
+        #
+        # POSTGIS="2.2.1 r14555" GEOS="3.4.2-CAPI-1.8.2 r3921 ...."
+        #
+
+# -----------------------------------------------------
+# Load the ODBC database driver.
+#[RStudio]
+
+    library(RODBC)
+
+# -----------------------------------------------------
+# Test the ODBC database driver.
+#[RStudio]
+
+    con <- odbcConnect(dbname)
+
+    sqlQuery(con, "SELECT version()")
+
+        #
+        # PostgreSQL 9.4.5 on x86_64-unknown-linux-gnu ...."
+        #
+
+    sqlQuery(con, "SELECT postgis_full_version()")
+
+        #
+        # POSTGIS="2.2.1 r14555" GEOS="3.4.2-CAPI-1.8.2 r3921 ...."
+        #
+
+
+# -----------------------------------------------------
+# Load the GDAL tools.
+#[RStudio]
+
+    library(rgdal)
+
+        #
+        # Loading required package: sp
+        # rgdal: version: 1.1-3, (SVN revision 594)
+        # Geospatial Data Abstraction Library extensions to R successfully loaded]
+        # ....
+
+# -----------------------------------------------------
+# Loading vector data into PostGIS from R.
+# https://rpubs.com/dgolicher/6373
+#[RStudio]
+ 
+    #
+    # Import the shapefiles.
+    states<-readOGR('/data/geostats/shapefiles','mex_states')
+
+        #
+        # OGR data source with driver: ESRI Shapefile 
+        # Source: "//data/geostats/shapefiles", layer: "mex_states"
+        # with 51 features
+        # It has 15 fields
+        #
+
+    #
+    # Plot the shape data.
+    plot(states)
+    box()
+    axis(1)
+    axis(2)
+    grid()
+
+    #
+    # Export the test data to our database.
+    writeOGR(
+        states,
+        pgdsn,
+        "other_states",
+        "PostgreSQL",
+        layer_options = "geometry_name=geom"
+        )
+
+    #
+    # Read the data back from our database.
+    readOGR(
+        pgdsn,
+        "other_states"
+        );
+
+# -----------------------------------------------------
+# Loading point data into PostGIS using R.
+# https://rpubs.com/dgolicher/6373
+#[RStudio]
+
+    #
+    # Import the point data.
+    towns <- read.csv("/data/geostats/textfiles/MexTowns.csv")
+    head(towns)
+
+            gid                       placename    pop         x        y
+        1 30669                   Ciudad Madero 197216 -97.83139 22.27639
+        2 30856                        González  11212 -98.43056 22.82806
+        3 30908 Estación Manuel (Úrsulo Galván)  12077 -98.31972 22.72778
+        4 31450       Ciudad Gustavo Díaz Ordaz  11523 -98.59694 26.23222
+        5 32155                    Ciudad Mante  84787 -98.97222 22.74250
+        6 32410               Heroica Matamoros 449815 -97.50417 25.87972
+
+    #
+    # To turn this into a spatial object we just need to tell R which columns hold the coordinates.
+    coordinates(towns) <- ~x + y
+
+    # We also need to set the set the CRS.
+    # In this case it is the same as the shape file that we loaded (EPSG:4326)
+    proj4string(towns) <- proj4string(states)
+
+    #
+    # Export the towns to our database.
+    writeOGR(
+        towns,
+        pgdsn,
+        "other_towns",
+        "PostgreSQL",
+        layer_options = "geometry_name=geom"
+        )
+
+# -----------------------------------------------------
+# Loading point data into PostGIS using command line tools from R.
+# https://rpubs.com/dgolicher/6373
+#[RStudio]
+
+    #
+    # Import the point data.
+    oaks <- read.csv("/data/geostats/textfiles/MexOaks.csv")
+    head(oaks)
+
+    # Set the coordinate columns and CRS.
+    coordinates(oaks) <- ~x + y
+    proj4string(oaks) <- proj4string(states)
+
+    #
+    # Write the updated data to a shapefile.
+    # TODO - Make sure the /temp directory is writeable.
+    writeOGR(
+        oaks,
+        "shapefiles",
+        "other_oaks",
+        "ESRI Shapefile"
+        )
+
+    #
+    # Use the command line shp2pgsql command to load the shapefile into the database.
+    # TODO Use env variables to set the pgsql params.
+
+    dbname <- Sys.getenv("POSTGRES_DATABASE")
+    dbhost <- Sys.getenv("POSTGRES_HOSTNAME")
+    dbport <- Sys.getenv("POSTGRES_HOSTPORT")
+    dbuser <- Sys.getenv("POSTGRES_USERNAME")
+
+    pgshp <- paste(
+        'shp2pgsql',
+        '-s',
+        4326,
+        '-I',
+        'shapefiles/oaks.shp',
+        'other_oaks',
+        sep=' '
+        )
+
+    pgsql <- paste(
+        'psql',
+        '-h',
+        dbhost,
+        '-p',
+        dbport,
+        '-U',
+        dbuser,
+        '-d',
+        dbname,
+        sep=' '
+        )
+
+    command <- paste(
+        pgshp,
+        pgsql,
+        sep=' | '
+        )
+
+    system(command)
+
+# -----------------------------------------------------
+# Test the R libraries.
+#[RStudio]
+
+    library(dismo)
+    library(googleVis)
+    library(knitr)
+    library(raster)
+    library(rgdal)
+    library(rgeos)
+
+
+

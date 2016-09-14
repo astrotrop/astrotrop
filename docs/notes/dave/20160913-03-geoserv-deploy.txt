@@ -261,3 +261,29 @@ EOF
     source "${HOME:?}/astrotrop.conf"
     echo "${geoservexternal:?}"
 
+
+    #
+    # Create workspace
+
+        workspacename=MexicanData
+
+    #
+    # Create store
+
+        storetype=PostGIS database
+
+        postgisdockname=postgis
+        postgisdockport=5432
+
+        postgisdatabase=postgisdata
+        postgisusername=postgisuser
+        postgispassword=aph5nuagairahLah5Veu
+
+    #
+    # Import data via RStudio
+
+        MexicanOaks
+        MexicanStates
+        MexicanTowns
+
+
