@@ -40,7 +40,7 @@ RUN apt-get update \
 #       r-cran-rgdal \
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
-      libgdal1i \
+      libgdal20 \
       libproj-dev \
       libgdal-dev \
  && rm -rf /var/lib/apt/lists/
