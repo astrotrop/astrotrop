@@ -187,14 +187,20 @@
     popd
 
 # -----------------------------------------------------
-# Build our R container.
+# Build our R containers.
 # [user@virtual]
 
     pushd /var/local/astrotrop
         pushd github/src/docker/R
 
             docker build \
-                --tag "astrotrop/rstudio:${version:?}" \
+                --file Dockebase \
+                --tag "astrotrop/rstudio-base:${version:?}" \
+                rstudio
+
+            docker build \
+                --file Dockefile \
+                --tag "astrotrop/rstudio-full:${version:?}" \
                 rstudio
 
         popd
