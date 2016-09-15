@@ -22,7 +22,7 @@ MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 # Update the system packages.
 # https://github.com/rocker-org/rocker/issues/134
 RUN apt-get update \ 
- && apt-get dist-upgrade \
+ && apt-get dist-upgrade --assume-yes \
  && rm -rf /var/lib/apt/lists/
 
 #

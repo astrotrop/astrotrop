@@ -194,12 +194,12 @@
         pushd github/src/docker/R
 
             docker build \
-                --file Dockebase \
+                --file rstudio/Dockerbase \
                 --tag "astrotrop/rstudio-base:${version:?}" \
                 rstudio
 
             docker build \
-                --file Dockefile \
+                --file rstudio/Dockerfile \
                 --tag "astrotrop/rstudio-full:${version:?}" \
                 rstudio
 

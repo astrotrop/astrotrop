@@ -22,6 +22,10 @@
 #
 
 # -----------------------------------------------------
+# Exit on error.
+set -e
+
+# -----------------------------------------------------
 # Update the apt sources.
 
     echo "Updating apt sources"
@@ -59,6 +63,8 @@
         r-cran-sm \
         r-cran-vegan
 
+    rm -rf /var/lib/apt/lists/*
+
 # -----------------------------------------------------
 # Install R packages from source.
 
@@ -67,6 +73,9 @@
 
     cat > "${rtemp:?}" << 'EOF'
 #!/usr/bin/Rscript
+
+# Use the RStudio repo.
+options(repos = c('http://cran.rstudio.com/'))
 
 # https://cran.r-project.org/web/packages/dismo/index.html
 install.packages("dismo")
@@ -86,9 +95,10 @@ install.packages("rgdal")
 # https://cran.r-project.org/web/packages/rgeos/index.html
 install.packages("rgeos")
 
-q()
 EOF
 
     Rscript --vanilla "${rtemp:?}"
+
+
 
 
