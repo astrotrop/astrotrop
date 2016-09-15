@@ -15,14 +15,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-FROM astrotrop/rstudio-base:1.2
+FROM rocker/rstudio
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
 #
-# Run our build script.
-ADD build.sh /
-RUN chmod a+x,a-w build.sh
-RUN /build.sh
-        
+# Update the system packages.
+# https://github.com/rocker-org/rocker/issues/134
+RUN apt-get update \ 
+ && apt-get dist-upgrade \
+ && rm -rf /var/lib/apt/lists/
 
+#
+# The upstream rocker/rstudio image doesn't use version tags,
+# so we can't refer to a specific version.
+# This Dockerfile gives us a stable image version to build on.
+#
 
