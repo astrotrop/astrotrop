@@ -50,7 +50,6 @@
         -c ${connection:?} \
         edit Delshy
 
-
         <interface type='network'>
           <mac address='52:54:00:00:81:30'/>
           <source network='bridged'/>
@@ -128,13 +127,24 @@ EOF
         apacheproxyport=80
         apacheproxyname=http-proxy
 
+        apacheproxyconf=\${tempdir:?}/apache
+
 EOF
+
+# -----------------------------------------------------
+# Create our GeoServer data directories.
+#[user@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${apacheproxyconf:?}"
+    mkdata "${apacheproxyconf:?}"
 
 # -----------------------------------------
 # Create our virtual host config.
 #[root@virtual]
 
-geoservconf=$(mktemp)
+geoservconf=${apacheproxyconf:?}/geoserv.conf
 cat > "${geoservconf:?}" << EOF
 <VirtualHost *:*>
     ProxyPreserveHost On
@@ -144,7 +154,7 @@ cat > "${geoservconf:?}" << EOF
 </VirtualHost>
 EOF
 
-geonodeconf=$(mktemp)
+geonodeconf=${apacheproxyconf:?}/geonode.conf
 cat > "${geonodeconf:?}" << EOF
 <VirtualHost *:*>
     ProxyPreserveHost On
@@ -154,7 +164,7 @@ cat > "${geonodeconf:?}" << EOF
 </VirtualHost>
 EOF
 
-rstudioconf=$(mktemp)
+rstudioconf=${apacheproxyconf:?}/rstudio.conf
 cat > "${rstudioconf:?}" << EOF
 <VirtualHost *:*>
     ProxyPreserveHost On
@@ -181,4 +191,5 @@ EOF
 
     docker logs -f \
         "${apacheproxyname:?}"
+
 

@@ -21,22 +21,30 @@
 #
 
 # -----------------------------------------------------
+# Install tools.
+# [user@virtual]
+
+    apt-get install --assume-yes git
+    apt-get install --assume-yes pwgen
+
+# -----------------------------------------------------
 # Configure our build.
 # [user@virtual]
 
     cat > "${HOME:?}/astrotrop.conf" << EOF
 
-        version=1.2
+        version=1.3
         netname=baltic
 
         project=/var/local/astrotrop
         tempdir=\${project:?}/temp
         datadir=\${project:?}/data
+        demodir=\${project:?}/demo
 
         tomcatuid=995:994
 
-        dnsbase=astrotrop.xyz
-        dnsname=alpha
+        dnsbase=metagrid.xyz
+        dnsname=beta
         dnsfull=\${dnsname:?}.\${dnsbase}
 
 EOF
@@ -82,9 +90,17 @@ EOF
 
     rmdata "${tempdir:?}"
     rmdata "${datadir:?}"
+    rmdata "${demodir:?}"
 
     mkdata "${tempdir:?}"
     mkdata "${datadir:?}"
+    mkdata "${demodir:?}"
+
+# -----------------------------------------------------
+# Upload our demo data.
+#[user@virtual]
+
+    scp -r Zarquan@methionine.metagrid.co.uk:/var/local/projects/edinburgh/astrotrop/protected/demo/data "${demodir:?}"
 
 # -----------------------------------------------------
 # Create our Docker network.

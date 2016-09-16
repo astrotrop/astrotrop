@@ -66,6 +66,9 @@
 
     dnf install -y git
 
+    apt-get update
+    apt-get install --assume-yes git
+
 # -----------------------------------------------------
 # Create our local directory.
 # [root@virtual]
@@ -86,7 +89,7 @@
 
     userhome=$(getent passwd "${username:?}" | cut -d: -f6)
 
-    mkdir "${userhome:?}/.ssh"
+    mkdir -p "${userhome:?}/.ssh"
 
     cp "${HOME}/.ssh/authorized_keys" \
        "${userhome:?}/.ssh"
@@ -193,6 +196,7 @@
     pushd /var/local/astrotrop
         pushd github/src/docker/R
 
+# Only do this once, after that just re-tag.
             docker build \
                 --file rstudio/Dockerbase \
                 --tag "astrotrop/rstudio-base:${version:?}" \

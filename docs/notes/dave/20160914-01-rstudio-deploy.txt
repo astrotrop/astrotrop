@@ -90,51 +90,59 @@ POSTGRES_PASSWORD=${postgispassword:?}
 POSTGRES_DATANAME=PG:dbname=${postgisdatabase:?} host=${postgisdockname:?} port=${postgisdockport:?} user=${postgisusername:?} password=${postgispassword:?}
 EOF
 
+    chmod a+r "${rstudioini:?}"
+    chmod a+w "${rstudiotempdir:?}"
+
+    rstudiodemodir=${project:?}/demo
+
     docker run \
         --detach \
         --name "${rstudiodockname:?}" \
         --env-file "${rstudioenv:?}" \
+        --volume  "${demodir:?}:/demo" \
         --volume  "${rstudiotempdir:?}:/temp" \
         --volume  "${rstudiodatadir:?}:/data" \
         --volume  "${rstudiohomedir:?}:/home" \
+        --volume  "${rstudiodemodir:?}:/demo" \
         --volume  "${rstudioini:?}:/etc/odbc.ini" \
         --network "${netname:?}" \
-        "astrotrop/rstudio:${version:?}"
+        "astrotrop/rstudio-full:${version:?}"
 
 # -----------------------------------------------------
 # Configure RStudio to support PostGIS command line access.
-# ** Only needed if we want to use command line from inside RStudio **
+# TODO Move to Dockerfile and run script.
 #[root@virtual]
-#
-#    source "${HOME:?}/astrotrop.conf"
-#    docker exec \
-#        -it \
-#        "${rstudiodockname:?}" \
-#        bash        
-#
-#        #
-#        # Set the shell for the astrotrop user.
-#        chsh astrotrop -s /bin/bash
-#
-#        #
-#        # Install the PostGIS client.
-#        # TODO - Figure out why the postgis package requires sound, video and blueray ?
-#        # 151 new packages, 71.0 MB of archives, 250 MB of disk space will be used.
-#        apt-get install --no-install-recommends postgis 
-#        apt-get install --no-install-recommends postgresql-client
-#
-#        #
-#        # Install the PostgreSQL password file.
-#        source /data/environ 
-#        cat > /home/astrotrop/.pgpass << EOF
-#${POSTGRES_HOSTNAME:?}:*:*:${POSTGRES_USERNAME:?}:${POSTGRES_PASSWORD:?}
-#EOF
-#        chown astrotrop /home/astrotrop/.pgpass    
-#        chgrp astrotrop /home/astrotrop/.pgpass    
-#        chmod u=rw,g=,o= /home/astrotrop/.pgpass    
-#
-#    exit
-#
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        "${rstudiodockname:?}" \
+        bash        
+
+        #
+        # Set the shell for the astrotrop user.
+        chsh astrotrop -s /bin/bash
+
+        #
+        # Install the PostGIS client.
+        # TODO - Figure out why the postgis package requires sound, video and blueray ?
+        # 151 new packages, 71.0 MB of archives, 250 MB of disk space will be used.
+        apt-get update
+        apt-get install --assume-yes --no-install-recommends postgis 
+        apt-get install --assume-yes --no-install-recommends postgresql-client
+
+        #
+        # Install the PostgreSQL password file.
+        source /data/environ 
+        cat > /home/astrotrop/.pgpass << EOF
+${POSTGRES_HOSTNAME:?}:*:*:${POSTGRES_USERNAME:?}:${POSTGRES_PASSWORD:?}
+EOF
+        chown astrotrop /home/astrotrop/.pgpass    
+        chgrp astrotrop /home/astrotrop/.pgpass    
+        chmod u=rw,g=,o= /home/astrotrop/.pgpass    
+
+    exit
+
 # -----------------------------------------------------
 # Update our hosts file.
 # ** Docker network solves this **
@@ -152,7 +160,6 @@ EOF
 #${rstudiodockipv4:?} ${rstudiodockname:?}
 #
 #EOF
-#
 #
 # -----------------------------------------------------
 # Install R packages from source.
@@ -196,7 +203,10 @@ EOF
 #
 
     source "${HOME:?}/astrotrop.conf"
-    docker exec -it "${rstudiodockname:?}" R
+    docker exec \
+        -it \
+        "${rstudiodockname:?}" \
+        R --vanilla
 
         library(dismo)
         library(googleVis)
@@ -212,8 +222,6 @@ EOF
 #[user@desktop]
 
     echo "${rstudioexternal:?}"
-
-#   firefox 'http://rstudio-08.metagrid.xyz:8787/' &
 
 # -----------------------------------------------------
 # Read the database settings from env file.
@@ -296,7 +304,7 @@ EOF
  
     #
     # Import the shapefiles.
-    states<-readOGR('/data/geostats/shapefiles','mex_states')
+    states<-readOGR('/demo/data/project/bournmouth/geostats/shapefiles','mex_states')
 
         #
         # OGR data source with driver: ESRI Shapefile 
@@ -318,7 +326,7 @@ EOF
     writeOGR(
         states,
         pgdsn,
-        "other_states",
+        "mexican_states",
         "PostgreSQL",
         layer_options = "geometry_name=geom"
         )
@@ -337,7 +345,7 @@ EOF
 
     #
     # Import the point data.
-    towns <- read.csv("/data/geostats/textfiles/MexTowns.csv")
+    towns <- read.csv("/demo/data/project/bournmouth/geostats/textfiles/MexTowns.csv")
     head(towns)
 
             gid                       placename    pop         x        y
@@ -361,7 +369,7 @@ EOF
     writeOGR(
         towns,
         pgdsn,
-        "other_towns",
+        "mexican_towns",
         "PostgreSQL",
         layer_options = "geometry_name=geom"
         )
@@ -373,7 +381,7 @@ EOF
 
     #
     # Import the point data.
-    oaks <- read.csv("/data/geostats/textfiles/MexOaks.csv")
+    oaks <- read.csv("/demo/data/project/bournmouth/geostats/textfiles/MexOaks.csv")
     head(oaks)
 
     # Set the coordinate columns and CRS.
@@ -385,8 +393,8 @@ EOF
     # TODO - Make sure the /temp directory is writeable.
     writeOGR(
         oaks,
-        "shapefiles",
-        "other_oaks",
+        "/temp/shapefiles",
+        "oaks",
         "ESRI Shapefile"
         )
 
@@ -404,8 +412,8 @@ EOF
         '-s',
         4326,
         '-I',
-        'shapefiles/oaks.shp',
-        'other_oaks',
+        '/temp/shapefiles/oaks.shp',
+        'mexican_oaks',
         sep=' '
         )
 

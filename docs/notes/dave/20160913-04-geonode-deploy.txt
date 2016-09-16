@@ -94,10 +94,14 @@ OGC_SERVER_PUBLIC=${geoservexternal:?}
 OGC_SERVER_USER=${geoservusername:?}
 OGC_SERVER_PASS=${geoservpassword:?}
 
+#PROXY_URL=${geonodeinternal:?}
+
+#DEFAULT_MAP_BASE_LAYER=
+
 EOF
 
 # -----------------------------------------
-# Configure our GeoNode container.
+# Configure our GeoNode database.
 # TODO This could be done using PostGIS rather than GeoNode container.
 # TODO This could be done using external script rather than here-doc.
 #[root@virtual]
@@ -106,6 +110,7 @@ EOF
     docker run \
         -it \
         --env-file "${geonodeenv:?}" \
+        --volume  "${demodir:?}:/demo" \
         --volume  "${geonodetempdir:?}:/temp" \
         --volume  "${geonodedatadir:?}:/data" \
         --network "${netname:?}" \
@@ -220,11 +225,10 @@ EOF
                 User.objects.create_superuser(
                     'astrotrop',
                     'admin@example.com',
-                    'password'
+                    'qua8coo0ceipeeshaiSh'
                     )
 
                 exit()
-
         popd
     exit
 
@@ -251,4 +255,43 @@ EOF
 
         popd
     exit
+
+
+#
+# Set GeoServ global/proxy
+# http://geoserv:8080/geoserver/
+
+#
+# Set GeoNode PROXY_URL
+# http://geonode:8000//proxy/?url=
+
+    SITEURL = "http://geonode.alpha.astrotrop.xyz/"
+    PROXY_URL = "http://geonode.alpha.astrotrop.xyz/proxy/?url="
+
+    DEFAULT_MAP_BASE_LAYER="mapnik"
+
+
+#
+# Error at /proxy/ [Errno 113] No route to host Request Method: GET Request URL:
+# JavaScript explorer is using /proxy/ to handle requests to our geonode service.
+
+    http://geonode.alpha.astrotrop.xyz/proxy/?url=http%3A%2F%2Fgeoserv.alpha.astrotrop.xyz%2Fgeoserver%2Fwms%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities
+
+    http://geonode.alpha.astrotrop.xyz/proxy/?url= http://geoserv.alpha.astrotrop.xyz/geoserver/wms%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities
+
+# Error occurs because geonode container can't 'see' a route to the external IP address of the Docker host VM.
+
+    curl --head 'http://geoserv.alpha.astrotrop.xyz/geoserver/'
+
+        FAIL - No route to host
+        
+    curl --head 'http://geoserv:8080/geoserver/'
+
+        PASS - Using Docker internal network 
+
+# Need to rewrite the URL passed to the proxy ....
+
+# Does this happen with the DigitalOcena vms ?
+
+
 
