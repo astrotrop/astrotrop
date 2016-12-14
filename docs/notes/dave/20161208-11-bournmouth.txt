@@ -20,214 +20,98 @@
 #
 #
 
-# -----------------------------------------
-# Configure our RStudio container.
-#[root@virtual]
-
-    source "${HOME:?}/astrotrop.conf"
-    cat >> "${HOME:?}/astrotrop.conf" << EOF
-
-        rstudiodockname=rstudio
-        rstudiohostport=8787
-
-        rstudiohostname=\${rstudiodockname:?}.\${dnsfull:?}
-        rstudioexternal=http://\${rstudiohostname:?}/
-        rstudiointernal=http://\${rstudiodockname:?}:\${rstudiohostport:?}/
-
-        rstudiousername=astrotrop
-        rstudiopassword=$(pwgen 20 1)
-
-        rstudiotempdir=\${tempdir:?}/rstudio
-        rstudiodatadir=\${datadir:?}/rstudio/data
-        rstudiohomedir=\${datadir:?}/rstudio/home/
-
-EOF
-
 # -----------------------------------------------------
-# Create our RStudio data directories.
-#[root@virtual]
-
-    source "${HOME:?}/astrotrop.conf"
-    
-    rmdata "${rstudiotempdir:?}"
-    rmdata "${rstudiodatadir:?}"
-    rmdata "${rstudiohomedir:?}"
-
-    mkdata "${rstudiotempdir:?}"
-    mkdata "${rstudiodatadir:?}"
-    mkdata "${rstudiohomedir:?}"
-
-# -----------------------------------------------------
-# Run our RStudio container.
-#[root@virtual]
-
-    source "${HOME:?}/astrotrop.conf"
-
-    rstudioenv=$(mktemp)
-    cat > "${rstudioenv:?}" <<- EOF
-USER=${rstudiousername:?}
-PASSWORD=${rstudiopassword:?}
-EOF
-
-    rstudioini=$(mktemp)
-    cat > "${rstudioini:?}" <<- EOF
-[${postgisdatabase:?}]
-Driver = /usr/lib/x86_64-linux-gnu/odbc/psqlodbcw.so 
-Protocol = 9.4.5
-Database = ${postgisdatabase:?}
-Servername = ${postgisdockname:?}
-Username = ${postgisusername:?}
-Password = ${postgispassword:?}
-Port     = ${postgisdockport:?}
-EOF
-
-    cat > "${rstudiodatadir:?}/environ" <<- EOF
-POSTGRES_DATABASE=${postgisdatabase:?}
-POSTGRES_HOSTNAME=${postgisdockname:?}
-POSTGRES_HOSTPORT=${postgisdockport:?}
-POSTGRES_USERNAME=${postgisusername:?}
-POSTGRES_PASSWORD=${postgispassword:?}
-POSTGRES_DATANAME=PG:dbname=${postgisdatabase:?} host=${postgisdockname:?} port=${postgisdockport:?} user=${postgisusername:?} password=${postgispassword:?}
-EOF
-
-    chmod a+r "${rstudioini:?}"
-    chmod a+w "${rstudiotempdir:?}"
-
-    rstudiodemodir=${project:?}/demo
-
-    docker run \
-        --detach \
-        --name "${rstudiodockname:?}" \
-        --env-file "${rstudioenv:?}" \
-        --volume  "${demodir:?}:/demo" \
-        --volume  "${rstudiotempdir:?}:/temp" \
-        --volume  "${rstudiodatadir:?}:/data" \
-        --volume  "${rstudiohomedir:?}:/home" \
-        --volume  "${rstudiodemodir:?}:/demo" \
-        --volume  "${rstudioini:?}:/etc/odbc.ini" \
-        --network "${netname:?}" \
-        "astrotrop/rstudio-full:${version:?}"
-
-# -----------------------------------------------------
-# Configure RStudio to support PostGIS command line access.
-# TODO Move to Dockerfile and run script.
-#[root@virtual]
-
-    source "${HOME:?}/astrotrop.conf"
-    docker exec \
-        -it \
-        "${rstudiodockname:?}" \
-        bash        
-
-        #
-        # Set the shell for the astrotrop user.
-        chsh astrotrop -s /bin/bash
-
-        #
-        # Install the PostGIS client.
-        # TODO - Figure out why the postgis package requires sound, video and blueray ?
-        # 151 new packages, 71.0 MB of archives, 250 MB of disk space will be used.
-        apt-get update
-        apt-get install --assume-yes --no-install-recommends postgis 
-        apt-get install --assume-yes --no-install-recommends postgresql-client
-
-        #
-        # Install the PostgreSQL password file.
-        source /data/environ 
-        cat > /home/astrotrop/.pgpass << EOF
-${POSTGRES_HOSTNAME:?}:*:*:${POSTGRES_USERNAME:?}:${POSTGRES_PASSWORD:?}
-EOF
-        chown astrotrop /home/astrotrop/.pgpass    
-        chgrp astrotrop /home/astrotrop/.pgpass    
-        chmod u=rw,g=,o= /home/astrotrop/.pgpass    
-
-    exit
-
-# -----------------------------------------------------
-# Update our hosts file.
-# ** Docker network solves this **
-#[root@virtual]
-#
-#    source "${HOME:?}/astrotrop.conf"
-#
-#    postgisdockipv4=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${postgisdockname:?})
-#    rstudiodockipv4=$(docker inspect --format '{{ .NetworkSettings.IPAddress }}' ${rstudiodockname:?})
-#
-#    cat >> /etc/hosts << EOF
-##
-## Docker container addresses
-#${postgisdockipv4:?} ${postgisdockname:?}
-#${rstudiodockipv4:?} ${rstudiodockname:?}
-#
-#EOF
-#
-# -----------------------------------------------------
-# Install R packages from source.
-#
-#
-#    source "${HOME:?}/astrotrop.conf"
-#    docker exec -it "${rstudiodockname:?}" R
-#
-#        # https://cran.r-project.org/web/packages/dismo/index.html
-#        install.packages("dismo")
-#
-#        # https://cran.r-project.org/web/packages/googleVis/
-#        install.packages("googleVis")
-#
-#        # https://github.com/Debian/r-cran-knitr
-#        install.packages("knitr")
-#
-#        # https://r-forge.r-project.org/R/?group_id=294
-#        install.packages("raster")
-#
-#        q()
-#
-# -----------------------------------------------------
-# Install rgdal and rgeos.
-# http://stackoverflow.com/q/31342575
-#
-#
-#    source "${HOME:?}/astrotrop.conf"
-#    docker exec -it "${rstudiodockname:?}" R
-#
-#        # https://cran.r-project.org/web/packages/rgdal/index.html
-#        install.packages("rgdal")
-#
-#        # https://cran.r-project.org/web/packages/rgeos/index.html
-#        install.packages("rgeos")
-#
-#        q()
-#
-# -----------------------------------------------------
-# Test the R libraries.
-#
-
-    source "${HOME:?}/astrotrop.conf"
-    docker exec \
-        -it \
-        "${rstudiodockname:?}" \
-        R --vanilla
-
-        library(dismo)
-        library(googleVis)
-        library(knitr)
-        library(raster)
-        library(rgdal)
-        library(rgeos)
-
-        q()
-
-# -----------------------------------------------------
-# Test our RStudio service.
+# Login as root.
 #[user@desktop]
 
-    echo "${rstudioexternal:?}"
+    vmname=drop-03.trop.metagrid.co.uk
+    ssh "root@${vmname:?}"
 
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Configure our hostname.
+#[root@virtual]
+
+    cat > "${HOME:?}/astrobase.conf" << EOF
+
+        hostname=bournmouth.metagrid.co.uk
+
+EOF
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Execute the root deploy steps.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    gedit "${ASTROTROP_CODE:?}/docs/notes/dave/20161208-02-root-deploy.txt" &
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Logout and login as docker user.
+#[root@virtual]
+
+    exit
+    
+    ssh "stevedore@${vmname:?}"
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Execute the base deploy steps.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    gedit "${ASTROTROP_CODE:?}/docs/notes/dave/20161208-03-base-deploy.txt" &
+
+# -----------------------------------------------------
+# Execute our postgis deploy.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.settings"
+    gedit "${ASTROTROP_CODE:?}/docs/notes/dave/20161208-04-postgis-deploy.txt" &
+
+# -----------------------------------------------------
+# Execute our geoserv deploy.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.settings"
+    gedit "${ASTROTROP_CODE:?}/docs/notes/dave/20161208-05-geoserv-deploy.txt" &
+
+# -----------------------------------------------------
+# Execute our geonode deploy.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.settings"
+    gedit "${ASTROTROP_CODE:?}/docs/notes/dave/20161208-06-geonode-deploy.txt" &
+
+# -----------------------------------------------------
+# Execute our rstudio deploy.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.settings"
+    gedit "${ASTROTROP_CODE:?}/docs/notes/dave/20161208-07-rstudio-deploy.txt" &
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Install our demo data.
+#[user@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    pushd "${rstudiodemodir:?}"
+
+        wget 'http://data.metagrid.co.uk/astrotrop/Bournmouth/geostats.zip'
+
+        unzip 'geostats.zip'
+
+    popd
+
+# -----------------------------------------------------
 # -----------------------------------------------------
 # Read the database settings from env file.
 #[RStudio]
 
-    readRenviron("/data/environ")
+    readRenviron("/conf/postgis.conf")
 
     dbname <- Sys.getenv("POSTGRES_DATABASE")
     dbhost <- Sys.getenv("POSTGRES_HOSTNAME")
@@ -439,15 +323,56 @@ EOF
     system(command)
 
 # -----------------------------------------------------
-# Test the R libraries.
-#[RStudio]
+# -----------------------------------------------------
+# Import the data into GeoServer.
+#[GeoServ]
 
-    library(dismo)
-    library(googleVis)
-    library(knitr)
-    library(raster)
-    library(rgdal)
-    library(rgeos)
+    #
+    # Create workspace
 
+        name    [Bournmouth]
+        uri     [http://bournmouth.astrotrop.org/]
+        default [yes]
+    #
+    # Create store
 
+        type [PostGIS]
+
+        name [PostGIS Database]
+        text [PostGIS Database]
+
+        type [postgis]
+        host [postgis]
+        port [5432]
+
+        database [postgisdata]
+        username [postgisuser]
+        password [shoh3gai9Ahth4ieLihu]
+
+        primarykeys [yes]
+
+    #
+    # Import data from PostGIS database
+
+        [Mexican oaks]
+        [Mexican states]
+        [Mexican towns]
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Import data into GeoNode.
+#[user@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        "${geonodedockname:?}" \
+        bash
+
+        pushd /geonode
+
+            python manage.py updatelayers
+
+        popd
+    exit
 

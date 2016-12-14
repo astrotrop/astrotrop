@@ -1,0 +1,148 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+
+# -----------------------------------------------------
+# Install admin tools.
+#[root@virtual]
+
+    apt-get update
+
+    apt-get install \
+        --assume-yes \
+        htop    \
+        pwgen   \
+        unzip   \
+        haveged
+
+# -----------------------------------------------------
+# Configure our hostname.
+#[root@virtual]
+
+    source "${HOME:?}/astrobase.conf"
+    hostname "${hostname:?}"
+    echo "${hostname:?}" > /etc/hostname
+
+# -----------------------------------------------------
+# Configure our project directories.
+#[root@virtual]
+
+    cat > "${HOME:?}/astrobase.conf" << EOF
+
+        projdir=/var/local/astrotrop
+        tempdir=\${projdir:?}/temp
+        datadir=\${projdir:?}/data
+        demodir=\${projdir:?}/demo
+        confdir=\${projdir:?}/demo
+
+EOF
+
+    cat > "${HOME:?}/astrotrop.conf" << EOF
+
+        source "\${HOME:?}/astrobase.conf"
+
+        dockeruser=stevedore
+        dockerhome=/home/\${dockeruser:?}
+
+EOF
+
+# -----------------------------------------------------
+# Create our project directory tree.
+# [root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    mkdir -p "${projdir:?}"
+    chgrp users  "${projdir:?}"
+    chmod g+rwsx "${projdir:?}"
+
+# -----------------------------------------------------
+# Create our docker user.
+# [root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    useradd \
+        --create-home \
+        --home-dir "${dockerhome:?}" \
+        --shell  '/bin/bash' \
+        --groups 'root,admin,sudo,users,docker' \
+        "${dockeruser:?}"
+
+    usermod --lock "${dockeruser:?}"
+
+# -----------------------------------------------------
+# Allow our user to avoid password.
+# Needed to solve 'tomcat' issues for geoserv.
+# [root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat > /etc/sudoers.d/91-${dockeruser:?} << EOF
+
+# User rules for ${dockeruser:?}
+${dockeruser:?} ALL=(ALL) NOPASSWD:ALL
+    
+EOF
+
+# -----------------------------------------------------
+# Install our ssh keys.
+# [root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    pushd "${dockerhome:?}"
+        if [ ! -e '.ssh' ]
+        then
+            mkdir '.ssh'
+            chown -R "$(id -u  ${dockeruser:?})" '.ssh'
+            chgrp -R "$(id -g  ${dockeruser:?})" '.ssh'
+            chmod u=rxw,g=,o= '.ssh'
+        fi
+        pushd '.ssh'
+
+            if [ ! -e 'authorized_keys' ]
+            then
+                cp "${HOME}/.ssh/authorized_keys" \
+                   'authorized_keys'
+                chown "$(id -u  ${dockeruser:?})" 'authorized_keys'
+                chgrp "$(id -g  ${dockeruser:?})" 'authorized_keys'
+                chmod u=rw,g=,o= 'authorized_keys'
+            fi
+        popd
+    popd
+
+# -----------------------------------------------------
+# Install our project config.
+# [root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    pushd "${dockerhome:?}"
+
+        if [ ! -e 'astrobase.conf' ]
+        then
+            ln "${HOME:?}/astrobase.conf" 'astrobase.conf'
+        fi
+
+    popd
+
+

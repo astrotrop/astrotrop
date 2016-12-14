@@ -127,7 +127,7 @@ EOF
         apacheproxyport=80
         apacheproxyname=http-proxy
 
-        apacheproxyconf=\${tempdir:?}/apache
+        apacheproxyconf=\${datadir:?}/apache
 
 EOF
 
@@ -150,7 +150,7 @@ cat > "${geoservconf:?}" << EOF
     ProxyPreserveHost On
     ProxyPass        "/geoserver/" "${geoservinternal:?}"
     ProxyPassReverse "/geoserver/" "${geoservinternal:?}"
-    ServerName geoserv.alpha.astrotrop.xyz
+    ServerName geoserv.${dnsfull:?}
 </VirtualHost>
 EOF
 
@@ -160,7 +160,7 @@ cat > "${geonodeconf:?}" << EOF
     ProxyPreserveHost On
     ProxyPass        "/" "${geonodeinternal:?}"
     ProxyPassReverse "/" "${geonodeinternal:?}"
-    ServerName geonode.alpha.astrotrop.xyz
+    ServerName geonode.${dnsfull:?}
 </VirtualHost>
 EOF
 
@@ -170,7 +170,7 @@ cat > "${rstudioconf:?}" << EOF
     ProxyPreserveHost On
     ProxyPass        "/" "${rstudiointernal:?}"
     ProxyPassReverse "/" "${rstudiointernal:?}"
-    ServerName rstudio.alpha.astrotrop.xyz
+    ServerName rstudio.${dnsfull:?}
 </VirtualHost>
 EOF
 

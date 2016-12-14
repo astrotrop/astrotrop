@@ -1,0 +1,258 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Configure our GeoServer container.
+#[user@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        geoservdockname=geoserv
+        geoservdockport=8080
+
+        geoservhostname=\${geoservdockname:?}.\${dnsfull:?}
+        geoservexternal=http://\${geoservhostname:?}/geoserver/
+        geoservinternal=http://\${geoservdockname:?}:\${geoservdockport:?}/geoserver/
+
+        geoservusername=astrotrop
+        geoservpassword=$(pwgen 20 1)
+
+        geoservtempdir=\${tempdir:?}/geoserv
+        geoservdatadir=\${datadir:?}/geoserv
+
+EOF
+
+# -----------------------------------------------------
+# Create our GeoServer data directories.
+#[user@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${geoservtempdir:?}"
+    rmdata "${geoservdatadir:?}"
+
+    mkdata "${geoservtempdir:?}"
+    mkdata "${geoservdatadir:?}"
+
+#
+# Fix for permissions.
+# Original set the owner to tomcat.
+    chmod a+rwx "${geoservtempdir:?}"
+    chmod a+rwx "${geoservdatadir:?}"
+
+# -----------------------------------------------------
+# Run our GeoServer container.
+#[user@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    geoservenv=$(mktemp)
+    cat > "${geoservenv:?}" <<- EOF
+# TODO GeoServer admin user and pass
+# TODO PostGIS host, user and pass
+EOF
+
+    docker run \
+        --detach \
+        --name "${geoservdockname:?}" \
+        --env-file "${geoservenv:?}" \
+        --volume  "${demodir:?}:/demo" \
+        --volume  "${geoservtempdir:?}:/temp" \
+        --volume  "${geoservdatadir:?}:/data" \
+        --network "${netname:?}" \
+        "astrotrop/geoserv:${version:?}"
+
+    docker logs -f "${geoservdockname:?}"
+
+# -----------------------------------------------------
+# Configure our GeoServer login.
+#[root@virtual]
+
+#
+# Need to be root to edit files owned by Tomcat.
+
+
+    #
+    # We can add the account - but the password encryption is wrong.
+    # Still need to login as admin and set the password manually.
+    source "${HOME:?}/astrotrop.conf"
+    pushd "${geoservdatadir:?}"
+
+        vi "security/usergroup/default/users.xml"
+
+            <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+            <userRegistry xmlns="http://www.geoserver.org/security/users" version="1.0">
+
+                <users>
+                    <user enabled="true" name="admin" password="crypt1:pQMeDtOfDWLUQSIl4QyqRNe8ptXxnr+3"/>
+        +           <user enabled="true" name="astrotrop" password="crypt1:9pwQYsAwpkaRSOKGyNAGf1OjdkN0bTsFqZXDVeMFMiM="/>
+                </users>
+                <groups/>
+            </userRegistry>
+
+        vi "security/role/default/roles.xml"
+
+            <userList>
+                <userRoles username="admin">
+                    <roleRef roleID="ADMIN"/>
+                </userRoles>
+        +       <userRoles username="astrotrop">
+        +           <roleRef roleID="ADMIN"/>
+        +           <roleRef roleID="GROUP_ADMIN"/>
+        +       </userRoles>
+            </userList>
+
+        popd
+
+# -----------------------------------------
+# Add the CSW plugin to our GeoServer.
+# TODO - add to Dockerfile
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        -u root \
+        "${geoservdockname:?}" \
+        bash        
+
+        #
+        # Install download tools
+        dnf -y install wget
+        dnf -y install unzip
+
+        #
+        # Download and unzip the zipfile.
+        zipfile=geoserver-${GEOSERVER_VERSION:?}-csw-plugin.zip
+        zippath=/temp/${zipfile:?}
+        
+        wget -O "${zippath:?}" "http://sourceforge.net/projects/geoserver/files/GeoServer/${GEOSERVER_VERSION}/extensions/${zipfile:?}/download"
+
+        unzipped=/temp/csw-plugin
+        unzip \
+            "${zippath:?}" \
+            -d "${unzipped:?}"
+
+        #
+        # Copy the jar files into our webapp.        
+        for jarfile in $(ls ${unzipped:?}/*.jar)
+        do
+            cp --verbose --no-clobber \
+                "${jarfile:?}" \
+                "${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/WEB-INF/lib"
+        done
+
+        #
+        # Remove the zipfiles.
+        rm -rf "${unzipped:?}"
+        rm -rf "${zippath:?}"
+
+    exit
+
+# -----------------------------------------------------
+# Install the WPS extension
+# http://docs.geoserver.org/2.4.1/user/extensions/wps/index.html
+# TODO - add to Dockerfile
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        -u root \
+        "${geoservdockname:?}" \
+        bash        
+
+        #
+        # Install download tools
+        dnf -y install wget
+        dnf -y install unzip
+
+        #
+        # Download and unzip the zipfile.
+        zipfile=geoserver-${GEOSERVER_VERSION:?}-wps-plugin.zip
+        zippath=/temp/${zipfile:?}
+        
+        wget -O "${zippath:?}" "http://sourceforge.net/projects/geoserver/files/GeoServer/${GEOSERVER_VERSION}/extensions/${zipfile:?}/download"
+
+        unzipped=/temp/csw-plugin
+        unzip \
+            "${zippath:?}" \
+            -d "${unzipped:?}"
+
+        #
+        # Copy the jar files into our webapp.        
+        for jarfile in $(ls ${unzipped:?}/*.jar)
+        do
+            cp --verbose \
+                "${jarfile:?}" \
+                "${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/WEB-INF/lib"
+        done
+
+        #
+        # Remove the zipfiles.
+        rm -rf "${unzipped:?}"
+        rm -rf "${zippath:?}"
+
+    exit
+
+# -----------------------------------------------------
+# Install the printng extension, and dependencies.
+# https://repo.boundlessgeo.com/main/org/opengeo/geoserver/printng/
+# https://repo.boundlessgeo.com/main/org/opengeo/geoserver/printng/2.8-SNAPSHOT/printng-2.8-20151216.160057-3.pom
+# TODO - add to Dockerfile
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        -u root \
+        "${geoservdockname:?}" \
+        bash        
+
+        pushd ${TOMCAT_ROOT}/webapps/${GEOSERVER_CONTEXT}/WEB-INF/lib
+
+            wget "https://repo.boundlessgeo.com/main/org/opengeo/geoserver/printng/2.8-SNAPSHOT/printng-2.8-20151216.160057-3.jar"
+
+            wget "http://central.maven.org/maven2/org/xhtmlrenderer/flying-saucer-core/9.0.8/flying-saucer-core-9.0.8.jar"
+            wget "http://central.maven.org/maven2/org/ccil/cowan/tagsoup/tagsoup/1.2.1/tagsoup-1.2.1.jar"
+
+        popd
+    exit
+
+# -----------------------------------------------------
+# Save our GeoServer master password.
+#[root@virtual]
+
+    mv "${geoservdatadir:?}/security/masterpw.info" "${HOME:?}"
+
+# -----------------------------------------
+# Restart our GeoServer container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker stop  "${geoservdockname:?}"
+    docker start "${geoservdockname:?}"
+
+    docker logs -f "${geoservdockname:?}"
+
+

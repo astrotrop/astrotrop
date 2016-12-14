@@ -21,53 +21,43 @@
 #
 
 # -----------------------------------------------------
-# Login to the VM host
-# [user@desktop]
-
-    ssh Zarquan@dell-three
-
-# -----------------------------------------------------
-# List the VMs
-# [user@dell-three]
-
-    source ${HOME}/helio.settings
-
-    virsh \
-        -c ${connection:?} \
-        list --all
-
-# -----------------------------------------------------
 # Create a new VM
-# [user@dell-three]
 
-    createvm
-
-        INFO : Node name [Delshy]
-        INFO : Base name [fedora-23-docker-20160701.qcow]
-        INFO : Base path [/var/lib/libvirt/images/base/fedora-23-docker-20160701.qcow]
-        INFO : Disc name [Delshy.qcow]
-        INFO : Disc size [16GiB]
+    # Digital Ocean
 
 # -----------------------------------------------------
-# Login to the VM
-# [user@dell-three]
-
-    ssh root@192.168.30.02
-
-# -----------------------------------------------------
-# Update our docker engine.
-# [root@virtual]
-
-    dnf update -y docker-engine
-
-# -----------------------------------------------------
-# Install Git.
-# [root@virtual]
-
-    dnf install -y git
+# Install admin tools.
+# [user@virtual]
 
     apt-get update
+
     apt-get install --assume-yes git
+
+    apt-get install --assume-yes pwgen
+
+# -----------------------------------------------------
+# Configure our build.
+# [user@virtual]
+
+    cat > "${HOME:?}/astrotrop.conf" << EOF
+
+        version=1.3
+        netname=baltic
+
+        project=/var/local/astrotrop
+        tempdir=\${project:?}/temp
+        datadir=\${project:?}/data
+        demodir=\${project:?}/demo
+
+        tomcatuid=995:994
+
+        dnsbase=metagrid.xyz
+        dnsname=gamma
+        dnsfull=\${dnsname:?}.\${dnsbase}
+
+        dockeruser=stevedore
+
+EOF
 
 # -----------------------------------------------------
 # Create our local directory.
@@ -81,46 +71,49 @@
 # Create our docker user.
 # [root@virtual]
 
-    username=stevedore
+    source "${HOME:?}/astrotrop.conf"
 
-    useradd "${username:?}" -G users -G docker
+    useradd "${dockeruser:?}" -G users -G docker
 
-    usermod --lock "${username:?}"
+    usermod --lock "${dockeruser:?}"
 
-    userhome=$(getent passwd "${username:?}" | cut -d: -f6)
+    dockerhome=$(getent passwd "${dockeruser:?}" | cut -d: -f6)
 
-    mkdir -p "${userhome:?}/.ssh"
+    if [ ! -e "${dockerhome:?}" ]
+    then
+        mkdir -p "${dockerhome:?}"
+        chown -R "$(id -u  ${dockeruser:?})" "${dockerhome:?}"
+        chgrp -R "$(id -g  ${dockeruser:?})" "${dockerhome:?}"
+        chmod u=rxw,g=,o= "${dockeruser:?}"
+    fi
+    
+    if [ ! -e "${dockerhome:?}/.ssh" ]
+    then
+        mkdir -p "${dockerhome:?}/.ssh"
+        chown -R "$(id -u  ${dockeruser:?})" "${dockerhome:?}/.ssh"
+        chgrp -R "$(id -g  ${dockeruser:?})" "${dockerhome:?}/.ssh"
+        chmod u=rxw,g=,o= "${dockeruser:?}/.ssh"
+    fi
 
     cp "${HOME}/.ssh/authorized_keys" \
-       "${userhome:?}/.ssh"
+       "${dockerhome:?}/.ssh"
 
-    chown -R "$(id -u ${username:?})" "${userhome:?}/.ssh"
-    chgrp -R "$(id -g ${username:?})" "${userhome:?}/.ssh"
-    chmod u=rxw,g=,o= "${userhome:?}/.ssh"
-
-# -----------------------------------------------------
-# Reboot our virtual machine.
-# [root@virtual]
-
-#   reboot
-
-# -----------------------------------------------------
-# Login to the VM
-# [user@dell-three]
-
-#   ssh stevedore@192.168.30.02
-#   ssh root@192.168.30.02
+    chown "$(id -u  ${dockeruser:?})" "${dockerhome:?}/.ssh/authorized_keys"
+    chgrp "$(id -g  ${dockeruser:?})" "${dockerhome:?}/.ssh/authorized_keys"
+    chmod u=rw,g=,o= "${dockerhome:?}/.ssh/authorized_keys"
 
 # -----------------------------------------------------
 # Install our source code.
 # [user@virtual]
 
-    if [ ! -e /var/local/astrotrop ]
+    source "${HOME:?}/astrotrop.conf"
+
+    if [ ! -e "${project:?}" ]
     then
-        mkdir /var/local/astrotrop
+        mkdir "${project:?}"
     fi
 
-    pushd /var/local/astrotrop
+    pushd "${project:?}"
         if [ ! -e github ]
         then
             git clone 'git@github.com:astrotrop/astrotrop.git' github
@@ -132,10 +125,57 @@
     popd
 
 # -----------------------------------------------------
+# Create our data directories.
+# [user@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+cat > "${HOME:?}/dirtools" << 'EOF'
+
+    rmdata()
+        {
+        local path=${1:?}
+        if [ -e "${path}" ]
+        then
+            rm -rf "${path}"
+        fi
+        }
+
+    mkdata()
+        {
+        local path=${1:?}
+        local user=${2:-}
+        if [ ! -e "${path}" ]
+        then
+            mkdir --parents "${path:?}"
+        fi
+        if [ -n "${user:-}" ]
+        then
+            chown -R "${user:?}" "${path:?}"
+        fi
+
+        # Only if SELinux enabled        
+        # chcon -t svirt_sandbox_file_t "${path:?}"
+
+        }
+
+EOF
+
+    source "${HOME:?}/dirtools"
+
+    rmdata "${tempdir:?}"
+    rmdata "${datadir:?}"
+    rmdata "${demodir:?}"
+
+    mkdata "${tempdir:?}"
+    mkdata "${datadir:?}"
+    mkdata "${demodir:?}"
+
+# -----------------------------------------------------
 # Build our base containers.
 # [user@virtual]
 
-    version=1.3
+    source "${HOME:?}/astrotrop.conf"
 
     pushd /var/local/astrotrop
         pushd github/src/docker/base
@@ -179,7 +219,7 @@
         pushd github/src/docker/geo
 
             docker build \
-                --tag "astrotrop/geoserver:${version:?}" \
+                --tag "astrotrop/geoserv:${version:?}" \
                 geoserver            
 
             docker build \
@@ -210,25 +250,39 @@
         popd
     popd
 
+
 # -----------------------------------------------------
-# Install our containers.
+# Push our containers to Docker.
 # [user@virtual]
 
-    Install PostGIS.
-    docs/notes/dave/20160913-02-geobase-deploy.txt
+    docker login
 
-    Install GeoServer
-    docs/notes/dave/20160913-03-geoserv-deploy.txt
+    docker push "astrotrop/fedora:${version:?}"
 
-    Install GeoNode
-    docs/notes/dave/20160913-04-geonode-deploy.txt
+    docker push "astrotrop/apache-base:${version:?}"
+    docker push "astrotrop/apache-proxy:${version:?}"
+    docker push "astrotrop/apache-wsgi:${version:?}"
 
-    Install RStudio
-    docs/notes/dave/20160914-01-rstudio-deploy.txt
+    docker push "astrotrop/java:${version:?}"
+    docker push "astrotrop/tomcat:${version:?}"
 
-    Install ApacheProxy
-    docs/notes/dave/20160914-02-proxy-deploy.txt
+    docker push "astrotrop/postgis:${version:?}"
+
+    docker push "astrotrop/geoserv:${version:?}"
+    docker push "astrotrop/geonode:${version:?}"
+
+    docker push "astrotrop/rstudio-base:${version:?}"
+    docker push "astrotrop/rstudio-full:${version:?}"
 
 
+# -----------------------------------------------------
+# Create our Docker network.
+#[user@virtual]
 
+    source "${HOME:?}/astrotrop.conf"
+
+    docker network \
+        create \
+        --driver bridge \
+        "${netname:?}"
 

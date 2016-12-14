@@ -1,0 +1,172 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------
+# Configure our RStudio container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        rstudiodockname=rstudio
+        rstudiohostport=8787
+
+        rstudiohostname=\${rstudiodockname:?}.\${dnsfull:?}
+        rstudioexternal=http://\${rstudiohostname:?}/
+        rstudiointernal=http://\${rstudiodockname:?}:\${rstudiohostport:?}/
+
+        rstudiousername=astrotrop
+        rstudiopassword=$(pwgen 20 1)
+
+        rstudiotempdir=\${tempdir:?}/rstudio
+        rstudiodatadir=\${datadir:?}/rstudio/data
+        rstudiohomedir=\${datadir:?}/rstudio/home/
+
+EOF
+
+# -----------------------------------------------------
+# Create our RStudio data directories.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${rstudiotempdir:?}"
+    rmdata "${rstudiodatadir:?}"
+    rmdata "${rstudiohomedir:?}"
+
+    mkdata "${rstudiotempdir:?}"
+    mkdata "${rstudiodatadir:?}"
+    mkdata "${rstudiohomedir:?}"
+
+# -----------------------------------------------------
+# Run our RStudio container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    rstudioenv=$(mktemp)
+    cat > "${rstudioenv:?}" <<- EOF
+USER=${rstudiousername:?}
+PASSWORD=${rstudiopassword:?}
+EOF
+
+    rstudioini=$(mktemp)
+    cat > "${rstudioini:?}" <<- EOF
+[${postgisdatabase:?}]
+Driver = /usr/lib/x86_64-linux-gnu/odbc/psqlodbcw.so 
+Protocol = 9.4.5
+Database = ${postgisdatabase:?}
+Servername = ${postgisdockname:?}
+Username = ${postgisusername:?}
+Password = ${postgispassword:?}
+Port     = ${postgisdockport:?}
+EOF
+
+    cat > "${rstudiodatadir:?}/environ" <<- EOF
+POSTGRES_DATABASE=${postgisdatabase:?}
+POSTGRES_HOSTNAME=${postgisdockname:?}
+POSTGRES_HOSTPORT=${postgisdockport:?}
+POSTGRES_USERNAME=${postgisusername:?}
+POSTGRES_PASSWORD=${postgispassword:?}
+POSTGRES_DATANAME=PG:dbname=${postgisdatabase:?} host=${postgisdockname:?} port=${postgisdockport:?} user=${postgisusername:?} password=${postgispassword:?}
+EOF
+
+    chmod a+r "${rstudioini:?}"
+    chmod a+w "${rstudiotempdir:?}"
+
+    rstudiodemodir=${project:?}/demo
+
+    docker run \
+        --detach \
+        --name "${rstudiodockname:?}" \
+        --env-file "${rstudioenv:?}" \
+        --volume  "${demodir:?}:/demo" \
+        --volume  "${rstudiotempdir:?}:/temp" \
+        --volume  "${rstudiodatadir:?}:/data" \
+        --volume  "${rstudiohomedir:?}:/home" \
+        --volume  "${rstudiodemodir:?}:/demo" \
+        --volume  "${rstudioini:?}:/etc/odbc.ini" \
+        --network "${netname:?}" \
+        "astrotrop/rstudio-full:${version:?}"
+
+# -----------------------------------------------------
+# Configure RStudio to support PostGIS command line access.
+# TODO Move to Dockerfile and run script.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        "${rstudiodockname:?}" \
+        bash        
+
+        #
+        # Set the shell for the astrotrop user.
+        chsh astrotrop -s /bin/bash
+
+        #
+        # Install the PostGIS client.
+        # TODO - Figure out why the postgis package requires sound, video and blueray ?
+        # 151 new packages, 71.0 MB of archives, 250 MB of disk space will be used.
+        apt-get update
+        apt-get install --assume-yes --no-install-recommends postgis 
+        apt-get install --assume-yes --no-install-recommends postgresql-client
+
+        #
+        # Install the PostgreSQL password file.
+        source /data/environ 
+        cat > /home/astrotrop/.pgpass << EOF
+${POSTGRES_HOSTNAME:?}:*:*:${POSTGRES_USERNAME:?}:${POSTGRES_PASSWORD:?}
+EOF
+        chown astrotrop /home/astrotrop/.pgpass    
+        chgrp astrotrop /home/astrotrop/.pgpass    
+        chmod u=rw,g=,o= /home/astrotrop/.pgpass    
+
+    exit
+
+# -----------------------------------------------------
+# Test the R libraries.
+#
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        "${rstudiodockname:?}" \
+        R --vanilla
+
+        library(dismo)
+        library(googleVis)
+        library(knitr)
+        library(raster)
+        library(rgdal)
+        library(rgeos)
+
+        q()
+
+# -----------------------------------------------------
+# Test our RStudio service.
+#[user@desktop]
+
+    echo "${rstudioexternal:?}"
+
+
+

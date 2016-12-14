@@ -1,0 +1,175 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Login as root.
+#[user@dektop]
+
+    vmname=drop-01.trop.metagrid.co.uk
+    ssh "root@${vmname:?}"
+
+# -----------------------------------------------------
+# Configure our hostname.
+#[root@virtual]
+
+    cat > "${HOME:?}/astrobase.conf" << EOF
+
+        hostname=proxy.astrotrop.metagrid.co.uk
+
+EOF
+
+# -----------------------------------------------------
+# Execute the root deploy steps.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    gedit "${ASTROTROP_CODE:?}/docs/notes/dave/20161208-02-root-deploy.txt" &
+
+# -----------------------------------------------------
+# Login as docker user.
+#[user@dektop]
+
+    ssh "stevedore@${vmname:?}"
+
+# -----------------------------------------------------
+# Execute the base deploy steps.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    gedit "${ASTROTROP_CODE:?}/docs/notes/dave/20161208-03-base-deploy.txt" &
+
+# -----------------------------------------------------
+# Configure our Apache proxy container.
+#[user@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        # -------- -------- -------- --------
+
+        apacheproxyport=80
+        apacheproxyname=http-proxy
+
+        apacheproxytemp=\${tempdir:?}/apache
+        apacheproxydata=\${datadir:?}/apache
+        apacheproxyconf=\${confdir:?}/apache
+
+        apacheproxylogs=\${apacheproxydata:?}/logs
+
+EOF
+
+# -----------------------------------------------------
+# Create our Apache conf directory.
+#[user@virtual]
+
+    source "${HOME:?}/dirtools"
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${apacheproxyconf:?}"
+    mkdata "${apacheproxyconf:?}"
+
+# -----------------------------------------
+# Create our logs directory.
+#[user@virtual]
+
+    source "${HOME:?}/dirtools"
+    source "${HOME:?}/astrotrop.conf"
+
+    rmdata "${apacheproxylogs:?}"
+    mkdata "${apacheproxylogs:?}"
+
+# -----------------------------------------
+# Create our virtual host config.
+#[user@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    pushd "${apacheproxyconf:?}"
+    
+        for nodename in aggregate bournmouth leicester edinburgh leeds kings 
+        do
+
+            nodename=aggregate
+
+            dnsbase=metagrid.co.uk
+            dnsname=${nodename:?}.${dnsbase:?}
+
+cat > "${nodename:?}.geoserv.conf" << EOF
+<VirtualHost *:*>
+    ProxyPreserveHost On
+    ProxyPass        "/geoserver/" "http://virtual.${dnsname:?}:${geoservport:?}/geoserver/"
+    ProxyPassReverse "/geoserver/" "http://virtual.${dnsname:?}:${geoservport:?}/geoserver/"
+    ServerName ${geoservname:?}.${dnsname:?}
+</VirtualHost>
+EOF
+
+cat > "${nodename:?}.geonode.conf" << EOF
+<VirtualHost *:*>
+    ProxyPreserveHost On
+    ProxyPass        "/" "http://virtual.${dnsname:?}:${geonodeport:?}/"
+    ProxyPassReverse "/" "http://virtual.${dnsname:?}:${geonodeport:?}/"
+    ServerName ${geonodename:?}.${dnsname:?}
+</VirtualHost>
+EOF
+
+cat > "${nodename:?}.rstudio.conf" << EOF
+<VirtualHost *:*>
+    ProxyPreserveHost On
+    ProxyPass        "/" "http://virtual.${dnsname:?}:${rstudioport:?}/"
+    ProxyPassReverse "/" "http://virtual.${dnsname:?}:${rstudioport:?}/"
+    ServerName ${rstudioname:?}.${dnsname:?}
+</VirtualHost>
+EOF
+
+        done
+    popd
+
+# -----------------------------------------
+# Run our Apache proxy container.
+#[user@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        --detach \
+        --name "${apacheproxyname:?}" \
+        --network "${netname:?}" \
+        --volume  "${apacheproxyconf:?}:/etc/httpd/conf.d" \
+        --volume  "${apacheproxylogs:?}:/var/log/httpd" \
+        --publish "${apacheproxyport:?}:80" \
+        "astrotrop/apache-proxy:${version:?}"
+
+    docker logs -f \
+        "${apacheproxyname:?}"
+
+# -----------------------------------------
+# Reload Apache config.
+#[user@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    docker stop  "${apacheproxyname:?}"
+    docker start "${apacheproxyname:?}"
+
+    docker logs -f \
+        "${apacheproxyname:?}"
+
+
+

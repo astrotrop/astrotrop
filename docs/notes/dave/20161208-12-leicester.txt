@@ -1,0 +1,167 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (C) 2016 by Wizzard Solutions Ltd, ischnura@metagrid.co.uk
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Login as root.
+#[user@desktop]
+
+    vmname=drop-04.trop.metagrid.co.uk
+    ssh "root@${vmname:?}"
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Configure our hostname.
+#[root@virtual]
+
+    cat > "${HOME:?}/astrobase.conf" << EOF
+
+        hostname=leicester.metagrid.co.uk
+
+EOF
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Execute the root deploy steps.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    gedit "${ASTROTROP_CODE:?}/docs/notes/dave/20161208-02-root-deploy.txt" &
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Login as docker user.
+#[root@virtual]
+
+    ssh "stevedore@${vmname:?}"
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Execute the base deploy steps.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    gedit "${ASTROTROP_CODE:?}/docs/notes/dave/20161208-03-base-deploy.txt" &
+
+# -----------------------------------------------------
+# Execute our postgis deploy.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.settings"
+    gedit "${ASTROTROP_CODE:?}/docs/notes/dave/20161208-04-postgis-deploy.txt" &
+
+# -----------------------------------------------------
+# Execute our geoserv deploy.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.settings"
+    gedit "${ASTROTROP_CODE:?}/docs/notes/dave/20161208-05-geoserv-deploy.txt" &
+
+# -----------------------------------------------------
+# Execute our geonode deploy.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.settings"
+    gedit "${ASTROTROP_CODE:?}/docs/notes/dave/20161208-06-geonode-deploy.txt" &
+
+# -----------------------------------------------------
+# Execute our rstudio deploy.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.settings"
+    gedit "${ASTROTROP_CODE:?}/docs/notes/dave/20161208-07-rstudio-deploy.txt" &
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Install our demo data.
+#[user@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    pushd "${geoservdemodir:?}"
+
+        mkdir 'AGB-MEX'
+        pushd 'AGB-MEX'
+        
+            wget  'http://data.metagrid.co.uk/astrotrop/Leicester/AGB-MEX.zip'
+            unzip 'AGB-MEX.zip'
+            rm    'AGB-MEX.zip'
+
+        popd
+
+        mkdir 'Forest-Non-Forest'
+        pushd 'Forest-Non-Forest'
+
+            wget 'http://data.metagrid.co.uk/astrotrop/Leicester/kjt7-le.ac.uk-20141201.zip'
+            unzip -j 'kjt7-le.ac.uk-20141201.zip'
+            rm 'kjt7-le.ac.uk-20141201.zip'
+
+        popd
+    popd
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Import the data into GeoServer.
+#[GeoServ]
+
+    #
+    # Create workspace
+
+        name [Leicester]
+        uri  [http://leicester.astrotrop.org/]
+        default [yes]
+
+    #
+    # Create store(s)
+
+        type [GeoTIFF]
+        name [Mexico biomass]
+        text [Mexico biomass]
+        url  [file:///demo/Forest-Non-Forest/Forest_Cover_Congo.tif]
+
+        type [GeoTIFF]
+        name [Congo forest cover]
+        text [Congo forest cover]
+        url  [file:///demo/Forest-Non-Forest/Forest_Cover_Congo.tif]
+        
+        type [GeoTIFF]
+        name [Mexico forest cover]
+        text [Mexico forest cover]
+        url  [file:///demo/Forest-Non-Forest/Forest_Cover_Mexico.tif]
+
+# -----------------------------------------------------
+# -----------------------------------------------------
+# Import data into GeoNode.
+#[user@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker exec \
+        -it \
+        "${geonodedockname:?}" \
+        bash
+
+        pushd /geonode
+
+            python manage.py updatelayers
+
+        popd
+    exit
+

@@ -22,17 +22,24 @@
 
 # -----------------------------------------
 # Configure our GeoNode container.
-#[root@virtual]
+#[user@virtual]
 
     source "${HOME:?}/astrotrop.conf"
     cat >> "${HOME:?}/astrotrop.conf" << EOF
 
-        geonodedockname=geonode
-        geonodehostport=8000
+        # -------- -------- -------- --------
 
-        geonodehostname=\${geonodedockname:?}.\${dnsfull:?}
+        geonodedockname=${geonodename:?}
+        geonodedockport=${geonodeport:?}
+
+        geonodehostname=\${geonodename:?}.\$(hostname -f)
         geonodeexternal=http://\${geonodehostname:?}/
-        geonodeinternal=http://\${geonodedockname:?}:\${geonodehostport:?}/
+        geonodeinternal=http://\${geonodedockname:?}:\${geonodedockport:?}/
+
+        geonodetempdir=\${tempdir:?}/geonode
+        geonodeconfdir=\${confdir:?}/geonode
+        geonodedatadir=\${datadir:?}/geonode/data
+        geonodedemodir=\${datadir:?}/geonode/demo
 
         geonodeusername=astrotrop
         geonodepassword=$(pwgen 20 1)
@@ -42,32 +49,32 @@
         geonodedatauser=geonodedata
         geonodedatapass=$(pwgen 20 1)
 
-        geonodetempdir=\${tempdir:?}/geonode
-        geonodedatadir=\${datadir:?}/geonode
-
 EOF
 
 # -----------------------------------------------------
 # Create our GeoNode data directories.
-#[root@virtual]
+#[user@virtual]
 
+    source "${HOME:?}/dirtools"
     source "${HOME:?}/astrotrop.conf"
     
     rmdata "${geonodetempdir:?}"
     rmdata "${geonodedatadir:?}"
+    rmdata "${geonodeconfdir:?}"
 
     mkdata "${geonodetempdir:?}"
     mkdata "${geonodedatadir:?}"
+    mkdata "${geonodeconfdir:?}"
 
 # -----------------------------------------
 # Configure our GeoNode container.
 # TODO Move this to config() script
-#[root@virtual]
+#[user@virtual]
 
     source "${HOME:?}/astrotrop.conf"
 
-    geonodeenv=$(mktemp)
-    cat > "${geonodeenv:?}" << EOF
+    geonodeconf=${geonodeconfdir:?}/geonode.conf
+    cat > "${geonodeconf:?}" << EOF
 
 POSTGIS_HOSTNAME=${postgisdockname:?}
 POSTGIS_HOSTPORT=${postgisdockport:?}
@@ -94,10 +101,6 @@ OGC_SERVER_PUBLIC=${geoservexternal:?}
 OGC_SERVER_USER=${geoservusername:?}
 OGC_SERVER_PASS=${geoservpassword:?}
 
-#PROXY_URL=${geonodeinternal:?}
-
-#DEFAULT_MAP_BASE_LAYER=
-
 EOF
 
 # -----------------------------------------
@@ -109,11 +112,10 @@ EOF
     source "${HOME:?}/astrotrop.conf"
     docker run \
         -it \
-        --env-file "${geonodeenv:?}" \
-        --volume  "${demodir:?}:/demo" \
-        --volume  "${geonodetempdir:?}:/temp" \
-        --volume  "${geonodedatadir:?}:/data" \
-        --network "${netname:?}" \
+        --network  "${netname:?}" \
+        --volume   "${geonodetempdir:?}:/temp" \
+        --volume   "${geonodedatadir:?}:/data" \
+        --env-file "${geonodeconf:?}" \
         "astrotrop/geonode:${version:?}" \
         bash
 
@@ -149,11 +151,13 @@ EOF
     source "${HOME:?}/astrotrop.conf"
     docker run \
         --detach \
-        --name "${geonodedockname:?}" \
-        --env-file "${geonodeenv:?}" \
-        --volume  "${geonodetempdir:?}:/temp" \
-        --volume  "${geonodedatadir:?}:/data" \
-        --network "${netname:?}" \
+        --name     "${geonodedockname:?}" \
+        --volume   "${geonodetempdir:?}:/temp" \
+        --volume   "${geonodedatadir:?}:/data" \
+        --volume   "${geonodedemodir:?}:/demo" \
+        --network  "${netname:?}" \
+        --publish  "${geonodeport:?}:${geonodedockport:?}" \
+        --env-file "${geonodeconf:?}" \
         "astrotrop/geonode:${version:?}"
 
     docker logs -f \
@@ -175,47 +179,9 @@ EOF
             python manage.py syncdb --noinput
 
 #
-#           python manage.py createsuperuser
-#
-#               Username: astrotrop
-#               Email address: geonode-admin@astrotrop.xyz
-#               Password: 
-#               Password (again): 
-#               Superuser created successfully.
-#
-#    #
-#    # http://source.mihelac.org/2009/10/23/django-avoiding-typing-password-for-superuser/
-#
-#    #
-#    # https://docs.djangoproject.com/es/1.9/ref/django-admin/#createsuperuser
-#    python manage.py \
-#        createsuperuser \
-#            --username USERNAME \
-#            --email grumbles@example.com
-#
-#    #
-#    # https://docs.djangoproject.com/es/1.9/ref/django-admin/#changepassword
-#    python manage.py \
-#        changepassword \
-#            USERNAME
-#
-# Python solution
 # http://stackoverflow.com/a/6244481
 # http://stackoverflow.com/a/22722410
 # http://stackoverflow.com/a/17874111
-#
-#           python manage.py shell
-#
-#               from django.contrib.auth import get_user_model
-#               User = get_user_model()
-#
-#               user = User.objects.get(username='astrotrop')
-#               user.set_password('simple')
-#               user.is_superuser = True
-#               user.is_staff = True
-#               user.save
-#
-#               exit()
 #
             python manage.py shell
 
@@ -225,7 +191,7 @@ User = get_user_model()
 User.objects.create_superuser(
     'astrotrop',
     'admin@example.com',
-    'Oj4xeequ9aisaixoo1vi'
+    'ceingachouS7chuqu7oh'
     )
 
 exit()
@@ -234,65 +200,9 @@ exit()
     exit
 
 # -----------------------------------------------------
-# Test our GeoNode service.
-#[root@virtual]
+# Test our service.
+#[user@virtual]
 
-    source "${HOME:?}/astrotrop.conf"
     echo "${geonodeexternal:?}"
-
-# -----------------------------------------------------
-# Import layers from GeoServer.
-#[root@virtual]
-
-    source "${HOME:?}/astrotrop.conf"
-    docker exec \
-        -it \
-        "${geonodedockname:?}" \
-        bash
-
-        pushd /geonode
-
-            python manage.py updatelayers
-
-        popd
-    exit
-
-
-#
-# Set GeoServ global/proxy
-# http://geoserv:8080/geoserver/
-
-#
-# Set GeoNode PROXY_URL
-# http://geonode:8000//proxy/?url=
-
-    SITEURL = "http://geonode.alpha.astrotrop.xyz/"
-    PROXY_URL = "http://geonode.alpha.astrotrop.xyz/proxy/?url="
-
-    DEFAULT_MAP_BASE_LAYER="mapnik"
-
-
-#
-# Error at /proxy/ [Errno 113] No route to host Request Method: GET Request URL:
-# JavaScript explorer is using /proxy/ to handle requests to our geonode service.
-
-    http://geonode.alpha.astrotrop.xyz/proxy/?url=http%3A%2F%2Fgeoserv.alpha.astrotrop.xyz%2Fgeoserver%2Fwms%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities
-
-    http://geonode.alpha.astrotrop.xyz/proxy/?url= http://geoserv.alpha.astrotrop.xyz/geoserver/wms%3FSERVICE%3DWMS%26REQUEST%3DGetCapabilities
-
-# Error occurs because geonode container can't 'see' a route to the external IP address of the Docker host VM.
-
-    curl --head 'http://geoserv.alpha.astrotrop.xyz/geoserver/'
-
-        FAIL - No route to host
-        
-    curl --head 'http://geoserv:8080/geoserver/'
-
-        PASS - Using Docker internal network 
-
-# Need to rewrite the URL passed to the proxy ....
-
-# Does this happen with the DigitalOcena vms ?
-
 
 

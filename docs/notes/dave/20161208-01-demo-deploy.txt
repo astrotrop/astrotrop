@@ -1,0 +1,160 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Desktop settings.
+
+    cat > astrotrop.settings << EOF
+ASTROTROP_HOME=/var/local/projects/edinburgh/astrotrop
+ASTROTROP_CODE=\${ASTROTROP_HOME:?}/github
+EOF
+
+# -----------------------------------------------------
+# Create our virtual machines.
+
+    # Digital Ocean
+
+    drop-01.trop.metagrid.co.uk A       178.62.61.49
+    drop-01.trop.metagrid.co.uk AAAA    2a03:b0c0:1:d0::9f1:f001
+
+    drop-02.trop.metagrid.co.uk A       46.101.12.90
+    drop-02.trop.metagrid.co.uk AAAA    2a03:b0c0:1:d0::9f2:a001
+
+    drop-03.trop.metagrid.co.uk A       46.101.8.169
+    drop-03.trop.metagrid.co.uk AAAA    2a03:b0c0:1:d0::9f2:7001
+
+    drop-04.trop.metagrid.co.uk A       46.101.94.185
+    drop-04.trop.metagrid.co.uk AAAA    2a03:b0c0:1:a1::b84:3001
+
+    drop-05.trop.metagrid.co.uk A
+    drop-05.trop.metagrid.co.uk AAAA
+
+    drop-06.trop.metagrid.co.uk A
+    drop-06.trop.metagrid.co.uk AAAA
+
+    drop-07.trop.metagrid.co.uk A
+    drop-07.trop.metagrid.co.uk AAAA
+
+# -----------------------------------------------------
+# Assign DNS names
+
+    # EasyDNS
+
+    metagrid.co.uk
+
+        proxy.astrotrop       CNAME   drop-01.trop.metagrid.co.uk
+
+        virtual.aggregate     CNAME   drop-02.trop.metagrid.co.uk
+        rstudio.aggregate     CNAME   proxy.astrotrop.metagrid.co.uk
+        geoserv.aggregate     CNAME   proxy.astrotrop.metagrid.co.uk
+        geonode.aggregate     CNAME   proxy.astrotrop.metagrid.co.uk
+
+        virtual.bournmouth    CNAME   drop-03.trop.metagrid.co.uk
+        rstudio.bournmouth    CNAME   proxy.astrotrop.metagrid.co.uk
+        geoserv.bournmouth    CNAME   proxy.astrotrop.metagrid.co.uk
+        geonode.bournmouth    CNAME   proxy.astrotrop.metagrid.co.uk
+
+        virtual.leicester     CNAME   drop-04.trop.metagrid.co.uk
+        rstudio.leicester     CNAME   proxy.astrotrop.metagrid.co.uk
+        geoserv.leicester     CNAME   proxy.astrotrop.metagrid.co.uk
+        geonode.leicester     CNAME   proxy.astrotrop.metagrid.co.uk
+
+        virtual.edinburgh     CNAME   drop-05.trop.metagrid.co.uk
+        rstudio.edinburgh     CNAME   proxy.astrotrop.metagrid.co.uk
+        geoserv.edinburgh     CNAME   proxy.astrotrop.metagrid.co.uk
+        geonode.edinburgh     CNAME   proxy.astrotrop.metagrid.co.uk
+
+        virtual.leeds         CNAME   drop-06.trop.metagrid.co.uk
+        rstudio.leeds         CNAME   proxy.astrotrop.metagrid.co.uk
+        geoserv.leeds         CNAME   proxy.astrotrop.metagrid.co.uk
+        geonode.leeds         CNAME   proxy.astrotrop.metagrid.co.uk
+
+        virtual.kings         CNAME   drop-07.trop.metagrid.co.uk
+        rstudio.kings         CNAME   proxy.astrotrop.metagrid.co.uk
+        geoserv.kings         CNAME   proxy.astrotrop.metagrid.co.uk
+        geonode.kings         CNAME   proxy.astrotrop.metagrid.co.uk
+
+    astrotrop.org
+
+        geoserv               CNAME   proxy.astrotrop.metagrid.co.uk.
+        geonode               CNAME   proxy.astrotrop.metagrid.co.uk.
+           ckan               CNAME   proxy.astrotrop.metagrid.co.uk
+
+
+# -----------------------------------------------------
+# Assign DNS names
+
+;
+; Astrotrop fakery.
+$ORIGIN metagrid.co.uk.
+
+proxy.astrotrop       CNAME   drop-01.trop.metagrid.co.uk.
+
+virtual.aggregate     CNAME   drop-02.trop.metagrid.co.uk.
+rstudio.aggregate     CNAME   proxy.astrotrop.metagrid.co.uk.
+geoserv.aggregate     CNAME   proxy.astrotrop.metagrid.co.uk.
+geonode.aggregate     CNAME   proxy.astrotrop.metagrid.co.uk.
+
+virtual.bournmouth    CNAME   drop-03.trop.metagrid.co.uk.
+rstudio.bournmouth    CNAME   proxy.astrotrop.metagrid.co.uk.
+geoserv.bournmouth    CNAME   proxy.astrotrop.metagrid.co.uk.
+geonode.bournmouth    CNAME   proxy.astrotrop.metagrid.co.uk.
+
+virtual.leicester     CNAME   drop-04.trop.metagrid.co.uk.
+rstudio.leicester     CNAME   proxy.astrotrop.metagrid.co.uk.
+geoserv.leicester     CNAME   proxy.astrotrop.metagrid.co.uk.
+geonode.leicester     CNAME   proxy.astrotrop.metagrid.co.uk.
+
+virtual.edinburgh     CNAME   drop-05.trop.metagrid.co.uk.
+rstudio.edinburgh     CNAME   proxy.astrotrop.metagrid.co.uk.
+geoserv.edinburgh     CNAME   proxy.astrotrop.metagrid.co.uk.
+geonode.edinburgh     CNAME   proxy.astrotrop.metagrid.co.uk.
+
+virtual.leeds         CNAME   drop-06.trop.metagrid.co.uk.
+rstudio.leeds         CNAME   proxy.astrotrop.metagrid.co.uk.
+geoserv.leeds         CNAME   proxy.astrotrop.metagrid.co.uk.
+geonode.leeds         CNAME   proxy.astrotrop.metagrid.co.uk.
+
+virtual.kings         CNAME   drop-07.trop.metagrid.co.uk.
+rstudio.kings         CNAME   proxy.astrotrop.metagrid.co.uk.
+geoserv.kings         CNAME   proxy.astrotrop.metagrid.co.uk.
+geonode.kings         CNAME   proxy.astrotrop.metagrid.co.uk.
+
+;
+; Astrotrop machines.
+$ORIGIN trop.metagrid.co.uk.
+
+drop-01 A       178.62.61.49
+drop-01 AAAA    2a03:b0c0:1:d0::9f1:f001
+
+drop-02 A       46.101.12.90
+drop-02 AAAA    2a03:b0c0:1:d0::9f2:a001
+
+drop-03 A       46.101.8.169
+drop-03 AAAA    2a03:b0c0:1:d0::9f2:7001
+
+drop-04 A       46.101.94.185
+drop-04 AAAA    2a03:b0c0:1:a1::b84:3001
+
+
+
+

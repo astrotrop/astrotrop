@@ -1,0 +1,103 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Configure our Apache proxy container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        apacheproxyport=80
+        apacheproxyname=http-proxy
+
+        apacheproxyconf=\${datadir:?}/apache
+
+EOF
+
+# -----------------------------------------------------
+# Create our Apache conf directory.
+#[user@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${apacheproxyconf:?}"
+    mkdata "${apacheproxyconf:?}"
+
+# -----------------------------------------
+# Create our virtual host config.
+#[root@virtual]
+
+cat > "${apacheproxyconf:?}/geoserv.conf" << EOF
+<VirtualHost *:*>
+    ProxyPreserveHost On
+    ProxyPass        "/geoserver/" "${geoservinternal:?}"
+    ProxyPassReverse "/geoserver/" "${geoservinternal:?}"
+    ServerName geoserv.${dnsfull:?}
+</VirtualHost>
+EOF
+
+cat > "${apacheproxyconf:?}/geonode.conf" << EOF
+<VirtualHost *:*>
+    ProxyPreserveHost On
+    ProxyPass        "/" "${geonodeinternal:?}"
+    ProxyPassReverse "/" "${geonodeinternal:?}"
+    ServerName geonode.${dnsfull:?}
+</VirtualHost>
+EOF
+
+cat > "${apacheproxyconf:?}/rstudio.conf" << EOF
+<VirtualHost *:*>
+    ProxyPreserveHost On
+    ProxyPass        "/" "${rstudiointernal:?}"
+    ProxyPassReverse "/" "${rstudiointernal:?}"
+    ServerName rstudio.${dnsfull:?}
+</VirtualHost>
+EOF
+
+# -----------------------------------------
+# Run our Apache proxy container.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        --detach \
+        --name "${apacheproxyname:?}" \
+        --network "${netname:?}" \
+        --volume  "${apacheproxyconf:?}:/etc/httpd/conf.d" \
+        --publish "${apacheproxyport:?}:${apacheproxyport:?}" \
+        "astrotrop/apache-proxy:${version:?}"
+
+    docker logs -f \
+        "${apacheproxyname:?}"
+
+# -----------------------------------------------------
+# Test our services.
+#[root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    echo "${geoservexternal:?}"
+    echo "${geonodeexternal:?}"
+    echo "${rstudioexternal:?}"
+
+
