@@ -1,0 +1,84 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Configure our project directories.
+#[root@virtual]
+
+    cat > "${HOME:?}/astrobase.conf" << EOF
+
+        projdir=/var/local/astrotrop
+        tempdir=\${projdir:?}/temp
+        datadir=\${projdir:?}/data
+        demodir=\${projdir:?}/demo
+        confdir=\${projdir:?}/demo
+
+EOF
+
+    cat > "${HOME:?}/astrotrop.conf" << EOF
+
+        source "\${HOME:?}/astrobase.conf"
+
+        dockeruser=Stevedore
+        dockerhome=/home/\${dockeruser:?}
+
+EOF
+
+# -----------------------------------------------------
+# Create our project directory tree.
+# [root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    mkdir -p "${projdir:?}"
+    chgrp users  "${projdir:?}"
+    chmod g+rwsx "${projdir:?}"
+
+# -----------------------------------------------------
+# Allow our user to avoid password.
+# Needed to solve 'tomcat' issues for geoserv.
+# [root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat > /etc/sudoers.d/91-${dockeruser:?} << EOF
+
+# User rules for ${dockeruser:?}
+${dockeruser:?} ALL=(ALL) NOPASSWD:ALL
+    
+EOF
+
+# -----------------------------------------------------
+# Install our project config.
+# [root@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+
+    pushd "${dockerhome:?}"
+
+        if [ ! -e 'astrobase.conf' ]
+        then
+            ln "${HOME:?}/astrobase.conf" 'astrobase.conf'
+        fi
+
+    popd
+
+

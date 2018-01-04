@@ -1,0 +1,263 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Create a virtual machine.
+#[user@desktop]
+
+    createvm
+
+        INFO : Node name [eta]
+        INFO : Base name [fedora-25-docker-16G-20170713.qcow]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-16G-20170713.qcow]
+        INFO : Disc name [eta.qcow]
+        INFO : Disc size [16GiB]
+
+# -----------------------------------------------------
+# Login as Docker user.
+#[user@desktop]
+
+    ssh Stevedore@eta
+
+# -----------------------------------------------------
+# Configure our directories.
+#[user@virtual]
+
+    if [ ! -e "${HOME:?}/geonode.settings" ]
+    then
+        cat > "${HOME:?}/geonode.settings" << EOF
+GEONODE_BASE=\${HOME}/projects/geonode
+GEONODE_WORK=\${GEONODE_BASE}/work
+GEONODE_CODE=\${GEONODE_BASE}/code
+GEONODE_REPO=https://github.com/GeoNode/geonode
+EOF
+    fi
+
+
+# -----------------------------------------------------
+# Check we have git installed.
+#[user@virtual]
+
+    sudo dnf install -y git
+
+# -----------------------------------------------------
+# Checkout a local copy of the source code.
+#[user@virtual]
+
+    source "${HOME:?}/geonode.settings"
+    if [ ! -e "${GEONODE_CODE:?}" ]
+    then
+        mkdir -p $(dirname "${GEONODE_CODE:?}")
+        pushd $(dirname "${GEONODE_CODE:?}")
+            git clone "${GEONODE_REPO}" $(basename "${GEONODE_CODE:?}")
+        popd
+    else
+        pushd "${GEONODE_CODE:?}"
+            git pull
+        popd
+    fi
+
+# -----------------------------------------------------
+# Create our work directory.
+#[user@virtual]
+
+    source "${HOME:?}/geonode.settings"
+    mkdir -p "${GEONODE_WORK:?}"
+    
+# -----------------------------------------------------
+# Create a local compose file.
+#[user@virtual]
+
+    source "${HOME:?}/geonode.settings"
+    cat > "${GEONODE_WORK:?}/astro-trop-000.yml" << EOF
+
+version: '2'
+services:
+
+  postgres:
+    #image: postgres
+    image: astrotrop/postgis:1.3
+
+  elasticsearch:
+    # Deprecated
+    # https://hub.docker.com/_/elasticsearch/ 
+    #image: elasticsearch
+    image:
+        docker.elastic.co/elasticsearch/elasticsearch:5.5.0
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    mem_limit: 1g 
+
+  rabbitmq:
+    image:
+      rabbitmq:3.6
+
+  django:
+    image:
+      geonode/django:latest
+    links:
+      - postgres
+      - elasticsearch
+      - rabbitmq
+    depends_on:
+      - rabbitmq
+      - postgres
+      - elasticsearch
+    command:
+      django-admin.py runserver 0.0.0.0:8000 --settings=geonode.settings
+    env_file:
+      - ./geonode.env
+
+  celery:
+    image:
+      geonode/django:latest
+    links:
+      - rabbitmq
+      - postgres
+      - elasticsearch
+    depends_on:
+      - rabbitmq
+      - postgres
+      - elasticsearch
+    command:
+      celery worker --app=geonode.celery_app:app -B -l INFO
+    env_file:
+      - ./geonode.env
+
+  geoserver:
+    image:
+      geonode/geoserver:alias
+    links:
+      - postgres
+    depends_on:
+      - postgres
+    ports:
+      - "8080"
+    volumes_from:
+      - data_dir_conf
+    env_file:
+      - ./geoserv.env
+
+  # WARNING
+  # The upstream hostnames are hard coded into the nginx config.
+  # The nginx config in the image deos not match the source code.
+  nginx:
+    image:
+      geonode/nginx:geoserver
+    links:
+      - django
+      - geoserver
+    depends_on:
+      - django
+      - geoserver
+    ports:
+      - "80:80"
+
+  data_dir_conf:
+    image:
+      geonode/geoserver_data:2.9.x-oauth2
+    container_name:
+      geoserver_data_dir
+    command:
+      /bin/true
+    volumes:
+      - /geoserver_data/data
+
+volumes:
+
+  geoserver_data_dir:
+
+EOF
+
+
+# -----------------------------------------------------
+# Create our geonode env file.
+#[user@virtual]
+
+    source "${HOME:?}/geonode.settings"
+
+    cat > "${GEONODE_WORK:?}/geonode.env" << EOF
+DJANGO_SETTINGS_MODULE=geonode.settings
+DOCKER_HOST
+DOCKER_HOST_IP
+EOF
+
+# -----------------------------------------------------
+# Create our geonode settings file.
+#[user@virtual]
+
+    cat > "${GEONODE_WORK:?}/mygeonode.settings" << EOF
+BROKER_URL=amqp://guest:guest@rabbitmq:5672/
+ALLOWED_HOSTS=['django',]
+DATABASE_URL=postgres://postgres:postgres@postgres:5432/postgres
+GEOSERVER_INTERNAL_URL=http://geoserv:8080/geoserver/
+GEOSERVER_PUBLIC_LOCATION=http://nginx/geoserver/
+GEOSERVER_LOCATION=http://nginx/geoserver/
+SITEURL=http://nginx/
+PUBLIC_PORT=8000
+DEBUG=True
+C_FORCE_ROOT=1
+EOF
+
+# -----------------------------------------------------
+# Create our geoserver env file.
+#[user@virtual]
+
+    source "${HOME:?}/geonode.settings"
+
+    cat > "${GEONODE_WORK:?}/geoserv.env" << EOF
+DOCKER_HOST
+DOCKER_HOST_IP
+PUBLIC_PORT=80
+DJANGO_URL=http://django:8000/
+GEOSERVER_PUBLIC_LOCATION=http://nginx/geoserver/
+GEOSERVER_LOCATION=http://geoser:8080/geoserver/
+SITEURL=http://nginx/
+EOF
+
+# -----------------------------------------------------
+# Set the the vm_max_map_count kernel setting.
+# https://github.com/docker-library/elasticsearch/issues/111#issuecomment-268511769
+#[user@virtual]
+
+    sudo sysctl -w vm.max_map_count=262144
+
+# -----------------------------------------------------
+# Run our compose file.
+#[user@virtual]
+
+    source "${HOME:?}/geonode.settings"
+
+    docker-compose \
+        --file "${GEONODE_WORK:?}/astro-trop-000.yml" \
+        up
+
+
+
+
+
+

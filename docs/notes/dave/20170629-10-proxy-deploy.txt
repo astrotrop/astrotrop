@@ -1,0 +1,612 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------------------
+# Based on the original script.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    gedit  "${ASTROTROP_CODE:?}/docs/notes/dave/20161208-10-proxy-deploy.txt" &
+
+#---------------------------------------------------------------------
+# Create a new virtual machine.
+#[user@trop03] 
+
+    createvm
+
+        INFO : Node name [Umiawyth]
+        INFO : Base name [fedora-25-docker-32G-20170331]
+        INFO : Base path [/var/lib/libvirt/images/base/fedora-25-docker-32G-20170331]
+        INFO : Disc name [Umiawyth.qcow]
+        INFO : Disc size [32GiB]
+
+# -----------------------------------------------------
+# TODO fix .ssh directory for Stevedore.
+#[user@desktop]
+
+    ssh root@Umiawyth
+
+        rm -f /home/Stevedore/.ssh
+        cp -r /root/.ssh /home/Stevedore/.ssh
+        chown -R Stevedore /home/Stevedore/.ssh
+        chgrp -R Stevedore /home/Stevedore/.ssh
+        restorecon -R /home/Stevedore/.ssh
+
+        exit
+
+# -----------------------------------------------------
+# Execute the root deploy steps.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    gedit "${ASTROTROP_CODE:?}/docs/notes/dave/20170629-02-root-deploy.txt" &
+    
+# -----------------------------------------------------
+# Login as Stevedore.
+#[user@desktop]
+
+    ssh Stevedore@Umiawyth
+
+# -----------------------------------------------------
+# Execute the base deploy steps.
+#[user@desktop]
+
+    source "${HOME:?}/astrotrop.conf"
+    gedit "${ASTROTROP_CODE:?}/docs/notes/dave/20170629-03-base-deploy.txt" &
+
+# -----------------------------------------------------
+# Configure our Apache proxy container.
+#[user@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    cat >> "${HOME:?}/astrotrop.conf" << EOF
+
+        # -------- -------- -------- --------
+
+        apacheproxyport=80
+        apacheproxyname=http-proxy
+
+        apacheproxytemp=\${tempdir:?}/apache
+        apacheproxydata=\${datadir:?}/apache
+        apacheproxyconf=\${confdir:?}/apache
+
+        apacheproxylogs=\${apacheproxydata:?}/logs
+
+EOF
+
+# -----------------------------------------------------
+# Create our Apache conf directory.
+#[user@virtual]
+
+    source "${HOME:?}/dirtools"
+    source "${HOME:?}/astrotrop.conf"
+    
+    rmdata "${apacheproxyconf:?}"
+    mkdata "${apacheproxyconf:?}"
+
+# -----------------------------------------
+# Create our logs directory.
+#[user@virtual]
+
+    source "${HOME:?}/dirtools"
+    source "${HOME:?}/astrotrop.conf"
+
+    rmdata "${apacheproxylogs:?}"
+    mkdata "${apacheproxylogs:?}"
+
+# -----------------------------------------
+# Create our virtual host config.
+#[user@virtual]
+
+#
+#   http://Umiawyth/
+#   http://proxy.astrotrop.org/
+#
+#   http://Greand/
+#   http://leicester.astrotrop.org/
+#   http://leicester.astrotrop.org/
+#   http://leicester.astrotrop.org/
+#
+#   http://Etalema/
+#   http://geonode.bournmouth.astrotrop.org/
+#   http://geoserv.bournmouth.astrotrop.org/
+#   http://rstudio.bournmouth.astrotrop.org/
+#
+
+    source "${HOME:?}/astrotrop.conf"
+    pushd "${apacheproxyconf:?}"
+
+cat > leicester.conf << EOF
+<VirtualHost *:*>
+    ServerName geoserv.leicester.astrotrop.org
+    ProxyPreserveHost On
+    ProxyPass        "/geoserver/" "http://Greand:${geoservport:?}/geoserver/"
+    ProxyPassReverse "/geoserver/" "http://Greand:${geoservport:?}/geoserver/"
+</VirtualHost>
+
+<VirtualHost *:*>
+    ServerName geonode.leicester.astrotrop.org
+    ProxyPreserveHost On
+    ProxyPass        "/" "http://Greand:${geonodeport:?}/"
+    ProxyPassReverse "/" "http://Greand:${geonodeport:?}/"
+</VirtualHost>
+
+<VirtualHost *:*>
+    ServerName rstudio.leicester.astrotrop.org
+    ProxyPreserveHost On
+    ProxyPass        "/" "http://Greand:${rstudioport:?}/"
+    ProxyPassReverse "/" "http://Greand:${rstudioport:?}/"
+</VirtualHost>
+EOF
+
+cat > bournmouth.conf << EOF
+<VirtualHost *:*>
+    ServerName geoserv.bournmouth.astrotrop.org
+    ProxyPreserveHost On
+    ProxyPass        "/geoserver/" "http://Etalema:${geoservport:?}/geoserver/"
+    ProxyPassReverse "/geoserver/" "http://Etalema:${geoservport:?}/geoserver/"
+</VirtualHost>
+
+<VirtualHost *:*>
+    ServerName geonode.bournmouth.astrotrop.org
+    ProxyPreserveHost On
+    ProxyPass        "/" "http://Etalema:${geonodeport:?}/"
+    ProxyPassReverse "/" "http://Etalema:${geonodeport:?}/"
+</VirtualHost>
+
+<VirtualHost *:*>
+    ServerName rstudio.bournmouth.astrotrop.org
+    ProxyPreserveHost On
+    ProxyPass        "/" "http://Etalema:${rstudioport:?}/"
+    ProxyPassReverse "/" "http://Etalema:${rstudioport:?}/"
+</VirtualHost>
+EOF
+
+    popd
+
+# -----------------------------------------
+# Run our Apache proxy container.
+#[user@virtual]
+
+    source "${HOME:?}/astrotrop.conf"
+    docker run \
+        --detach \
+        --name "${apacheproxyname:?}" \
+        --network "${netname:?}" \
+        --volume  "${apacheproxyconf:?}:/etc/httpd/conf.d" \
+        --volume  "${apacheproxylogs:?}:/var/log/httpd" \
+        --publish "${apacheproxyport:?}:80" \
+        "astrotrop/apache-proxy:1.3"
+
+    docker logs -f \
+        "${apacheproxyname:?}"
+
+
+
+# -----------------------------------------
+# Add external IP address to the virtual machine.
+# -----------------------------------------
+
+
+
+
+#---------------------------------------------------------------------
+# Check the default network.
+#[user@trop03]
+
+    source "${HOME}/ischnura.settings"
+
+    virsh \
+        --connect "${connection:?}" \
+        net-list
+
+         Name                 State      Autostart     Persistent
+        ----------------------------------------------------------
+         default              active     yes           yes
+
+    virsh \
+        --connect "${connection:?}" \
+        net-dumpxml 'default'
+
+        <network connections='1' ipv6='yes'>
+          <name>default</name>
+          <uuid>90f8713f-ef63-4181-9eca-5d9c5ca9b6d8</uuid>
+          <forward mode='nat'>
+            <nat>
+              <port start='1024' end='65535'/>
+            </nat>
+          </forward>
+          <bridge name='virbr0' stp='on' delay='0'/>
+          <mac address='52:54:00:02:03:01'/>
+          <ip family='ipv4' address='192.168.203.1' netmask='255.255.255.0'>
+            <dhcp>
+              <range start='192.168.203.8' end='192.168.203.15'/>
+              <host mac='52:54:00:02:03:08' name='Umiawyth' ip='192.168.203.8'/>
+              <host mac='52:54:00:02:03:09' name='Etalema' ip='192.168.203.9'/>
+              <host mac='52:54:00:02:03:0A' name='Greand' ip='192.168.203.10'/>
+              <host mac='52:54:00:02:03:0B' name='Nydiralle' ip='192.168.203.11'/>
+              <host mac='52:54:00:02:03:0C' name='Kedaekoth' ip='192.168.203.12'/>
+              <host mac='52:54:00:02:03:0D' name='Onelith' ip='192.168.203.13'/>
+              <host mac='52:54:00:02:03:0E' name='Elaleld' ip='192.168.203.14'/>
+              <host mac='52:54:00:02:03:0F' name='Afoaviel' ip='192.168.203.15'/>
+            </dhcp>
+          </ip>
+        </network>
+
+#---------------------------------------------------------------------
+# Target settings.
+#[user@trop03]
+
+    vmname=Umiawyth
+    vmmac='52:54:03:00:01:02'
+    vmipv4='129.215.175.102'
+
+#---------------------------------------------------------------------
+# Create the bridged network.
+#[user@trop03]
+
+    source "${HOME}/ischnura.settings"
+
+    netxml=$(mktemp)
+    cat > "${netxml:?}" << EOF
+<network>
+    <name>bridged</name>
+    <uuid/>
+    <forward mode='bridge'/>
+    <bridge name='br0'/>
+</network>
+EOF
+
+    virsh \
+        --connect "${connection:?}" \
+        net-define \
+            "${netxml:?}"
+
+    virsh \
+        --connect "${connection:?}" \
+        net-start \
+            'bridged'
+
+#---------------------------------------------------------------------
+# Check the bridged network.
+#[user@trop03]
+
+    virsh \
+        --connect "${connection:?}" \
+        net-list
+
+         Name                 State      Autostart     Persistent
+        ----------------------------------------------------------
+         bridged              active     no            yes
+         default              active     yes           yes
+
+
+    virsh \
+        --connect "${connection:?}" \
+        net-dumpxml \
+            'bridged'
+
+        <network>
+          <name>bridged</name>
+          <uuid>20e29030-3263-4e5b-9264-009a6c270455</uuid>
+          <forward mode='bridge'/>
+          <bridge name='br0'/>
+        </network>
+
+#---------------------------------------------------------------------
+# Add an interface to the VM.
+#[user@trop03]
+
+    source "${HOME}/ischnura.settings"
+
+    virsh -c ${connection:?} \
+        attach-interface \
+            "${vmname:?}" \
+            'network' \
+            'bridged' \
+            --model 'virtio' \
+            --mac "${vmmac:?}" \
+            --live \
+            --config
+
+        Interface attached successfully
+
+#---------------------------------------------------------------------
+# Check the VM interfaces.
+#[user@trop03]
+
+    virsh -c ${connection:?} \
+        dumpxml \
+            "${vmname:?}" \
+      | xmlstarlet \
+            sel \
+            -t \
+            -c "//interface"
+            
+        <interface type="network">
+            <mac address="52:54:00:02:03:08"/>
+            <source network="default"/>
+            <target dev="vnet0"/>
+            <model type="virtio"/>
+            <alias name="net0"/>
+            <address type="pci" domain="0x0000" bus="0x00" slot="0x03" function="0x0"/>
+        </interface><interface type="bridge">
+            <mac address="52:54:03:00:01:02"/>
+            <source bridge="br0"/>
+            <target dev="vnet1"/>
+            <model type="virtio"/>
+            <alias name="net1"/>
+            <address type="pci" domain="0x0000" bus="0x00" slot="0x05" function="0x0"/>
+        </interface>dmr@trop03:~$ 
+
+
+#---------------------------------------------------------------------
+# Configure the VM interface.
+#[user@trop03]
+
+    vmmac='52:54:03:00:01:02'
+    vmipv4='129.215.175.102'
+
+    vmname='Umiawyth'
+    vmuser='Stevedore'
+
+    netcfg=$(mktemp)
+    cat > "${netcfg:?}" << EOF
+NAME="ens5"
+DEVICE="ens5"
+ONBOOT=yes
+TYPE=Ethernet
+BOOTPROTO=static
+IPV4INIT=yes
+IPV6INIT=yes
+HWADDR=${vmmac:?}
+NETWORK=129.215.175.0
+NETMASK=255.255.255.0
+GATEWAY=129.215.175.126
+IPADDR=${vmipv4:?}
+EOF
+
+    scp \
+        "${netcfg:?}" \
+        "root@${vmname:?}:/etc/sysconfig/network-scripts/ifcfg-ens5"
+
+    ssh \
+        "root@${vmname:?}" \
+        chcon \
+            --user system_u \
+            --role object_r \
+            --type net_conf_t \
+            /etc/sysconfig/network-scripts/ifcfg-ens5
+
+    ssh \
+        "root@${vmname:?}" \
+        reboot
+
+#---------------------------------------------------------------------
+# Run test webserver on the VM.
+#[user@trop03]
+
+    ssh "${vmuser:?}@${vmname:?}"
+
+        sudo firewall-cmd --permanent --add-service ssh
+        sudo firewall-cmd --permanent --add-service http
+
+        docker run \
+            --detach \
+            --publish 80:80 \
+            yrvafhom/docker-demo        
+
+
+#---------------------------------------------------------------------
+# Test from different locations ...
+#[user@trop03]
+
+    #
+    # Only visible from the host trop machine, and local VMs.
+
+    curl http://129.215.175.102/
+
+    Umiawyth    PASS    
+    Etalema     PASS
+
+    trop01  FAIL
+    trop02  FAIL
+    trop03      PASS
+    trop04  FAIL
+
+    shep    FAIL
+    data    FAIL
+    desktop FAIL
+
+#---------------------------------------------------------------------
+# Compare trop machines.
+#[user@desktop]
+
+    compare=$(mktemp -d)
+
+    scp root@trop01:/etc/network/interfaces   ${compare:?}/interfaces-01.txt
+    scp root@trop02:/etc/network/interfaces   ${compare:?}/interfaces-02.txt
+    scp root@trop03:/etc/network/interfaces   ${compare:?}/interfaces-03.txt
+    scp root@trop04:/etc/network/interfaces   ${compare:?}/interfaces-04.txt
+
+    scp root@trop01://var/lib/iptables/active ${compare:?}/ip-active-01.txt
+    scp root@trop02://var/lib/iptables/active ${compare:?}/ip-active-02.txt
+    scp root@trop03://var/lib/iptables/active ${compare:?}/ip-active-03.txt
+    scp root@trop04://var/lib/iptables/active ${compare:?}/ip-active-04.txt
+
+    ssh root@trop01 '
+        /sbin/iptables --list --numeric
+        ' > ${compare:?}/ip-live-01.txt
+
+    ssh root@trop02 '
+        /sbin/iptables --list --numeric
+        ' > ${compare:?}/ip-live-02.txt
+
+    ssh root@trop03 '
+        /sbin/iptables --list --numeric
+        ' > ${compare:?}/ip-live-03.txt
+
+    ssh root@trop04 '
+        /sbin/iptables --list --numeric
+        ' > ${compare:?}/ip-live-04.txt
+
+    ssh trop01 '
+        source ischnura.settings
+        virsh -c $connection net-dumpxml default
+        ' > ${compare:?}/net-default-01.xml
+
+    ssh trop02 '
+        source ischnura.settings
+        virsh -c $connection net-dumpxml default
+        ' > ${compare:?}/net-default-02.xml
+
+    ssh trop03 '
+        source ischnura.settings
+        virsh -c $connection net-dumpxml default
+        ' > ${compare:?}/net-default-03.xml
+
+
+#---------------------------------------------------------------------
+# Compare trop machines.
+#[user@desktop]
+
+    pushd ${compare:?}
+
+        diff interfaces-01.txt interfaces-02.txt
+        diff interfaces-01.txt interfaces-03.txt
+        diff interfaces-01.txt interfaces-04.txt
+
+        diff ip-active-01.txt ip-active-02.txt
+        diff ip-active-01.txt ip-active-03.txt
+        diff ip-active-01.txt ip-active-04.txt
+
+        diff ip-live-01.txt ip-live-02.txt
+        diff ip-live-01.txt ip-live-03.txt
+        diff ip-live-01.txt ip-live-04.txt
+
+
+
+
+
+
+
+
+        diff net-default-01.xml net-default-02.xml
+        diff net-default-01.xml net-default-03.xml
+
+#
+# For some (unknown) reason trop02 default network uses virbr1 rather than virbr0.
+# Makes all the iptables different :-(
+#
+
+
+
+
+#---------------------------------------------------------------------
+# Updating iptables/active on trop03.
+#[root@trop03]
+
+          # The INPUT chain.
+          #
+        + # Internal DNS requests - allow
+        + #[0:0] -A INPUT -i virbr0 -p udp --dport 53 -j ACCEPT
+        + #[0:0] -A INPUT -i virbr0 -p tcp --dport 53 -j ACCEPT
+        + # Internal DHCP requests - allow
+        + [0:0] -A INPUT -i virbr0 -p udp --dport 67 -j ACCEPT
+        + [0:0] -A INPUT -i virbr0 -p tcp --dport 67 -j ACCEPT
+        + # Standard chain
+          [0:0] -A INPUT -j override
+          [0:0] -A INPUT -i lo -j ACCEPT
+
+
+
+          [0:0] -A INPUT -s 81.187.46.67   -p tcp -m tcp --dport 22 -j ACCEPT
+          [0:0] -A INPUT -s 81.187.46.67   -p tcp -m tcp --dport 80 -j ACCEPT
+        + # External DHCP requests - drop
+        + [0:0] -A INPUT -i br0 -p udp --dport 67 -j DROP
+        + [0:0] -A INPUT -i br0 -p tcp --dport 67 -j DROP
+        + [0:0] -A INPUT -i br1 -p udp --dport 67 -j DROP
+        + [0:0] -A INPUT -i br1 -p tcp --dport 67 -j DROP
+          # All else, log and drop.
+          [0:0] -A INPUT -j LOG --log-prefix "drop "
+          [0:0] -A INPUT -j DROP
+
+
+
+          [0:0] -A OUTPUT -j override
+          [0:0] -A OUTPUT -o lo -j ACCEPT
+        + # Internal DHCP offers - allow
+        + [0:0] -A OUTPUT -o virbr0 -p udp -m udp --dport 68 -j ACCEPT
+          # Allow NFS (here all UDP) on private network and infiniband.
+          [0:0] -A OUTPUT -d 192.168.137.0/255.255.255.0 -p udp -j ACCEPT
+          [0:0] -A OUTPUT -d 192.168.0.0/255.255.255.0 -p udp -j ACCEPT
+
+
+#---------------------------------------------------------------------
+# Enabling STP on trop03 (normal default setting).
+#[root@trop03]
+
+    cat /etc/network/interfaces
+
+        iface br0 inet static
+            address   129.215.175.98
+            netmask   255.255.255.0
+            network   129.215.175.0
+            gateway   129.215.175.126
+            broadcast 129.215.175.255
+            # dns-* options are implemented by the resolvconf package, if installed
+            dns-nameservers 195.194.120.1 195.194.120.2
+            dns-search roe.ac.uk
+            # Configure bridge ports and STP.
+            bridge_ports eth0
+            bridge_stp on
+            #bridge_fd  0
+            bridge_maxwait 0
+
+#---------------------------------------------------------------------
+# Adding libvirt netfilter bridge settings to separate config on trop03.
+#[root@trop03]
+
+    cat > /etc/sysctl.d/98-libvirt.conf << EOF
+
+###################################################################
+# Netfilter bridge settings.
+#
+# http://wiki.libvirt.org/page/Net.bridge.bridge-nf-call_and_sysctl.conf
+# http://ebtables.netfilter.org/misc/brnf-faq.html
+# http://unix.stackexchange.com/questions/136918/why-does-my-firewall-iptables-interfere-in-my-bridge-brctl
+net.bridge.bridge-nf-call-iptables  = 0
+net.bridge.bridge-nf-call-arptables = 0
+net.bridge.bridge-nf-call-ip6tables = 0
+
+EOF
+
+
+
+
+
+
+
+
+
+
+

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2016, ROE (http://www.roe.ac.uk/)
+# Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -14,22 +14,13 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
-FROM fedora:22
+
+FROM astrotrop/fedora:20170629
 MAINTAINER Dave Morris <docker-admin@metagrid.co.uk>
 
-#
-# Declare the yum/dnf cache as a volume. 
-VOLUME /var/cache/yum/
+ENV JAVA_VERSION 1.8.0
 
 #
-# Update the OS.
-#RUN dnf -y update
-#RUN dnf -y clean all
-
-#
-# Install tar and zip to extract archives.
-RUN dnf -y install tar
-RUN dnf -y install unzip
-
+# Install Java
+RUN dnf -y install java-${JAVA_VERSION}-openjdk
 

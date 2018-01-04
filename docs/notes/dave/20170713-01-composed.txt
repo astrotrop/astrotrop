@@ -1,0 +1,116 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+    #
+    # Combine our original deployment with GeoNode compose file.
+    # https://github.com/GeoNode/geonode/blob/master/docker-compose.yml
+    #
+
+    #
+    # Use HAProxy as the front-end HTTP proxy (separate VM).
+    # One set of composed services per VM ?
+    #
+
+    AstroTROP/PostGIS
+        FROM postgres
+            + PostGIS 2.1.4+dfsg-3
+            + PLR 1:8.3.0.15-4
+
+    AstroTROP/GeoServer
+        FROM astrotrop/tomcat
+        EXPOSE 8080
+        + GeoServer 2.8.1
+        + Manual install script
+            Set admin pass manually
+            docker exec
+                add CSW plugin
+                add WPS extension
+                add printng, flying-saucer-core and tagsoup
+
+    AstroTROP/GeoExplorer
+        FROM astrotrop/tomcat
+        (*) custom build for the war file
+        
+
+    AstroTROP/GeoNode
+        FROM ubuntu:14.04
+        EXPOSE 8000
+        + python
+        + gdal
+        + django
+        + geonode-2.4
+
+    AstroTROP/RStudio container        
+        FROM rocker/rstudio (*)
+        + unixodbc
+        + postgresql
+        + libgdal
+        + cran-rgdal
+        + cran- ...
+
+
+    AstroTROP PostGIS container - good
+    AstroTROP RStudio container - good
+
+    AstroTROP/GeoNode   - try GeoNode/django
+    AstroTROP/GeoServer - try GeoNode/GeoServer
+
+    AstroTROP/GeoExplorer - ??
+
+
+GeoNode dockerfile has :
+
+    geonode/django
+        FROM python:2.7.9
+        EXPOSE 8000
+        + pip install GDAL-1.10
+
+GeoNode compose file has :
+
+    rabbitmq
+    postgres (no version, no GIS)
+    elasticsearch (deprecated)
+
+    geonode/geoserver
+        linked to postgres
+
+    geonode/django
+        linked to postgres, rabbitmq and elasticsearch
+        
+    geonode/django (celery)
+        linked to postgres, rabbitmq and elasticsearch
+
+    geonode/nginx
+        EXPOSE 80
+        HTTP proxy, linked to both django and geoserver
+
+    geonode/geoserver_data
+        name geoserver_data_dir
+
+
+
+    volumes:
+        geoserver_data_dir:
+
+
+    
+

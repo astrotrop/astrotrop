@@ -1,0 +1,68 @@
+#
+# <meta:header>
+#   <meta:licence>
+#     Copyright (c) 2017, ROE (http://www.roe.ac.uk/)
+#
+#     This information is free software: you can redistribute it and/or modify
+#     it under the terms of the GNU General Public License as published by
+#     the Free Software Foundation, either version 3 of the License, or
+#     (at your option) any later version.
+#
+#     This information is distributed in the hope that it will be useful,
+#     but WITHOUT ANY WARRANTY; without even the implied warranty of
+#     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#     GNU General Public License for more details.
+#  
+#     You should have received a copy of the GNU General Public License
+#     along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#   </meta:licence>
+# </meta:header>
+#
+#
+
+# -----------------------------------------
+# Configure our build.
+#[user@desktop]
+
+    vi "${HOME}/astrotrop.conf"
+
+        buildtag=20170629
+
+# -----------------------------------------
+# Build our containers.
+#[user@desktop]
+
+    source "${HOME}/astrotrop.conf"
+    source "${HOME}/astrotrop.settings"
+
+    pushd "${ASTROTROP_CODE}"
+        pushd src/docker
+
+            docker build \
+                --tag astrotrop/fedora:${buildtag:?} \
+                base/fedora/25
+
+            docker build \
+                --tag astrotrop/apache-base:${buildtag:?} \
+                base/apache/base
+
+            docker build \
+                --tag astrotrop/apache-proxy:${buildtag:?} \
+                base/apache/proxy
+
+            docker build \
+                --tag astrotrop/apache-wsgi:${buildtag:?} \
+                base/apache/wsgi
+
+            docker build \
+                --tag astrotrop/java:${buildtag:?} \
+                base/java/8
+
+            docker build \
+                --tag astrotrop/tomcat:${buildtag:?} \
+                base/tomcat/8
+
+
+
+        popd
+    popd
